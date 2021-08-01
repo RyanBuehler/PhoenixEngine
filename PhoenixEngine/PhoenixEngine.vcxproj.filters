@@ -24,6 +24,9 @@
     <ClInclude Include="src\Application.h">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\Logger.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp">

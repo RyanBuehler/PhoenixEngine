@@ -1,7 +1,5 @@
 #pragma once
 
-#ifdef PE_BUILD_WINDOWS
-
 class Application
 {
 
@@ -19,6 +17,8 @@ public:
 private:
 
 };
+
+#ifdef PE_BUILD_WINDOWS
 
 int main()
 {
