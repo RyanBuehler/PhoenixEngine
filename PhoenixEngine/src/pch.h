@@ -1,6 +1,9 @@
 #pragma once
 
 // Includes
+#include "Logger.h"
+
+// STL
 #include <string>
 #include <memory>
 

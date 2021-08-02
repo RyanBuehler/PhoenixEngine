@@ -2,17 +2,27 @@
 #include "Application.h"
 #include "Logger.h"
 
-shared_ptr<Logger> Log;
-
-Application::Application() noexcept
+Application::Application() noexcept :
+#ifdef PE_BUILD_WINDOWS
+  // Build for Windows
+  m_Window(make_unique<GLFWWindow>())
+#else
+  // Build for Linux/Mac
+  m_Window(make_unique<GLFWWindow>())
+#endif
 {
-  Log = make_shared<Logger>();
-  Log->Trace("Start");
+  //Log = make_unique<Logger>();
+  Log::Trace("Start");
 }
 
 void Application::Run()
 {
-  Log->Trace("Run");
-  while (true);
-  Log->Trace("Terminate");
+  Log::Trace("Run");
+  while (true)
+  {
+    m_Window->OnUpdate();
+  }
+
+  m_Window->OnClose();
+  Log::Trace("Terminate");
 }

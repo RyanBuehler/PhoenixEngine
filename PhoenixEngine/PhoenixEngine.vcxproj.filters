@@ -19,6 +19,12 @@
     <Filter Include="Header Files\Core">
       <UniqueIdentifier>{6aabfce3-d0e5-4fe7-936c-f6028638deec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Core\Platform">
+      <UniqueIdentifier>{ec44e360-59d3-4259-8a7a-51cfc0f6f667}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core\Platform">
+      <UniqueIdentifier>{f194289f-d19e-4eee-9f42-5d7e200b3b50}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h">
@@ -27,10 +33,19 @@
     <ClInclude Include="src\Logger.h">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\Window.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GLFWWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp">
       <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GLFWWindow.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,8 +1,12 @@
 #pragma once
+#include "Window.h"
+
+#ifdef PE_BUILD_WINDOWS
+#include "GLFWWindow.h"
+#endif
 
 class Application
 {
-
 public:
 
   Application() noexcept;
@@ -15,7 +19,13 @@ public:
   void Run();
 
 private:
-
+#ifdef PE_BUILD_WINDOWS
+  // For Windows Build
+  unique_ptr<GLFWWindow> m_Window;
+#else
+  // For Linux/Mac Build
+  unique_ptr<GLFWWindow> m_Window;
+#endif
 };
 
 #ifdef PE_BUILD_WINDOWS
