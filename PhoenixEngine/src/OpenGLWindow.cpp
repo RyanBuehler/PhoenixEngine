@@ -9,16 +9,20 @@ OpenGLWindow::OpenGLWindow(const WindowProperties& properties) :
   if (m_pWindow)
     glfwTerminate();
 
-  /* Initialize the library */
+  // Initialize the library
   if (!glfwInit())
   {
     Log::Error("Couldn't initialize OpenGL Window!");
     return;
   }
 
-  /* Create a windowed mode window and its OpenGL context */
-  m_pWindow = glfwCreateWindow(m_WindowProperties.Width, m_WindowProperties.Height,
-    m_WindowProperties.Title.c_str(), NULL, NULL);
+  // Create a windowed mode window and its OpenGL context
+  m_pWindow = glfwCreateWindow(
+    m_WindowProperties.Width,
+    m_WindowProperties.Height,
+    m_WindowProperties.Title.c_str(), 
+    NULL, NULL);
+
 
   if (!m_pWindow)
   {
@@ -27,7 +31,7 @@ OpenGLWindow::OpenGLWindow(const WindowProperties& properties) :
     return;
   }
 
-  /* Make the window's context current */
+  // Make the window's context current
   glfwMakeContextCurrent(m_pWindow);
 
   if (glewInit() != GLEW_OK)
@@ -49,7 +53,7 @@ unsigned OpenGLWindow::GetHeight() const
 
 void OpenGLWindow::OnUpdate()
 {
-    /* Render here */
+    // Render here
     glClear(GL_COLOR_BUFFER_BIT);
 
     glBegin(GL_TRIANGLES);
@@ -58,10 +62,10 @@ void OpenGLWindow::OnUpdate()
     glVertex2f(0.5f, -0.5f);
     glEnd();
 
-    /* Swap front and back buffers */
+    // Swap Front/Back Buffers
     glfwSwapBuffers(m_pWindow);
 
-    /* Poll for and process events */
+    // Poll for Events
     glfwPollEvents();
 }
 
