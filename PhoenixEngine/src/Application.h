@@ -2,7 +2,7 @@
 #include "Window.h"
 
 #ifdef PE_BUILD_WINDOWS
-#include "GLFWWindow.h"
+#include "OpenGLWindow.h"
 #endif
 
 class Application
@@ -21,7 +21,7 @@ public:
 private:
 #ifdef PE_BUILD_WINDOWS
   // For Windows Build
-  unique_ptr<GLFWWindow> m_Window;
+  unique_ptr<OpenGLWindow> m_Window;
 #else
   // For Linux/Mac Build
   unique_ptr<GLFWWindow> m_Window;

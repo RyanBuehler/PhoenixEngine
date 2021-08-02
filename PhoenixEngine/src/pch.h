@@ -6,6 +6,8 @@
 // STL
 #include <string>
 #include <memory>
+#include <string>
+#include <cstring>
 
 // Using
 using std::string;

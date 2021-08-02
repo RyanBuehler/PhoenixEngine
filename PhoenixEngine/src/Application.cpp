@@ -5,7 +5,7 @@
 Application::Application() noexcept :
 #ifdef PE_BUILD_WINDOWS
   // Build for Windows
-  m_Window(make_unique<GLFWWindow>())
+  m_Window(make_unique<OpenGLWindow>())
 #else
   // Build for Linux/Mac
   m_Window(make_unique<GLFWWindow>())
@@ -18,7 +18,7 @@ Application::Application() noexcept :
 void Application::Run()
 {
   Log::Trace("Run");
-  while (true)
+  while (!m_Window->ShouldClose())
   {
     m_Window->OnUpdate();
   }

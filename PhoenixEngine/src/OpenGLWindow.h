@@ -3,16 +3,18 @@
 
 #include <GLFW/glfw3.h>
 
-class GLFWWindow : public Window
+class OpenGLWindow : public Window
 {
 public:
-  GLFWWindow(const WindowProperties& properties = WindowProperties());
+  OpenGLWindow(const WindowProperties& properties = WindowProperties());
 
   inline unsigned GetWidth() const;
   inline unsigned GetHeight() const;
 
   void OnUpdate();
   void OnClose();
+
+  inline bool ShouldClose();
 
 private:
   GLFWwindow* m_pWindow;

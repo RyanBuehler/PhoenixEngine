@@ -31,4 +31,6 @@ public:
 
   virtual void OnUpdate() = 0;
   virtual void OnClose() = 0;
+
+  virtual bool ShouldClose() = 0;
 };
