@@ -1,9 +1,6 @@
 #pragma once
-#include "Window.h"
 
-#ifdef PE_BUILD_WINDOWS
-#include "OpenGLWindow.h"
-#endif
+class Window;
 
 class Application
 {
@@ -19,13 +16,7 @@ public:
   void Run();
 
 private:
-#ifdef PE_BUILD_WINDOWS
-  // For Windows Build
-  unique_ptr<OpenGLWindow> m_Window;
-#else
-  // For Linux/Mac Build
-  unique_ptr<GLFWWindow> m_Window;
-#endif
+  unique_ptr<Window> m_Window;
 };
 
 #ifdef PE_BUILD_WINDOWS

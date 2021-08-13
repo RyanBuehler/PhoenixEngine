@@ -1,8 +1,10 @@
 #include "pch.h"
 #include "GLEW/glew.h"
-#include "OpenGLWindow.h"
+#include "Window.h"
+//TODO:
+#include "VertexArrayObject.h"
 
-OpenGLWindow::OpenGLWindow(const WindowProperties& properties) :
+Window::Window(const WindowProperties& properties) :
   m_pWindow(nullptr),
   m_WindowProperties(properties)
 {
@@ -24,6 +26,7 @@ OpenGLWindow::OpenGLWindow(const WindowProperties& properties) :
     NULL, NULL);
 
 
+  // Verify the Window's creation
   if (!m_pWindow)
   {
     glfwTerminate();
@@ -34,47 +37,55 @@ OpenGLWindow::OpenGLWindow(const WindowProperties& properties) :
   // Make the window's context current
   glfwMakeContextCurrent(m_pWindow);
 
+  // Verify GLEW initialized
   if (glewInit() != GLEW_OK)
   {
     Log::Error("Couldn't initialize GLEW!");
     return;
   };
+
+  // Print the version to the logger
+  stringstream ss("Initialized OpenGL version: ", SSIO);
+  ss << glGetString(GL_VERSION);
+  Log::Trace(ss.str());
+
+  //TODO:
+  vao = make_unique<VertexArrayObject>(Graphics::DataUsage::STATIC);
+  vao->AddVertex(-0.5f, -0.5f, 0.f);
+  vao->AddVertex(0.f, 0.f, 0.f);
+  vao->AddVertex(0.5f, -0.5f, 0.f);
 }
 
-unsigned OpenGLWindow::GetWidth() const
+unsigned Window::GetWidth() const noexcept
 {
   return m_WindowProperties.Width;
 }
 
-unsigned OpenGLWindow::GetHeight() const
+unsigned Window::GetHeight() const noexcept
 {
   return m_WindowProperties.Height;
 }
 
-void OpenGLWindow::OnUpdate()
+void Window::OnUpdate() noexcept
 {
-    // Render here
+    // Clear the back buffer
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glBegin(GL_TRIANGLES);
-    glVertex2f(-0.5f, -0.5f);
-    glVertex2f(0.f, 0.5f);
-    glVertex2f(0.5f, -0.5f);
-    glEnd();
+    //TODO:
+    vao->Bind();
+    glDrawArrays(GL_TRIANGLES, 0, 3);
 
-    // Swap Front/Back Buffers
+    // Swap the back/front buffers
     glfwSwapBuffers(m_pWindow);
 
-    // Poll for Events
+    // Clear the bound buffer
+    glBindBuffer(GL_ARRAY_BUFFER, 0u);
+
+    // Poll for events
     glfwPollEvents();
 }
 
-void OpenGLWindow::OnClose()
+void Window::OnClose() noexcept
 {
   glfwTerminate();
-}
-
-inline bool OpenGLWindow::ShouldClose()
-{
-  return glfwWindowShouldClose(m_pWindow);
 }

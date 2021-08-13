@@ -1,36 +1,43 @@
 #pragma once
+#include <GLFW/glfw3.h>
 
-struct WindowProperties
-{
-  WindowProperties(const std::string& title = "Phoenix Engine",
-    unsigned width = 1920u,
-    unsigned height = 1080u) :
-    Title(title),
-    Width(width),
-    Height(height) {}
+//TODO:
+#include "VertexArrayObject.h"
 
-  string Title;
-  unsigned Width;
-  unsigned Height;
-};
-
-// Cross Platform Interface for a Window
 class Window
 {
+  struct WindowProperties
+  {
+    WindowProperties(const string& title = "Phoenix Engine",
+      unsigned width = 1920u,
+      unsigned height = 1080u) :
+      Title(title),
+      Width(width),
+      Height(height) {}
+
+    string Title;
+    unsigned Width;
+    unsigned Height;
+  };
+
 public:
-  Window() {};
-  virtual ~Window() {}
+  Window(const WindowProperties& properties = WindowProperties());
 
-  Window(const Window&) = delete;
-  Window& operator=(const Window&) = delete;
-  Window(Window&&) = delete;
-  Window& operator=(Window&&) = delete;
+  inline unsigned GetWidth() const noexcept;
+  inline unsigned GetHeight() const noexcept;
 
-  virtual unsigned GetWidth() const = 0;
-  virtual unsigned GetHeight() const = 0;
+  void OnUpdate() noexcept;
+  void OnClose() noexcept;
 
-  virtual void OnUpdate() = 0;
-  virtual void OnClose() = 0;
+  inline bool WindowShouldClose() noexcept
+  {
+    return glfwWindowShouldClose(m_pWindow);
+  }
 
-  virtual bool ShouldClose() = 0;
+private:
+  GLFWwindow* m_pWindow;
+  WindowProperties m_WindowProperties;
+
+  //TODO:
+  unique_ptr<VertexArrayObject> vao;
 };

@@ -1,24 +1,18 @@
 #include "pch.h"
 #include "Application.h"
 #include "Logger.h"
+#include "Window.h"
 
 Application::Application() noexcept :
-#ifdef PE_BUILD_WINDOWS
-  // Build for Windows
-  m_Window(make_unique<OpenGLWindow>())
-#else
-  // Build for Linux/Mac
-  m_Window(make_unique<GLFWWindow>())
-#endif
+  m_Window(make_unique<Window>())
 {
-  //Log = make_unique<Logger>();
   Log::Trace("Start");
 }
 
 void Application::Run()
 {
   Log::Trace("Run");
-  while (!m_Window->ShouldClose())
+  while (!m_Window->WindowShouldClose())
   {
     m_Window->OnUpdate();
   }

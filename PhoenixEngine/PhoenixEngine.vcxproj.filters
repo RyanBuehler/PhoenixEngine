@@ -19,11 +19,17 @@
     <Filter Include="Header Files\Core">
       <UniqueIdentifier>{6aabfce3-d0e5-4fe7-936c-f6028638deec}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Core\Platform">
-      <UniqueIdentifier>{ec44e360-59d3-4259-8a7a-51cfc0f6f667}</UniqueIdentifier>
+    <Filter Include="Header Files\Graphics">
+      <UniqueIdentifier>{26be552f-ea43-48b1-a156-1968f223ae65}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Core\Platform">
-      <UniqueIdentifier>{f194289f-d19e-4eee-9f42-5d7e200b3b50}</UniqueIdentifier>
+    <Filter Include="Source Files\Graphics">
+      <UniqueIdentifier>{f8b888dd-faa0-41ae-b50b-574c6e3c5727}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\Interfaces">
+      <UniqueIdentifier>{0c55513b-57f5-43bb-8f8d-4a592f82c43d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utility">
+      <UniqueIdentifier>{7173d10a-4149-4791-85a1-4bec9e6000cc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -36,7 +42,31 @@
     <ClInclude Include="src\Window.h">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\OpenGLWindow.h">
+    <ClInclude Include="src\VertexArrayObject.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GraphicsCommon.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IBindable.h">
+      <Filter>Header Files\Graphics\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\VertexAttribute.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FragmentShader.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Shader.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utility.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Paths.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MeshRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -44,7 +74,22 @@
     <ClCompile Include="src\Application.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\OpenGLWindow.cpp">
+    <ClCompile Include="src\Window.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\VertexArrayObject.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\VertexAttribute.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FragmentShader.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Shader.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MeshRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

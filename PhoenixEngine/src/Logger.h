@@ -1,6 +1,15 @@
 #pragma once
+
+// Disable warnings for spdlog
+#pragma warning(push)
+#pragma warning(disable : 26812)
+#pragma warning(disable : 6285)
+#pragma warning(disable : 26437)
+#pragma warning(disable : 26451)
+#pragma warning(disable : 26498)
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
+#pragma warning(pop)
 
 namespace Log
 {
