@@ -1,7 +1,6 @@
 #pragma once
 #include "IBindable.h"
-
-class VertexAttribute;
+#include "VertexAttribute.h"
 
 class Shader : public IBindable
 {
@@ -21,5 +20,5 @@ protected:
   const GLint m_ShaderType;
   GLuint m_ShaderID;
 
-  vector<VertexAttribute> m_Attributes;
+  vector<VertexAttribute<float>> m_Attributes;
 };

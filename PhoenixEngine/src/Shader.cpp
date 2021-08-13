@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "GLEW/glew.h"
-#include "VertexAttribute.h"
 #include "Shader.h"
 
 Shader::Shader(GLint shaderType, const string& fileName) noexcept :

@@ -16,10 +16,9 @@ public:
   void Run();
 
 private:
+  // Dynamic allocated block
   unique_ptr<Window> m_Window;
 };
-
-#ifdef PE_BUILD_WINDOWS
 
 int main()
 {
@@ -27,5 +26,3 @@ int main()
   app->Run();
   delete app;
 }
-
-#endif // PE_BUILD_WINDOWS

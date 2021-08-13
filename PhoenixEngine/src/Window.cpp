@@ -1,12 +1,12 @@
 #include "pch.h"
 #include "GLEW/glew.h"
+#include <GLFW/glfw3.h>
 #include "Window.h"
-//TODO:
-#include "VertexArrayObject.h"
 
 Window::Window(const WindowProperties& properties) :
   m_pWindow(nullptr),
-  m_WindowProperties(properties)
+  m_WindowProperties(properties),
+  m_MeshRenderer()
 {
   if (m_pWindow)
     glfwTerminate();
@@ -22,7 +22,7 @@ Window::Window(const WindowProperties& properties) :
   m_pWindow = glfwCreateWindow(
     m_WindowProperties.Width,
     m_WindowProperties.Height,
-    m_WindowProperties.Title.c_str(), 
+    m_WindowProperties.Title.c_str(),
     NULL, NULL);
 
 
@@ -37,6 +37,8 @@ Window::Window(const WindowProperties& properties) :
   // Make the window's context current
   glfwMakeContextCurrent(m_pWindow);
 
+  Log::Trace("Window created.");
+
   // Verify GLEW initialized
   if (glewInit() != GLEW_OK)
   {
@@ -49,11 +51,7 @@ Window::Window(const WindowProperties& properties) :
   ss << glGetString(GL_VERSION);
   Log::Trace(ss.str());
 
-  //TODO:
-  vao = make_unique<VertexArrayObject>(Graphics::DataUsage::STATIC);
-  vao->AddVertex(-0.5f, -0.5f, 0.f);
-  vao->AddVertex(0.f, 0.f, 0.f);
-  vao->AddVertex(0.5f, -0.5f, 0.f);
+  m_MeshRenderer.Init();
 }
 
 unsigned Window::GetWidth() const noexcept
@@ -68,24 +66,22 @@ unsigned Window::GetHeight() const noexcept
 
 void Window::OnUpdate() noexcept
 {
-    // Clear the back buffer
-    glClear(GL_COLOR_BUFFER_BIT);
+  // Update the Renderer
+  m_MeshRenderer.Update();
 
-    //TODO:
-    vao->Bind();
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+  // Swap the back/front buffers
+  glfwSwapBuffers(m_pWindow);
 
-    // Swap the back/front buffers
-    glfwSwapBuffers(m_pWindow);
-
-    // Clear the bound buffer
-    glBindBuffer(GL_ARRAY_BUFFER, 0u);
-
-    // Poll for events
-    glfwPollEvents();
+  // Poll for events
+  glfwPollEvents();
 }
 
 void Window::OnClose() noexcept
 {
   glfwTerminate();
+}
+
+bool Window::WindowShouldClose() noexcept
+{
+  return glfwWindowShouldClose(m_pWindow);
 }

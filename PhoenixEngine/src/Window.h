@@ -1,8 +1,7 @@
 #pragma once
-#include <GLFW/glfw3.h>
+#include "MeshRenderer.h"
 
-//TODO:
-#include "VertexArrayObject.h"
+struct GLFWwindow;
 
 class Window
 {
@@ -29,15 +28,11 @@ public:
   void OnUpdate() noexcept;
   void OnClose() noexcept;
 
-  inline bool WindowShouldClose() noexcept
-  {
-    return glfwWindowShouldClose(m_pWindow);
-  }
+  bool WindowShouldClose() noexcept;
 
 private:
   GLFWwindow* m_pWindow;
   WindowProperties m_WindowProperties;
 
-  //TODO:
-  unique_ptr<VertexArrayObject> vao;
+  MeshRenderer m_MeshRenderer;
 };
