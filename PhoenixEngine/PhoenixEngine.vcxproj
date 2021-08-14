@@ -26,6 +26,7 @@
     <ClCompile Include="src\FragmentShader.cpp" />
     <ClCompile Include="src\MeshRenderer.cpp" />
     <ClCompile Include="src\Shader.cpp" />
+    <ClCompile Include="src\TriangleMesh.cpp" />
     <ClCompile Include="src\VertexArrayObject.cpp" />
     <ClCompile Include="src\VertexAttribute.cpp" />
     <ClCompile Include="src\Window.cpp" />
@@ -34,11 +35,15 @@
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\GraphicsCommon.h" />
     <ClInclude Include="src\IBindable.h" />
+    <ClInclude Include="src\IMesh.h" />
+    <ClInclude Include="src\ITextureMesh.h" />
     <ClInclude Include="src\MeshRenderer.h" />
+    <ClInclude Include="src\INormalMesh.h" />
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\Logger.h" />
     <ClInclude Include="src\FragmentShader.h" />
     <ClInclude Include="src\Paths.h" />
+    <ClInclude Include="src\TriangleMesh.h" />
     <ClInclude Include="src\Utility.h" />
     <ClInclude Include="src\VertexArrayObject.h" />
     <ClInclude Include="src\VertexAttribute.h" />

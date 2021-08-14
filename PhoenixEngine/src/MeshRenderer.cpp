@@ -2,6 +2,9 @@
 #include "GLEW/glew.h"
 #include "MeshRenderer.h"
 
+//TODO:
+#include "TriangleMesh.h"
+
 MeshRenderer::MeshRenderer(bool depthBufferEnabled, bool backFaceCullEnabled) noexcept
 {
   depthBufferEnabled ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
@@ -11,21 +14,22 @@ MeshRenderer::MeshRenderer(bool depthBufferEnabled, bool backFaceCullEnabled) no
 
 void MeshRenderer::Init() noexcept
 {
-  //TODO:
-  float positions[6] =
-  {
-    -0.5f, -0.5f,
-    0.f, 0.5f,
-    0.5f, -0.5f
-  };
+  ////TODO:
+  //float positions[6] =
+  //{
+  //  -0.5f, -0.5f,
+  //  0.f, 0.5f,
+  //  0.5f, -0.5f
+  //};
 
-  unsigned int buffer;
-  glGenBuffers(1, &buffer);
-  glBindBuffer(GL_ARRAY_BUFFER, buffer);
-  glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), positions, GL_STATIC_DRAW);
-  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
-  glEnableVertexAttribArray(0);
-  glBindBuffer(GL_ARRAY_BUFFER, 0u);
+  //unsigned int buffer;
+  //glGenBuffers(1, &buffer);
+  //glBindBuffer(GL_ARRAY_BUFFER, buffer);
+  //glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), positions, GL_STATIC_DRAW);
+  //glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
+  //glEnableVertexAttribArray(0);
+  //glBindBuffer(GL_ARRAY_BUFFER, 0u);
+  TriangleMesh mesh;
 
   Log::Trace("Mesh Renderer initialized.");
 }

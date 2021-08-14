@@ -31,6 +31,12 @@
     <Filter Include="Header Files\Utility">
       <UniqueIdentifier>{7173d10a-4149-4791-85a1-4bec9e6000cc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Graphics\Mesh">
+      <UniqueIdentifier>{6079332b-f88e-4103-b83c-8d52b373f988}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\Mesh">
+      <UniqueIdentifier>{9829bd21-046d-4e87-a038-a8ee7f461a26}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h">
@@ -67,7 +73,19 @@
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
     <ClInclude Include="src\MeshRenderer.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TriangleMesh.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IMesh.h">
+      <Filter>Header Files\Graphics\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\INormalMesh.h">
+      <Filter>Header Files\Graphics\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ITextureMesh.h">
+      <Filter>Header Files\Graphics\Interfaces</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -91,6 +109,9 @@
     </ClCompile>
     <ClCompile Include="src\MeshRenderer.cpp">
       <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TriangleMesh.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

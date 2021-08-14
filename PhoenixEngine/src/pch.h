@@ -21,6 +21,7 @@
 
 // Utility Functions
 #include <algorithm>
+#include <limits>
 
 // ----- USING -----
 // Strings
@@ -41,6 +42,7 @@ using std::array;
 
 // Utility Functions
 using std::clamp;
+using std::numeric_limits;
 
 // ----- MACROS -----
 #define SSIO std::ios_base::app | std::ios_base::out
