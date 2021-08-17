@@ -1,9 +1,12 @@
 #include "pch.h"
-#include "GLEW/glew.h"
+#include "GL/glew.h"
 #include "MeshRenderer.h"
 
 //TODO:
+#include "Paths.h"
 #include "TriangleMesh.h"
+#include "VertexShader.h"
+#include "FragmentShader.h"
 
 MeshRenderer::MeshRenderer(bool depthBufferEnabled, bool backFaceCullEnabled) noexcept
 {
@@ -14,22 +17,10 @@ MeshRenderer::MeshRenderer(bool depthBufferEnabled, bool backFaceCullEnabled) no
 
 void MeshRenderer::Init() noexcept
 {
-  ////TODO:
-  //float positions[6] =
-  //{
-  //  -0.5f, -0.5f,
-  //  0.f, 0.5f,
-  //  0.5f, -0.5f
-  //};
-
-  //unsigned int buffer;
-  //glGenBuffers(1, &buffer);
-  //glBindBuffer(GL_ARRAY_BUFFER, buffer);
-  //glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), positions, GL_STATIC_DRAW);
-  //glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
-  //glEnableVertexAttribArray(0);
-  //glBindBuffer(GL_ARRAY_BUFFER, 0u);
+  //TODO:
   TriangleMesh mesh;
+  VertexShader vs("basic.vert");
+  FragmentShader fs("basic.frag");
 
   Log::Trace("Mesh Renderer initialized.");
 }

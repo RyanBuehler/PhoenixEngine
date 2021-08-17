@@ -12,6 +12,7 @@
 #include <cstring>
 
 // Streams
+#include <iostream>
 #include <fstream>
 
 // Data Structures & Pointers

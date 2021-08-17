@@ -59,9 +59,6 @@ namespace Mesh
     IMesh(IMesh&&) = delete;
     IMesh& operator=(IMesh&&) = delete;
 
-    virtual void Load() noexcept = 0;
-    virtual void Unload() noexcept = 0;
-
     virtual unsigned GetVertexCount() const noexcept = 0;
     virtual unsigned GetEdgeCount() const noexcept = 0;
     virtual unsigned GetFaceCount() const noexcept = 0;

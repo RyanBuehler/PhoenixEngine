@@ -37,6 +37,15 @@
     <Filter Include="Header Files\Graphics\Mesh">
       <UniqueIdentifier>{9829bd21-046d-4e87-a038-a8ee7f461a26}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Graphics\Shaders">
+      <UniqueIdentifier>{0cbf0635-826e-4f79-837c-0e54a4ea5b0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\Shaders\GLSL">
+      <UniqueIdentifier>{7900e99a-c260-40a3-9458-1c8021b15f7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\Shaders">
+      <UniqueIdentifier>{5dd51adb-2c81-488f-bd05-2b62a5d8b785}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h">
@@ -48,9 +57,6 @@
     <ClInclude Include="src\Window.h">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\VertexArrayObject.h">
-      <Filter>Header Files\Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="src\GraphicsCommon.h">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
@@ -58,9 +64,6 @@
       <Filter>Header Files\Graphics\Interfaces</Filter>
     </ClInclude>
     <ClInclude Include="src\VertexAttribute.h">
-      <Filter>Header Files\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="src\FragmentShader.h">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="src\Shader.h">
@@ -75,9 +78,6 @@
     <ClInclude Include="src\MeshRenderer.h">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\TriangleMesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\IMesh.h">
       <Filter>Header Files\Graphics\Interfaces</Filter>
     </ClInclude>
@@ -87,6 +87,15 @@
     <ClInclude Include="src\ITextureMesh.h">
       <Filter>Header Files\Graphics\Interfaces</Filter>
     </ClInclude>
+    <ClInclude Include="src\TriangleMesh.h">
+      <Filter>Header Files\Graphics\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FragmentShader.h">
+      <Filter>Header Files\Graphics\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\VertexShader.h">
+      <Filter>Header Files\Graphics\Shaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp">
@@ -95,13 +104,7 @@
     <ClCompile Include="src\Window.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\VertexArrayObject.cpp">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="src\VertexAttribute.cpp">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="src\FragmentShader.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="src\Shader.cpp">
@@ -111,7 +114,21 @@
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="src\TriangleMesh.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Graphics\Mesh</Filter>
     </ClCompile>
+    <ClCompile Include="src\FragmentShader.cpp">
+      <Filter>Source Files\Graphics\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\VertexShader.cpp">
+      <Filter>Source Files\Graphics\Shaders</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="res\shaders\basic.frag">
+      <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
+    </Text>
+    <Text Include="res\shaders\basic.vert">
+      <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
+    </Text>
   </ItemGroup>
 </Project>

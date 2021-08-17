@@ -1,4 +1,5 @@
 #pragma once
+#include "Shader.h"
 
 class FragmentShader : public Shader
 {
@@ -10,6 +11,8 @@ public:
   FragmentShader& operator=(const FragmentShader&) = delete;
   FragmentShader(FragmentShader&&) = delete;
   FragmentShader& operator=(FragmentShader&&) = delete;
+
+  void Bind() noexcept {};
 
 private:
 };

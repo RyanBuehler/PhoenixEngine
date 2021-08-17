@@ -1,4 +1,5 @@
 #pragma once
+#include "Shader.h"
 
 class VertexShader : public Shader
 {
@@ -11,7 +12,8 @@ public:
   VertexShader(VertexShader&&) = delete;
   VertexShader& operator=(VertexShader&&) = delete;
 
-private:
+  void Bind() noexcept {};
 
+private:
 };
 

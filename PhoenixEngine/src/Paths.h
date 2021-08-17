@@ -2,5 +2,5 @@
 
 namespace Paths
 {
-  static const char* SHADER_PATH = "/shaders";
+  static const char* SHADER_PATH = "res/shaders/";
 }

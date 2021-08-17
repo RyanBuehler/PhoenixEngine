@@ -1,18 +1,18 @@
 #include "pch.h"
-#include "GLEW/glew.h"
 #include "Shader.h"
 
-Shader::Shader(GLint shaderType, const string& fileName) noexcept :
-  m_ShaderType(shaderType),
-  m_fileName(fileName)
-{
-  if (!LoadShader(fileName))
-  {
-    Log::Error(string("Could not compile shader - ") + m_fileName);
-    LogShaderInfo();
-  };
-}
+#include <filesystem>
 
+Shader::Shader(Shader::Type shaderType, const string& fileName) noexcept :
+  m_fileName(fileName),
+  m_filePath(Paths::SHADER_PATH + fileName),
+  m_ShaderType(shaderType),
+  m_GLShaderType(GetGLShaderType(shaderType)),
+  m_ShaderID(numeric_limits<unsigned>::max()),
+  m_bShaderIsLoaded(false)
+{
+  LoadShader();
+}
 
 Shader::~Shader() noexcept
 {
@@ -24,41 +24,92 @@ GLuint Shader::GetShaderID() const noexcept
   return m_ShaderID;
 }
 
-bool Shader::LoadShader(const string& fileName) noexcept
+void Shader::LoadShader() noexcept
 {
   GLint result;
 
+  std::filesystem::path p = m_filePath;
+  std::cout << "Current path is " << std::filesystem::current_path() << '\n';
+  std::cout << "Absolute path for " << p << " is "
+    << std::filesystem::absolute(p) << '\n';
+
   // load fragment shader
   ifstream file;
-  string path(Paths::SHADER_PATH);
-  path += fileName.c_str();
-  file.open(path.c_str(), std::ios::in);
+  file.open(m_filePath.c_str(), std::ios::in);
   if (!file.is_open())
   {
-    Log::Error(string("Could not open shader file: ") + path);
-    return false;
+    Log::Error(string("Could not open shader file: ") + m_filePath);
+    return;
   }
   string fstring((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
   file.close();
 
   // compile fragment shader
-  m_ShaderID = glCreateShader(m_ShaderType);
+  m_ShaderID = glCreateShader(m_GLShaderType);
   const char* const& fs = fstring.c_str();
   glShaderSource(m_ShaderID, 1, &fs, 0);
   glCompileShader(m_ShaderID);
   glGetShaderiv(m_ShaderID, GL_COMPILE_STATUS, &result);
   if (!result)
   {
-    LogShaderInfo();
-    return false;
+    Log::Error(m_fileName + " - error compiling shader:");
+    string error;
+    RetrieveShaderLog(error);
+    Log::Error(error);
+    return;
   }
 
-  return true;
+  m_bShaderIsLoaded = true;
 }
 
-void Shader::LogShaderInfo() const noexcept
+const string& Shader::GetShaderFileName() const noexcept
 {
-  char buffer[1024];
-  glGetShaderInfoLog(m_ShaderID, 1024, 0, buffer);
-  Log::Error(buffer);
+  return m_fileName;
+}
+
+const string& Shader::GetShaderFilePath() const noexcept
+{
+  return m_filePath;
+}
+
+Shader::Type Shader::GetShaderType() const noexcept
+{
+  return m_ShaderType;
+}
+
+GLuint Shader::GetGLShaderType() const noexcept
+{
+  return m_GLShaderType;
+}
+
+bool Shader::ShaderIsLoaded() const noexcept
+{
+  return m_bShaderIsLoaded;
+}
+
+void Shader::RetrieveShaderLog(string& log) const noexcept
+{
+  int logLength;
+  glGetShaderiv(m_ShaderID, GL_INFO_LOG_LENGTH, &logLength);
+  char* shaderLog = new char[logLength];
+  glGetShaderInfoLog(m_ShaderID, logLength, &logLength, shaderLog);
+  log.clear();
+  log = shaderLog;
+  delete[] shaderLog;
+}
+
+GLuint Shader::GetGLShaderType(Type type) const noexcept
+{
+  switch (type)
+  {
+  case Type::VERTEX:
+    return GL_VERTEX_SHADER;
+  case Type::FRAGMENT:
+    return GL_FRAGMENT_SHADER;
+
+  default:
+  case Type::UNKNOWN:
+    Log::Error("Shader type unknown.");
+    return numeric_limits<unsigned>::max();
+  }
 }

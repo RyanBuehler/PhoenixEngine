@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "GLEW/glew.h"
+#include "GL/glew.h"
 #include "VertexAttribute.h"
 
 template <typename T>

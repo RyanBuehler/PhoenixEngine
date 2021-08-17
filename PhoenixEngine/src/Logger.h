@@ -91,7 +91,7 @@ namespace Log
     Logger() :
       m_SpdLogger(spdlog::stdout_color_mt("Phoenix"))
     {
-      spdlog::set_pattern("%^[%L] (%T): %v%$");
+      spdlog::set_pattern("%^[%l] (%T): %v%$");
       SetLevel(LogLevel::Trace);
       Trace("Start logging");
     }

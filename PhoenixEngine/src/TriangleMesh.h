@@ -12,9 +12,6 @@ public:
   TriangleMesh(TriangleMesh&&) = delete;
   TriangleMesh& operator=(TriangleMesh&&) = delete;
 
-  void Load() noexcept;
-  void Unload() noexcept;
-
   void Bind() noexcept;
 
   unsigned GetVertexCount() const noexcept;
