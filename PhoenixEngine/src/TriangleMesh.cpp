@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "GL/glew.h"
+#include "GLEW/glew.h"
 #include "TriangleMesh.h"
 
 const Mesh::Position TriangleMesh::m_VertexPositions[3] =
@@ -22,6 +22,7 @@ const Mesh::Face TriangleMesh::m_FaceIndices[1] =
 };
 
 TriangleMesh::TriangleMesh() noexcept :
+  m_PositionBufferID(numeric_limits<unsigned>::max()),
   IMesh()
 {
   glGenBuffers(1, &m_PositionBufferID);
@@ -39,6 +40,11 @@ TriangleMesh::TriangleMesh() noexcept :
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::Position), 0);
   glEnableVertexAttribArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0u);
+}
+
+TriangleMesh::~TriangleMesh()
+{
+  glDeleteBuffers(1, &m_PositionBufferID);
 }
 
 void TriangleMesh::Bind() noexcept

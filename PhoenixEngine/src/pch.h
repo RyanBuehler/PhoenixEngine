@@ -20,6 +20,12 @@
 #include <vector>
 #include <array>
 
+// Functional
+#include <functional>
+
+// Type
+#include <type_traits>
+
 // Utility Functions
 #include <algorithm>
 #include <limits>
@@ -40,6 +46,12 @@ using std::make_shared;
 using std::make_unique;
 using std::vector;
 using std::array;
+
+// Functional
+using std::function;
+
+// Type
+using std::is_same;
 
 // Utility Functions
 using std::clamp;

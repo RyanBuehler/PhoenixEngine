@@ -6,7 +6,7 @@ class TriangleMesh : public Mesh::IMesh
 public:
 
   TriangleMesh() noexcept;
-  ~TriangleMesh() = default;
+  ~TriangleMesh();
   TriangleMesh(const TriangleMesh&) = delete;
   TriangleMesh& operator=(const TriangleMesh&) = delete;
   TriangleMesh(TriangleMesh&&) = delete;
@@ -23,6 +23,10 @@ public:
   const Mesh::Face* GetFaceArray() const noexcept;
 
 private:
+  //TODO:
+  inline GLuint GetPositionBufferID() const noexcept { return m_PositionBufferID; }
+
+  GLuint m_PositionBufferID;
   static const Mesh::Position m_VertexPositions[3];
   static const Mesh::Edge m_EdgeIndices[3];
   static const Mesh::Face m_FaceIndices[1];

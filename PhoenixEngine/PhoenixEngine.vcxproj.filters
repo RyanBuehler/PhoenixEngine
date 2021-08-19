@@ -43,8 +43,11 @@
     <Filter Include="Source Files\Graphics\Shaders\GLSL">
       <UniqueIdentifier>{7900e99a-c260-40a3-9458-1c8021b15f7e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Graphics\Shaders">
-      <UniqueIdentifier>{5dd51adb-2c81-488f-bd05-2b62a5d8b785}</UniqueIdentifier>
+    <Filter Include="Header Files\Graphics\Contexts">
+      <UniqueIdentifier>{79c31952-225f-45e9-be2a-c746b41ebea3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\Contexts">
+      <UniqueIdentifier>{2d0d644c-552c-4a7d-b3a0-497166dffcf8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -62,12 +65,6 @@
     </ClInclude>
     <ClInclude Include="src\IBindable.h">
       <Filter>Header Files\Graphics\Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="src\VertexAttribute.h">
-      <Filter>Header Files\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Shader.h">
-      <Filter>Header Files\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="src\Utility.h">
       <Filter>Header Files\Utility</Filter>
@@ -90,11 +87,11 @@
     <ClInclude Include="src\TriangleMesh.h">
       <Filter>Header Files\Graphics\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="src\FragmentShader.h">
-      <Filter>Header Files\Graphics\Shaders</Filter>
+    <ClInclude Include="src\ShaderManager.h">
+      <Filter>Header Files\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\VertexShader.h">
-      <Filter>Header Files\Graphics\Shaders</Filter>
+    <ClInclude Include="src\ContextManager.h">
+      <Filter>Header Files\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -104,23 +101,17 @@
     <ClCompile Include="src\Window.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\VertexAttribute.cpp">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Shader.cpp">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="src\MeshRenderer.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="src\TriangleMesh.cpp">
       <Filter>Source Files\Graphics\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="src\FragmentShader.cpp">
-      <Filter>Source Files\Graphics\Shaders</Filter>
+    <ClCompile Include="src\ShaderManager.cpp">
+      <Filter>Source Files\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\VertexShader.cpp">
-      <Filter>Source Files\Graphics\Shaders</Filter>
+    <ClCompile Include="src\ContextManager.cpp">
+      <Filter>Source Files\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
