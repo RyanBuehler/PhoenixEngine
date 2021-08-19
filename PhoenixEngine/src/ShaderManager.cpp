@@ -8,10 +8,6 @@ ShaderManager::ShaderManager() noexcept :
   m_VertexShaders(),
   m_FragmentShaders()
 {
-  m_VertexShaders[static_cast<unsigned>(Shader::Vertex::BASIC)] =
-    LoadShader("basic.vert", GL_VERTEX_SHADER);
-  m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::BASIC)] =
-    LoadShader("basic.frag", GL_FRAGMENT_SHADER);
 }
 
 ShaderManager::~ShaderManager()
@@ -27,6 +23,16 @@ ShaderManager::~ShaderManager()
   }
 }
 
+void ShaderManager::Init() noexcept
+{
+  //TODO: safety check if its init already
+
+  m_VertexShaders[static_cast<unsigned>(Shader::Vertex::BASIC)] =
+    LoadShader("basic.vert", GL_VERTEX_SHADER);
+  m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::BASIC)] =
+    LoadShader("basic.frag", GL_FRAGMENT_SHADER);
+}
+
 unsigned ShaderManager::GetVertexShaderID(Shader::Vertex shader) const noexcept
 {
   return m_VertexShaders[static_cast<unsigned>(shader)];
@@ -37,7 +43,7 @@ unsigned ShaderManager::GetFragmentShaderID(Shader::Fragment shader) const noexc
   return m_FragmentShaders[static_cast<unsigned>(shader)];
 }
 
-GLint ShaderManager::LoadShader(const string& fileName, GLint shaderType) noexcept
+GLint ShaderManager::LoadShader(const string& fileName, GLenum shaderType) noexcept
 {
   string path = Paths::SHADER_PATH + fileName;
   // load fragment shader
@@ -52,7 +58,7 @@ GLint ShaderManager::LoadShader(const string& fileName, GLint shaderType) noexce
   file.close();
 
   // compile the shader
-  unsigned id = glCreateShader(shaderType);
+  GLint id = glCreateShader(shaderType);
   const char* const& fs = fstring.c_str();
   glShaderSource(id, 1, &fs, 0);
   glCompileShader(id);

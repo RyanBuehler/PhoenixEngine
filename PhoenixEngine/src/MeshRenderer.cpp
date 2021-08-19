@@ -19,6 +19,8 @@ void MeshRenderer::Init() noexcept
   //TODO:
   TriangleMesh mesh;
 
+  m_ShaderManager.Init();
+
   unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::BASIC);
   unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::BASIC);
   static unsigned contextID = m_ContextManager.CreateNewContext(vID, fID);

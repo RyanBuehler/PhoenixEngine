@@ -12,6 +12,8 @@ public:
   ShaderManager(ShaderManager&&) = delete;
   ShaderManager& operator=(ShaderManager&&) = delete;
 
+  void Init() noexcept;
+
   unsigned GetVertexShaderID(Shader::Vertex shader) const noexcept;
   unsigned GetFragmentShaderID(Shader::Fragment shader) const noexcept;
 
@@ -19,7 +21,7 @@ public:
   inline size_t GetFragmentShaderCount() const noexcept { return m_FragmentShaders.size(); }
 
 private:
-  GLint LoadShader(const string& fileName, GLint shaderType) noexcept;
+  GLint LoadShader(const string& fileName, GLenum shaderType) noexcept;
   void RetrieveShaderLog(GLint shaderID, string& log) const noexcept;
 
   array<GLint, static_cast<unsigned>(Shader::Vertex::COUNT)> m_VertexShaders;

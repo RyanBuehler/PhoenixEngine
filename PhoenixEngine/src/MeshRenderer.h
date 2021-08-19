@@ -5,12 +5,6 @@
 class MeshRenderer
 {
 public:
-  struct RenderContext
-  {
-    Shader::Vertex VertexShader;
-    Shader::Fragment FragmentShader;
-  };
-public:
   MeshRenderer(bool depthBufferEnabled = true, bool backFaceCullEnabled = true) noexcept;
   ~MeshRenderer() = default;
   MeshRenderer(const MeshRenderer&) = delete;
@@ -33,5 +27,4 @@ public:
 private:
   ShaderManager m_ShaderManager;
   ContextManager m_ContextManager;
-
 };
