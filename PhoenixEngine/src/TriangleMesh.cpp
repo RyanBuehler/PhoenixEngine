@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "GL/glew.h"
+#include "GLEW/glew.h"
 #include "TriangleMesh.h"
 
 const Mesh::Position TriangleMesh::m_VertexPositions[3] =

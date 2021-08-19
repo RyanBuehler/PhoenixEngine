@@ -23,30 +23,27 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\FragmentShader.cpp" />
+    <ClCompile Include="src\ContextManager.cpp" />
     <ClCompile Include="src\MeshRenderer.cpp" />
-    <ClCompile Include="src\Shader.cpp" />
+    <ClCompile Include="src\ShaderManager.cpp" />
     <ClCompile Include="src\TriangleMesh.cpp" />
-    <ClCompile Include="src\VertexAttribute.cpp" />
-    <ClCompile Include="src\VertexShader.cpp" />
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h" />
+    <ClInclude Include="src\ContextManager.h" />
     <ClInclude Include="src\GraphicsCommon.h" />
     <ClInclude Include="src\IBindable.h" />
     <ClInclude Include="src\IMesh.h" />
+    <ClInclude Include="src\IRenderContext.h" />
     <ClInclude Include="src\ITextureMesh.h" />
     <ClInclude Include="src\MeshRenderer.h" />
     <ClInclude Include="src\INormalMesh.h" />
-    <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\Logger.h" />
-    <ClInclude Include="src\FragmentShader.h" />
     <ClInclude Include="src\Paths.h" />
+    <ClInclude Include="src\ShaderManager.h" />
     <ClInclude Include="src\TriangleMesh.h" />
     <ClInclude Include="src\Utility.h" />
-    <ClInclude Include="src\VertexAttribute.h" />
-    <ClInclude Include="src\VertexShader.h" />
     <ClInclude Include="src\Window.h" />
   </ItemGroup>
   <ItemGroup>
@@ -161,7 +158,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>PE_BUILD_WINDOWS;GLEW_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)inc\;$(SolutionDir)dep\;D:\Repositories\PhoenixEngine\PhoenixEngine\dep\GLEW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <TreatWarningAsError>true</TreatWarningAsError>
@@ -194,7 +191,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>PE_BUILD_WINDOWS;GLEW_STATIC;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)inc\;$(SolutionDir)dep\;D:\Repositories\PhoenixEngine\PhoenixEngine\dep\GLEW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <TreatWarningAsError>true</TreatWarningAsError>

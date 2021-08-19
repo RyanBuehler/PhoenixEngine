@@ -1,7 +1,15 @@
 #pragma once
+#include "ShaderManager.h"
+#include "ContextManager.h"
 
 class MeshRenderer
 {
+public:
+  struct RenderContext
+  {
+    Shader::Vertex VertexShader;
+    Shader::Fragment FragmentShader;
+  };
 public:
   MeshRenderer(bool depthBufferEnabled = true, bool backFaceCullEnabled = true) noexcept;
   ~MeshRenderer() = default;
@@ -23,4 +31,7 @@ public:
   inline bool BackFaceCullIsEnabled() const noexcept;
 
 private:
+  ShaderManager m_ShaderManager;
+  ContextManager m_ContextManager;
+
 };

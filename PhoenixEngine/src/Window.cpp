@@ -1,6 +1,6 @@
 #include "pch.h"
-#include "GL/glew.h"
-#include <GLFW/glfw3.h>
+#include "GLEW/glew.h"
+#include "GLFW/glfw3.h"
 #include "Window.h"
 
 Window::Window(const WindowProperties& properties) :

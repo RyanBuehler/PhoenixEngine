@@ -1,14 +1,13 @@
 #include "pch.h"
-#include "GL/glew.h"
+#include "GLEW/glew.h"
 #include "MeshRenderer.h"
 
 //TODO:
-#include "Paths.h"
 #include "TriangleMesh.h"
-#include "VertexShader.h"
-#include "FragmentShader.h"
 
-MeshRenderer::MeshRenderer(bool depthBufferEnabled, bool backFaceCullEnabled) noexcept
+MeshRenderer::MeshRenderer(bool depthBufferEnabled, bool backFaceCullEnabled) noexcept :
+  m_ShaderManager(),
+  m_ContextManager()
 {
   depthBufferEnabled ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
   backFaceCullEnabled ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
@@ -19,8 +18,11 @@ void MeshRenderer::Init() noexcept
 {
   //TODO:
   TriangleMesh mesh;
-  VertexShader vs("basic.vert");
-  FragmentShader fs("basic.frag");
+
+  unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::BASIC);
+  unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::BASIC);
+  static unsigned contextID = m_ContextManager.CreateNewContext(vID, fID);
+  m_ContextManager.SwapContext(contextID);
 
   Log::Trace("Mesh Renderer initialized.");
 }
