@@ -42,7 +42,7 @@ unsigned ContextManager::CreateNewContext(GLint vertexShaderID, GLint fragmentSh
     return GL_PROGRAM_ERROR;
   }
 
-  m_Programs.push_back(result);
+  m_Programs.push_back(programID);
 
   return i;
 }

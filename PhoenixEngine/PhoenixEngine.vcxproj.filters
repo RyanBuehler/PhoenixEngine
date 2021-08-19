@@ -87,9 +87,6 @@
     <ClInclude Include="src\TriangleMesh.h">
       <Filter>Header Files\Graphics\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="src\IRenderContext.h">
-      <Filter>Header Files\Graphics\Interfaces</Filter>
-    </ClInclude>
     <ClInclude Include="src\ShaderManager.h">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>

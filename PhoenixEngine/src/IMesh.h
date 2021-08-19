@@ -51,7 +51,7 @@ namespace Mesh
   {
   public:
     IMesh(Graphics::DataUsage dataUsage = Graphics::DataUsage::STATIC, const Position& origin = Position(0.f, 0.f, 0.f)) noexcept :
-      m_Usage(dataUsage), m_PositionBufferID(0u), m_Origin(origin) {};
+      m_Usage(dataUsage), m_Origin(origin) {};
     virtual ~IMesh() = default;
 
     IMesh(const IMesh&) = delete;
@@ -74,12 +74,8 @@ namespace Mesh
     inline void SetDataUsage(Graphics::DataUsage dataUsage) noexcept { m_Usage = dataUsage; }
     inline Graphics::DataUsage GetDataUsage() const noexcept { return m_Usage; }
 
-    //TODO:
-    inline GLuint GetPositionBufferID() const noexcept { return m_PositionBufferID; }
-
   protected:
     Graphics::DataUsage m_Usage;
-    GLuint m_PositionBufferID;
     Position m_Origin;
   };
 }
