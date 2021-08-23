@@ -3,14 +3,16 @@ Shader: Basic Shader [Vertex]
 Author: Ryan Buehler
 *******************************************************************************/
 #version 460
+in vec4 position;
 
-layout(location = 0) in vec3 position_object;
+uniform mat4 pers_matrix;
+uniform mat4 view_matrix;
+uniform mat4 model_matrix;
 
-out vec4 position_world;
+out vec4 world_position;
 
 void main(void)
 {
-  position_world = vec4(position_object, 1.f);
-
-  gl_Position = position_world;
+  world_position = model_matrix * position;
+  gl_Position = pers_matrix * view_matrix * world_position;
 }

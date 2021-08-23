@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "GLEW/glew.h"
 #include "MeshRenderer.h"
+#include "Camera.h"
+#include "CubeMesh.h"
+#include "Transform.h"
 
 MeshRenderer::MeshRenderer(bool depthBufferEnabled, bool backFaceCullEnabled) noexcept :
   m_ShaderManager(),
@@ -20,14 +23,19 @@ MeshRenderer::~MeshRenderer()
 
 void MeshRenderer::Init() noexcept
 {
-  mesh = make_unique<TriangleMesh>();
+  camera = make_unique<Camera>();
+  mesh = make_unique<CubeMesh>();
+  transform = make_unique<Transform>();
 
   m_ShaderManager.Init();
-
   unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::BASIC);
   unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::BASIC);
   static unsigned contextID = m_ContextManager.CreateNewContext(vID, fID);
-  m_ContextManager.SwapContext(contextID);
+  GLint program = m_ContextManager.SwapContext(contextID);
+  glUseProgram(program);
+  camera->Init(program);
+  transform->Init(program);
+  camera->EnableCamera();
 
   Log::Trace("Mesh Renderer initialized.");
 }
@@ -37,12 +45,16 @@ void MeshRenderer::Update() noexcept
   // Clear the back buffer and depth buffer
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  mesh->Bind();
-  GLint aposition = glGetAttribLocation(3, "position_object");
-  glDrawArrays(GL_TRIANGLES, 0, 3);
+  transform->RotateY(0.5f);
 
-  // Clear the bound buffer
-  glBindBuffer(GL_ARRAY_BUFFER, 0u);
+  mesh->Bind();
+  camera->Bind();
+  transform->Bind();
+
+
+  glDrawElements(GL_TRIANGLES, 3 * mesh->GetFaceCount(), GL_UNSIGNED_INT, 0);
+
+  glBindVertexArray(0u);
 }
 
 void MeshRenderer::EnableDepthBuffer() noexcept

@@ -23,15 +23,20 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\ContextManager.cpp" />
+    <ClCompile Include="src\CubeMesh.cpp" />
     <ClCompile Include="src\MeshRenderer.cpp" />
     <ClCompile Include="src\ShaderManager.cpp" />
+    <ClCompile Include="src\Transform.cpp" />
     <ClCompile Include="src\TriangleMesh.cpp" />
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h" />
+    <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\ContextManager.h" />
+    <ClInclude Include="src\CubeMesh.h" />
     <ClInclude Include="src\GraphicsCommon.h" />
     <ClInclude Include="src\IBindable.h" />
     <ClInclude Include="src\IMesh.h" />
@@ -41,6 +46,7 @@
     <ClInclude Include="src\Logger.h" />
     <ClInclude Include="src\Paths.h" />
     <ClInclude Include="src\ShaderManager.h" />
+    <ClInclude Include="src\Transform.h" />
     <ClInclude Include="src\TriangleMesh.h" />
     <ClInclude Include="src\Utility.h" />
     <ClInclude Include="src\Window.h" />

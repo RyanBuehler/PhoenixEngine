@@ -23,7 +23,7 @@ const Mesh::Face TriangleMesh::m_FaceIndices[1] =
 
 TriangleMesh::TriangleMesh() noexcept :
   m_PositionBufferID(numeric_limits<unsigned>::max()),
-  IMesh()
+  IMesh(Graphics::DataUsage::STATIC)
 {
   glGenBuffers(1, &m_PositionBufferID);
   glBindBuffer(GL_ARRAY_BUFFER, m_PositionBufferID);

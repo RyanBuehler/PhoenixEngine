@@ -47,14 +47,18 @@ unsigned ContextManager::CreateNewContext(GLint vertexShaderID, GLint fragmentSh
   return i;
 }
 
-void ContextManager::SwapContext(unsigned contextID) noexcept
+GLint ContextManager::SwapContext(unsigned contextID) noexcept
 {
   if (m_Programs[contextID] == m_CurrentProgram)
-    return;
+    return -1;
 
   m_CurrentProgram = m_Programs[contextID];
 
   glUseProgram(m_CurrentProgram);
+
+  //TODO: Do I want to return the current program or do I want
+  // instead to have the context manager handle uniforms?
+  return m_CurrentProgram;
 }
 
 void ContextManager::RetrieveProgramLog(GLint programID, string& log) const noexcept

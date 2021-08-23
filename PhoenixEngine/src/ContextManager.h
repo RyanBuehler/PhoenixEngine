@@ -16,7 +16,7 @@ public:
     GLint fragmentShaderID
   );
 
-  void SwapContext(unsigned contextID) noexcept;
+  GLint SwapContext(unsigned contextID) noexcept;
 
 private:
   void RetrieveProgramLog(GLint programID, string& log) const noexcept;
