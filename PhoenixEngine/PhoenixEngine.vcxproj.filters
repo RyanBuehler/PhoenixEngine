@@ -49,6 +49,12 @@
     <Filter Include="Source Files\Graphics\Contexts">
       <UniqueIdentifier>{2d0d644c-552c-4a7d-b3a0-497166dffcf8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Object">
+      <UniqueIdentifier>{03a07d57-56d6-43c7-ac51-496f685d2264}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Object">
+      <UniqueIdentifier>{c1385186-ac8f-47b7-99d2-c23abed49609}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h">
@@ -93,6 +99,15 @@
     <ClInclude Include="src\ContextManager.h">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="src\CubeMesh.h">
+      <Filter>Header Files\Graphics\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Camera.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Transform.h">
+      <Filter>Header Files\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp">
@@ -112,6 +127,15 @@
     </ClCompile>
     <ClCompile Include="src\ContextManager.cpp">
       <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CubeMesh.cpp">
+      <Filter>Source Files\Graphics\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Camera.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Transform.cpp">
+      <Filter>Source Files\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

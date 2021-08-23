@@ -23,9 +23,6 @@ public:
   const Mesh::Face* GetFaceArray() const noexcept;
 
 private:
-  //TODO:
-  inline GLuint GetPositionBufferID() const noexcept { return m_PositionBufferID; }
-
   GLuint m_PositionBufferID;
   static const Mesh::Position m_VertexPositions[3];
   static const Mesh::Edge m_EdgeIndices[3];

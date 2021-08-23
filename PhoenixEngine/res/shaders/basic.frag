@@ -4,7 +4,7 @@ Author: Ryan Buehler
 *******************************************************************************/
 #version 460
 
-in vec4 position_world;
+in vec4 world_position;
 
 out vec4 color_frag;
 

@@ -1,7 +1,10 @@
 #pragma once
 #include "ShaderManager.h"
 #include "ContextManager.h"
-#include "TriangleMesh.h"
+
+class Camera;
+class CubeMesh;
+class Transform;
 
 class MeshRenderer
 {
@@ -26,7 +29,11 @@ public:
   inline bool BackFaceCullIsEnabled() const noexcept;
 
 private:
-  unique_ptr<TriangleMesh> mesh;
+  //TODO:
+  unique_ptr<CubeMesh> mesh;
+  unique_ptr<Camera> camera;
+  unique_ptr<Transform> transform;
+
   ShaderManager m_ShaderManager;
   ContextManager m_ContextManager;
 };
