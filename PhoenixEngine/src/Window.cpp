@@ -67,7 +67,7 @@ unsigned Window::GetHeight() const noexcept
 void Window::OnUpdate() noexcept
 {
   // Update the Renderer
-  m_MeshRenderer.Update();
+  m_MeshRenderer.RenderFrame();
 
   // Swap the back/front buffers
   glfwSwapBuffers(m_pWindow);

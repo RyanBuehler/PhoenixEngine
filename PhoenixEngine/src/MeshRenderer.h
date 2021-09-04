@@ -1,4 +1,11 @@
+//------------------------------------------------------------------------------
+// File:    MeshRenderer.h
+// Author:  Ryan Buehler
+// Created: September 3, 2021
+// Desc:    MeshRenderer class definitions
+//------------------------------------------------------------------------------
 #pragma once
+#include "MeshManager.h"
 #include "ShaderManager.h"
 #include "ContextManager.h"
 
@@ -18,7 +25,7 @@ public:
 
   void Init() noexcept;
 
-  void Update() noexcept;
+  void RenderFrame() noexcept;
 
   void EnableDepthBuffer() noexcept;
   void DisableDepthBuffer() noexcept;
@@ -30,10 +37,12 @@ public:
 
 private:
   //TODO:
-  unique_ptr<CubeMesh> mesh;
   unique_ptr<Camera> camera;
   unique_ptr<Transform> transform;
 
+  MeshManager m_MeshManager;
   ShaderManager m_ShaderManager;
   ContextManager m_ContextManager;
+
+  unsigned meshID; //TODO
 };

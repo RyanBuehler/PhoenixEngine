@@ -108,6 +108,9 @@
     <ClInclude Include="src\Transform.h">
       <Filter>Header Files\Object</Filter>
     </ClInclude>
+    <ClInclude Include="src\MeshManager.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp">
@@ -136,6 +139,9 @@
     </ClCompile>
     <ClCompile Include="src\Transform.cpp">
       <Filter>Source Files\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MeshManager.cpp">
+      <Filter>Source Files\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

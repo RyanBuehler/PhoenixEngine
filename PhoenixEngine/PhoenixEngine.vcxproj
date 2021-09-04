@@ -26,6 +26,7 @@
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\ContextManager.cpp" />
     <ClCompile Include="src\CubeMesh.cpp" />
+    <ClCompile Include="src\MeshManager.cpp" />
     <ClCompile Include="src\MeshRenderer.cpp" />
     <ClCompile Include="src\ShaderManager.cpp" />
     <ClCompile Include="src\Transform.cpp" />
@@ -41,6 +42,7 @@
     <ClInclude Include="src\IBindable.h" />
     <ClInclude Include="src\IMesh.h" />
     <ClInclude Include="src\ITextureMesh.h" />
+    <ClInclude Include="src\MeshManager.h" />
     <ClInclude Include="src\MeshRenderer.h" />
     <ClInclude Include="src\INormalMesh.h" />
     <ClInclude Include="src\Logger.h" />

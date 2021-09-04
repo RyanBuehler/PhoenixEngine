@@ -4,8 +4,18 @@
 
 namespace Mesh
 {
-#pragma region Vertex Attributes
+#pragma region Primitives
 
+  enum class Primitive
+  {
+    TRIANGLE,
+    CUBE,
+    COUNT
+  };
+
+#pragma endregion
+
+#pragma region Vertex Attributes
   /// <summary>
   /// Vertex Position in 3D Space
   /// </summary>

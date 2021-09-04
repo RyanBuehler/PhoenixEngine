@@ -109,8 +109,6 @@ void CubeMesh::Bind() noexcept
 {
   glBindVertexArray(m_VertexArrayID);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_FaceBufferID);
-
-
 }
 
 unsigned CubeMesh::GetVertexCount() const noexcept

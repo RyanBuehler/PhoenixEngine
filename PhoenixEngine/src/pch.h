@@ -1,3 +1,9 @@
+//------------------------------------------------------------------------------
+// File:    pch.h
+// Author:  Ryan Buehler
+// Created: September 3, 2021
+// Desc:    Pre-Compiled Header for the Phoenix Engine
+//------------------------------------------------------------------------------
 #pragma once
 
 // Includes
@@ -19,6 +25,7 @@
 #include <memory>
 #include <vector>
 #include <array>
+#include <list>
 
 // Functional
 #include <functional>
@@ -46,6 +53,7 @@ using std::make_shared;
 using std::make_unique;
 using std::vector;
 using std::array;
+using std::list;
 
 // Functional
 using std::function;

@@ -1,3 +1,12 @@
+//------------------------------------------------------------------------------
+// File:    MeshRenderer.cpp
+// Author:  Ryan Buehler
+// Created: September 3, 2021
+// Desc:    A wrapper around the OpenGL graphics API that will render meshes to
+//          screen. Current functionality includes:
+//          * Rendering static meshes
+//------------------------------------------------------------------------------
+
 #include "pch.h"
 #include "GLEW/glew.h"
 #include "MeshRenderer.h"
@@ -7,7 +16,8 @@
 
 MeshRenderer::MeshRenderer(bool depthBufferEnabled, bool backFaceCullEnabled) noexcept :
   m_ShaderManager(),
-  m_ContextManager()
+  m_ContextManager(),
+  meshID(numeric_limits<unsigned>::max())
 {
   depthBufferEnabled ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
   backFaceCullEnabled ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
@@ -24,10 +34,11 @@ MeshRenderer::~MeshRenderer()
 void MeshRenderer::Init() noexcept
 {
   camera = make_unique<Camera>();
-  mesh = make_unique<CubeMesh>();
   transform = make_unique<Transform>();
 
   m_ShaderManager.Init();
+  meshID = m_MeshManager.LoadPrimitive(Mesh::Primitive::CUBE);
+
   unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::BASIC);
   unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::BASIC);
   static unsigned contextID = m_ContextManager.CreateNewContext(vID, fID);
@@ -35,24 +46,23 @@ void MeshRenderer::Init() noexcept
   glUseProgram(program);
   camera->Init(program);
   transform->Init(program);
+
   camera->EnableCamera();
 
-  Log::Trace("Mesh Renderer initialized.");
+  Log::Trace("MeshRenderer initialized.");
 }
 
-void MeshRenderer::Update() noexcept
+void MeshRenderer::RenderFrame() noexcept
 {
   // Clear the back buffer and depth buffer
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   transform->RotateY(0.5f);
 
-  mesh->Bind();
   camera->Bind();
   transform->Bind();
-
-
-  glDrawElements(GL_TRIANGLES, 3 * mesh->GetFaceCount(), GL_UNSIGNED_INT, 0);
+  
+  m_MeshManager.RenderMesh(meshID);
 
   glBindVertexArray(0u);
 }
