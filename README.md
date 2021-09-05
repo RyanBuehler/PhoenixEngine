@@ -14,6 +14,7 @@ The Phoenix Engine is a humble graphics engine and wrapper utilized by Ryan Bueh
 * Blinn-Phong rendered scene with default material
 * Texture sampling
 * Load a custom mesh
+* ImGUI integration
 
 ## Long Term Roadmap
 * Deferred Rendering
