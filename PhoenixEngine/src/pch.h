@@ -26,6 +26,7 @@
 #include <vector>
 #include <array>
 #include <list>
+#include <forward_list>
 
 // Functional
 #include <functional>
@@ -54,6 +55,7 @@ using std::make_unique;
 using std::vector;
 using std::array;
 using std::list;
+using std::forward_list;
 
 // Functional
 using std::function;

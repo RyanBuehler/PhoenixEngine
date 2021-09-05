@@ -6,7 +6,6 @@
 //          screen. Current functionality includes:
 //          * Rendering static meshes
 //------------------------------------------------------------------------------
-
 #include "pch.h"
 #include "GLEW/glew.h"
 #include "MeshRenderer.h"
@@ -15,8 +14,11 @@
 #include "Transform.h"
 
 MeshRenderer::MeshRenderer(bool depthBufferEnabled, bool backFaceCullEnabled) noexcept :
+  m_MeshManager(),
   m_ShaderManager(),
   m_ContextManager(),
+  m_CameraManager(),
+  camera(m_CameraManager.GetDefaultCamera()),
   meshID(numeric_limits<unsigned>::max())
 {
   depthBufferEnabled ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
@@ -33,21 +35,23 @@ MeshRenderer::~MeshRenderer()
 
 void MeshRenderer::Init() noexcept
 {
-  camera = make_unique<Camera>();
-  transform = make_unique<Transform>();
-
-  m_ShaderManager.Init();
+  // Load a default mesh
   meshID = m_MeshManager.LoadPrimitive(Mesh::Primitive::CUBE);
 
+  // Load a default context
+  m_ShaderManager.Init();
   unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::BASIC);
   unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::BASIC);
   static unsigned contextID = m_ContextManager.CreateNewContext(vID, fID);
   GLint program = m_ContextManager.SwapContext(contextID);
   glUseProgram(program);
-  camera->Init(program);
-  transform->Init(program);
 
-  camera->EnableCamera();
+  // Enable the default camera with the current program
+  camera.EnableCamera(program);
+
+  //TODO:
+  transform = make_unique<Transform>();
+  transform->Init(program);
 
   Log::Trace("MeshRenderer initialized.");
 }
@@ -57,12 +61,13 @@ void MeshRenderer::RenderFrame() noexcept
   // Clear the back buffer and depth buffer
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  transform->RotateY(0.5f);
-
-  camera->Bind();
-  transform->Bind();
+  m_CameraManager.BindActiveCamera();
   
   m_MeshManager.RenderMesh(meshID);
+
+  //TODO:
+  transform->RotateY(0.5f);
+  transform->Bind();
 
   glBindVertexArray(0u);
 }
