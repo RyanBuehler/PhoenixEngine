@@ -7,6 +7,7 @@ The Phoenix Engine is a humble graphics engine and wrapper utilized by Ryan Bueh
 
 ## Short Term Roadmap
 * "Context" Manager to handle all data transfer between CPU and GPU
+* GameObject class
 * Scene and Scene Manager
 * Normals
 * Light class
