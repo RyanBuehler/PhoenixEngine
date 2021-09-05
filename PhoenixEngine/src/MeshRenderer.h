@@ -8,6 +8,7 @@
 #include "MeshManager.h"
 #include "ShaderManager.h"
 #include "ContextManager.h"
+#include "CameraManager.h"
 
 class Camera;
 class CubeMesh;
@@ -36,13 +37,14 @@ public:
   inline bool BackFaceCullIsEnabled() const noexcept;
 
 private:
-  //TODO:
-  unique_ptr<Camera> camera;
-  unique_ptr<Transform> transform;
-
   MeshManager m_MeshManager;
   ShaderManager m_ShaderManager;
   ContextManager m_ContextManager;
+  CameraManager m_CameraManager;
 
-  unsigned meshID; //TODO
+  //TODO:
+  Camera& camera;
+  unique_ptr<Transform> transform;
+
+  unsigned meshID;
 };

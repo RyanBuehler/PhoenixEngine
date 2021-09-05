@@ -1,3 +1,10 @@
+//------------------------------------------------------------------------------
+// File:    Camera.cpp
+// Author:  Ryan Buehler
+// Created: September 3, 2021
+// Desc:    The Camera class adds all necessary functionality for Camera
+//          representation and interaction with OpenGL
+//------------------------------------------------------------------------------
 #include "pch.h"
 #include "Camera.h"
 #include <glm/ext/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale
@@ -8,7 +15,7 @@
 using glm::vec3;
 using glm::mat4;
 
-Camera::Camera() noexcept :
+Camera::Camera(const string& name) noexcept :
   m_ViewData(),
   m_Position({ 0.f, 0.f, 3.f }),
   m_Forward({ 0.f, 0.f, -1.f }),
@@ -20,15 +27,15 @@ Camera::Camera() noexcept :
   m_bViewIsDirty(true),
   m_PersAttributeID(-1),
   m_ViewAttributeID(-1),
-  m_Target(nullptr)
+  m_Target(nullptr),
+  m_Name(name)
 {
   Log::Trace("Camera created.");
 }
 
-void Camera::Init(GLuint program) noexcept
+Camera::~Camera()
 {
-  m_PersAttributeID = glGetUniformLocation(program, "pers_matrix");
-  m_ViewAttributeID = glGetUniformLocation(program, "view_matrix");
+  Log::Trace(string("Camera '") + m_Name + "' destroyed.");
 }
 
 void Camera::Update(float dt) noexcept
@@ -39,15 +46,16 @@ void Camera::Update(float dt) noexcept
 
 void Camera::Bind() noexcept
 {
-  if (!m_IsEnabled)
-    return;
-
   // Set View Matrix
   glUniformMatrix4fv(m_ViewAttributeID, 1, false, &GetViewMatrix()[0][0]);
 }
 
-void Camera::EnableCamera() noexcept
+void Camera::EnableCamera(GLuint program) noexcept
 {
+  // Get GLint handles to the Uniform locations
+  m_PersAttributeID = glGetUniformLocation(program, "pers_matrix");
+  m_ViewAttributeID = glGetUniformLocation(program, "view_matrix");
+
   // Set Perspective Matrix
   glUniformMatrix4fv(m_PersAttributeID, 1, false, &GetPersMatrix()[0][0]);
 
@@ -56,6 +64,8 @@ void Camera::EnableCamera() noexcept
 
 void Camera::DisableCamera() noexcept
 {
+  m_PersAttributeID = -1;
+  m_ViewAttributeID = -1;
   m_IsEnabled = false;
 }
 
@@ -96,4 +106,19 @@ void Camera::SetTarget(Transform* target) noexcept
 void Camera::ClearTarget() noexcept
 {
   m_Target = nullptr;
+}
+
+void Camera::SetPosition(glm::vec3 position)
+{
+  m_Position = position;
+}
+
+void Camera::LookAt(glm::vec3 position)
+{
+  m_Forward = glm::normalize(position - m_Position);
+}
+
+const string& Camera::GetName() const noexcept
+{
+  return m_Name;
 }

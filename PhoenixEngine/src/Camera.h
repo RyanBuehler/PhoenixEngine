@@ -1,3 +1,9 @@
+//------------------------------------------------------------------------------
+// File:    Camera.h
+// Author:  Ryan Buehler
+// Created: September 3, 2021
+// Desc:    Camera class declarations
+//------------------------------------------------------------------------------
 #pragma once
 #include "IBindable.h"
 #include <glm/vec3.hpp> // glm::vec3
@@ -27,18 +33,17 @@ public:
   };
 public:
 
-  Camera() noexcept;
-  ~Camera() = default;
+  Camera(const string& name = "Unnamed Camera") noexcept;
+  ~Camera();
   Camera(const Camera&) = delete;
   Camera& operator=(const Camera&) = delete;
   Camera(Camera&&) = delete;
   Camera& operator=(Camera&&) = delete;
 
-  void Init(GLuint program) noexcept;
   void Update(float dt) noexcept;
   void Bind() noexcept;
 
-  void EnableCamera() noexcept;
+  void EnableCamera(GLuint program) noexcept;
   void DisableCamera() noexcept;
 
   const glm::mat4& GetPersMatrix() noexcept;
@@ -46,6 +51,11 @@ public:
 
   void SetTarget(Transform* target) noexcept;
   void ClearTarget() noexcept;
+
+  void SetPosition(glm::vec3 position);
+  void LookAt(glm::vec3 position);
+
+  const string& GetName() const noexcept;
 
 private:
   // Camera Viewing Data
@@ -70,4 +80,7 @@ private:
 
   // Camera Target
   Transform* m_Target;
+
+  // Camera Name
+  string m_Name;
 };
