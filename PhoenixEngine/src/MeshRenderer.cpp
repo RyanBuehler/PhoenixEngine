@@ -47,6 +47,7 @@ void MeshRenderer::Init() noexcept
   glUseProgram(program);
 
   // Enable the default camera with the current program
+  //TODO: This should shift the program to BindActiveCamera()
   camera.EnableCamera(program);
 
   //TODO:

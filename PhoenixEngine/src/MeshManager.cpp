@@ -69,5 +69,5 @@ void MeshManager::RenderMesh(unsigned id) const noexcept
   }
   m_MeshArray[id]->Bind();
   //TODO: GetElementCount? Instead to save the 3 * every frame?
-  glDrawElements(GL_TRIANGLES, 3 * m_MeshArray[id]->GetFaceCount(), GL_UNSIGNED_INT, 0);
+  glDrawElements(GL_TRIANGLES, 3 * m_MeshArray[id]->GetTriangleCount(), GL_UNSIGNED_INT, 0);
 }

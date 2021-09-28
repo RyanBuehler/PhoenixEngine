@@ -16,9 +16,9 @@ const Mesh::Edge TriangleMesh::m_EdgeIndices[3] =
   Mesh::Edge(2,0),
 };
 
-const Mesh::Face TriangleMesh::m_FaceIndices[1] =
+const Mesh::Triangle TriangleMesh::m_FaceIndices[1] =
 {
-  Mesh::Face(0,1,2)
+  Mesh::Triangle(0,1,2)
 };
 
 TriangleMesh::TriangleMesh() noexcept :
@@ -62,7 +62,7 @@ unsigned TriangleMesh::GetEdgeCount() const noexcept
   return 3;
 }
 
-unsigned TriangleMesh::GetFaceCount() const noexcept
+unsigned TriangleMesh::GetTriangleCount() const noexcept
 {
   return 1;
 }
@@ -77,7 +77,7 @@ const Mesh::Edge* TriangleMesh::GetEdgeArray() const noexcept
   return &m_EdgeIndices[0];
 }
 
-const Mesh::Face* TriangleMesh::GetFaceArray() const noexcept
+const Mesh::Triangle* TriangleMesh::GetTriangleArray() const noexcept
 {
   return &m_FaceIndices[0];
 }

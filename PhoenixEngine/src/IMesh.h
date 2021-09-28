@@ -44,9 +44,9 @@ namespace Mesh
     unsigned Index1, Index2;
   };
 
-  struct Face
+  struct Triangle
   {
-    Face(
+    Triangle(
       unsigned index1 = numeric_limits<unsigned>::max(),
       unsigned index2 = numeric_limits<unsigned>::max(),
       unsigned index3 = numeric_limits<unsigned>::max()
@@ -71,12 +71,12 @@ namespace Mesh
 
     virtual unsigned GetVertexCount() const noexcept = 0;
     virtual unsigned GetEdgeCount() const noexcept = 0;
-    virtual unsigned GetFaceCount() const noexcept = 0;
+    virtual unsigned GetTriangleCount() const noexcept = 0;
 
     //TODO: Do I need these?
     virtual const Mesh::Position* GetPositionArray() const noexcept = 0;
     virtual const Mesh::Edge* GetEdgeArray() const noexcept = 0;
-    virtual const Mesh::Face* GetFaceArray() const noexcept = 0;
+    virtual const Mesh::Triangle* GetTriangleArray() const noexcept = 0;
 
     inline void SetOrigin(const Mesh::Position& origin) noexcept { m_Origin = origin; }
     inline const Mesh::Position& GetOrigin() const noexcept { return m_Origin; }

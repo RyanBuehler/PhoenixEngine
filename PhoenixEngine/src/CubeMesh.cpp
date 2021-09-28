@@ -33,26 +33,26 @@ const Mesh::Edge CubeMesh::m_EdgeIndices[12] =
   Mesh::Edge(7,4),
 };
 
-const Mesh::Face CubeMesh::m_FaceIndices[12] =
+const Mesh::Triangle CubeMesh::m_FaceIndices[12] =
 {
   // Bottom Face
-Mesh::Face(0,3,1),
-Mesh::Face(1,3,2),
+Mesh::Triangle(0,3,1),
+Mesh::Triangle(1,3,2),
 // Left Face
-Mesh::Face(0,4,3),
-Mesh::Face(3,4,7),
+Mesh::Triangle(0,4,3),
+Mesh::Triangle(3,4,7),
 // Right Face
-Mesh::Face(1,2,5),
-Mesh::Face(2,6,5),
+Mesh::Triangle(1,2,5),
+Mesh::Triangle(2,6,5),
 // Front Face
-Mesh::Face(0,1,4),
-Mesh::Face(1,5,4),
+Mesh::Triangle(0,1,4),
+Mesh::Triangle(1,5,4),
 // Back Face
-Mesh::Face(3,7,6),
-Mesh::Face(6,2,3),
+Mesh::Triangle(3,7,6),
+Mesh::Triangle(6,2,3),
 // Top Face
-Mesh::Face(4,6,7),
-Mesh::Face(4,5,6),
+Mesh::Triangle(4,6,7),
+Mesh::Triangle(4,5,6),
 };
 
 CubeMesh::CubeMesh() noexcept :
@@ -81,8 +81,8 @@ CubeMesh::CubeMesh() noexcept :
   // The Face buffer
   glGenBuffers(1, &m_FaceBufferID);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_FaceBufferID);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, GetFaceCount() * sizeof(Mesh::Face), GetFaceArray(), dataUsage);
-
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, GetTriangleCount() * sizeof(Mesh::Triangle), GetTriangleArray(), dataUsage);
+  
   glGenVertexArrays(1, &m_VertexArrayID);
   glBindVertexArray(m_VertexArrayID);
 
@@ -121,7 +121,7 @@ unsigned CubeMesh::GetEdgeCount() const noexcept
   return 12;
 }
 
-unsigned CubeMesh::GetFaceCount() const noexcept
+unsigned CubeMesh::GetTriangleCount() const noexcept
 {
   return 12;
 }
@@ -136,7 +136,7 @@ const Mesh::Edge* CubeMesh::GetEdgeArray() const noexcept
   return &m_EdgeIndices[0];
 }
 
-const Mesh::Face* CubeMesh::GetFaceArray() const noexcept
+const Mesh::Triangle* CubeMesh::GetTriangleArray() const noexcept
 {
   return &m_FaceIndices[0];
 }

@@ -55,6 +55,12 @@
     <Filter Include="Source Files\Object">
       <UniqueIdentifier>{c1385186-ac8f-47b7-99d2-c23abed49609}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Scenes">
+      <UniqueIdentifier>{52ee54a8-3730-46ee-938d-c8d7d2be0eee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scenes">
+      <UniqueIdentifier>{d7a7b18e-607f-46b3-b354-a64a9d81e1b1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h">
@@ -114,6 +120,12 @@
     <ClInclude Include="src\CameraManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\IScene.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TestScene.h">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp">
@@ -148,6 +160,9 @@
     </ClCompile>
     <ClCompile Include="src\CameraManager.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TestScene.cpp">
+      <Filter>Source Files\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -16,11 +16,11 @@ public:
 
   unsigned GetVertexCount() const noexcept;
   unsigned GetEdgeCount() const noexcept;
-  unsigned GetFaceCount() const noexcept;
+  unsigned GetTriangleCount() const noexcept;
 
   const Mesh::Position* GetPositionArray() const noexcept;
   const Mesh::Edge* GetEdgeArray() const noexcept;
-  const Mesh::Face* GetFaceArray() const noexcept;
+  const Mesh::Triangle* GetTriangleArray() const noexcept;
 
 private:
   GLuint m_PositionBufferID;
@@ -29,5 +29,5 @@ private:
 
   static const Mesh::Position m_VertexPositions[8];
   static const Mesh::Edge m_EdgeIndices[12];
-  static const Mesh::Face m_FaceIndices[12];
+  static const Mesh::Triangle m_FaceIndices[12];
 };
