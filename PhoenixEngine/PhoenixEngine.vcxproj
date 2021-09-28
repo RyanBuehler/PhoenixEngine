@@ -29,6 +29,7 @@
     <ClCompile Include="src\CubeMesh.cpp" />
     <ClCompile Include="src\MeshManager.cpp" />
     <ClCompile Include="src\MeshRenderer.cpp" />
+    <ClCompile Include="src\SceneManager.cpp" />
     <ClCompile Include="src\TestScene.cpp" />
     <ClCompile Include="src\ShaderManager.cpp" />
     <ClCompile Include="src\Transform.cpp" />
@@ -51,6 +52,7 @@
     <ClInclude Include="src\INormalMesh.h" />
     <ClInclude Include="src\Logger.h" />
     <ClInclude Include="src\Paths.h" />
+    <ClInclude Include="src\SceneManager.h" />
     <ClInclude Include="src\TestScene.h" />
     <ClInclude Include="src\ShaderManager.h" />
     <ClInclude Include="src\Transform.h" />

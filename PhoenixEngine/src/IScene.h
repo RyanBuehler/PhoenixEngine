@@ -21,8 +21,8 @@ public:
 
   virtual void OnLoad() noexcept = 0;
   virtual void OnInit() noexcept = 0;
-  virtual void OnUpdate() noexcept = 0;
-  virtual void OnReset() noexcept = 0;
+  virtual void OnUpdate(float dt) noexcept = 0;
+  virtual void OnShutdown() noexcept = 0;
   virtual void OnUnload() noexcept = 0;
 
 private:

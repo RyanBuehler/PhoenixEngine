@@ -14,11 +14,11 @@ void TestScene::OnInit() noexcept
 {
 }
 
-void TestScene::OnUpdate() noexcept
+void TestScene::OnUpdate(float dt) noexcept
 {
 }
 
-void TestScene::OnReset() noexcept
+void TestScene::OnShutdown() noexcept
 {
 }
 

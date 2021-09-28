@@ -14,8 +14,8 @@ public:
 
   void OnLoad() noexcept;
   void OnInit() noexcept;
-  void OnUpdate() noexcept;
-  void OnReset() noexcept;
+  void OnUpdate(float dt) noexcept;
+  void OnShutdown() noexcept;
   void OnUnload() noexcept;
 
 private:
