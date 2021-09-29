@@ -6,12 +6,13 @@
 //------------------------------------------------------------------------------
 #pragma once
 #include <string>
+#include "GameObject.h"
 
 class IScene
 {
 public:
 
-  IScene(const char* sceneName) noexcept :
+  IScene(const string& sceneName) noexcept :
     m_SceneName(sceneName) {};
   virtual ~IScene() = default;
   IScene(const IScene&) = delete;
@@ -25,6 +26,12 @@ public:
   virtual void OnShutdown() noexcept = 0;
   virtual void OnUnload() noexcept = 0;
 
+  vector<GameObject>& GetGameObjectArray() noexcept { return m_GameObjectArray; }
+  const string& GetSceneName() const noexcept { return m_SceneName; }
+
+protected:
+  vector<GameObject> m_GameObjectArray;
+
 private:
-  std::string m_SceneName;
+  string m_SceneName;
 };

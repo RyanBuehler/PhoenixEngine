@@ -6,6 +6,7 @@
 //------------------------------------------------------------------------------
 #pragma once
 #include "IScene.h"
+#include "GameObject.h"
 
 class SceneManager
 {
@@ -53,10 +54,16 @@ public:
   /// </summary>
   void OnUpdate(float dt) noexcept;
 
+  /// <summary>
+  /// Retrieves a vector of the current scene's game objects
+  /// </summary>
+  /// <returns>A vector reference of the current scene's game objects</returns>
+  vector<GameObject>& GetCurrentSceneGameObjects() noexcept;
+
 private:
   bool m_TransitionEnabled;
   bool m_ReloadEnabled;
-  unique_ptr<IScene> m_CurrentScene;
+  unique_ptr<IScene> m_CurrentScenePtr;
   Scene m_NextScene;
 
   /// <summary>

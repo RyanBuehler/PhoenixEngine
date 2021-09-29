@@ -9,6 +9,7 @@
 #include "ShaderManager.h"
 #include "ContextManager.h"
 #include "CameraManager.h"
+#include "GameObject.h"
 
 class Camera;
 class CubeMesh;
@@ -26,7 +27,7 @@ public:
 
   void Init() noexcept;
 
-  void RenderFrame() noexcept;
+  void RenderGameObjects(vector<GameObject>& gameObjects) noexcept;
 
   void EnableDepthBuffer() noexcept;
   void DisableDepthBuffer() noexcept;
@@ -44,7 +45,4 @@ private:
 
   //TODO:
   Camera& camera;
-  unique_ptr<Transform> transform;
-
-  unsigned meshID;
 };

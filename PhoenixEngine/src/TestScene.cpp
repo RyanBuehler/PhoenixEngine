@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "TestScene.h"
+#include "Transform.h"
 
 TestScene::TestScene() noexcept :
   IScene("Test Scene")
@@ -10,6 +11,8 @@ TestScene::TestScene() noexcept :
 void TestScene::OnLoad() noexcept
 {
   Log::Trace("Test Scene Loaded");
+  GameObject go;
+  m_GameObjectArray.push_back(go);
 }
 
 void TestScene::OnInit() noexcept
@@ -19,6 +22,8 @@ void TestScene::OnInit() noexcept
 
 void TestScene::OnUpdate(float dt) noexcept
 {
+  GameObject& go = m_GameObjectArray[0];
+  go.RotateY(0.5f);
 }
 
 void TestScene::OnShutdown() noexcept

@@ -1,5 +1,6 @@
 #pragma once
 #include "IScene.h"
+#include "GameObject.h"
 
 class TestScene : public IScene
 {
@@ -17,6 +18,4 @@ public:
   void OnUpdate(float dt) noexcept;
   void OnShutdown() noexcept;
   void OnUnload() noexcept;
-
-private:
-};
+  };

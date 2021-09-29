@@ -10,7 +10,6 @@
 #include "GLEW/glew.h"
 #include "MeshRenderer.h"
 #include "Camera.h"
-#include "CubeMesh.h"
 #include "Transform.h"
 
 MeshRenderer::MeshRenderer(bool depthBufferEnabled, bool backFaceCullEnabled) noexcept :
@@ -18,8 +17,7 @@ MeshRenderer::MeshRenderer(bool depthBufferEnabled, bool backFaceCullEnabled) no
   m_ShaderManager(),
   m_ContextManager(),
   m_CameraManager(),
-  camera(m_CameraManager.GetDefaultCamera()),
-  meshID(numeric_limits<unsigned>::max())
+  camera(m_CameraManager.GetDefaultCamera())
 {
   depthBufferEnabled ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
   backFaceCullEnabled ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
@@ -35,9 +33,6 @@ MeshRenderer::~MeshRenderer()
 
 void MeshRenderer::Init() noexcept
 {
-  // Load a default mesh
-  meshID = m_MeshManager.LoadPrimitive(Mesh::Primitive::CUBE);
-
   // Load a default context
   m_ShaderManager.Init();
   unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::BASIC);
@@ -50,25 +45,38 @@ void MeshRenderer::Init() noexcept
   //TODO: This should shift the program to BindActiveCamera()
   camera.EnableCamera(program);
 
-  //TODO:
-  transform = make_unique<Transform>();
-  transform->Init(program);
-
   Log::Trace("MeshRenderer initialized.");
 }
 
-void MeshRenderer::RenderFrame() noexcept
+void MeshRenderer::RenderGameObjects(vector<GameObject>& gameObjects) noexcept
 {
   // Clear the back buffer and depth buffer
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   m_CameraManager.BindActiveCamera();
   
-  m_MeshManager.RenderMesh(meshID);
+  // Render our list of game objects
+  for (GameObject& go : gameObjects)
+  {
+    // Skip disabled game objects
+    if (!go.IsActive())
+    {
+      continue;
+    }
 
-  //TODO:
-  transform->RotateY(0.5f);
-  transform->Bind();
+    //TODO: batch rendering
+
+    if (go.m_bIsDirty)
+    {
+      // Unknown Mesh ID, check for new id with file name
+      if (go.m_MeshID == MeshManager::MESH_INDEX_ERROR)
+      {
+        go.m_MeshID = m_MeshManager.LoadMeshFromOBJ(go.GetMeshFileName());
+        assert(go.m_MeshID != MeshManager::MESH_INDEX_ERROR);
+      }
+    }
+    m_MeshManager.RenderMesh(go.m_MeshID);
+  }
 
   glBindVertexArray(0u);
 }

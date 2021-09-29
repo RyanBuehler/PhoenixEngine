@@ -12,9 +12,6 @@
 #include <glm/ext/scalar_constants.hpp> // glm::pi
 #include "Transform.h"
 
-using glm::vec3;
-using glm::mat4;
-
 Camera::Camera(const string& name) noexcept :
   m_ViewData(),
   m_Position({ 0.f, 0.f, 3.f }),
@@ -108,12 +105,12 @@ void Camera::ClearTarget() noexcept
   m_Target = nullptr;
 }
 
-void Camera::SetPosition(glm::vec3 position)
+void Camera::SetPosition(vec3 position)
 {
   m_Position = position;
 }
 
-void Camera::LookAt(glm::vec3 position)
+void Camera::LookAt(vec3 position)
 {
   m_Forward = glm::normalize(position - m_Position);
 }

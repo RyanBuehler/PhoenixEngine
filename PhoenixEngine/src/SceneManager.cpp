@@ -11,7 +11,7 @@
 SceneManager::SceneManager() noexcept :
   m_TransitionEnabled(true),
   m_ReloadEnabled(false),
-  m_CurrentScene(),
+  m_CurrentScenePtr(),
   m_NextScene(DEFAULTSCENE)
 {
 }
@@ -20,7 +20,7 @@ bool SceneManager::SceneIsTransitioning() noexcept
 {
   if (m_ReloadEnabled)
   {
-    assert(m_CurrentScene.get());
+    assert(m_CurrentScenePtr.get());
 
     // Reload the Scene
     reloadScene();
@@ -55,24 +55,29 @@ void SceneManager::ReloadScene() noexcept
 
 void SceneManager::OnUpdate(float dt) noexcept
 {
-  m_CurrentScene->OnUpdate(dt);
+  m_CurrentScenePtr->OnUpdate(dt);
+}
+
+vector<GameObject>& SceneManager::GetCurrentSceneGameObjects() noexcept
+{
+  return m_CurrentScenePtr->GetGameObjectArray();
 }
 
 void SceneManager::transitionScene(Scene scene) noexcept
 {
   m_TransitionEnabled = false;
 
-  if (m_CurrentScene.get() != nullptr)
+  if (m_CurrentScenePtr.get() != nullptr)
   {
-    m_CurrentScene->OnShutdown();
-    m_CurrentScene->OnUnload();
+    m_CurrentScenePtr->OnShutdown();
+    m_CurrentScenePtr->OnUnload();
   }
 
   switch (scene)
   {
   case SceneManager::Scene::TestScene:
-    m_CurrentScene.release();
-    m_CurrentScene = make_unique<TestScene>();
+    m_CurrentScenePtr.release();
+    m_CurrentScenePtr = make_unique<TestScene>();
     break;
   case SceneManager::Scene::SceneCount:
   default:
@@ -80,13 +85,13 @@ void SceneManager::transitionScene(Scene scene) noexcept
     return;
   }
 
-  m_CurrentScene->OnLoad();
-  m_CurrentScene->OnInit();
+  m_CurrentScenePtr->OnLoad();
+  m_CurrentScenePtr->OnInit();
 }
 
 void SceneManager::reloadScene() noexcept
 {
   m_ReloadEnabled = false;
-  m_CurrentScene->OnShutdown();
-  m_CurrentScene->OnInit();
+  m_CurrentScenePtr->OnShutdown();
+  m_CurrentScenePtr->OnInit();
 }

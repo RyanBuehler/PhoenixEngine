@@ -5,15 +5,23 @@
 // Desc:    Class definitions for MeshManager class
 //------------------------------------------------------------------------------
 #pragma once
-#include "IMesh.h"
+#include "Mesh.h"
+#include "GLEW/glew.h"
 
 class MeshManager
 {
-private:
-  static constexpr unsigned TRIANGLE = 0;
-  static constexpr unsigned CUBE = 1;
+public:
+  static constexpr unsigned MESH_INDEX_ERROR = numeric_limits<unsigned>::max();
 
-  static constexpr unsigned INDEX_ERROR = numeric_limits<unsigned>::max();
+private:
+  struct MeshData
+  {
+    Mesh Mesh;
+    string FileName;
+    GLuint VertexArrayID;
+    GLuint TriangleArrayID;
+  };
+
 public:
   MeshManager() noexcept;
   ~MeshManager() = default;
@@ -22,15 +30,12 @@ public:
   MeshManager(MeshManager&&) = delete;
   MeshManager& operator=(MeshManager&&) = delete;
 
-  unsigned LoadPrimitive(Mesh::Primitive primitive) noexcept;
-  unsigned LoadCustomMesh() noexcept;
+  unsigned LoadMeshFromOBJ(const string& fileName) noexcept;
 
   void UnloadMeshes() noexcept;
 
   void RenderMesh(unsigned id) const noexcept;
 
 private:
-  vector<unique_ptr<Mesh::IMesh>> m_MeshArray;
-
-  array<unsigned, 2> m_PrimitiveIDs;
+  vector<MeshData> m_MeshArray;
 };

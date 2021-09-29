@@ -7,24 +7,53 @@
 #pragma once
 #include "Transform.h"
 
-class IMesh;
-
 class GameObject
 {
 public:
 
-  GameObject() noexcept;
+  GameObject(const string& meshFileName = "cube.obj") noexcept;
   ~GameObject() = default;
-  GameObject(const GameObject&) = delete;
-  GameObject& operator=(const GameObject&) = delete;
-  GameObject(GameObject&&) = delete;
-  GameObject& operator=(GameObject&&) = delete;
+  GameObject(const GameObject&) noexcept;
+  GameObject& operator=(const GameObject&) noexcept;
+  GameObject(GameObject&&) noexcept;
+  GameObject& operator=(GameObject&&) noexcept;
 
+  void SetTransform(const Transform& transform);
   const Transform& GetTransform() const noexcept;
-  const IMesh& GetMesh() const noexcept;
+
+  inline void SetMeshFileName(const string& fileName) noexcept { m_MeshFileName = fileName; }
+  inline const string& GetMeshFileName() const noexcept { return m_MeshFileName; }
+
+  inline void SetIsActive(bool isActive) noexcept { m_bIsActive = isActive; }
+  inline bool IsActive() const noexcept { return m_bIsActive; }
+
+#pragma region Transform Interface
+
+  inline void Translate(const vec3& translation) { m_Transform.Translate(translation); }
+  inline void RotateX(float degrees) { m_Transform.RotateX(degrees); }
+  inline void RotateY(float degrees) { m_Transform.RotateY(degrees); }
+  inline void RotateZ(float degrees) { m_Transform.RotateZ(degrees); }
+  inline void ScaleBy(float factor) { m_Transform.ScaleBy(factor); }
+
+  inline void SetPosition(const vec3& pos) noexcept { m_Transform.SetPosition(pos); }
+  inline void SetRotation(const vec3& rot) noexcept { m_Transform.SetRotation(rot); }
+  inline void SetScale(const vec3& sca) noexcept { m_Transform.SetScale(sca); }
+
+  inline const vec3& GetPosition() const noexcept { return m_Transform.GetPosition(); }
+  inline const vec3& GetRotation() const noexcept { return m_Transform.GetRotation(); }
+  inline const vec3& GetScale() const noexcept { return m_Transform.GetScale(); }
+
+  inline const mat4& GetMatrix() noexcept { return m_Transform.GetMatrix(); }
+
+#pragma endregion
 
 private:
-  Transform m_Transform;
+  friend class MeshRenderer;
 
-  unique_ptr<IMesh> m_MeshPtr;
+  Transform m_Transform;
+  unsigned m_MeshID;
+  string m_MeshFileName;
+
+  bool m_bIsActive;
+  bool m_bIsDirty;
 };

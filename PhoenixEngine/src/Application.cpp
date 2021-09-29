@@ -4,16 +4,16 @@
 #include "Window.h"
 
 Application::Application() noexcept :
-  m_Window(make_unique<Window>())
+  m_WindowPtr(make_unique<Window>())
 {}
 
 void Application::Run()
 {
-  while (!m_Window->WindowShouldClose())
+  while (!m_WindowPtr->WindowShouldClose())
   {
-    m_Window->OnUpdate();
+    m_WindowPtr->OnUpdate();
   }
 
-  m_Window->OnClose();
+  m_WindowPtr->OnClose();
   Log::Trace("Application terminated.");
 }

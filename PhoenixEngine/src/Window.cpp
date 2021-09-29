@@ -91,7 +91,7 @@ void Window::OnUpdate() noexcept
   m_SceneManager.OnUpdate(delta);
 
   // Update the Renderer
-  m_MeshRenderer.RenderFrame();
+  m_MeshRenderer.RenderGameObjects(m_SceneManager.GetCurrentSceneGameObjects());
 
   // Swap the back/front buffers
   glfwSwapBuffers(m_pWindow);
