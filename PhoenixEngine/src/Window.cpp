@@ -9,9 +9,10 @@ Window::Window(const WindowProperties& properties) :
   m_WindowProperties(properties),
   m_SceneManager(),
   m_MeshRenderer(),
-  m_LastFrameTime(std::chrono::high_resolution_clock::now()),
+  m_LastFrameTime(std::chrono::steady_clock::now()),
   m_Clock()
 {
+  // Close the window if it is already open
   if (m_pWindow)
     glfwTerminate();
 
@@ -73,8 +74,8 @@ void Window::OnUpdate() noexcept
 {
   // Calculate delta time
   float delta = static_cast<float>(
-    std::chrono::duration_cast<std::chrono::milliseconds>(
-      std::chrono::steady_clock::now() - m_LastFrameTime).count() / 1000.f
+    std::chrono::duration_cast<std::chrono::microseconds>(
+      std::chrono::steady_clock::now() - m_LastFrameTime).count() / 1000000.f
     );
   m_LastFrameTime = std::chrono::steady_clock::now();
 
@@ -101,11 +102,13 @@ void Window::OnUpdate() noexcept
 
 void Window::OnClose() noexcept
 {
+  // Close the window
   glfwTerminate();
 }
 
 bool Window::WindowShouldClose() noexcept
 {
+  // Check if the window should be closed
   return glfwWindowShouldClose(m_pWindow);
 }
 
