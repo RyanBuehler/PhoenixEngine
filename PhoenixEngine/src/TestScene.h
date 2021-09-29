@@ -19,5 +19,4 @@ public:
   void OnUnload() noexcept;
 
 private:
-
 };
