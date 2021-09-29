@@ -1,49 +1,44 @@
 #pragma once
-#include <glm/vec3.hpp> // glm::vec3
-#include <glm/mat4x4.hpp> // glm::mat4
-//TODO:
-#include "IBindable.h"
 #include "GLEW/glew.h"
+#include "GraphicsCommon.h"
 
-class Transform : public IBindable
+class Transform
 {
 public:
 
   Transform() noexcept;
   ~Transform() = default;
-  Transform(const Transform&) = delete;
-  Transform& operator=(const Transform&) = delete;
+  Transform(const Transform&);
+  Transform& operator=(const Transform&);
   Transform(Transform&&) = delete;
   Transform& operator=(Transform&&) = delete;
 
-  void Init(GLuint program) noexcept;
+  //void Init(GLuint program) noexcept;
 
-  void Bind() noexcept;
+  //void Bind() noexcept;
 
-  void Translate(const glm::vec3& translation);
+  void Translate(const vec3& translation);
   void RotateX(float degrees);
   void RotateY(float degrees);
   void RotateZ(float degrees);
   void ScaleBy(float factor);
 
-  void SetPosition(const glm::vec3& pos) noexcept;
-  void SetRotation(const glm::vec3& rot) noexcept;
-  void SetScale(const glm::vec3& sca) noexcept;
+  void SetPosition(const vec3& pos) noexcept;
+  void SetRotation(const vec3& rot) noexcept;
+  void SetScale(const vec3& sca) noexcept;
 
-  const glm::vec3& GetPosition() const noexcept;
-  const glm::vec3& GetRotation() const noexcept;
-  const glm::vec3& GetScale() const noexcept;
+  const vec3& GetPosition() const noexcept;
+  const vec3& GetRotation() const noexcept;
+  const vec3& GetScale() const noexcept;
 
-  const glm::mat4& GetMatrix() noexcept;
+  const mat4& GetMatrix() noexcept;
 
 private:
-  glm::vec3 m_Position;
-  glm::vec3 m_Rotation;
-  glm::vec3 m_Scale;
+  vec3 m_Position;
+  vec3 m_Rotation;
+  vec3 m_Scale;
 
-  glm::mat4 m_Matrix;
+  mat4 m_Matrix;
 
   bool m_bIsDirty;
-
-  GLint m_ModelAttributeID;
 };

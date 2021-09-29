@@ -25,17 +25,8 @@
     <Filter Include="Source Files\Graphics">
       <UniqueIdentifier>{f8b888dd-faa0-41ae-b50b-574c6e3c5727}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Graphics\Interfaces">
-      <UniqueIdentifier>{0c55513b-57f5-43bb-8f8d-4a592f82c43d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Utility">
       <UniqueIdentifier>{7173d10a-4149-4791-85a1-4bec9e6000cc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Graphics\Mesh">
-      <UniqueIdentifier>{6079332b-f88e-4103-b83c-8d52b373f988}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Graphics\Mesh">
-      <UniqueIdentifier>{9829bd21-046d-4e87-a038-a8ee7f461a26}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Graphics\Shaders">
       <UniqueIdentifier>{0cbf0635-826e-4f79-837c-0e54a4ea5b0c}</UniqueIdentifier>
@@ -43,17 +34,17 @@
     <Filter Include="Source Files\Graphics\Shaders\GLSL">
       <UniqueIdentifier>{7900e99a-c260-40a3-9458-1c8021b15f7e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Graphics\Contexts">
-      <UniqueIdentifier>{79c31952-225f-45e9-be2a-c746b41ebea3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Graphics\Contexts">
-      <UniqueIdentifier>{2d0d644c-552c-4a7d-b3a0-497166dffcf8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Object">
       <UniqueIdentifier>{03a07d57-56d6-43c7-ac51-496f685d2264}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Object">
       <UniqueIdentifier>{c1385186-ac8f-47b7-99d2-c23abed49609}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scenes">
+      <UniqueIdentifier>{52ee54a8-3730-46ee-938d-c8d7d2be0eee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scenes">
+      <UniqueIdentifier>{d7a7b18e-607f-46b3-b354-a64a9d81e1b1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -69,9 +60,6 @@
     <ClInclude Include="src\GraphicsCommon.h">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\IBindable.h">
-      <Filter>Header Files\Graphics\Interfaces</Filter>
-    </ClInclude>
     <ClInclude Include="src\Utility.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
@@ -81,26 +69,11 @@
     <ClInclude Include="src\MeshRenderer.h">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\IMesh.h">
-      <Filter>Header Files\Graphics\Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="src\INormalMesh.h">
-      <Filter>Header Files\Graphics\Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ITextureMesh.h">
-      <Filter>Header Files\Graphics\Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="src\TriangleMesh.h">
-      <Filter>Header Files\Graphics\Mesh</Filter>
-    </ClInclude>
     <ClInclude Include="src\ShaderManager.h">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="src\ContextManager.h">
       <Filter>Header Files\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="src\CubeMesh.h">
-      <Filter>Header Files\Graphics\Mesh</Filter>
     </ClInclude>
     <ClInclude Include="src\Camera.h">
       <Filter>Header Files\Graphics</Filter>
@@ -111,8 +84,26 @@
     <ClInclude Include="src\MeshManager.h">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="src\IScene.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TestScene.h">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SceneManager.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
     <ClInclude Include="src\CameraManager.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameObject.h">
+      <Filter>Header Files\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mesh.h">
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\OBJReader.h">
+      <Filter>Header Files\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -125,17 +116,11 @@
     <ClCompile Include="src\MeshRenderer.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\TriangleMesh.cpp">
-      <Filter>Source Files\Graphics\Mesh</Filter>
-    </ClCompile>
     <ClCompile Include="src\ShaderManager.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="src\ContextManager.cpp">
       <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="src\CubeMesh.cpp">
-      <Filter>Source Files\Graphics\Mesh</Filter>
     </ClCompile>
     <ClCompile Include="src\Camera.cpp">
       <Filter>Source Files\Graphics</Filter>
@@ -146,8 +131,23 @@
     <ClCompile Include="src\MeshManager.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="src\TestScene.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SceneManager.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mesh.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
     <ClCompile Include="src\CameraManager.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameObject.cpp">
+      <Filter>Source Files\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="src\OBJReader.cpp">
+      <Filter>Source Files\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

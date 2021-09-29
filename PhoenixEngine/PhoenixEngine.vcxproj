@@ -26,32 +26,35 @@
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\CameraManager.cpp" />
     <ClCompile Include="src\ContextManager.cpp" />
-    <ClCompile Include="src\CubeMesh.cpp" />
+    <ClCompile Include="src\GameObject.cpp" />
+    <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\MeshManager.cpp" />
     <ClCompile Include="src\MeshRenderer.cpp" />
+    <ClCompile Include="src\OBJReader.cpp" />
+    <ClCompile Include="src\SceneManager.cpp" />
+    <ClCompile Include="src\TestScene.cpp" />
     <ClCompile Include="src\ShaderManager.cpp" />
     <ClCompile Include="src\Transform.cpp" />
-    <ClCompile Include="src\TriangleMesh.cpp" />
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\GameObject.h" />
+    <ClInclude Include="src\IScene.h" />
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\CameraManager.h" />
     <ClInclude Include="src\ContextManager.h" />
-    <ClInclude Include="src\CubeMesh.h" />
     <ClInclude Include="src\GraphicsCommon.h" />
-    <ClInclude Include="src\IBindable.h" />
-    <ClInclude Include="src\IMesh.h" />
-    <ClInclude Include="src\ITextureMesh.h" />
+    <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\MeshManager.h" />
     <ClInclude Include="src\MeshRenderer.h" />
-    <ClInclude Include="src\INormalMesh.h" />
     <ClInclude Include="src\Logger.h" />
+    <ClInclude Include="src\OBJReader.h" />
     <ClInclude Include="src\Paths.h" />
+    <ClInclude Include="src\SceneManager.h" />
+    <ClInclude Include="src\TestScene.h" />
     <ClInclude Include="src\ShaderManager.h" />
     <ClInclude Include="src\Transform.h" />
-    <ClInclude Include="src\TriangleMesh.h" />
     <ClInclude Include="src\Utility.h" />
     <ClInclude Include="src\Window.h" />
   </ItemGroup>

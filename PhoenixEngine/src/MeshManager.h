@@ -5,32 +5,52 @@
 // Desc:    Class definitions for MeshManager class
 //------------------------------------------------------------------------------
 #pragma once
-#include "IMesh.h"
+#include "Mesh.h"
+#include "GLEW/glew.h"
+#include "OBJReader.h"
 
 class MeshManager
 {
-private:
-  static constexpr unsigned TRIANGLE = 0;
-  static constexpr unsigned CUBE = 1;
+public:
+  static constexpr unsigned MESH_INDEX_ERROR = numeric_limits<unsigned>::max();
 
-  static constexpr unsigned INDEX_ERROR = numeric_limits<unsigned>::max();
+private:
+  struct MeshData
+  {
+    MeshData(const string& fileName = "Unknown",
+      GLuint positionBufferID = MESH_INDEX_ERROR,
+      GLuint triangleBufferID = MESH_INDEX_ERROR,
+      GLuint vertexArrayID = MESH_INDEX_ERROR) :
+      FileName(fileName),
+      PositionBufferID(positionBufferID),
+      TriangleBufferID(triangleBufferID),
+      VertexArrayID(vertexArrayID)
+    {}
+
+    string FileName;
+    GLuint PositionBufferID;
+    GLuint TriangleBufferID;
+    GLuint VertexArrayID;
+  };
+
 public:
   MeshManager() noexcept;
-  ~MeshManager() = default;
+  ~MeshManager();
   MeshManager(const MeshManager&) = delete;
   MeshManager& operator=(const MeshManager&) = delete;
   MeshManager(MeshManager&&) = delete;
   MeshManager& operator=(MeshManager&&) = delete;
 
-  unsigned LoadPrimitive(Mesh::Primitive primitive) noexcept;
-  unsigned LoadCustomMesh() noexcept;
+  unsigned LoadMesh(const string& fileName) noexcept;
 
   void UnloadMeshes() noexcept;
 
   void RenderMesh(unsigned id) const noexcept;
 
 private:
-  vector<unique_ptr<Mesh::IMesh>> m_MeshArray;
+  vector<Mesh> m_MeshArray;
+  vector<MeshData> m_MeshDataArray;
+  OBJReader m_OBJReader;
 
-  array<unsigned, 2> m_PrimitiveIDs;
+  unsigned LoadMeshFromOBJ(const string& fileName) noexcept;
 };

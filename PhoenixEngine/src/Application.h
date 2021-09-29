@@ -17,7 +17,7 @@ public:
 
 private:
   // Dynamic allocated block
-  unique_ptr<Window> m_Window;
+  unique_ptr<Window> m_WindowPtr;
 };
 
 int main()

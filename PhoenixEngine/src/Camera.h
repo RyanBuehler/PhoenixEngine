@@ -5,15 +5,13 @@
 // Desc:    Camera class declarations
 //------------------------------------------------------------------------------
 #pragma once
-#include "IBindable.h"
-#include <glm/vec3.hpp> // glm::vec3
-#include <glm/mat4x4.hpp> // glm::mat4
 #include "GLEW/glew.h"
+#include "GraphicsCommon.h"
 
 // Forward Declarations
 class Transform;
 
-class Camera : public IBindable
+class Camera
 {
 public:
   struct ViewData
@@ -52,8 +50,8 @@ public:
   void SetTarget(Transform* target) noexcept;
   void ClearTarget() noexcept;
 
-  void SetPosition(glm::vec3 position);
-  void LookAt(glm::vec3 position);
+  void SetPosition(vec3 position);
+  void LookAt(vec3 position);
 
   const string& GetName() const noexcept;
 
@@ -62,13 +60,13 @@ private:
   ViewData m_ViewData;
 
   // Camera world data
-  glm::vec3 m_Position;
-  glm::vec3 m_Forward;
-  glm::vec3 m_Up;
+  vec3 m_Position;
+  vec3 m_Forward;
+  vec3 m_Up;
 
   // Matrices
-  glm::mat4 m_PersMatrix;
-  glm::mat4 m_ViewMatrix;
+  mat4 m_PersMatrix;
+  mat4 m_ViewMatrix;
 
   bool m_IsEnabled;
   bool m_bProjectionIsDirty;

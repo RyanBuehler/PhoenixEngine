@@ -2,27 +2,43 @@
 #include "Transform.h"
 #include <glm/ext/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale
 
-using glm::vec3;
-using glm::mat4;
-
 Transform::Transform() noexcept :
   m_Position(0.f),
   m_Rotation(0.f),
   m_Scale(0.25f),
   m_Matrix(1.f),
-  m_bIsDirty(true),
-  m_ModelAttributeID(-1)
+  m_bIsDirty(true)
 {}
 
-void Transform::Init(GLuint program) noexcept
+Transform::Transform(const Transform& other) :
+  m_Position(other.m_Position),
+  m_Rotation(other.m_Rotation),
+  m_Scale(other.m_Scale),
+  m_Matrix(other.m_Matrix),
+  m_bIsDirty(true)
 {
-  m_ModelAttributeID = glGetUniformLocation(program, "model_matrix");
+  *this = other;
 }
 
-void Transform::Bind() noexcept
+Transform& Transform::operator=(const Transform& other)
 {
-  glUniformMatrix4fv(m_ModelAttributeID, 1, false, &GetMatrix()[0][0]);
+  m_Position = other.m_Position;
+  m_Rotation = other.m_Rotation;
+  m_Scale = other.m_Scale;
+  m_Matrix = other.m_Matrix;
+  m_bIsDirty = true;
+  return *this;
 }
+
+//void Transform::Init(GLuint program) noexcept
+//{
+//  m_ModelAttributeID = glGetUniformLocation(program, "model_matrix");
+//}
+//
+//void Transform::Bind() noexcept
+//{
+//  glUniformMatrix4fv(m_ModelAttributeID, 1, false, &GetMatrix()[0][0]);
+//}
 
 void Transform::Translate(const vec3& translation)
 {
