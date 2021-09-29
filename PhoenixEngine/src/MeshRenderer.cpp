@@ -17,7 +17,8 @@ MeshRenderer::MeshRenderer(bool depthBufferEnabled, bool backFaceCullEnabled) no
   m_ShaderManager(),
   m_ContextManager(),
   m_CameraManager(),
-  camera(m_CameraManager.GetDefaultCamera())
+  camera(m_CameraManager.GetDefaultCamera()),
+  m_ModelAttributeID(numeric_limits<GLuint>::max())
 {
   depthBufferEnabled ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
   backFaceCullEnabled ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
@@ -45,6 +46,8 @@ void MeshRenderer::Init() noexcept
   //TODO: This should shift the program to BindActiveCamera()
   camera.EnableCamera(program);
 
+  m_ModelAttributeID = glGetUniformLocation(program, "model_matrix");
+
   Log::Trace("MeshRenderer initialized.");
 }
 
@@ -64,17 +67,24 @@ void MeshRenderer::RenderGameObjects(vector<GameObject>& gameObjects) noexcept
       continue;
     }
 
-    //TODO: batch rendering
+    //TODO: batch rendering by mesh
 
     if (go.m_bIsDirty)
     {
       // Unknown Mesh ID, check for new id with file name
       if (go.m_MeshID == MeshManager::MESH_INDEX_ERROR)
       {
-        go.m_MeshID = m_MeshManager.LoadMeshFromOBJ(go.GetMeshFileName());
-        assert(go.m_MeshID != MeshManager::MESH_INDEX_ERROR);
+        go.m_MeshID = m_MeshManager.LoadMesh(go.GetMeshFileName());
+        if (go.m_MeshID == MeshManager::MESH_INDEX_ERROR)
+        {
+          Log::Error("Could not load mesh: " + go.GetMeshFileName());
+          continue;
+        }
       }
     }
+
+    // Bind the transform
+    glUniformMatrix4fv(m_ModelAttributeID, 1, false, &go.GetMatrix()[0][0]);
     m_MeshManager.RenderMesh(go.m_MeshID);
   }
 

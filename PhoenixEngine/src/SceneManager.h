@@ -50,6 +50,11 @@ public:
   /// <returns></returns>
   void ReloadScene() noexcept;
   /// <summary>
+  /// Shuts the SceneManager down
+  /// </summary>
+  /// <returns></returns>
+  void Shutdown() noexcept;
+  /// <summary>
   /// Called every game loop cycle
   /// </summary>
   void OnUpdate(float dt) noexcept;

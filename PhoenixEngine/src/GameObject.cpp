@@ -5,8 +5,8 @@ GameObject::GameObject(const string& meshFileName) noexcept :
   m_Transform(),
   m_MeshID(numeric_limits<unsigned>::max()),
   m_MeshFileName(meshFileName),
-  m_bIsActive(),
-  m_bIsDirty()
+  m_bIsActive(true),
+  m_bIsDirty(true)
 {
   Log::Trace("GameObject constructor");
 }

@@ -34,17 +34,22 @@
       bool isStatic = true) noexcept;
     virtual ~Mesh() = default;
 
-    Mesh(const Mesh&) = delete;
-    Mesh& operator=(const Mesh&) = delete;
-    Mesh(Mesh&&) = delete;
-    Mesh& operator=(Mesh&&) = delete;
+    //Mesh(const Mesh&) = delete;
+    //Mesh& operator=(const Mesh&) = delete;
+    //Mesh(Mesh&&) = delete;
+    //Mesh& operator=(Mesh&&) = delete;
 
     unsigned GetVertexCount() const noexcept;
-    unsigned GetEdgeCount() const noexcept;
+    //unsigned GetEdgeCount() const noexcept;
     unsigned GetTriangleCount() const noexcept;
 
     void AddVertex(vec3 vertex) noexcept;
     void AddVertex(float x, float y, float z) noexcept;
+
+    void AddNormal(vec3 normal) noexcept;
+    void AddNormal(float x, float y, float z) noexcept;
+
+    void AddTriangle(unsigned index1, unsigned index2, unsigned index3) noexcept;
 
     //TODO: Do I need these?
     //const vec3* GetPositionArray() const noexcept;
@@ -65,7 +70,7 @@
     bool m_bIsStatic;
 
     vector<vec3> m_PositionArray;
-    vector<Mesh::Edge> m_EdgeArray;
+    vector<vec3> m_NormalArray;
     vector<Mesh::Triangle> m_TriangleArray;
 
     bool m_bIsDirty;

@@ -45,4 +45,6 @@ private:
 
   //TODO:
   Camera& camera;
+
+  GLuint m_ModelAttributeID;
 };

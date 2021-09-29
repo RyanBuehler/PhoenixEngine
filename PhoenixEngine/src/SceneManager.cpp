@@ -53,6 +53,12 @@ void SceneManager::ReloadScene() noexcept
   m_ReloadEnabled = true;
 }
 
+void SceneManager::Shutdown() noexcept
+{
+  m_CurrentScenePtr->OnShutdown();
+  m_CurrentScenePtr->OnUnload();
+}
+
 void SceneManager::OnUpdate(float dt) noexcept
 {
   m_CurrentScenePtr->OnUpdate(dt);

@@ -102,6 +102,8 @@ void Window::OnUpdate() noexcept
 
 void Window::OnClose() noexcept
 {
+  // Shut down the scenes
+  m_SceneManager.Shutdown();
   // Close the window
   glfwTerminate();
 }

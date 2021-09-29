@@ -30,6 +30,7 @@
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\MeshManager.cpp" />
     <ClCompile Include="src\MeshRenderer.cpp" />
+    <ClCompile Include="src\OBJReader.cpp" />
     <ClCompile Include="src\SceneManager.cpp" />
     <ClCompile Include="src\TestScene.cpp" />
     <ClCompile Include="src\ShaderManager.cpp" />
@@ -48,6 +49,7 @@
     <ClInclude Include="src\MeshManager.h" />
     <ClInclude Include="src\MeshRenderer.h" />
     <ClInclude Include="src\Logger.h" />
+    <ClInclude Include="src\OBJReader.h" />
     <ClInclude Include="src\Paths.h" />
     <ClInclude Include="src\SceneManager.h" />
     <ClInclude Include="src\TestScene.h" />

@@ -7,6 +7,7 @@
 #pragma once
 #include "Mesh.h"
 #include "GLEW/glew.h"
+#include "OBJReader.h"
 
 class MeshManager
 {
@@ -16,26 +17,40 @@ public:
 private:
   struct MeshData
   {
-    Mesh Mesh;
+    MeshData(const string& fileName = "Unknown",
+      GLuint positionBufferID = MESH_INDEX_ERROR,
+      GLuint triangleBufferID = MESH_INDEX_ERROR,
+      GLuint vertexArrayID = MESH_INDEX_ERROR) :
+      FileName(fileName),
+      PositionBufferID(positionBufferID),
+      TriangleBufferID(triangleBufferID),
+      VertexArrayID(vertexArrayID)
+    {}
+
     string FileName;
+    GLuint PositionBufferID;
+    GLuint TriangleBufferID;
     GLuint VertexArrayID;
-    GLuint TriangleArrayID;
   };
 
 public:
   MeshManager() noexcept;
-  ~MeshManager() = default;
+  ~MeshManager();
   MeshManager(const MeshManager&) = delete;
   MeshManager& operator=(const MeshManager&) = delete;
   MeshManager(MeshManager&&) = delete;
   MeshManager& operator=(MeshManager&&) = delete;
 
-  unsigned LoadMeshFromOBJ(const string& fileName) noexcept;
+  unsigned LoadMesh(const string& fileName) noexcept;
 
   void UnloadMeshes() noexcept;
 
   void RenderMesh(unsigned id) const noexcept;
 
 private:
-  vector<MeshData> m_MeshArray;
+  vector<Mesh> m_MeshArray;
+  vector<MeshData> m_MeshDataArray;
+  OBJReader m_OBJReader;
+
+  unsigned LoadMeshFromOBJ(const string& fileName) noexcept;
 };

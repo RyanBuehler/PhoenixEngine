@@ -11,8 +11,7 @@ TestScene::TestScene() noexcept :
 void TestScene::OnLoad() noexcept
 {
   Log::Trace("Test Scene Loaded");
-  GameObject go;
-  m_GameObjectArray.push_back(go);
+  m_GameObjectArray.emplace_back("bunny.obj");
 }
 
 void TestScene::OnInit() noexcept
