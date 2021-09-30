@@ -7,13 +7,20 @@
 #pragma once
 #include <string>
 #include "GameObject.h"
+#include "CameraManager.h"
+#include "GLFW/glfw3.h"
 
 class IScene
 {
 public:
 
   IScene(const string& sceneName) noexcept :
-    m_SceneName(sceneName) {};
+    m_CameraManager(),
+    m_SceneName(sceneName)
+  {
+    m_CameraManager.GetDefaultCamera().EnableCamera();
+  };
+
   virtual ~IScene() = default;
   IScene(const IScene&) = delete;
   IScene& operator=(const IScene&) = delete;
@@ -26,11 +33,15 @@ public:
   virtual void OnShutdown() noexcept = 0;
   virtual void OnUnload() noexcept = 0;
 
+  virtual void OnPollInput(GLFWwindow* windowPtr) noexcept = 0;
+
   vector<GameObject>& GetGameObjectArray() noexcept { return m_GameObjectArray; }
   const string& GetSceneName() const noexcept { return m_SceneName; }
+  virtual Camera& GetCurrentCamera() noexcept = 0;
 
 protected:
   vector<GameObject> m_GameObjectArray;
+  CameraManager m_CameraManager;
 
 private:
   string m_SceneName;

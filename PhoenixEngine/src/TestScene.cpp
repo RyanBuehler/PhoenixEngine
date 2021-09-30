@@ -1,10 +1,18 @@
+//------------------------------------------------------------------------------
+// File:    TestScene.cpp
+// Author:  Ryan Buehler
+// Created: 09/27/21
+// Desc:    A test scene for expirementation
+//------------------------------------------------------------------------------
 #include "pch.h"
 #include "TestScene.h"
 #include "Transform.h"
 
 TestScene::TestScene() noexcept :
-  IScene("Test Scene")
+  IScene("Test Scene"),
+  m_MainCamera(m_CameraManager.GetDefaultCamera())
 {
+  m_MainCamera.SetName("Test Scene Camera");
   Log::Trace("Test Scene Created");
 }
 
@@ -33,4 +41,17 @@ void TestScene::OnShutdown() noexcept
 void TestScene::OnUnload() noexcept
 {
   Log::Trace("Test Scene Unloaded");
+}
+
+void TestScene::OnPollInput(GLFWwindow* window) noexcept
+{
+  if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+  {
+    Log::Trace("Test Scene: Key 1 pressed.");
+  }
+}
+
+Camera& TestScene::GetCurrentCamera() noexcept
+{
+  return m_MainCamera;
 }

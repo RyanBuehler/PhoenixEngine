@@ -32,6 +32,7 @@ public:
   /// </summary>
   /// <returns>The width of the Window</returns>
   inline unsigned GetWidth() const noexcept;
+
   /// <summary>
   /// Get the height of the Window
   /// </summary>
@@ -42,6 +43,7 @@ public:
   /// Called every game loop cycle
   /// </summary>
   void OnUpdate() noexcept;
+
   /// <summary>
   /// Called when the Window is shut down
   /// </summary>
@@ -63,5 +65,10 @@ private:
   std::chrono::steady_clock::time_point m_LastFrameTime;
   std::chrono::steady_clock m_Clock;
 
-  float calculateDelta() noexcept;
+  bool m_bWindowShouldClose;
+
+  /// <summary>
+  /// Window related Input Queries
+  /// </summary>
+  void OnPollInput() noexcept;
 };

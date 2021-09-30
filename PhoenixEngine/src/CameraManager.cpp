@@ -34,15 +34,9 @@ void CameraManager::SetActiveCamera(Camera& activeCamera) noexcept
   m_ActiveCamera = &activeCamera;
 }
 
-void CameraManager::BindActiveCamera() const noexcept
+Camera& CameraManager::GetActiveCamera() noexcept
 {
-  if (m_ActiveCamera == nullptr)
-  {
-    Log::Error("No active camera in scene!");
-    return;
-  }
-
-  m_ActiveCamera->Bind();
+  return *m_ActiveCamera;
 }
 
 Camera& CameraManager::GetDefaultCamera() noexcept

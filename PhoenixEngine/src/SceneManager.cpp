@@ -55,18 +55,33 @@ void SceneManager::ReloadScene() noexcept
 
 void SceneManager::Shutdown() noexcept
 {
+  assert(m_CurrentScenePtr);
   m_CurrentScenePtr->OnShutdown();
   m_CurrentScenePtr->OnUnload();
 }
 
 void SceneManager::OnUpdate(float dt) noexcept
 {
+  assert(m_CurrentScenePtr);
   m_CurrentScenePtr->OnUpdate(dt);
+}
+
+void SceneManager::OnPollInput(GLFWwindow* windowPtr) noexcept
+{
+  assert(m_CurrentScenePtr);
+  m_CurrentScenePtr->OnPollInput(windowPtr);
 }
 
 vector<GameObject>& SceneManager::GetCurrentSceneGameObjects() noexcept
 {
+  assert(m_CurrentScenePtr);
   return m_CurrentScenePtr->GetGameObjectArray();
+}
+
+Camera& SceneManager::GetCurrentSceneActiveCamera() noexcept
+{
+  assert(m_CurrentScenePtr);
+  return m_CurrentScenePtr->GetCurrentCamera();
 }
 
 void SceneManager::transitionScene(Scene scene) noexcept
@@ -91,12 +106,14 @@ void SceneManager::transitionScene(Scene scene) noexcept
     return;
   }
 
+  assert(m_CurrentScenePtr);
   m_CurrentScenePtr->OnLoad();
   m_CurrentScenePtr->OnInit();
 }
 
 void SceneManager::reloadScene() noexcept
 {
+  assert(m_CurrentScenePtr);
   m_ReloadEnabled = false;
   m_CurrentScenePtr->OnShutdown();
   m_CurrentScenePtr->OnInit();

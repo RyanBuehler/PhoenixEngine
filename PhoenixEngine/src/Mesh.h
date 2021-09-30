@@ -1,3 +1,9 @@
+//------------------------------------------------------------------------------
+// File:    Mesh.h
+// Author:  Ryan Buehler
+// Created: 09/24/21
+// Desc:    The class to handle the mesh data for rendering
+//------------------------------------------------------------------------------
 #pragma once
 #include "GraphicsCommon.h"
 
@@ -40,7 +46,6 @@
     //Mesh& operator=(Mesh&&) = delete;
 
     unsigned GetVertexCount() const noexcept;
-    //unsigned GetEdgeCount() const noexcept;
     unsigned GetTriangleCount() const noexcept;
 
     void AddVertex(vec3 vertex) noexcept;
@@ -50,11 +55,6 @@
     void AddNormal(float x, float y, float z) noexcept;
 
     void AddTriangle(unsigned index1, unsigned index2, unsigned index3) noexcept;
-
-    //TODO: Do I need these?
-    //const vec3* GetPositionArray() const noexcept;
-    //const Mesh::Edge* GetEdgeArray() const noexcept;
-    //const Mesh::Triangle* GetTriangleArray() const noexcept;
 
     inline void SetOrigin(const vec3& origin) noexcept { m_Origin = origin; }
     inline const vec3& GetOrigin() const noexcept { return m_Origin; }

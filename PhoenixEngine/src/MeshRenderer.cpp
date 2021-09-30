@@ -16,9 +16,9 @@ MeshRenderer::MeshRenderer(bool depthBufferEnabled, bool backFaceCullEnabled) no
   m_MeshManager(),
   m_ShaderManager(),
   m_ContextManager(),
-  m_CameraManager(),
-  camera(m_CameraManager.GetDefaultCamera()),
-  m_ModelAttributeID(numeric_limits<GLuint>::max())
+  m_ModelAttributeID(numeric_limits<GLuint>::max()),
+  m_PersAttributeID(numeric_limits<GLuint>::max()),
+  m_ViewAttributeID(numeric_limits<GLuint>::max())
 {
   depthBufferEnabled ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
   backFaceCullEnabled ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
@@ -42,22 +42,25 @@ void MeshRenderer::Init() noexcept
   GLint program = m_ContextManager.SwapContext(contextID);
   glUseProgram(program);
 
+  //TODO: Add this to the context manager
   // Enable the default camera with the current program
-  //TODO: This should shift the program to BindActiveCamera()
-  camera.EnableCamera(program);
-
+  m_PersAttributeID = glGetUniformLocation(program, "pers_matrix");
+  m_ViewAttributeID = glGetUniformLocation(program, "view_matrix");
   m_ModelAttributeID = glGetUniformLocation(program, "model_matrix");
 
   Log::Trace("MeshRenderer initialized.");
 }
 
-void MeshRenderer::RenderGameObjects(vector<GameObject>& gameObjects) noexcept
+void MeshRenderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& activeCamera) noexcept
 {
   // Clear the back buffer and depth buffer
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  m_CameraManager.BindActiveCamera();
-  
+  // Set View Matrix
+  glUniformMatrix4fv(m_ViewAttributeID, 1, false, &activeCamera.GetViewMatrix()[0][0]);
+  // Set Perspective Matrix
+  glUniformMatrix4fv(m_PersAttributeID, 1, false, &activeCamera.GetPersMatrix()[0][0]);
+
   // Render our list of game objects
   for (GameObject& go : gameObjects)
   {

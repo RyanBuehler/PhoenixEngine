@@ -39,9 +39,8 @@ public:
   Camera& operator=(Camera&&) = delete;
 
   void Update(float dt) noexcept;
-  void Bind() noexcept;
 
-  void EnableCamera(GLuint program) noexcept;
+  void EnableCamera() noexcept;
   void DisableCamera() noexcept;
 
   const glm::mat4& GetPersMatrix() noexcept;
@@ -53,6 +52,7 @@ public:
   void SetPosition(vec3 position);
   void LookAt(vec3 position);
 
+  void SetName(const string& name) noexcept;
   const string& GetName() const noexcept;
 
 private:
@@ -71,10 +71,6 @@ private:
   bool m_IsEnabled;
   bool m_bProjectionIsDirty;
   bool m_bViewIsDirty;
-
-  // Shader Data
-  GLint m_PersAttributeID;
-  GLint m_ViewAttributeID;
 
   // Camera Target
   Transform* m_Target;

@@ -22,8 +22,6 @@ Camera::Camera(const string& name) noexcept :
   m_IsEnabled(false),
   m_bProjectionIsDirty(true),
   m_bViewIsDirty(true),
-  m_PersAttributeID(-1),
-  m_ViewAttributeID(-1),
   m_Target(nullptr),
   m_Name(name)
 {
@@ -41,28 +39,13 @@ void Camera::Update(float dt) noexcept
     return;
 }
 
-void Camera::Bind() noexcept
+void Camera::EnableCamera() noexcept
 {
-  // Set View Matrix
-  glUniformMatrix4fv(m_ViewAttributeID, 1, false, &GetViewMatrix()[0][0]);
-}
-
-void Camera::EnableCamera(GLuint program) noexcept
-{
-  // Get GLint handles to the Uniform locations
-  m_PersAttributeID = glGetUniformLocation(program, "pers_matrix");
-  m_ViewAttributeID = glGetUniformLocation(program, "view_matrix");
-
-  // Set Perspective Matrix
-  glUniformMatrix4fv(m_PersAttributeID, 1, false, &GetPersMatrix()[0][0]);
-
   m_IsEnabled = true;
 }
 
 void Camera::DisableCamera() noexcept
 {
-  m_PersAttributeID = -1;
-  m_ViewAttributeID = -1;
   m_IsEnabled = false;
 }
 
@@ -113,6 +96,11 @@ void Camera::SetPosition(vec3 position)
 void Camera::LookAt(vec3 position)
 {
   m_Forward = glm::normalize(position - m_Position);
+}
+
+void Camera::SetName(const string& name) noexcept
+{
+  m_Name = name;
 }
 
 const string& Camera::GetName() const noexcept

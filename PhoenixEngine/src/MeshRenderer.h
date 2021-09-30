@@ -27,7 +27,7 @@ public:
 
   void Init() noexcept;
 
-  void RenderGameObjects(vector<GameObject>& gameObjects) noexcept;
+  void RenderGameObjects(vector<GameObject>& gameObjects, Camera& activeCamera) noexcept;
 
   void EnableDepthBuffer() noexcept;
   void DisableDepthBuffer() noexcept;
@@ -41,10 +41,8 @@ private:
   MeshManager m_MeshManager;
   ShaderManager m_ShaderManager;
   ContextManager m_ContextManager;
-  CameraManager m_CameraManager;
-
-  //TODO:
-  Camera& camera;
 
   GLuint m_ModelAttributeID;
+  GLuint m_PersAttributeID;
+  GLuint m_ViewAttributeID;
 };

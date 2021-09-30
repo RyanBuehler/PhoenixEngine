@@ -21,9 +21,7 @@ public:
   Camera& CreateCamera() noexcept;
 
   void SetActiveCamera(Camera& activeCamera) noexcept;
-
-  void BindActiveCamera() const noexcept;
-
+  Camera& GetActiveCamera() noexcept;
   Camera& GetDefaultCamera() noexcept;
 
 private:

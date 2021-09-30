@@ -1,3 +1,9 @@
+//------------------------------------------------------------------------------
+// File:    Mesh.cpp
+// Author:  Ryan Buehler
+// Created: 09/24/21
+// Desc:    The class to handle the mesh data for rendering
+//------------------------------------------------------------------------------
 #include "pch.h"
 #include "Mesh.h"
 
@@ -6,7 +12,6 @@ Mesh::Mesh(const vec3& origin, bool isStatic) noexcept :
   m_bIsStatic(isStatic),
   m_PositionArray(),
   m_NormalArray(),
-  //m_EdgeArray(),
   m_TriangleArray(),
   m_bIsDirty(true)
 {
@@ -17,11 +22,6 @@ unsigned Mesh::GetVertexCount() const noexcept
 {
   return static_cast<unsigned>(m_PositionArray.size());
 }
-
-//unsigned Mesh::GetEdgeCount() const noexcept
-//{
-//  return static_cast<unsigned>(m_EdgeArray.size());
-//}
 
 unsigned Mesh::GetTriangleCount() const noexcept
 {

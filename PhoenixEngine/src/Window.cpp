@@ -10,7 +10,8 @@ Window::Window(const WindowProperties& properties) :
   m_SceneManager(),
   m_MeshRenderer(),
   m_LastFrameTime(std::chrono::steady_clock::now()),
-  m_Clock()
+  m_Clock(),
+  m_bWindowShouldClose(false)
 {
   // Close the window if it is already open
   if (m_pWindow)
@@ -87,17 +88,25 @@ void Window::OnUpdate() noexcept
     return;
   }
 
+  // Poll for input events
+  glfwPollEvents();
+
+  // Check Window related input
+  OnPollInput();
+
+  // Check input per scene
+  m_SceneManager.OnPollInput(m_pWindow);
+
   // Update the Scene this cycle
   m_SceneManager.OnUpdate(delta);
 
   // Update the Renderer
-  m_MeshRenderer.RenderGameObjects(m_SceneManager.GetCurrentSceneGameObjects());
+  m_MeshRenderer.RenderGameObjects(
+    m_SceneManager.GetCurrentSceneGameObjects(),
+    m_SceneManager.GetCurrentSceneActiveCamera());
 
   // Swap the back/front buffers
   glfwSwapBuffers(m_pWindow);
-
-  // Poll for events
-  glfwPollEvents();
 }
 
 void Window::OnClose() noexcept
@@ -108,13 +117,17 @@ void Window::OnClose() noexcept
   glfwTerminate();
 }
 
+void Window::OnPollInput() noexcept
+{
+  if (glfwGetKey(m_pWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+  {
+    Log::Trace("Esc key pressed. Shutting down.");
+    m_bWindowShouldClose = true;
+  }
+}
+
 bool Window::WindowShouldClose() noexcept
 {
   // Check if the window should be closed
-  return glfwWindowShouldClose(m_pWindow);
-}
-
-float Window::calculateDelta() noexcept
-{
-  return 0.0f;
+  return m_bWindowShouldClose || glfwWindowShouldClose(m_pWindow);
 }

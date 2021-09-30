@@ -7,6 +7,7 @@
 #pragma once
 #include "IScene.h"
 #include "GameObject.h"
+#include "Camera.h"
 
 class SceneManager
 {
@@ -58,12 +59,17 @@ public:
   /// Called every game loop cycle
   /// </summary>
   void OnUpdate(float dt) noexcept;
+  /// <summary>
+  /// Called after polling for input
+  /// </summary>
+  void OnPollInput(GLFWwindow* windowPtr) noexcept;
 
   /// <summary>
   /// Retrieves a vector of the current scene's game objects
   /// </summary>
   /// <returns>A vector reference of the current scene's game objects</returns>
   vector<GameObject>& GetCurrentSceneGameObjects() noexcept;
+  Camera& GetCurrentSceneActiveCamera() noexcept;
 
 private:
   bool m_TransitionEnabled;
