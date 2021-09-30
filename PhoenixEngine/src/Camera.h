@@ -38,21 +38,66 @@ public:
   Camera(Camera&&) = delete;
   Camera& operator=(Camera&&) = delete;
 
-  void Update(float dt) noexcept;
-
-  void EnableCamera() noexcept;
-  void DisableCamera() noexcept;
-
+  /// <summary>
+  /// Gets the Perspective Transform Matrix
+  /// </summary>
+  /// <returns>4x4 Matrix of the Perspective Transform Matrix</returns>
   const glm::mat4& GetPersMatrix() noexcept;
+
+  /// <summary>
+  /// Gets the View Transform Matrix
+  /// </summary>
+  /// <returns>4x4 Matrix of the View Transform Matrix</returns>
   const glm::mat4& GetViewMatrix() noexcept;
 
-  void SetTarget(Transform* target) noexcept;
+  /// <summary>
+  /// Sets the "LookAt" target for the camera
+  /// </summary>
+  /// <param name="target">The transform ptr of the target to watch.</param>
+  void SetTarget(const Transform* target) noexcept;
+
+  /// <summary>
+  /// Clears the "LookAt" target
+  /// </summary>
   void ClearTarget() noexcept;
 
+  /// <summary>
+  /// Sets the Camera's position
+  /// </summary>
+  /// <param name="position">Vec3 World Position</param>
   void SetPosition(vec3 position);
+
+  void MoveForward(float distance) noexcept;
+  void MoveBackward(float distance) noexcept;
+  void MoveRight(float distance) noexcept;
+  void MoveLeft(float distance) noexcept;
+  void MoveUp(float distance) noexcept;
+  void MoveDown(float distance) noexcept;
+
+  void SetYaw(float degrees);
+  void SetPitch(float degrees);
+  void SetRoll(float degrees);
+
+  vec3 GetPosition() const noexcept;
+  vec3 GetForwardVector() const noexcept;
+  vec3 GetUpVector() const noexcept;
+
+  /// <summary>
+  /// Makes the Camera look at a target position
+  /// </summary>
+  /// <param name="position">Vec3 World Position</param>
   void LookAt(vec3 position);
 
+  /// <summary>
+  /// Sets the Camera's name
+  /// </summary>
+  /// <param name="name">The new name for the Camera</param>
   void SetName(const string& name) noexcept;
+
+  /// <summary>
+  /// Gets the Camera's current name
+  /// </summary>
+  /// <returns>The Camera's current name</returns>
   const string& GetName() const noexcept;
 
 private:
@@ -73,7 +118,7 @@ private:
   bool m_bViewIsDirty;
 
   // Camera Target
-  Transform* m_Target;
+  const Transform* m_Target;
 
   // Camera Name
   string m_Name;

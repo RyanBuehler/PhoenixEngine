@@ -14,9 +14,7 @@ Mesh::Mesh(const vec3& origin, bool isStatic) noexcept :
   m_NormalArray(),
   m_TriangleArray(),
   m_bIsDirty(true)
-{
-  Log::Trace("Mesh constructor called");
-}
+{}
 
 unsigned Mesh::GetVertexCount() const noexcept
 {

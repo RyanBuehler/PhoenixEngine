@@ -33,22 +33,6 @@ Camera::~Camera()
   Log::Trace(string("Camera '") + m_Name + "' destroyed.");
 }
 
-void Camera::Update(float dt) noexcept
-{
-  if (!m_IsEnabled)
-    return;
-}
-
-void Camera::EnableCamera() noexcept
-{
-  m_IsEnabled = true;
-}
-
-void Camera::DisableCamera() noexcept
-{
-  m_IsEnabled = false;
-}
-
 const mat4& Camera::GetPersMatrix() noexcept
 {
   if (m_bProjectionIsDirty)
@@ -68,7 +52,8 @@ const mat4& Camera::GetViewMatrix() noexcept
 {
   if (m_Target != nullptr)
   {
-    m_ViewMatrix = glm::lookAt(m_Position, glm::normalize(m_Target->GetPosition()), m_Up);
+    m_Forward = glm::normalize(m_Target->GetPosition() - m_Position);
+    m_ViewMatrix = glm::lookAt(m_Position, m_Forward, m_Up);
   }
   else if (m_bViewIsDirty)
   {
@@ -78,19 +63,85 @@ const mat4& Camera::GetViewMatrix() noexcept
   return m_ViewMatrix;
 }
 
-void Camera::SetTarget(Transform* target) noexcept
+void Camera::SetTarget(const Transform* target) noexcept
 {
   m_Target = target;
+  m_bViewIsDirty = true;
 }
 
 void Camera::ClearTarget() noexcept
 {
   m_Target = nullptr;
+  m_bViewIsDirty = true;
 }
 
 void Camera::SetPosition(vec3 position)
 {
   m_Position = position;
+  m_bViewIsDirty = true;
+}
+
+void Camera::MoveForward(float distance) noexcept
+{
+  m_Position += distance * m_Forward;
+  m_bViewIsDirty = true;
+}
+
+void Camera::MoveBackward(float distance) noexcept
+{
+  MoveForward(-distance);
+}
+
+void Camera::MoveRight(float distance) noexcept
+{
+  m_Position += distance * glm::cross(m_Forward, m_Up);
+  m_bViewIsDirty = true;
+}
+
+void Camera::MoveLeft(float distance) noexcept
+{
+  MoveRight(-distance);
+}
+
+void Camera::MoveUp(float distance) noexcept
+{
+  m_Position += distance * m_Up;
+  m_bViewIsDirty = true;
+}
+
+void Camera::MoveDown(float distance) noexcept
+{
+  MoveUp(-distance);
+}
+
+void Camera::SetYaw(float degrees)
+{
+  Log::Error("Camera::SetYaw Not implemented yet.");
+}
+
+void Camera::SetPitch(float degrees)
+{
+  Log::Error("Camera::SetPitch Not implemented yet.");
+}
+
+void Camera::SetRoll(float degrees)
+{
+  Log::Error("Camera::SetRoll Not implemented yet.");
+}
+
+vec3 Camera::GetPosition() const noexcept
+{
+  return m_Position;
+}
+
+vec3 Camera::GetForwardVector() const noexcept
+{
+  return m_Forward;
+}
+
+vec3 Camera::GetUpVector() const noexcept
+{
+  return m_Up;
 }
 
 void Camera::LookAt(vec3 position)

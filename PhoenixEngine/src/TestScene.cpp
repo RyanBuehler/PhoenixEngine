@@ -13,18 +13,20 @@ TestScene::TestScene() noexcept :
   m_MainCamera(m_CameraManager.GetDefaultCamera())
 {
   m_MainCamera.SetName("Test Scene Camera");
-  Log::Trace("Test Scene Created");
+  Log::Trace("Test Scene Created.");
 }
 
 void TestScene::OnLoad() noexcept
 {
-  Log::Trace("Test Scene Loaded");
+  Log::Trace("Test Scene Loaded.");
   m_GameObjectArray.emplace_back("bunny.obj");
 }
 
 void TestScene::OnInit() noexcept
 {
-  Log::Trace("Test Scene Initialized");
+  Log::Trace("Test Scene Initialized.");
+  m_GameObjectArray[0].SetPosition(vec3(0.f));
+  m_MainCamera.SetTarget(&m_GameObjectArray[0].GetTransform());
 }
 
 void TestScene::OnUpdate(float dt) noexcept
@@ -35,19 +37,39 @@ void TestScene::OnUpdate(float dt) noexcept
 
 void TestScene::OnShutdown() noexcept
 {
-  Log::Trace("Test Scene Shutdown");
+  Log::Trace("Test Scene Shutdown.");
 }
 
 void TestScene::OnUnload() noexcept
 {
-  Log::Trace("Test Scene Unloaded");
+  Log::Trace("Test Scene Unloaded.");
 }
 
-void TestScene::OnPollInput(GLFWwindow* window) noexcept
+void TestScene::OnPollInput(GLFWwindow* window, float dt) noexcept
 {
-  if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+  if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
   {
-    Log::Trace("Test Scene: Key 1 pressed.");
+    m_MainCamera.MoveForward(1.f * dt);
+  }
+  if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+  {
+    m_MainCamera.MoveLeft(1.f * dt);
+  }
+  if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+  {
+    m_MainCamera.MoveBackward(1.f * dt);
+  }
+  if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+  {
+    m_MainCamera.MoveRight(1.f * dt);
+  }
+  if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+  {
+    m_MainCamera.MoveUp(0.5f * dt);
+  }
+  if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+  {
+    m_MainCamera.MoveDown(0.5f * dt);
   }
 }
 

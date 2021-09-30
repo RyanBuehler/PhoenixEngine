@@ -62,7 +62,7 @@ public:
   /// <summary>
   /// Called after polling for input
   /// </summary>
-  void OnPollInput(GLFWwindow* windowPtr) noexcept;
+  void OnPollInput(GLFWwindow* windowPtr, float dt) noexcept;
 
   /// <summary>
   /// Retrieves a vector of the current scene's game objects

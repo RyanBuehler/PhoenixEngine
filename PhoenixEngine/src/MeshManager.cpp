@@ -73,7 +73,7 @@ void MeshManager::UnloadMeshes() noexcept
     glDeleteBuffers(1, &m_MeshDataArray[i].PositionBufferID);
     glDeleteBuffers(1, &m_MeshDataArray[i].TriangleBufferID);
 
-    Log::Trace("Mesh: " + m_MeshArray[i].m_FileName + " destroyed");
+    Log::Trace("Mesh '" + m_MeshArray[i].m_FileName + "' destroyed.");
   }
   m_MeshArray.clear();
   m_MeshDataArray.clear();
