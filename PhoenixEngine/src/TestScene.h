@@ -26,7 +26,7 @@ public:
   void OnShutdown() noexcept;
   void OnUnload() noexcept;
 
-  void OnPollInput(GLFWwindow* windowPtr) noexcept;
+  void OnPollInput(GLFWwindow* windowPtr, float dt) noexcept;
 
   Camera& GetCurrentCamera() noexcept;
 

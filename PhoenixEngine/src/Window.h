@@ -70,5 +70,5 @@ private:
   /// <summary>
   /// Window related Input Queries
   /// </summary>
-  void OnPollInput() noexcept;
+  void OnPollInput(float dt) noexcept;
 };

@@ -17,9 +17,7 @@ public:
   IScene(const string& sceneName) noexcept :
     m_CameraManager(),
     m_SceneName(sceneName)
-  {
-    m_CameraManager.GetDefaultCamera().EnableCamera();
-  };
+  {};
 
   virtual ~IScene() = default;
   IScene(const IScene&) = delete;
@@ -33,7 +31,7 @@ public:
   virtual void OnShutdown() noexcept = 0;
   virtual void OnUnload() noexcept = 0;
 
-  virtual void OnPollInput(GLFWwindow* windowPtr) noexcept = 0;
+  virtual void OnPollInput(GLFWwindow* windowPtr, float dt) noexcept = 0;
 
   vector<GameObject>& GetGameObjectArray() noexcept { return m_GameObjectArray; }
   const string& GetSceneName() const noexcept { return m_SceneName; }

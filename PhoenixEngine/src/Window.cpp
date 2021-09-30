@@ -92,10 +92,10 @@ void Window::OnUpdate() noexcept
   glfwPollEvents();
 
   // Check Window related input
-  OnPollInput();
+  OnPollInput(delta);
 
   // Check input per scene
-  m_SceneManager.OnPollInput(m_pWindow);
+  m_SceneManager.OnPollInput(m_pWindow, delta);
 
   // Update the Scene this cycle
   m_SceneManager.OnUpdate(delta);
@@ -117,7 +117,7 @@ void Window::OnClose() noexcept
   glfwTerminate();
 }
 
-void Window::OnPollInput() noexcept
+void Window::OnPollInput(float dt) noexcept
 {
   if (glfwGetKey(m_pWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
   {

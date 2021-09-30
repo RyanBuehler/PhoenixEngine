@@ -66,10 +66,10 @@ void SceneManager::OnUpdate(float dt) noexcept
   m_CurrentScenePtr->OnUpdate(dt);
 }
 
-void SceneManager::OnPollInput(GLFWwindow* windowPtr) noexcept
+void SceneManager::OnPollInput(GLFWwindow* windowPtr, float dt) noexcept
 {
   assert(m_CurrentScenePtr);
-  m_CurrentScenePtr->OnPollInput(windowPtr);
+  m_CurrentScenePtr->OnPollInput(windowPtr, dt);
 }
 
 vector<GameObject>& SceneManager::GetCurrentSceneGameObjects() noexcept
