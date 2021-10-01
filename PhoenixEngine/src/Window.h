@@ -4,6 +4,14 @@
 
 struct GLFWwindow;
 
+#pragma region ImGUI
+
+#ifdef _IMGUI
+#include "ImGUIManager.h"
+#endif // _IMGUI
+
+#pragma endregion
+
 class Window
 {
   struct WindowProperties
@@ -71,4 +79,8 @@ private:
   /// Window related Input Queries
   /// </summary>
   void OnPollInput(float dt) noexcept;
+
+#ifdef _IMGUI
+  unique_ptr<ImGUIManager> m_ImGUI;
+#endif
 };

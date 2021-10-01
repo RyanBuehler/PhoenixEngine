@@ -57,6 +57,7 @@
     <ClCompile Include="src\CameraManager.cpp" />
     <ClCompile Include="src\ContextManager.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
+    <ClCompile Include="src\ImGUIManager.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\MeshManager.cpp" />
     <ClCompile Include="src\MeshRenderer.cpp" />
@@ -75,6 +76,7 @@
     <ClInclude Include="dep\imgui\imgui_impl_opengl3_loader.h" />
     <ClInclude Include="dep\imgui\imgui_internal.h" />
     <ClInclude Include="src\GameObject.h" />
+    <ClInclude Include="src\ImGUIManager.h" />
     <ClInclude Include="src\IScene.h" />
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\Camera.h" />

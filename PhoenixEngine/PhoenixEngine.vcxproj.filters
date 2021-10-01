@@ -129,6 +129,9 @@
     <ClInclude Include="dep\imgui\imgui_impl_opengl3_loader.h">
       <Filter>Header Files\ImGUI</Filter>
     </ClInclude>
+    <ClInclude Include="src\ImGUIManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp">
@@ -193,6 +196,9 @@
     </ClCompile>
     <ClCompile Include="dep\imgui\imgui_impl_opengl3.cpp">
       <Filter>Source Files\ImGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ImGUIManager.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
