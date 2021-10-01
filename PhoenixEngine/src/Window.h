@@ -55,6 +55,7 @@ public:
   /// <returns>Window should close. T/F</returns>
   bool WindowShouldClose() noexcept;
 
+
 private:
   GLFWwindow* m_pWindow;
   WindowProperties m_WindowProperties;
@@ -71,4 +72,15 @@ private:
   /// Window related Input Queries
   /// </summary>
   void OnPollInput(float dt) noexcept;
+
+#pragma region ImGUI
+
+#ifdef _IMGUI
+
+  void OnImGuiCloseWindow() noexcept;
+  void OnImGuiChangeScene(SceneManager::Scene scene);
+
+#endif // _IMGUI
+
+#pragma endregion
 };

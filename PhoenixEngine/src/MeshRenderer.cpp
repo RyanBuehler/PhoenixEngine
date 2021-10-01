@@ -92,6 +92,17 @@ void MeshRenderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& ac
   }
 
   glBindVertexArray(0u);
+
+#pragma region ImGUI
+#ifdef _IMGUI
+
+  if (ImGui::GraphicsWindowEnabled)
+  {
+    ImGui::Manager->OnImGuiGraphicsUpdate(*this);
+  }
+
+#endif // _IMGUI
+#pragma endregion
 }
 
 void MeshRenderer::EnableDepthBuffer() noexcept

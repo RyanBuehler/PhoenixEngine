@@ -4,6 +4,12 @@
 #include "Window.h"
 #include <chrono>
 
+#pragma region ImGUI
+#ifdef _IMGUI
+#include "ImGUIManager.h"
+#endif // _IMGUI
+#pragma endregion
+
 Window::Window(const WindowProperties& properties) :
   m_pWindow(nullptr),
   m_WindowProperties(properties),
@@ -31,6 +37,11 @@ Window::Window(const WindowProperties& properties) :
     m_WindowProperties.Title.c_str(),
     NULL, NULL);
 
+  // TODO: What does this do?
+  glfwMakeContextCurrent(m_pWindow);
+
+  // TODO: VSync?
+  glfwSwapInterval(1);
 
   // Verify the Window's creation
   if (!m_pWindow)
@@ -59,6 +70,25 @@ Window::Window(const WindowProperties& properties) :
 
   // Initialize the Renderer
   m_MeshRenderer.Init();
+
+#pragma region ImGUI
+
+#ifdef _IMGUI
+
+  // Set up ImGui Close Window Event
+  ImGui::Manager = make_unique<ImGuiManager>(m_pWindow);
+  std::function<void()> cbClose = [=]() { OnImGuiCloseWindow(); };
+  ImGui::Manager->SetOnCloseHandler(cbClose);
+
+  // Set up ImGui Change Scene Event
+  std::function<void(SceneManager::Scene scene)> cbSceneChange =
+    [=](SceneManager::Scene scene) { OnImGuiChangeScene(scene); };
+  ImGui::Manager->SetOnSceneChangeHandler(cbSceneChange);
+
+#endif // _IMGUI
+
+#pragma endregion
+
 }
 
 unsigned Window::GetWidth() const noexcept
@@ -97,6 +127,14 @@ void Window::OnUpdate() noexcept
   // Check input per scene
   m_SceneManager.OnPollInput(m_pWindow, delta);
 
+#pragma region ImGUI
+
+#ifdef _IMGUI
+  ImGui::Manager->OnImGuiUpdateStart();
+#endif // _IMGUI
+
+#pragma endregion
+
   // Update the Scene this cycle
   m_SceneManager.OnUpdate(delta);
 
@@ -105,12 +143,28 @@ void Window::OnUpdate() noexcept
     m_SceneManager.GetCurrentSceneGameObjects(),
     m_SceneManager.GetCurrentSceneActiveCamera());
 
+#pragma region ImGUI
+
+#ifdef _IMGUI
+  ImGui::Manager->OnImGuiUpdateEnd();
+#endif // _IMGUI
+
+#pragma endregion
+
   // Swap the back/front buffers
   glfwSwapBuffers(m_pWindow);
 }
 
 void Window::OnClose() noexcept
 {
+#pragma region ImGUI
+
+#ifdef _IMGUI
+  ImGui::Manager->OnImGuiClose();
+#endif // _IMGUI
+
+#pragma endregion
+
   // Shut down the scenes
   m_SceneManager.Shutdown();
   // Close the window
@@ -131,3 +185,21 @@ bool Window::WindowShouldClose() noexcept
   // Check if the window should be closed
   return m_bWindowShouldClose || glfwWindowShouldClose(m_pWindow);
 }
+
+#pragma region ImGUI
+
+#ifdef _IMGUI
+
+void Window::OnImGuiCloseWindow() noexcept
+{
+  m_bWindowShouldClose = true;
+}
+
+void Window::OnImGuiChangeScene(SceneManager::Scene scene)
+{
+  m_SceneManager.SetNewScene(scene);
+}
+
+#endif // _IMGUI
+
+#pragma endregion
