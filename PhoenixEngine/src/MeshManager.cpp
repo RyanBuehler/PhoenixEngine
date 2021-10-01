@@ -31,6 +31,8 @@ unsigned MeshManager::LoadMesh(const string& fileName) noexcept
       return i;
     }
   }
+  Log::Trace("Loading mesh: " + fileName);
+
   //TODO: check for file extension
 
   unsigned index = numeric_limits<unsigned>::max();
@@ -56,6 +58,7 @@ unsigned MeshManager::LoadMesh(const string& fileName) noexcept
   glBufferData(GL_ARRAY_BUFFER, m_MeshArray[index].GetVertexCount() * sizeof(vec3),
     m_MeshArray[index].m_PositionArray.data(), GL_STATIC_DRAW);
 
+
   // The Normal buffer
   //glGenBuffers(1, &m_MeshDataArray[index].NormalBufferID);
   //glBindBuffer(GL_ARRAY_BUFFER, m_MeshDataArray[index].NormalBufferID);
@@ -71,14 +74,11 @@ unsigned MeshManager::LoadMesh(const string& fileName) noexcept
   glGenVertexArrays(1, &m_MeshDataArray[index].VertexArrayID);
   glBindVertexArray(m_MeshDataArray[index].VertexArrayID);
 
-  // TODO: Position buffer index, normal buffer index, etc
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), 0);
-  glEnableVertexAttribArray(0);
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), 0);
-  glEnableVertexAttribArray(1);
-
   glBindVertexArray(0u);
 
+  Log::Trace("Mesh: " + fileName + " loaded.");
+  //TODO: is this repeated somewhere?
+  m_MeshDataArray[index].FileName = fileName;
   return index;
 }
 
@@ -89,9 +89,12 @@ void MeshManager::UnloadMeshes() noexcept
     glDeleteVertexArrays(1, &m_MeshDataArray[i].VertexArrayID);
 
     glDeleteBuffers(1, &m_MeshDataArray[i].PositionBufferID);
+    glDeleteBuffers(1, &m_MeshDataArray[i].NormalBufferID);
     glDeleteBuffers(1, &m_MeshDataArray[i].TriangleBufferID);
 
-    Log::Trace("Mesh '" + m_MeshArray[i].m_FileName + "' destroyed.");
+    //TODO:
+    //Log::Trace("Mesh '" + m_MeshArray[i].m_FileName + "' destroyed.");
+    //Log::Trace("Mesh destroyed.");
   }
   m_MeshArray.clear();
   m_MeshDataArray.clear();
@@ -110,6 +113,8 @@ void MeshManager::RenderMesh(unsigned id) const noexcept
 
   //TODO: GetElementCount? Instead to save the 3 * every frame?
   glDrawElements(GL_TRIANGLES, 3 * m_MeshArray[id].GetTriangleCount(), GL_UNSIGNED_INT, 0);
+
+  glBindVertexArray(0u);
 }
 
 void MeshManager::RenderNormals(unsigned id) const noexcept
@@ -133,7 +138,7 @@ unsigned MeshManager::LoadMeshFromOBJ(const string& fileName) noexcept
   m_MeshDataArray.emplace_back();
   m_MeshDataArray[i].FileName = fileName;
 
-  auto result = m_OBJReader.ReadOBJFile(fileName, &m_MeshArray[i]);
+  auto result = m_OBJReader.ReadOBJFile(fileName, &m_MeshArray[i], OBJReader::ReadMethod::LINE_BY_LINE);
   return i;
 }
 
@@ -159,12 +164,8 @@ unsigned MeshManager::LoadSphere(float radius, int numDivisions) noexcept
     {
       unsigned y = STACKS * (i - 1) + j;
       float phi = 2 * glm::pi<float>() * j / STACKS;
-      m_MeshArray[index].m_NormalArray[y] =
-      {
-        sin(theta) * cos(phi),
-        cos(theta),
-        sin(theta) * sin(phi)
-      };
+      vec3 normal(sin(theta) * cos(phi), cos(theta), sin(theta) * sin(phi));
+      m_MeshArray[index].m_NormalArray[y] = normal;
     }
   }
 
@@ -173,7 +174,7 @@ unsigned MeshManager::LoadSphere(float radius, int numDivisions) noexcept
 
   for (unsigned n = 0; n < m_MeshArray[index].m_NormalArray.size(); ++n)
   {
-    m_MeshArray[index].m_PositionArray[n] = m_MeshArray[index].m_NormalArray[n];
+    m_MeshArray[index].m_PositionArray[n] = radius * m_MeshArray[index].m_NormalArray[n];
   }
 
   for (unsigned i = 2; i < SLICES; ++i)

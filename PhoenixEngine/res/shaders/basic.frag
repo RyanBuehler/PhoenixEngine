@@ -2,13 +2,17 @@
 Shader: Basic Shader [Fragment]
 Author: Ryan Buehler
 *******************************************************************************/
-#version 460
+#version 460 core
 
-in vec4 world_position;
+in vec3 frag_normal;
+in vec3 frag_diffuse;
 
-out vec4 color_frag;
+out vec3 frag_color;
 
 void main(void)
 {
-  color_frag = vec4(1.f, 0.f, 0.f, 1.f);
+  vec3 vLight = vec3(0.f, 0.f, 1.f);
+  float ndot = max( dot( normalize(frag_normal), normalize(vLight)), 0.0f );
+  //frag_color = frag_diffuse * ndot;
+  frag_color = frag_diffuse;
 }

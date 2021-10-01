@@ -52,6 +52,9 @@ private:
   GLuint m_PersAttributeID;
   GLuint m_ViewAttributeID; 
 
+  GLint m_PositionAttributeLocation;
+  GLint m_NormalAttributeLocation;
+
   bool m_DebugRenderNormals;
 
 #pragma region ImGUI

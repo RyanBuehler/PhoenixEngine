@@ -63,16 +63,17 @@ void Mesh::AddTriangle(unsigned index1, unsigned index2, unsigned index3) noexce
   m_TriangleArray.push_back({ index1, index2, index3 });
 }
 
-struct compareVec
+namespace
 {
-  bool operator() (const glm::vec3& lhs, const glm::vec3& rhs) const
+  struct NormalCloseEnough
   {
-    float V = glm::dot(lhs, rhs);
-    bool bRetCode = glm::epsilonNotEqual(V, 1.0f, FLT_EPSILON);
-
-    return bRetCode;
-  }
-};
+    bool operator() (const vec3& lhs, const vec3& rhs) const
+    {
+      float dotP = dot(lhs, rhs);
+      return glm::epsilonNotEqual(dotP, 1.0f, FLT_EPSILON);
+    }
+  };
+}
 
 void Mesh::CalculateNormals(bool flipNormals) noexcept
 {
@@ -84,13 +85,15 @@ void Mesh::CalculateNormals(bool flipNormals) noexcept
   }
 
   // Initialize vertex normals
-  m_NormalArray.resize(GetVertexCount(), glm::vec3(0.0f));
-  m_NormalDisplay.resize(GetVertexCount() * 2u, glm::vec3(0.0f));
+  m_NormalArray.clear();
+  m_NormalDisplay.clear();
+  m_NormalArray.resize(GetVertexCount(), vec3(0.0f));
+  m_NormalDisplay.resize(GetVertexCount() * 2u, vec3(0.0f));
 
-  vector< std::set<glm::vec3, compareVec>> vNormalSet;
-  vNormalSet.resize(GetVertexCount());
+  vector<set<vec3, NormalCloseEnough>> normalSet;
+  normalSet.resize(GetVertexCount());
 
-  // For every face
+  // For every triangle
   for (size_t index = 0; index < GetTriangleCount(); ++index)
   {
     GLuint a = m_TriangleArray.at(index).Index1;
@@ -101,40 +104,39 @@ void Mesh::CalculateNormals(bool flipNormals) noexcept
     vec3 vB = m_PositionArray[b];
     vec3 vC = m_PositionArray[c];
 
-    // Edge vectors
-    vec3  E1 = vB - vA;
-    vec3  E2 = vC - vA;
+    // Edge Vectors
+    vec3 vEdge1 = vB - vA;
+    vec3 vEdge2 = vC - vA;
 
-    vec3  N = glm::normalize(glm::cross(E1, E2));
+    vec3 N = normalize(cross(vEdge1, vEdge2));
 
     if (flipNormals)
       N = N * -1.0f;
 
-    // For vertex a
-    vNormalSet.at(a).insert(N);
-    vNormalSet.at(b).insert(N);
-    vNormalSet.at(c).insert(N);
+    normalSet.at(a).insert(N);
+    normalSet.at(b).insert(N);
+    normalSet.at(c).insert(N);
   }
 
-  // Now sum up the values per vertex
-  for (int index = 0; index < vNormalSet.size(); ++index)
+  for (int index = 0; index < normalSet.size(); ++index)
   {
     vec3 vNormal(0.0f);
 
-    auto nIt = vNormalSet[index].begin();
-    while (nIt != vNormalSet[index].end())
+    auto nIt = normalSet[index].begin();
+    while (nIt != normalSet[index].end())
     {
       vNormal += (*nIt);
       ++nIt;
     }
 
-    // save vertex normal
+    // Final Vertex Normal
     m_NormalArray[index] = normalize(vNormal);
 
-    // save normal to display
-    vec3  vA = m_PositionArray[index];
 
-    m_NormalDisplay[2 * static_cast<size_t>(index)] = vA;
-    m_NormalDisplay[(2 * static_cast<size_t>(index)) + 1] = vA + (m_NormalLength * m_NormalArray[index]);
+    // Calculate display normals
+    vec3 point1 = m_PositionArray[index];
+
+    m_NormalDisplay[2 * static_cast<size_t>(index)] = point1;
+    m_NormalDisplay[(2 * static_cast<size_t>(index)) + 1] = point1 + (m_NormalLength * m_NormalArray[index]);
   }
 }

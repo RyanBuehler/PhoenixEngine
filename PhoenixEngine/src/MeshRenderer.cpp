@@ -19,6 +19,8 @@ MeshRenderer::MeshRenderer(bool depthBufferEnabled, bool backFaceCullEnabled) no
   m_ModelAttributeID(numeric_limits<GLuint>::max()),
   m_PersAttributeID(numeric_limits<GLuint>::max()),
   m_ViewAttributeID(numeric_limits<GLuint>::max()),
+  m_PositionAttributeLocation(numeric_limits<GLuint>::max()),
+  m_NormalAttributeLocation(numeric_limits<GLuint>::max()),
   m_DebugRenderNormals(false)
 {
   depthBufferEnabled ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
@@ -48,6 +50,15 @@ void MeshRenderer::Init() noexcept
   m_PersAttributeID = glGetUniformLocation(program, "pers_matrix");
   m_ViewAttributeID = glGetUniformLocation(program, "view_matrix");
   m_ModelAttributeID = glGetUniformLocation(program, "model_matrix");
+
+  m_PositionAttributeLocation = glGetAttribLocation(program, "position");
+  //m_NormalAttributeLocation = glGetAttribLocation(program, "normal");
+
+  // TODO: Position buffer index, normal buffer index, etc
+  glVertexAttribPointer(m_PositionAttributeLocation, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), 0);
+  glEnableVertexAttribArray(0);
+  //glVertexAttribPointer(m_NormalAttributeLocation, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), 0);
+  //glEnableVertexAttribArray(1);
 
   Log::Trace("MeshRenderer initialized.");
 }
