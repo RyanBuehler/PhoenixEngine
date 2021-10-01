@@ -13,14 +13,14 @@ public:
   Transform(Transform&&) = delete;
   Transform& operator=(Transform&&) = delete;
 
-  //void Init(GLuint program) noexcept;
-
-  //void Bind() noexcept;
-
+  //TODO: noexcept?
   void Translate(const vec3& translation);
   void RotateX(float degrees);
   void RotateY(float degrees);
   void RotateZ(float degrees);
+
+  void RotateAround(float degrees, vec3 axis);
+
   void ScaleBy(float factor);
 
   void SetPosition(const vec3& pos) noexcept;

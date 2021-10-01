@@ -14,6 +14,7 @@ namespace ImGui
 {
   extern unique_ptr<ImGuiManager> Manager;
   extern bool GraphicsWindowEnabled;
+  extern bool GraphicsDebugRenderNormals;
 }
 #define _IMGUI_ENABLED
 #endif
@@ -39,7 +40,6 @@ public:
   void SetOnSceneChangeHandler(function<void(SceneManager::Scene)> callback);
 
 private:
-
   function<void()> m_dOnClose;
   function<void(SceneManager::Scene)> m_dOnSceneChange;
 

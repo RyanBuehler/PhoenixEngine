@@ -18,7 +18,8 @@ MeshRenderer::MeshRenderer(bool depthBufferEnabled, bool backFaceCullEnabled) no
   m_ContextManager(),
   m_ModelAttributeID(numeric_limits<GLuint>::max()),
   m_PersAttributeID(numeric_limits<GLuint>::max()),
-  m_ViewAttributeID(numeric_limits<GLuint>::max())
+  m_ViewAttributeID(numeric_limits<GLuint>::max()),
+  m_DebugRenderNormals(false)
 {
   depthBufferEnabled ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
   backFaceCullEnabled ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
@@ -89,6 +90,18 @@ void MeshRenderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& ac
     // Bind the transform
     glUniformMatrix4fv(m_ModelAttributeID, 1, false, &go.GetMatrix()[0][0]);
     m_MeshManager.RenderMesh(go.m_MeshID);
+
+#pragma region ImGUI
+#ifdef _IMGUI
+
+    if (ImGui::GraphicsDebugRenderNormals)
+    {
+      m_MeshManager.RenderNormals(go.m_MeshID);
+    }
+
+#endif // _IMGUI
+#pragma endregion
+
   }
 
   glBindVertexArray(0u);

@@ -52,6 +52,8 @@ private:
   GLuint m_PersAttributeID;
   GLuint m_ViewAttributeID; 
 
+  bool m_DebugRenderNormals;
+
 #pragma region ImGUI
 #ifdef _IMGUI
   friend class ImGuiManager;

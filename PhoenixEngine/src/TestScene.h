@@ -32,4 +32,6 @@ public:
 
 private:
   Camera& m_MainCamera;
+
+  float m_Time;
   };

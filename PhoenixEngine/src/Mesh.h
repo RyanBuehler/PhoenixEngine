@@ -47,6 +47,7 @@
 
     unsigned GetVertexCount() const noexcept;
     unsigned GetTriangleCount() const noexcept;
+    unsigned GetNormalCount() const noexcept;
 
     void AddVertex(vec3 vertex) noexcept;
     void AddVertex(float x, float y, float z) noexcept;
@@ -62,6 +63,8 @@
     inline void SetIsStatic(bool isStatic) noexcept { m_bIsStatic = isStatic; }
     inline bool IsStatic() const noexcept { return m_bIsStatic; }
 
+    void CalculateNormals(bool flipNormals) noexcept;
+
   private:
     friend class MeshManager;
 
@@ -69,8 +72,11 @@
     vec3 m_Origin;
     bool m_bIsStatic;
 
+    float m_NormalLength;
+
     vector<vec3> m_PositionArray;
     vector<vec3> m_NormalArray;
+    vector<vec3> m_NormalDisplay;
     vector<Mesh::Triangle> m_TriangleArray;
 
     bool m_bIsDirty;

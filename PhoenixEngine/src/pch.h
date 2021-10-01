@@ -29,6 +29,7 @@
 #include <array>
 #include <list>
 #include <forward_list>
+#include <set>
 
 // Functional
 #include <functional>
@@ -58,6 +59,7 @@ using std::vector;
 using std::array;
 using std::list;
 using std::forward_list;
+using std::set;
 
 // Functional
 using std::function;

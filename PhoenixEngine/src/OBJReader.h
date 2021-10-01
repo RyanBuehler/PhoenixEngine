@@ -25,7 +25,6 @@ public:
   // initialize the data
   void initData();
 
-
   // Read data from a file
   enum class ReadMethod { LINE_BY_LINE, BLOCK_IO };
   double ReadOBJFile(std::string filepath,
