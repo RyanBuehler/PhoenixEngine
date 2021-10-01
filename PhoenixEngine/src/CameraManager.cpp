@@ -14,7 +14,7 @@ CameraManager::CameraManager() noexcept :
   m_ActiveCamera(&m_DefaultCamera)
 {
   SetActiveCamera(m_DefaultCamera);
-  Log::Trace("CameraManager and Default Camera created.");
+  Log::Trace("CameraManager and Default Camera created for Scene.");
 }
 
 CameraManager::~CameraManager()

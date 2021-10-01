@@ -4,14 +4,6 @@
 
 struct GLFWwindow;
 
-#pragma region ImGUI
-
-#ifdef _IMGUI
-#include "ImGUIManager.h"
-#endif // _IMGUI
-
-#pragma endregion
-
 class Window
 {
   struct WindowProperties
@@ -63,6 +55,7 @@ public:
   /// <returns>Window should close. T/F</returns>
   bool WindowShouldClose() noexcept;
 
+
 private:
   GLFWwindow* m_pWindow;
   WindowProperties m_WindowProperties;
@@ -80,7 +73,14 @@ private:
   /// </summary>
   void OnPollInput(float dt) noexcept;
 
+#pragma region ImGUI
+
 #ifdef _IMGUI
-  unique_ptr<ImGUIManager> m_ImGUI;
-#endif
+
+  void OnImGuiCloseWindow() noexcept;
+  void OnImGuiChangeScene(SceneManager::Scene scene);
+
+#endif // _IMGUI
+
+#pragma endregion
 };

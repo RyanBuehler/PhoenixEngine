@@ -11,6 +11,12 @@
 #include "CameraManager.h"
 #include "GameObject.h"
 
+#pragma region ImGUI
+#ifdef _IMGUI
+#include "ImGuiManager.h"
+#endif // _IMGUI
+#pragma endregion
+
 class Camera;
 class CubeMesh;
 class Transform;
@@ -44,5 +50,11 @@ private:
 
   GLuint m_ModelAttributeID;
   GLuint m_PersAttributeID;
-  GLuint m_ViewAttributeID;
+  GLuint m_ViewAttributeID; 
+
+#pragma region ImGUI
+#ifdef _IMGUI
+  friend class ImGuiManager;
+#endif // _IMGUI
+#pragma endregion
 };

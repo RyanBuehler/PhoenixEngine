@@ -6,6 +6,8 @@
 //------------------------------------------------------------------------------
 #pragma once
 
+#define PE_VERSION "v1.0"
+
 // Includes
 #include "Logger.h"
 #include "Utility.h"

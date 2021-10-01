@@ -17,6 +17,7 @@ public:
   /// </summary>
   enum class Scene
   {
+    None,
     TestScene,
     SceneCount
   };
@@ -72,16 +73,16 @@ public:
   Camera& GetCurrentSceneActiveCamera() noexcept;
 
 private:
-  bool m_TransitionEnabled;
   bool m_ReloadEnabled;
   unique_ptr<IScene> m_CurrentScenePtr;
+  Scene m_CurrentScene;
   Scene m_NextScene;
 
   /// <summary>
   /// Private helper to transition the Scene
   /// </summary>
   /// <param name="scene">The Scene to transition to</param>
-  void transitionScene(Scene scene) noexcept;
+  void transitionScene() noexcept;
   /// <summary>
   /// Private helper to reload the Scene
   /// </summary>

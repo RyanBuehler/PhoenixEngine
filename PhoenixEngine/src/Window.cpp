@@ -4,6 +4,12 @@
 #include "Window.h"
 #include <chrono>
 
+#pragma region ImGUI
+#ifdef _IMGUI
+#include "ImGUIManager.h"
+#endif // _IMGUI
+#pragma endregion
+
 Window::Window(const WindowProperties& properties) :
   m_pWindow(nullptr),
   m_WindowProperties(properties),
@@ -68,7 +74,17 @@ Window::Window(const WindowProperties& properties) :
 #pragma region ImGUI
 
 #ifdef _IMGUI
-  m_ImGUI = make_unique<ImGUIManager>(m_pWindow);
+
+  // Set up ImGui Close Window Event
+  ImGui::Manager = make_unique<ImGuiManager>(m_pWindow);
+  std::function<void()> cbClose = [=]() { OnImGuiCloseWindow(); };
+  ImGui::Manager->SetOnCloseHandler(cbClose);
+
+  // Set up ImGui Change Scene Event
+  std::function<void(SceneManager::Scene scene)> cbSceneChange =
+    [=](SceneManager::Scene scene) { OnImGuiChangeScene(scene); };
+  ImGui::Manager->SetOnSceneChangeHandler(cbSceneChange);
+
 #endif // _IMGUI
 
 #pragma endregion
@@ -111,6 +127,14 @@ void Window::OnUpdate() noexcept
   // Check input per scene
   m_SceneManager.OnPollInput(m_pWindow, delta);
 
+#pragma region ImGUI
+
+#ifdef _IMGUI
+  ImGui::Manager->OnImGuiUpdateStart();
+#endif // _IMGUI
+
+#pragma endregion
+
   // Update the Scene this cycle
   m_SceneManager.OnUpdate(delta);
 
@@ -122,7 +146,7 @@ void Window::OnUpdate() noexcept
 #pragma region ImGUI
 
 #ifdef _IMGUI
-  m_ImGUI->OnUpdate();
+  ImGui::Manager->OnImGuiUpdateEnd();
 #endif // _IMGUI
 
 #pragma endregion
@@ -136,7 +160,7 @@ void Window::OnClose() noexcept
 #pragma region ImGUI
 
 #ifdef _IMGUI
-  m_ImGUI->OnClose();
+  ImGui::Manager->OnImGuiClose();
 #endif // _IMGUI
 
 #pragma endregion
@@ -161,3 +185,21 @@ bool Window::WindowShouldClose() noexcept
   // Check if the window should be closed
   return m_bWindowShouldClose || glfwWindowShouldClose(m_pWindow);
 }
+
+#pragma region ImGUI
+
+#ifdef _IMGUI
+
+void Window::OnImGuiCloseWindow() noexcept
+{
+  m_bWindowShouldClose = true;
+}
+
+void Window::OnImGuiChangeScene(SceneManager::Scene scene)
+{
+  m_SceneManager.SetNewScene(scene);
+}
+
+#endif // _IMGUI
+
+#pragma endregion

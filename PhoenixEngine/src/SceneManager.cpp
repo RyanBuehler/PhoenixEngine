@@ -9,9 +9,9 @@
 #include "TestScene.h"
 
 SceneManager::SceneManager() noexcept :
-  m_TransitionEnabled(true),
   m_ReloadEnabled(false),
   m_CurrentScenePtr(),
+  m_CurrentScene(Scene::None),
   m_NextScene(DEFAULTSCENE)
 {
 }
@@ -28,14 +28,10 @@ bool SceneManager::SceneIsTransitioning() noexcept
     return true;
   }
 
-  if (m_TransitionEnabled)
+  if (m_NextScene != Scene::None)
   {
-    // Set the next Scene to current Scene
-    transitionScene(m_NextScene);
-
-    // Reset the transition Scene
-    m_NextScene = DEFAULTSCENE;
-
+    // Transition to the next scene
+    transitionScene();
     return true;
   }
 
@@ -45,6 +41,11 @@ bool SceneManager::SceneIsTransitioning() noexcept
 void SceneManager::SetNewScene(Scene nextScene) noexcept
 {
   assert(nextScene < Scene::SceneCount);
+  if (m_NextScene == nextScene)
+  {
+    ReloadScene();
+    return;
+  }
   m_NextScene = nextScene;
 }
 
@@ -84,18 +85,17 @@ Camera& SceneManager::GetCurrentSceneActiveCamera() noexcept
   return m_CurrentScenePtr->GetCurrentCamera();
 }
 
-void SceneManager::transitionScene(Scene scene) noexcept
+void SceneManager::transitionScene() noexcept
 {
-  m_TransitionEnabled = false;
-
   if (m_CurrentScenePtr.get() != nullptr)
   {
     m_CurrentScenePtr->OnShutdown();
     m_CurrentScenePtr->OnUnload();
   }
 
-  switch (scene)
+  switch (m_NextScene)
   {
+  case SceneManager::Scene::None:
   case SceneManager::Scene::TestScene:
     m_CurrentScenePtr.release();
     m_CurrentScenePtr = make_unique<TestScene>();
@@ -109,6 +109,9 @@ void SceneManager::transitionScene(Scene scene) noexcept
   assert(m_CurrentScenePtr);
   m_CurrentScenePtr->OnLoad();
   m_CurrentScenePtr->OnInit();
+
+  // Reset the transition Scene
+  m_NextScene = Scene::None;
 }
 
 void SceneManager::reloadScene() noexcept
