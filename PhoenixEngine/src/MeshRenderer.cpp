@@ -10,8 +10,7 @@
 #include "GLEW/glew.h"
 #include "MeshRenderer.h"
 
-MeshRenderer::MeshRenderer(bool depthBufferEnabled, bool backFaceCullEnabled) noexcept :
-  m_MeshManager()
+MeshRenderer::MeshRenderer(bool depthBufferEnabled, bool backFaceCullEnabled) noexcept
 {
   depthBufferEnabled ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
   backFaceCullEnabled ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
@@ -24,25 +23,6 @@ MeshRenderer::MeshRenderer(bool depthBufferEnabled, bool backFaceCullEnabled) no
 MeshRenderer::~MeshRenderer()
 {
   Log::Trace("MeshRenderer destroyed.");
-}
-
-void MeshRenderer::RenderGameObject(GameObject& gameObject) noexcept
-{
-  if (gameObject.m_bIsDirty)
-  {
-    // Unknown Mesh ID, check for new id with file name
-    if (gameObject.m_MeshID == MeshManager::MESH_INDEX_ERROR)
-    {
-      gameObject.m_MeshID = m_MeshManager.LoadMesh(gameObject.GetMeshFileName());
-      if (gameObject.m_MeshID == MeshManager::MESH_INDEX_ERROR)
-      {
-        Log::Error("Could not load mesh: " + gameObject.GetMeshFileName());
-        return;
-      }
-    }
-  }
-
-  m_MeshManager.RenderMesh(gameObject.m_MeshID);
 }
 
 void MeshRenderer::EnableDepthBuffer() noexcept

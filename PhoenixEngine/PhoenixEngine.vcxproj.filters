@@ -220,10 +220,10 @@
     <None Include="res\shaders\Line.vert">
       <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
     </None>
-    <None Include="x64\Debug\res\shaders\Diffuse.vert">
+    <None Include="res\shaders\Diffuse.vert">
       <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
     </None>
-    <None Include="x64\Debug\res\shaders\Diffuse.frag">
+    <None Include="res\shaders\Diffuse.frag">
       <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
     </None>
   </ItemGroup>

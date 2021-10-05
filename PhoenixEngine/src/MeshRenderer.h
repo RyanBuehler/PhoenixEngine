@@ -18,8 +18,6 @@ public:
   MeshRenderer(MeshRenderer&&) = delete;
   MeshRenderer& operator=(MeshRenderer&&) = delete;
 
-  void RenderGameObject(GameObject& gameObject) noexcept;
-
   void EnableDepthBuffer() noexcept;
   void DisableDepthBuffer() noexcept;
   inline bool DepthBufferIsEnabled() const noexcept;
@@ -29,5 +27,4 @@ public:
   inline bool BackFaceCullIsEnabled() const noexcept;
 
 private:
-  MeshManager m_MeshManager;
 };

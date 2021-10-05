@@ -31,6 +31,7 @@ void LineRenderer::RenderLines() noexcept
 
 void LineRenderer::AddLine(const vec3& point1, const vec3& point2) noexcept
 {
+  vec3 vector = point2 - point1;
   m_LineArray.push_back(point1);
   m_LineArray.push_back(point2);
 }

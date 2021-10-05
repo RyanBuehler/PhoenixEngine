@@ -26,13 +26,15 @@ public:
   void OnBeginFrame() const noexcept;
   void OnEndFrame() const noexcept;
 
+  void RenderGameObject(GameObject& gameObject);
   void RenderGameObjects(vector<GameObject>& gameObjects, Camera& activeCamera);
-
 private:
   ShaderManager m_ShaderManager;
   ContextManager m_ContextManager;
+  MeshManager m_MeshManager;
   MeshRenderer m_MeshRenderer;
   LineRenderer m_LineRenderer;
+
 
   GLint m_DefaultContextID;
   GLint m_LineContextID;

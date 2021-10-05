@@ -50,7 +50,7 @@ public:
 #pragma endregion
 
 private:
-  friend class MeshRenderer;
+  friend class Renderer;
 
   Transform m_Transform;
   unsigned m_MeshID;
