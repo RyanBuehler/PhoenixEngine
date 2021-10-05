@@ -83,7 +83,6 @@ void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& active
     m_ContextManager.GetCurrentUniformAttributes()[1].ID,
     1, GL_FALSE, &activeCamera.GetViewMatrix()[0][0]);
 
-  vec3 lastPosition(0.f);
   // Render our list of game objects
   for (GameObject& go : gameObjects)
   {
@@ -95,12 +94,10 @@ void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& active
       glUniformMatrix4fv(m_ContextManager.GetCurrentUniformAttributes()[2].ID, 1, false, &go.GetMatrix()[0][0]);
 
       m_MeshRenderer.RenderGameObject(go);
-
-      m_LineRenderer.AddLine(lastPosition, go.GetPosition());
-      lastPosition = go.GetPosition();
     }
   }
 
+  m_LineRenderer.AddLine(gameObjects[0].GetPosition(), vec3(5.f, 0.f, 0.f));
   m_ContextManager.SetContext(m_LineContextID);
   // Set Perspective Matrix
   glUniformMatrix4fv(
