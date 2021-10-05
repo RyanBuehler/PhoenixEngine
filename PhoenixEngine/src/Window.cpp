@@ -14,6 +14,8 @@ Window::Window(const WindowProperties& properties) :
   m_pWindow(nullptr),
   m_WindowProperties(properties),
   m_SceneManager(),
+  m_ShaderManager(),
+  m_ContextManager(),
   m_MeshRenderer(),
   m_LineRenderer(),
   m_LastFrameTime(std::chrono::steady_clock::now()),
@@ -72,8 +74,9 @@ Window::Window(const WindowProperties& properties) :
 
   //TODO: Get rid of Init
   // Initialize the Renderer
-  m_MeshRenderer.Init();
-  m_LineRenderer.Init();
+  m_ShaderManager.Init();
+  m_MeshRenderer.Init(m_ShaderManager, m_ContextManager);
+  //m_LineRenderer.Init(m_ShaderManager, m_ContextManager);
 
 #pragma region ImGUI
 
@@ -148,7 +151,7 @@ void Window::OnUpdate() noexcept
     m_SceneManager.GetCurrentSceneActiveCamera());
 
   //TODO:
-  m_LineRenderer.RenderLines();
+  //m_LineRenderer.RenderLines();
 
 #pragma region ImGUI
 

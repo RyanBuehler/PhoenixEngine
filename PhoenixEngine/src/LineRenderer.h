@@ -7,6 +7,8 @@
 #pragma once
 #include "GLEW/glew.h"
 #include "GraphicsCommon.h"
+#include "ShaderManager.h"
+#include "ContextManager.h"
 
 class LineRenderer
 {
@@ -19,7 +21,7 @@ public:
   LineRenderer(LineRenderer&&) = delete;
   LineRenderer& operator=(LineRenderer&&) = delete;
 
-  void Init() noexcept;
+  void Init(const ShaderManager& shaderManager, ContextManager& contextManager) noexcept;
 
   void RenderLines() const noexcept;
 
@@ -28,6 +30,8 @@ public:
 
 private:
   vector<vec3> m_LineArray;
+
+  GLint m_ContextID;
 
   GLfloat m_LineWidth;
   vec4 m_LineColor;

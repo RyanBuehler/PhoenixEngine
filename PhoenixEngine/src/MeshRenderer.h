@@ -31,7 +31,7 @@ public:
   MeshRenderer(MeshRenderer&&) = delete;
   MeshRenderer& operator=(MeshRenderer&&) = delete;
 
-  void Init() noexcept;
+  void Init(const ShaderManager& shaderManager, ContextManager& contextManager) noexcept;
 
   void RenderGameObjects(vector<GameObject>& gameObjects, Camera& activeCamera) noexcept;
 
@@ -45,8 +45,8 @@ public:
 
 private:
   MeshManager m_MeshManager;
-  ShaderManager m_ShaderManager;
-  ContextManager m_ContextManager;
+
+  GLint m_ContextID;
 
   GLuint m_ModelAttributeID;
   GLuint m_PersAttributeID;

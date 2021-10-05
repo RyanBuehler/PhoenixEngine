@@ -215,4 +215,12 @@
       <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
     </Text>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="res\shaders\Line.frag">
+      <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
+    </None>
+    <None Include="res\shaders\Line.vert">
+      <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
+    </None>
+  </ItemGroup>
 </Project>

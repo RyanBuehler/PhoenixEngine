@@ -112,6 +112,10 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Deploy|x64'">false</DeploymentContent>
     </Text>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="res\shaders\Line.frag" />
+    <None Include="res\shaders\Line.vert" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

@@ -9,14 +9,20 @@
 
 LineRenderer::LineRenderer() noexcept :
   m_LineArray(),
+  m_ContextID(numeric_limits<unsigned>::max()),
   m_LineWidth(1.f),
   m_LineColor(vec4(1.f, 1.f, 1.f, 1.f)),
   m_VertexArray(numeric_limits<unsigned>::max()),
   m_VertexAttributeID(numeric_limits<unsigned>::max())
 {}
 
-void LineRenderer::Init() noexcept
+void LineRenderer::Init(const ShaderManager& shaderManager, ContextManager& contextManager) noexcept
 {
+  unsigned vID = shaderManager.GetVertexShaderID(Shader::Vertex::LINE);
+  unsigned fID = shaderManager.GetFragmentShaderID(Shader::Fragment::LINE);
+  m_ContextID = contextManager.CreateNewContext(vID, fID);
+  GLint program = contextManager.SwapContext(m_ContextID);
+
   //TODO: Move this to constructor
   glGenBuffers(1, &m_VertexArray);
   glBindBuffer(GL_ARRAY_BUFFER, m_VertexArray);

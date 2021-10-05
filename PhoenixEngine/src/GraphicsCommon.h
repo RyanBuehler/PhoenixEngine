@@ -28,12 +28,14 @@ namespace Shader
   enum class Vertex : unsigned
   {
     BASIC = 0u,
+    LINE,
     COUNT
   };
 
   enum class Fragment : unsigned
   {
     BASIC = 0u,
+    LINE,
     COUNT
   };
 }

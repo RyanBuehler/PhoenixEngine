@@ -62,6 +62,8 @@ private:
   WindowProperties m_WindowProperties;
 
   SceneManager m_SceneManager;
+  ShaderManager m_ShaderManager;
+  ContextManager m_ContextManager;
   MeshRenderer m_MeshRenderer;
   LineRenderer m_LineRenderer;
 

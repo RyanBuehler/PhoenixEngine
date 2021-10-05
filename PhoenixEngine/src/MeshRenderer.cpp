@@ -14,8 +14,7 @@
 
 MeshRenderer::MeshRenderer(bool depthBufferEnabled, bool backFaceCullEnabled) noexcept :
   m_MeshManager(),
-  m_ShaderManager(),
-  m_ContextManager(),
+  m_ContextID(numeric_limits<GLuint>::max()),
   m_ModelAttributeID(numeric_limits<GLuint>::max()),
   m_PersAttributeID(numeric_limits<GLuint>::max()),
   m_ViewAttributeID(numeric_limits<GLuint>::max()),
@@ -33,15 +32,13 @@ MeshRenderer::~MeshRenderer()
   Log::Trace("MeshRenderer destroyed.");
 }
 
-void MeshRenderer::Init() noexcept
+void MeshRenderer::Init(const ShaderManager& shaderManager, ContextManager& contextManager) noexcept
 {
   // Load a default context
-  m_ShaderManager.Init();
-  unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::BASIC);
-  unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::BASIC);
-  static unsigned contextID = m_ContextManager.CreateNewContext(vID, fID);
-  GLint program = m_ContextManager.SwapContext(contextID);
-  glUseProgram(program);
+  unsigned vID = shaderManager.GetVertexShaderID(Shader::Vertex::BASIC);
+  unsigned fID = shaderManager.GetFragmentShaderID(Shader::Fragment::BASIC);
+  m_ContextID = contextManager.CreateNewContext(vID, fID);
+  GLint program = contextManager.SwapContext(m_ContextID);
 
   //TODO: Add this to the context manager
   // Enable the default camera with the current program
@@ -54,6 +51,8 @@ void MeshRenderer::Init() noexcept
 
 void MeshRenderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& activeCamera) noexcept
 {
+  //TODO: Set context
+  
   // Clear the back buffer and depth buffer
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -116,6 +115,8 @@ void MeshRenderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& ac
 
 #endif // _IMGUI
 #pragma endregion
+
+  glUseProgram(0u);
 }
 
 void MeshRenderer::EnableDepthBuffer() noexcept
