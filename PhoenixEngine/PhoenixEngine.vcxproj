@@ -58,6 +58,7 @@
     <ClCompile Include="src\ContextManager.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
     <ClCompile Include="src\ImGuiManager.cpp" />
+    <ClCompile Include="src\LineRenderer.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\MeshManager.cpp" />
     <ClCompile Include="src\MeshRenderer.cpp" />
@@ -83,6 +84,7 @@
     <ClInclude Include="src\CameraManager.h" />
     <ClInclude Include="src\ContextManager.h" />
     <ClInclude Include="src\GraphicsCommon.h" />
+    <ClInclude Include="src\LineRenderer.h" />
     <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\MeshManager.h" />
     <ClInclude Include="src\MeshRenderer.h" />

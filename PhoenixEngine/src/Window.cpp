@@ -15,6 +15,7 @@ Window::Window(const WindowProperties& properties) :
   m_WindowProperties(properties),
   m_SceneManager(),
   m_MeshRenderer(),
+  m_LineRenderer(),
   m_LastFrameTime(std::chrono::steady_clock::now()),
   m_Clock(),
   m_bWindowShouldClose(false)
@@ -30,6 +31,7 @@ Window::Window(const WindowProperties& properties) :
     return;
   }
 
+  //TODO: Move this up to member initializer list
   // Create a windowed mode window and its OpenGL context
   m_pWindow = glfwCreateWindow(
     m_WindowProperties.Width,
@@ -68,8 +70,10 @@ Window::Window(const WindowProperties& properties) :
   ss << glGetString(GL_VERSION);
   Log::Trace(ss.str());
 
+  //TODO: Get rid of Init
   // Initialize the Renderer
   m_MeshRenderer.Init();
+  m_LineRenderer.Init();
 
 #pragma region ImGUI
 
@@ -142,6 +146,9 @@ void Window::OnUpdate() noexcept
   m_MeshRenderer.RenderGameObjects(
     m_SceneManager.GetCurrentSceneGameObjects(),
     m_SceneManager.GetCurrentSceneActiveCamera());
+
+  //TODO:
+  m_LineRenderer.RenderLines();
 
 #pragma region ImGUI
 

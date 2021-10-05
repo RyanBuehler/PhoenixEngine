@@ -53,6 +53,25 @@ void TestScene::OnUpdate(float dt) noexcept
   for (int i = 0; i < 8; ++i)
   {
     m_GameObjectArray[i].RotateAround(2.f * dt, vec3(0.f, 0.f, 1.f));
+    if (i > 0)
+    {
+    glBegin(GL_LINES);
+    glLineWidth(5.0f);
+    glColor4f(1.f, 0.f, 0.f, 0.5f);
+
+      glVertex3f(
+        m_GameObjectArray[i].GetPosition().x,
+        m_GameObjectArray[i].GetPosition().y,
+        m_GameObjectArray[i].GetPosition().z
+      );
+
+      glVertex3f(
+        m_GameObjectArray[i-1].GetPosition().x,
+        m_GameObjectArray[i-1].GetPosition().y,
+        m_GameObjectArray[i-1].GetPosition().z
+      );
+    glEnd();
+    }
   }
 }
 

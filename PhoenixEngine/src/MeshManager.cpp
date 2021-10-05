@@ -6,6 +6,7 @@
 //------------------------------------------------------------------------------
 #include "pch.h"
 #include "MeshManager.h"
+#include "Transform.h"
 #include "glm/ext/scalar_constants.inl"
 
 MeshManager::MeshManager() noexcept :
@@ -58,7 +59,6 @@ unsigned MeshManager::LoadMesh(const string& fileName) noexcept
   glBufferData(GL_ARRAY_BUFFER, m_MeshArray[index].GetVertexCount() * sizeof(vec3),
     m_MeshArray[index].m_PositionArray.data(), GL_STATIC_DRAW);
 
-
   // The Normal buffer
   //glGenBuffers(1, &m_MeshDataArray[index].NormalBufferID);
   //glBindBuffer(GL_ARRAY_BUFFER, m_MeshDataArray[index].NormalBufferID);
@@ -73,6 +73,12 @@ unsigned MeshManager::LoadMesh(const string& fileName) noexcept
 
   glGenVertexArrays(1, &m_MeshDataArray[index].VertexArrayID);
   glBindVertexArray(m_MeshDataArray[index].VertexArrayID);
+
+  // TODO: Position buffer index, normal buffer index, etc
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), 0);
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), 0);
+  glEnableVertexAttribArray(1);
 
   glBindVertexArray(0u);
 
@@ -94,7 +100,7 @@ void MeshManager::UnloadMeshes() noexcept
 
     //TODO:
     //Log::Trace("Mesh '" + m_MeshArray[i].m_FileName + "' destroyed.");
-    //Log::Trace("Mesh destroyed.");
+    Log::Trace("Mesh destroyed.");
   }
   m_MeshArray.clear();
   m_MeshDataArray.clear();
@@ -117,7 +123,7 @@ void MeshManager::RenderMesh(unsigned id) const noexcept
   glBindVertexArray(0u);
 }
 
-void MeshManager::RenderNormals(unsigned id) const noexcept
+void MeshManager::RenderNormals(unsigned id, float length) const noexcept
 {
   if (id == MESH_INDEX_ERROR)
   {
@@ -125,10 +131,29 @@ void MeshManager::RenderNormals(unsigned id) const noexcept
     return;
   }
 
-  //glBindVertexArray(m_MeshDataArray[id].VertexArrayID);
-  //glBindBuffer(GL_ARRAY_BUFFER, m_MeshDataArray[id].NormalBufferID);
+  for (int i = 0; i < m_MeshArray[id].m_TriangleArray.size(); ++i)
+  {
+    unsigned i1 = m_MeshArray[id].m_TriangleArray[i].Index1;
+    unsigned i2 = m_MeshArray[id].m_TriangleArray[i].Index2;
+    unsigned i3 = m_MeshArray[id].m_TriangleArray[i].Index3;
 
-  //glDrawArrays(GL_LINES, 0, m_MeshArray[id].GetNormalCount());
+    vec3 p1 = m_MeshArray[id].m_PositionArray[i1];
+    vec3 p2 = m_MeshArray[id].m_PositionArray[i2];
+    vec3 p3 = m_MeshArray[id].m_PositionArray[i3];
+
+    vec3 normal = normalize(glm::cross(p2 - p1, p3 - p1));
+
+    vec3 nStart = 0.3f * (p1 + p2 + p3);
+    vec3 nEnd = nStart + length * normal;
+
+    glBegin(GL_LINES);
+    glLineWidth(0.5f);
+    glColor4f(1.f, 0.f, 0.f, 0.5f);
+    glVertex3f(nStart.x, nStart.y, nStart.z);
+    glVertex3f(nEnd.x, nEnd.y, nEnd.z);
+    glEnd();
+
+  }
 }
 
 unsigned MeshManager::LoadMeshFromOBJ(const string& fileName) noexcept

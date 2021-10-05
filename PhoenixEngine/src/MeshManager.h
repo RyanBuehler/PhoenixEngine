@@ -50,7 +50,7 @@ public:
 
   void RenderMesh(unsigned id) const noexcept;
 
-  void RenderNormals(unsigned id) const noexcept;
+  void RenderNormals(unsigned id, float length) const noexcept;
 
 private:
   vector<Mesh> m_MeshArray;

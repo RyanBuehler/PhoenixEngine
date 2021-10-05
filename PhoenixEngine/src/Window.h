@@ -1,5 +1,6 @@
 #pragma once
 #include "MeshRenderer.h"
+#include "LineRenderer.h"
 #include "SceneManager.h"
 
 struct GLFWwindow;
@@ -62,6 +63,7 @@ private:
 
   SceneManager m_SceneManager;
   MeshRenderer m_MeshRenderer;
+  LineRenderer m_LineRenderer;
 
   std::chrono::steady_clock::time_point m_LastFrameTime;
   std::chrono::steady_clock m_Clock;

@@ -70,6 +70,8 @@ using std::is_same;
 // Utility Functions
 using std::clamp;
 using std::numeric_limits;
+using std::pair;
+using std::make_pair;
 
 // ----- MACROS -----
 #define SSIO std::ios_base::app | std::ios_base::out
