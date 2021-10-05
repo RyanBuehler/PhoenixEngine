@@ -17,7 +17,7 @@ class Renderer
 public:
 
   Renderer() noexcept;
-  ~Renderer() = default;
+  ~Renderer();
   Renderer(const Renderer&) = delete;
   Renderer& operator=(const Renderer&) = delete;
   Renderer(Renderer&&) = delete;
@@ -32,7 +32,7 @@ private:
   ShaderManager m_ShaderManager;
   ContextManager m_ContextManager;
   MeshRenderer m_MeshRenderer;
-  //LineRenderer m_LineRenderer;
+  LineRenderer m_LineRenderer;
 
   GLint m_DefaultContextID;
   GLint m_LineContextID;

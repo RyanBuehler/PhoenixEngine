@@ -10,38 +10,29 @@
 LineRenderer::LineRenderer() noexcept :
   m_LineArray(),
   m_ContextID(numeric_limits<unsigned>::max()),
-  m_LineWidth(1.f),
+  m_LineWidth(5.f),
   m_LineColor(vec4(1.f, 1.f, 1.f, 1.f)),
   m_VertexArray(numeric_limits<unsigned>::max()),
   m_VertexAttributeID(numeric_limits<unsigned>::max())
 {
-  //TODO: Move this to constructor
   glGenBuffers(1, &m_VertexArray);
   glBindBuffer(GL_ARRAY_BUFFER, m_VertexArray);
   glBufferData(GL_ARRAY_BUFFER, 2 * sizeof(vec3), m_LineArray.data(), GL_STATIC_DRAW);
   glVertexAttribPointer(m_VertexAttributeID, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-  m_LineArray.push_back(vec3(0.f, 0.f, 0.f));
-  m_LineArray.push_back(vec3(2.f, 0.f, 0.f));
 }
 
-void LineRenderer::Init(const ShaderManager& shaderManager, ContextManager& contextManager) noexcept
-{
-  ////TODO: Move this to constructor
-  //glGenBuffers(1, &m_VertexArray);
-  //glBindBuffer(GL_ARRAY_BUFFER, m_VertexArray);
-  //glBufferData(GL_ARRAY_BUFFER, 2 * sizeof(vec3), m_LineArray.data(), GL_STATIC_DRAW);
-  //glVertexAttribPointer(m_VertexAttributeID, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-  //m_LineArray.push_back(vec3(0.f, 0.f, 0.f));
-  //m_LineArray.push_back(vec3(2.f, 0.f, 0.f));
-}
-
-void LineRenderer::RenderLines() const noexcept
+void LineRenderer::RenderLines() noexcept
 {
   glLineWidth(m_LineWidth);
   glBindVertexArray(m_VertexArray);
   glDrawArrays(GL_LINES, 0, static_cast<unsigned>(m_LineArray.size()));
+  m_LineArray.clear();
+}
+
+void LineRenderer::AddLine(const vec3& point1, const vec3& point2) noexcept
+{
+  m_LineArray.push_back(point1);
+  m_LineArray.push_back(point2);
 }
 
 void LineRenderer::SetLineWidth(float width) noexcept

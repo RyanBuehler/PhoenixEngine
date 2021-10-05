@@ -21,9 +21,9 @@ public:
   LineRenderer(LineRenderer&&) = delete;
   LineRenderer& operator=(LineRenderer&&) = delete;
 
-  void Init(const ShaderManager& shaderManager, ContextManager& contextManager) noexcept;
+  void RenderLines() noexcept;
 
-  void RenderLines() const noexcept;
+  void AddLine(const vec3& point1, const vec3& point2) noexcept;
 
   void SetLineWidth(float width) noexcept;
   void SetLineColor(const vec4& rgba) noexcept;

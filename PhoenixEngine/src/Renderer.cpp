@@ -16,8 +16,9 @@ Renderer::Renderer() noexcept :
   m_ShaderManager(),
   m_ContextManager(),
   m_MeshRenderer(),
-  //m_LineRenderer(),
-  m_DefaultContextID(numeric_limits<unsigned>::max())
+  m_LineRenderer(),
+  m_DefaultContextID(numeric_limits<unsigned>::max()),
+  m_LineContextID(numeric_limits<unsigned>::max())
 {
   // Load a default context
   unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::BASIC);
@@ -30,10 +31,20 @@ Renderer::Renderer() noexcept :
   m_ContextManager.AddNewUniformAttribute(m_DefaultContextID, "model_matrix");
 
   // Load a Line Drawing context
-  //vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::LINE);
-  //fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::LINE);
-  //m_LineContextID = m_ContextManager.CreateNewContext(vID, fID);
-  //m_ContextManager.SwapContext(m_LineContextID);
+  vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::LINE);
+  fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::LINE);
+  m_LineContextID = m_ContextManager.CreateNewContext(vID, fID);
+  m_ContextManager.SetContext(m_LineContextID);
+
+  m_ContextManager.AddNewUniformAttribute(m_LineContextID, "pers_matrix");
+  m_ContextManager.AddNewUniformAttribute(m_LineContextID, "view_matrix");
+
+  Log::Trace("Renderer initialized.");
+}
+
+Renderer::~Renderer()
+{
+  Log::Trace("Renderer destroyed.");
 }
 
 void Renderer::OnBeginFrame() const noexcept
@@ -72,19 +83,32 @@ void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& active
     m_ContextManager.GetCurrentUniformAttributes()[1].ID,
     1, GL_FALSE, &activeCamera.GetViewMatrix()[0][0]);
 
+  vec3 lastPosition(0.f);
   // Render our list of game objects
   for (GameObject& go : gameObjects)
   {
     // Skip disabled game objects
-    if (!go.IsActive())
+    if (go.IsActive())
     {
-      return;
+      //TODO: batch rendering by mesh
+      // Bind the model transform matrix
+      glUniformMatrix4fv(m_ContextManager.GetCurrentUniformAttributes()[2].ID, 1, false, &go.GetMatrix()[0][0]);
+
+      m_MeshRenderer.RenderGameObject(go);
+
+      m_LineRenderer.AddLine(lastPosition, go.GetPosition());
+      lastPosition = go.GetPosition();
     }
-
-    //TODO: batch rendering by mesh
-    // Bind the model transform matrix
-    glUniformMatrix4fv(m_ContextManager.GetCurrentUniformAttributes()[2].ID, 1, false, &go.GetMatrix()[0][0]);
-
-    m_MeshRenderer.RenderGameObject(go);
   }
+
+  m_ContextManager.SetContext(m_LineContextID);
+  // Set Perspective Matrix
+  glUniformMatrix4fv(
+    m_ContextManager.GetCurrentUniformAttributes()[0].ID,
+    1, GL_FALSE, &activeCamera.GetPersMatrix()[0][0]);
+  // Set View Matrix
+  glUniformMatrix4fv(
+    m_ContextManager.GetCurrentUniformAttributes()[1].ID,
+    1, GL_FALSE, &activeCamera.GetViewMatrix()[0][0]);
+  m_LineRenderer.RenderLines();
 }

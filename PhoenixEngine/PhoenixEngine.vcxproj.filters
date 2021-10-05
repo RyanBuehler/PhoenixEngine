@@ -214,18 +214,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="res\shaders\basic.frag">
-      <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
-    </Text>
-    <Text Include="res\shaders\basic.vert">
-      <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
-    </Text>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="res\shaders\Line.frag">
       <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
     </None>
     <None Include="res\shaders\Line.vert">
+      <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
+    </None>
+    <None Include="x64\Debug\res\shaders\Diffuse.vert">
+      <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
+    </None>
+    <None Include="x64\Debug\res\shaders\Diffuse.frag">
       <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
     </None>
   </ItemGroup>
