@@ -93,7 +93,7 @@ void ImGuiManager::OnImGuiClose() noexcept
   ImGui::DestroyContext();
 }
 
-void ImGuiManager::OnImGuiGraphicsUpdate(MeshRenderer& renderer) noexcept
+void ImGuiManager::OnImGuiGraphicsUpdate() noexcept
 {
   ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
   ImGui::Begin("Graphics Settings", &ImGui::GraphicsWindowEnabled);

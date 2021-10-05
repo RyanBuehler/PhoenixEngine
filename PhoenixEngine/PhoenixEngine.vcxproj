@@ -63,6 +63,7 @@
     <ClCompile Include="src\MeshManager.cpp" />
     <ClCompile Include="src\MeshRenderer.cpp" />
     <ClCompile Include="src\OBJReader.cpp" />
+    <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\SceneManager.cpp" />
     <ClCompile Include="src\TestScene.cpp" />
     <ClCompile Include="src\ShaderManager.cpp" />
@@ -91,6 +92,7 @@
     <ClInclude Include="src\Logger.h" />
     <ClInclude Include="src\OBJReader.h" />
     <ClInclude Include="src\Paths.h" />
+    <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\SceneManager.h" />
     <ClInclude Include="src\TestScene.h" />
     <ClInclude Include="src\ShaderManager.h" />
@@ -249,7 +251,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_IMGUI;GLEW_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLEW_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>

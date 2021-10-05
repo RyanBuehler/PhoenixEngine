@@ -6,7 +6,7 @@
 //------------------------------------------------------------------------------
 #pragma once
 #include "SceneManager.h"
-#include "MeshRenderer.h"
+#include "Renderer.h"
 
 #ifndef _IMGUI_ENABLED
 class ImGuiManager;
@@ -34,7 +34,7 @@ public:
   void OnImGuiUpdateStart() noexcept;
   void OnImGuiUpdateEnd() noexcept;
   void OnImGuiClose() noexcept;
-  void OnImGuiGraphicsUpdate(MeshRenderer& renderer) noexcept;
+  void OnImGuiGraphicsUpdate() noexcept;
 
   void SetOnCloseHandler(function<void()> callback);
   void SetOnSceneChangeHandler(function<void(SceneManager::Scene)> callback);

@@ -1,8 +1,26 @@
 #pragma once
 #include "GraphicsCommon.h"
+#include "GLEW/glew.h"
 
 class ContextManager
 {
+public:
+  struct UniformAttribute
+  {
+    GLint ID;
+    string Name;
+  };
+
+  struct Context
+  {
+    Context(GLint programID = numeric_limits<int>::max()) :
+      ProgramID(programID),
+      UniformAttributes() {}
+
+    GLuint ProgramID;
+    vector<UniformAttribute> UniformAttributes;
+  };
+
 public:
   ContextManager() noexcept;
   ~ContextManager();
@@ -16,12 +34,17 @@ public:
     GLint fragmentShaderID
   );
 
-  GLint SwapContext(unsigned contextID) noexcept;
+  void SetContext(unsigned contextID) noexcept;
+
+  GLuint GetCurrentProgram() const noexcept;
+  const vector<UniformAttribute>& GetCurrentUniformAttributes() const noexcept;
+
+  void AddNewUniformAttribute(unsigned contextIndex, const string& name);
 
 private:
   void RetrieveProgramLog(GLint programID, string& log) const noexcept;
 
-  vector<GLint> m_Programs;
+  vector<Context> m_Contexts;
 
-  GLint m_CurrentProgram;
+  unsigned m_CurrentContextIndex;
 };

@@ -1,9 +1,8 @@
 #pragma once
-#include "MeshRenderer.h"
-#include "LineRenderer.h"
-#include "SceneManager.h"
 
 struct GLFWwindow;
+#include "SceneManager.h"
+#include "Renderer.h"
 
 class Window
 {
@@ -58,14 +57,11 @@ public:
 
 
 private:
-  GLFWwindow* m_pWindow;
+  GLFWwindow* m_WindowPtr;
   WindowProperties m_WindowProperties;
 
-  SceneManager m_SceneManager;
-  ShaderManager m_ShaderManager;
-  ContextManager m_ContextManager;
-  MeshRenderer m_MeshRenderer;
-  LineRenderer m_LineRenderer;
+  unique_ptr<SceneManager> m_SceneManagerPtr;
+  unique_ptr<Renderer> m_RendererPtr;
 
   std::chrono::steady_clock::time_point m_LastFrameTime;
   std::chrono::steady_clock m_Clock;
@@ -80,7 +76,6 @@ private:
 #pragma region ImGUI
 
 #ifdef _IMGUI
-
   void OnImGuiCloseWindow() noexcept;
   void OnImGuiChangeScene(SceneManager::Scene scene);
 

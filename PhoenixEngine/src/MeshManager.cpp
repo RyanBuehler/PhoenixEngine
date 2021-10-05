@@ -179,8 +179,8 @@ unsigned MeshManager::LoadSphere(float radius, int numDivisions) noexcept
   const unsigned TOPVERT = (STACKS * (SLICES - 1));
   const unsigned BOTVERT = (STACKS * (SLICES - 1) + 1);
 
-  m_MeshArray[index].m_PositionArray.resize(STACKS * (SLICES - 1) + 2);
-  m_MeshArray[index].m_NormalArray.resize(STACKS * (SLICES - 1) + 2);
+  m_MeshArray[index].m_PositionArray.resize(static_cast<size_t>(STACKS * (SLICES - 1) + 2));
+  m_MeshArray[index].m_NormalArray.resize(static_cast<size_t>(STACKS * (SLICES - 1) + 2));
 
   for (unsigned i = 1; i < SLICES; ++i)
   {

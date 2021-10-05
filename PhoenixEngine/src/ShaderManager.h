@@ -12,8 +12,6 @@ public:
   ShaderManager(ShaderManager&&) = delete;
   ShaderManager& operator=(ShaderManager&&) = delete;
 
-  void Init() noexcept;
-
   unsigned GetVertexShaderID(Shader::Vertex shader) const noexcept;
   unsigned GetFragmentShaderID(Shader::Fragment shader) const noexcept;
 

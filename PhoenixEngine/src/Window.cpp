@@ -11,19 +11,18 @@
 #pragma endregion
 
 Window::Window(const WindowProperties& properties) :
-  m_pWindow(nullptr),
+  m_WindowPtr(),
   m_WindowProperties(properties),
-  m_SceneManager(),
-  m_ShaderManager(),
-  m_ContextManager(),
-  m_MeshRenderer(),
-  m_LineRenderer(),
+  m_SceneManagerPtr(),
+  m_RendererPtr(),
   m_LastFrameTime(std::chrono::steady_clock::now()),
   m_Clock(),
   m_bWindowShouldClose(false)
 {
+#pragma region GLFW
+
   // Close the window if it is already open
-  if (m_pWindow)
+  if (m_WindowPtr)
     glfwTerminate();
 
   // Initialize the library
@@ -33,22 +32,20 @@ Window::Window(const WindowProperties& properties) :
     return;
   }
 
-  //TODO: Move this up to member initializer list
-  // Create a windowed mode window and its OpenGL context
-  m_pWindow = glfwCreateWindow(
+  m_WindowPtr = glfwCreateWindow(
     m_WindowProperties.Width,
     m_WindowProperties.Height,
     m_WindowProperties.Title.c_str(),
     NULL, NULL);
 
   // TODO: What does this do?
-  glfwMakeContextCurrent(m_pWindow);
+  glfwMakeContextCurrent(m_WindowPtr);
 
   // TODO: VSync?
   glfwSwapInterval(1);
 
   // Verify the Window's creation
-  if (!m_pWindow)
+  if (!m_WindowPtr)
   {
     glfwTerminate();
     Log::Error("OpenGL Window could not be created!");
@@ -56,9 +53,13 @@ Window::Window(const WindowProperties& properties) :
   }
 
   // Make the window's context current
-  glfwMakeContextCurrent(m_pWindow);
+  glfwMakeContextCurrent(m_WindowPtr);
+
+#pragma endregion
 
   Log::Trace("Window created.");
+
+#pragma region GLEW
 
   // Verify GLEW initialized
   if (glewInit() != GLEW_OK)
@@ -72,18 +73,17 @@ Window::Window(const WindowProperties& properties) :
   ss << glGetString(GL_VERSION);
   Log::Trace(ss.str());
 
-  //TODO: Get rid of Init
-  // Initialize the Renderer
-  m_ShaderManager.Init();
-  m_MeshRenderer.Init(m_ShaderManager, m_ContextManager);
-  //m_LineRenderer.Init(m_ShaderManager, m_ContextManager);
+#pragma endregion
+
+  m_SceneManagerPtr = make_unique<SceneManager>();
+  m_RendererPtr = make_unique<Renderer>();
 
 #pragma region ImGUI
 
 #ifdef _IMGUI
 
   // Set up ImGui Close Window Event
-  ImGui::Manager = make_unique<ImGuiManager>(m_pWindow);
+  ImGui::Manager = make_unique<ImGuiManager>(m_WindowPtr);
   std::function<void()> cbClose = [=]() { OnImGuiCloseWindow(); };
   ImGui::Manager->SetOnCloseHandler(cbClose);
 
@@ -95,7 +95,6 @@ Window::Window(const WindowProperties& properties) :
 #endif // _IMGUI
 
 #pragma endregion
-
 }
 
 unsigned Window::GetWidth() const noexcept
@@ -118,7 +117,7 @@ void Window::OnUpdate() noexcept
   m_LastFrameTime = std::chrono::steady_clock::now();
 
   // Change scenes
-  if (m_SceneManager.SceneIsTransitioning())
+  if (m_SceneManagerPtr->SceneIsTransitioning())
   {
     // Skip drawing this cycle if Scene is transitioning
     //TODO: consider an OnSceneTransitioned for the Renderer
@@ -132,7 +131,12 @@ void Window::OnUpdate() noexcept
   OnPollInput(delta);
 
   // Check input per scene
-  m_SceneManager.OnPollInput(m_pWindow, delta);
+  m_SceneManagerPtr->OnPollInput(m_WindowPtr, delta);
+
+  // Update the Scene this cycle
+  m_SceneManagerPtr->OnUpdate(delta);
+
+  m_RendererPtr->OnBeginFrame();
 
 #pragma region ImGUI
 
@@ -142,16 +146,12 @@ void Window::OnUpdate() noexcept
 
 #pragma endregion
 
-  // Update the Scene this cycle
-  m_SceneManager.OnUpdate(delta);
-
   // Update the Renderer
-  m_MeshRenderer.RenderGameObjects(
-    m_SceneManager.GetCurrentSceneGameObjects(),
-    m_SceneManager.GetCurrentSceneActiveCamera());
+  m_RendererPtr->RenderGameObjects(
+    m_SceneManagerPtr->GetCurrentSceneGameObjects(),
+    m_SceneManagerPtr->GetCurrentSceneActiveCamera());
 
-  //TODO:
-  //m_LineRenderer.RenderLines();
+  m_RendererPtr->OnEndFrame();
 
 #pragma region ImGUI
 
@@ -161,8 +161,9 @@ void Window::OnUpdate() noexcept
 
 #pragma endregion
 
+
   // Swap the back/front buffers
-  glfwSwapBuffers(m_pWindow);
+  glfwSwapBuffers(m_WindowPtr);
 }
 
 void Window::OnClose() noexcept
@@ -176,14 +177,14 @@ void Window::OnClose() noexcept
 #pragma endregion
 
   // Shut down the scenes
-  m_SceneManager.Shutdown();
+  m_SceneManagerPtr->Shutdown();
   // Close the window
   glfwTerminate();
 }
 
 void Window::OnPollInput(float dt) noexcept
 {
-  if (glfwGetKey(m_pWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+  if (glfwGetKey(m_WindowPtr, GLFW_KEY_ESCAPE) == GLFW_PRESS)
   {
     Log::Trace("Esc key pressed. Shutting down.");
     m_bWindowShouldClose = true;
@@ -193,7 +194,7 @@ void Window::OnPollInput(float dt) noexcept
 bool Window::WindowShouldClose() noexcept
 {
   // Check if the window should be closed
-  return m_bWindowShouldClose || glfwWindowShouldClose(m_pWindow);
+  return m_bWindowShouldClose || glfwWindowShouldClose(m_WindowPtr);
 }
 
 #pragma region ImGUI
@@ -207,7 +208,7 @@ void Window::OnImGuiCloseWindow() noexcept
 
 void Window::OnImGuiChangeScene(SceneManager::Scene scene)
 {
-  m_SceneManager.SetNewScene(scene);
+  m_SceneManagerPtr->SetNewScene(scene);
 }
 
 #endif // _IMGUI

@@ -1,28 +1,26 @@
 #include "pch.h"
-#include "GLEW/glew.h"
 #include "ContextManager.h"
-#include "ShaderManager.h"
 
 //TODO:
 #define GL_PROGRAM_ERROR INT_MAX
 
 ContextManager::ContextManager() noexcept :
-  m_Programs(),
-  m_CurrentProgram(numeric_limits<unsigned>::max())
+  m_Contexts(),
+  m_CurrentContextIndex(numeric_limits<unsigned>::max())
 {
 }
 
 ContextManager::~ContextManager()
 {
-  for (GLint id : m_Programs)
+  for (Context c : m_Contexts)
   {
-    glDeleteProgram(id);
+    glDeleteProgram(c.ProgramID);
   }
 }
 
 unsigned ContextManager::CreateNewContext(GLint vertexShaderID, GLint fragmentShaderID)
 {
-  unsigned i = static_cast<unsigned>(m_Programs.size());
+  unsigned i = static_cast<unsigned>(m_Contexts.size());
 
   GLint programID = glCreateProgram();
 
@@ -42,23 +40,32 @@ unsigned ContextManager::CreateNewContext(GLint vertexShaderID, GLint fragmentSh
     return GL_PROGRAM_ERROR;
   }
 
-  m_Programs.push_back(programID);
+  m_Contexts.push_back(programID);
 
   return i;
 }
 
-GLint ContextManager::SwapContext(unsigned contextID) noexcept
+void ContextManager::SetContext(unsigned contextIndex) noexcept
 {
-  if (m_Programs[contextID] == m_CurrentProgram)
-    return -1;
+  if (contextIndex != m_CurrentContextIndex)
+  {
+    m_CurrentContextIndex = contextIndex;
+  }
 
-  m_CurrentProgram = m_Programs[contextID];
-
-  glUseProgram(m_CurrentProgram);
+  glUseProgram(m_Contexts[m_CurrentContextIndex].ProgramID);
 
   //TODO: Do I want to return the current program or do I want
   // instead to have the context manager handle uniforms?
-  return m_CurrentProgram;
+}
+
+GLuint ContextManager::GetCurrentProgram() const noexcept
+{
+  return m_Contexts[m_CurrentContextIndex].ProgramID;
+}
+
+const vector<ContextManager::UniformAttribute>& ContextManager::GetCurrentUniformAttributes() const noexcept
+{
+  return m_Contexts[m_CurrentContextIndex].UniformAttributes;
 }
 
 void ContextManager::RetrieveProgramLog(GLint programID, string& log) const noexcept
@@ -70,4 +77,12 @@ void ContextManager::RetrieveProgramLog(GLint programID, string& log) const noex
   log.clear();
   log = programLog;
   delete[] programLog;
+}
+
+void ContextManager::AddNewUniformAttribute(unsigned contextIndex, const string& name)
+{
+  assert(contextIndex < m_Contexts.size());
+  GLint id = glGetUniformLocation(m_Contexts[contextIndex].ProgramID, name.c_str());
+  UniformAttribute attribute = { id, name };
+  m_Contexts[contextIndex].UniformAttributes.push_back(attribute);
 }

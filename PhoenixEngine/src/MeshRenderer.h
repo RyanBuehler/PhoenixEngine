@@ -6,20 +6,7 @@
 //------------------------------------------------------------------------------
 #pragma once
 #include "MeshManager.h"
-#include "ShaderManager.h"
-#include "ContextManager.h"
-#include "CameraManager.h"
 #include "GameObject.h"
-
-#pragma region ImGUI
-#ifdef _IMGUI
-#include "ImGuiManager.h"
-#endif // _IMGUI
-#pragma endregion
-
-class Camera;
-class CubeMesh;
-class Transform;
 
 class MeshRenderer
 {
@@ -31,9 +18,7 @@ public:
   MeshRenderer(MeshRenderer&&) = delete;
   MeshRenderer& operator=(MeshRenderer&&) = delete;
 
-  void Init(const ShaderManager& shaderManager, ContextManager& contextManager) noexcept;
-
-  void RenderGameObjects(vector<GameObject>& gameObjects, Camera& activeCamera) noexcept;
+  void RenderGameObject(GameObject& gameObject) noexcept;
 
   void EnableDepthBuffer() noexcept;
   void DisableDepthBuffer() noexcept;
@@ -45,18 +30,4 @@ public:
 
 private:
   MeshManager m_MeshManager;
-
-  GLint m_ContextID;
-
-  GLuint m_ModelAttributeID;
-  GLuint m_PersAttributeID;
-  GLuint m_ViewAttributeID; 
-
-  bool m_DebugRenderNormals;
-
-#pragma region ImGUI
-#ifdef _IMGUI
-  friend class ImGuiManager;
-#endif // _IMGUI
-#pragma endregion
 };

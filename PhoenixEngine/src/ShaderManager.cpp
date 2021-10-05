@@ -8,6 +8,16 @@ ShaderManager::ShaderManager() noexcept :
   m_VertexShaders(),
   m_FragmentShaders()
 {
+  //TODO: safety check if its init already
+
+  m_VertexShaders[static_cast<unsigned>(Shader::Vertex::BASIC)] =
+    LoadShader("Diffuse.vert", GL_VERTEX_SHADER);
+  m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::BASIC)] =
+    LoadShader("Diffuse.frag", GL_FRAGMENT_SHADER);
+  m_VertexShaders[static_cast<unsigned>(Shader::Vertex::LINE)] =
+    LoadShader("Line.vert", GL_VERTEX_SHADER);
+  m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::LINE)] =
+    LoadShader("Line.frag", GL_FRAGMENT_SHADER);
 }
 
 ShaderManager::~ShaderManager()
@@ -21,20 +31,6 @@ ShaderManager::~ShaderManager()
   {
     glDeleteShader(id);
   }
-}
-
-void ShaderManager::Init() noexcept
-{
-  //TODO: safety check if its init already
-
-  m_VertexShaders[static_cast<unsigned>(Shader::Vertex::BASIC)] =
-    LoadShader("Diffuse.vert", GL_VERTEX_SHADER);
-  m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::BASIC)] =
-    LoadShader("Diffuse.frag", GL_FRAGMENT_SHADER);
-  m_VertexShaders[static_cast<unsigned>(Shader::Vertex::LINE)] =
-    LoadShader("Line.vert", GL_VERTEX_SHADER);
-  m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::LINE)] =
-    LoadShader("Line.frag", GL_FRAGMENT_SHADER);
 }
 
 unsigned ShaderManager::GetVertexShaderID(Shader::Vertex shader) const noexcept
