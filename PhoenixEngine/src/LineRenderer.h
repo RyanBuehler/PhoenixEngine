@@ -33,8 +33,9 @@ private:
 
   GLint m_ContextID;
 
-  GLfloat m_LineWidth;
   vec4 m_LineColor;
-  GLuint m_VertexArray;
-  GLuint m_VertexAttributeID;
+  GLuint m_VertexArrayID;
+  GLuint m_VertexBufferObject;
+
+  GLuint m_PositionAttributeID;
 };

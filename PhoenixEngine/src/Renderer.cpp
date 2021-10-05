@@ -39,9 +39,8 @@ Renderer::Renderer() noexcept :
 
   m_ContextManager.AddNewUniformAttribute(m_LineContextID, "pers_matrix");
   m_ContextManager.AddNewUniformAttribute(m_LineContextID, "view_matrix");
-  m_ContextManager.AddNewUniformAttribute(m_LineContextID, "model_matrix");
 
-  m_MeshManager.LoadMesh("quad");
+  //m_MeshManager.LoadMesh("quad");
 
   Log::Trace("Renderer initialized.");
 }
@@ -116,12 +115,22 @@ void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& active
     // Skip disabled game objects
     if (go.IsActive())
     {
-      RenderGameObject(go);
-      m_LineRenderer.AddLine(go.GetPosition(), lastPosition);
+      //RenderGameObject(go);
+      //m_LineRenderer.AddLine(go.GetPosition(), lastPosition);
       lastPosition = go.GetPosition();
     }
   }
 
+  m_LineRenderer.SetLineWidth(5.f);
+  m_LineRenderer.AddLine(vec3(0.f), vec3(5.f, 0.f, 0.f));
+
   m_ContextManager.SetContext(m_LineContextID);
+  glUniformMatrix4fv(
+    m_ContextManager.GetCurrentUniformAttributes()[0].ID,
+    1, GL_FALSE, &activeCamera.GetPersMatrix()[0][0]);
+  // Set View Matrix
+  glUniformMatrix4fv(
+    m_ContextManager.GetCurrentUniformAttributes()[1].ID,
+    1, GL_FALSE, &activeCamera.GetViewMatrix()[0][0]);
   m_LineRenderer.RenderLines();
 }
