@@ -108,21 +108,19 @@ void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& active
     m_ContextManager.GetCurrentUniformAttributes()[1].ID,
     1, GL_FALSE, &activeCamera.GetViewMatrix()[0][0]);
 
-  vec3 lastPosition = vec3(gameObjects[0].GetPosition());
+  vec3 lastPosition = vec3(gameObjects[7].GetPosition());
   // Render our list of game objects
   for (GameObject& go : gameObjects)
   {
     // Skip disabled game objects
     if (go.IsActive())
     {
-      //RenderGameObject(go);
-      //m_LineRenderer.AddLine(go.GetPosition(), lastPosition);
+      RenderGameObject(go);
+      if(go.GetMeshFileName() == "sphere")
+        m_LineRenderer.AddLine(go.GetPosition(), lastPosition);
       lastPosition = go.GetPosition();
     }
   }
-
-  m_LineRenderer.SetLineWidth(5.f);
-  m_LineRenderer.AddLine(vec3(0.f), vec3(5.f, 0.f, 0.f));
 
   m_ContextManager.SetContext(m_LineContextID);
   glUniformMatrix4fv(

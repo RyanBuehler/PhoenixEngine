@@ -25,6 +25,8 @@ public:
 
   void AddLine(const vec3& point1, const vec3& point2) noexcept;
 
+  void drawLine(const vec3& from, const vec3& to, const vec3& color);
+
   void SetLineWidth(float width) noexcept;
   void SetLineColor(const vec4& rgba) noexcept;
 
