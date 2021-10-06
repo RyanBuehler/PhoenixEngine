@@ -1,11 +1,12 @@
 #include "pch.h"
 #include "Transform.h"
 #include <glm/ext/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale
+#include <glm/gtx/rotate_vector.hpp>
 
 Transform::Transform() noexcept :
   m_Position(0.f),
   m_Rotation(0.f),
-  m_Scale(0.25f),
+  m_Scale(1.f),
   m_Matrix(1.f),
   m_bIsDirty(true)
 {}
@@ -30,16 +31,6 @@ Transform& Transform::operator=(const Transform& other)
   return *this;
 }
 
-//void Transform::Init(GLuint program) noexcept
-//{
-//  m_ModelAttributeID = glGetUniformLocation(program, "model_matrix");
-//}
-//
-//void Transform::Bind() noexcept
-//{
-//  glUniformMatrix4fv(m_ModelAttributeID, 1, false, &GetMatrix()[0][0]);
-//}
-
 void Transform::Translate(const vec3& translation)
 {
   m_Position += translation;
@@ -62,6 +53,11 @@ void Transform::RotateZ(float degrees)
 {
   m_Rotation.z += degrees;
   m_bIsDirty = true;
+}
+
+void Transform::RotateAround(float degrees, vec3 axis)
+{
+  m_Position = glm::rotate(m_Position, glm::radians(degrees), axis);
 }
 
 void Transform::ScaleBy(float factor)

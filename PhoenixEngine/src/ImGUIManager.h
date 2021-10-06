@@ -6,7 +6,7 @@
 //------------------------------------------------------------------------------
 #pragma once
 #include "SceneManager.h"
-#include "MeshRenderer.h"
+#include "Renderer.h"
 
 #ifndef _IMGUI_ENABLED
 class ImGuiManager;
@@ -14,6 +14,7 @@ namespace ImGui
 {
   extern unique_ptr<ImGuiManager> Manager;
   extern bool GraphicsWindowEnabled;
+  extern bool GraphicsDebugRenderNormals;
 }
 #define _IMGUI_ENABLED
 #endif
@@ -33,13 +34,12 @@ public:
   void OnImGuiUpdateStart() noexcept;
   void OnImGuiUpdateEnd() noexcept;
   void OnImGuiClose() noexcept;
-  void OnImGuiGraphicsUpdate(MeshRenderer& renderer) noexcept;
+  void OnImGuiGraphicsUpdate() noexcept;
 
   void SetOnCloseHandler(function<void()> callback);
   void SetOnSceneChangeHandler(function<void(SceneManager::Scene)> callback);
 
 private:
-
   function<void()> m_dOnClose;
   function<void(SceneManager::Scene)> m_dOnSceneChange;
 

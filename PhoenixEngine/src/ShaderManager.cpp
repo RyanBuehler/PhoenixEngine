@@ -8,6 +8,16 @@ ShaderManager::ShaderManager() noexcept :
   m_VertexShaders(),
   m_FragmentShaders()
 {
+  //TODO: safety check if its init already
+
+  m_VertexShaders[static_cast<unsigned>(Shader::Vertex::DIFFUSE)] =
+    LoadShader("Diffuse.vert", GL_VERTEX_SHADER);
+  m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::DIFFUSE)] =
+    LoadShader("Diffuse.frag", GL_FRAGMENT_SHADER);
+  m_VertexShaders[static_cast<unsigned>(Shader::Vertex::DEBUG)] =
+    LoadShader("Debug.vert", GL_VERTEX_SHADER);
+  m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::DEBUG)] =
+    LoadShader("Debug.frag", GL_FRAGMENT_SHADER);
 }
 
 ShaderManager::~ShaderManager()
@@ -21,16 +31,6 @@ ShaderManager::~ShaderManager()
   {
     glDeleteShader(id);
   }
-}
-
-void ShaderManager::Init() noexcept
-{
-  //TODO: safety check if its init already
-
-  m_VertexShaders[static_cast<unsigned>(Shader::Vertex::BASIC)] =
-    LoadShader("basic.vert", GL_VERTEX_SHADER);
-  m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::BASIC)] =
-    LoadShader("basic.frag", GL_FRAGMENT_SHADER);
 }
 
 unsigned ShaderManager::GetVertexShaderID(Shader::Vertex shader) const noexcept

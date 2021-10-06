@@ -20,6 +20,7 @@ namespace ImGui
 {
   unique_ptr<ImGuiManager> Manager;
   bool GraphicsWindowEnabled = true;
+  bool GraphicsDebugRenderNormals = true;
 }
 
 ImGuiManager::ImGuiManager(GLFWwindow* window) noexcept
@@ -74,8 +75,8 @@ void ImGuiManager::OnImGuiUpdateStart() noexcept
 
   ImGui::DockSpaceOverViewport(NULL, ImGuiDockNodeFlags_NoDockingInCentralNode | ImGuiDockNodeFlags_PassthruCentralNode);
 
-  static bool dopen = true;
-  ImGui::ShowDemoWindow(&dopen);
+  //static bool dopen = true;
+  //ImGui::ShowDemoWindow(&dopen);
 }
 
 void ImGuiManager::OnImGuiUpdateEnd() noexcept
@@ -92,12 +93,14 @@ void ImGuiManager::OnImGuiClose() noexcept
   ImGui::DestroyContext();
 }
 
-void ImGuiManager::OnImGuiGraphicsUpdate(MeshRenderer& renderer) noexcept
+void ImGuiManager::OnImGuiGraphicsUpdate() noexcept
 {
   ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
   ImGui::Begin("Graphics Settings", &ImGui::GraphicsWindowEnabled);
 
   ImGui::Text("Frame: [%05d] Time: %lf", ImGui::GetFrameCount(), ImGui::GetTime());
+
+  ImGui::Checkbox("Debug Render Normals", &ImGui::GraphicsDebugRenderNormals);
 
   ImGui::End();
 }

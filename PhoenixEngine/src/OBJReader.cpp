@@ -70,13 +70,13 @@ double OBJReader::ReadOBJFile(std::string filepath, Mesh* pMesh,
   double timeDuration = std::chrono::duration< double, std::milli >(endTime - 
     startTime).count();
 
-  std::cout << "OBJ file read in "
-    << timeDuration
-    << "  milli seconds." << std::endl;
+  //std::cout << "OBJ file read in "
+  //  << timeDuration
+  //  << "  milli seconds." << std::endl;
 
 
   // Now calculate vertex normals
-  //_currentMesh->calcVertexNormals(bFlipNormals);
+  _currentMesh->CalculateNormals(bFlipNormals);
   //_currentMesh->calcUVs(Mesh::UVType::CYLINDRICAL_UV);
 
   return timeDuration;

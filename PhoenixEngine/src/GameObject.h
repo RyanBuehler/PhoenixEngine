@@ -33,6 +33,8 @@ public:
   inline void RotateX(float degrees) { m_Transform.RotateX(degrees); }
   inline void RotateY(float degrees) { m_Transform.RotateY(degrees); }
   inline void RotateZ(float degrees) { m_Transform.RotateZ(degrees); }
+  inline void RotateAround(float degrees, const vec3& axis)
+    { m_Transform.RotateAround(degrees, axis); }
   inline void ScaleBy(float factor) { m_Transform.ScaleBy(factor); }
 
   inline void SetPosition(const vec3& pos) noexcept { m_Transform.SetPosition(pos); }
@@ -48,7 +50,7 @@ public:
 #pragma endregion
 
 private:
-  friend class MeshRenderer;
+  friend class Renderer;
 
   Transform m_Transform;
   unsigned m_MeshID;
