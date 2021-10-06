@@ -8,34 +8,50 @@
 #include "GLEW/glew.h"
 #include "GraphicsCommon.h"
 #include "ShaderManager.h"
-#include "ContextManager.h"
+#include "Camera.h"
 
-class LineRenderer
+class DebugRenderer
 {
 public:
+  struct VertexBufferObject
+  {
+    vec4 VertexPosition;
+    vec4 VertexColor;
+  };
 
-  LineRenderer() noexcept;
-  ~LineRenderer() = default;
-  LineRenderer(const LineRenderer&) = delete;
-  LineRenderer& operator=(const LineRenderer&) = delete;
-  LineRenderer(LineRenderer&&) = delete;
-  LineRenderer& operator=(LineRenderer&&) = delete;
+public:
+  /// <summary>
+  /// Singleton Pattern Instance
+  /// </summary>
+  /// <returns>The DebugRenderer</returns>
+  static DebugRenderer& I()
+  {
+    static DebugRenderer m_Instance = DebugRenderer();
+    return m_Instance;
+  }
+
+  ~DebugRenderer();
+  DebugRenderer(const DebugRenderer&) = delete;
+  DebugRenderer& operator=(const DebugRenderer&) = delete;
+  DebugRenderer(DebugRenderer&&) = delete;
+  DebugRenderer& operator=(DebugRenderer&&) = delete;
 
   void RenderLines() noexcept;
 
   void AddLine(const vec3& point1, const vec3& point2) noexcept;
 
-  void drawLine(const vec3& from, const vec3& to, const vec3& color);
-
   void SetLineWidth(float width) noexcept;
   void SetLineColor(const vec4& rgba) noexcept;
 
 private:
+  DebugRenderer() noexcept;
+
+  void RenderLine(const vec3& point1, const vec3& point2);
+
   vector<vec3> m_LineArray;
 
-  GLint m_ContextID;
-
   vec4 m_LineColor;
+
   GLuint m_VertexArrayID;
   GLuint m_VertexBufferObject;
 

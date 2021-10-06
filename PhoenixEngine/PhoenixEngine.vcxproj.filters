@@ -52,6 +52,9 @@
     <Filter Include="Header Files\ImGUI">
       <UniqueIdentifier>{9a74d418-4c8c-40ac-a011-508d5fbdce77}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Core\Common">
+      <UniqueIdentifier>{082a0541-c584-4f18-be14-2cecce80c93f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h">
@@ -132,11 +135,14 @@
     <ClInclude Include="src\ImGuiManager.h">
       <Filter>Header Files\ImGUI</Filter>
     </ClInclude>
-    <ClInclude Include="src\LineRenderer.h">
+    <ClInclude Include="src\DebugRenderer.h">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer.h">
       <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Colors.h">
+      <Filter>Header Files\Core\Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -206,7 +212,7 @@
     <ClCompile Include="src\ImGuiManager.cpp">
       <Filter>Source Files\ImGUI</Filter>
     </ClCompile>
-    <ClCompile Include="src\LineRenderer.cpp">
+    <ClCompile Include="src\DebugRenderer.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer.cpp">
@@ -214,13 +220,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\shaders\Line.frag">
-      <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
-    </None>
-    <None Include="res\shaders\Line.vert">
-      <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
-    </None>
     <None Include="res\shaders\Diffuse.vert">
+      <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
+    </None>
+    <None Include="res\shaders\Debug.vert">
+      <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
+    </None>
+    <None Include="res\shaders\Debug.frag">
       <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
     </None>
     <None Include="res\shaders\Diffuse.frag">

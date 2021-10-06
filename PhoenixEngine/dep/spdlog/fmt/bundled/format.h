@@ -2731,7 +2731,7 @@ extern template auto snprintf_float<long double>(long double value,
 
 FMT_END_DETAIL_NAMESPACE
 
-#if FMT_USE_USER_DEFINED_LITERALS
+#if 0//TODO: FMT_USE_USER_DEFINED_LITERALS
 inline namespace literals {
 /**
   \rst
