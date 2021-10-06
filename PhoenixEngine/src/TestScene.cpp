@@ -27,7 +27,8 @@ void TestScene::OnLoad() noexcept
   {
     m_GameObjectArray.emplace_back("sphere");
   }
-  m_GameObjectArray.emplace_back("bunny.obj");
+  m_GameObjectArray.emplace_back("cube2.obj");
+  //m_GameObjectArray.emplace_back("bunny.obj");
 }
 
 void TestScene::OnInit() noexcept
@@ -36,6 +37,7 @@ void TestScene::OnInit() noexcept
 
   for (int i = 0; i < 8; ++i)
   {
+    m_GameObjectArray[i].SetIsActive(false);
     m_GameObjectArray[i].SetPosition(vec3(10.f, 0.f, 0.f));
     m_GameObjectArray[i].RotateAround(360.f / 8.f * i, vec3(0.f, 0.f, 1.f));
     //TODO: 0.1f?
@@ -54,7 +56,7 @@ void TestScene::OnInit() noexcept
   //DebugRenderer::I().AddPermanentLine(temp.GetPosition(), vec3(1.f, 0.f, 0.f));
 
   m_GameObjectArray[8].SetPosition(vec3(0.f));
-  m_GameObjectArray[8].ScaleBy(2.f);
+  m_GameObjectArray[8].ScaleBy(1.f);
   m_MainCamera.SetTarget(&m_GameObjectArray[8].GetTransform());
 
   m_Time = 0.f;

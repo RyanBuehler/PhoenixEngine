@@ -64,7 +64,7 @@ void Renderer::RenderGameObject(GameObject& gameObject)
     // Unknown Mesh ID, check for new id with file name
     if (gameObject.m_MeshID == MeshManager::MESH_INDEX_ERROR)
     {
-      gameObject.m_MeshID = m_MeshManager.LoadMesh(gameObject.GetMeshFileName(), true);
+      gameObject.m_MeshID = m_MeshManager.LoadMesh(gameObject.GetMeshFileName(), true, true);
       if (gameObject.m_MeshID == MeshManager::MESH_INDEX_ERROR)
       {
         Log::Error("Could not load mesh: " + gameObject.GetMeshFileName());
@@ -154,6 +154,8 @@ void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& active
   //    DebugRenderer::I().AddLine(vec3(x, y, 0.f), vec3(x, -y, 0.f));
   //  }
   //}
+
+  //TODO: Check if this is being used before Rendering
   DebugRenderer::I().RenderLines();
 }
 

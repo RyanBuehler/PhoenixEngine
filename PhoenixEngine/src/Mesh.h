@@ -63,13 +63,19 @@
     inline void SetIsStatic(bool isStatic) noexcept { m_bIsStatic = isStatic; }
     inline bool IsStatic() const noexcept { return m_bIsStatic; }
 
+    const vector<vec3>& GetVertexNormalArray() const noexcept;
+    const vector<vec3>& GetSurfaceNormalArray() const noexcept;
+    const vector<vec3>& SurfaceNormalPositionArray() const noexcept;
+
     vec3 CalculateBoundingBoxSize() noexcept;
     float CalculateWidestPoint() noexcept;
-    void CalculateNormals(bool flipNormals) noexcept;
+    void CalculateNormals(bool flipNormals = false) noexcept;
     void ScaleToUnitSize() noexcept;
+    vec3 FindCenterOfMass() const noexcept;
+    void ResetOriginToCenterOfMass() noexcept;
 
   private:
-    void CalculateSurfaceNormals() noexcept;
+    void CalculateSurfaceNormals(bool flipNormals = false) noexcept;
     void CalculateVertexNormals() noexcept;
 
     friend class MeshManager;
@@ -82,6 +88,7 @@
     vector<vec3> m_PositionArray;
     vector<vec3> m_VertexNormalArray;
     vector<vec3> m_SurfaceNormalArray;
+    vector<vec3> m_SurfaceNormalPositionArray;
     vector<Mesh::Triangle> m_TriangleArray;
 
     bool m_bIsDirty;

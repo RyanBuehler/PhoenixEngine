@@ -21,6 +21,7 @@ namespace ImGui
   unique_ptr<ImGuiManager> Manager;
   bool GraphicsWindowEnabled = true;
   bool GraphicsDebugRenderNormals = true;
+  float GraphicsDebugNormalLength = 0.2f;
 }
 
 ImGuiManager::ImGuiManager(GLFWwindow* window) noexcept
@@ -101,6 +102,7 @@ void ImGuiManager::OnImGuiGraphicsUpdate() noexcept
   ImGui::Text("Frame: [%05d] Time: %lf", ImGui::GetFrameCount(), ImGui::GetTime());
 
   ImGui::Checkbox("Debug Render Normals", &ImGui::GraphicsDebugRenderNormals);
+  ImGui::SliderFloat("Normal Length", &ImGui::GraphicsDebugNormalLength, 0.001f, 1.f);
 
   ImGui::End();
 }
@@ -114,7 +116,6 @@ void ImGuiManager::SetOnSceneChangeHandler(function<void(SceneManager::Scene)> c
 {
   m_dOnSceneChange = callback;
 }
-
 
 void ImGuiManager::ShowMainMenu() noexcept
 {

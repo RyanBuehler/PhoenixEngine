@@ -44,13 +44,21 @@ public:
   MeshManager(MeshManager&&) = delete;
   MeshManager& operator=(MeshManager&&) = delete;
 
-  unsigned LoadMesh(const string& fileName, bool scaleToUnitSize = false) noexcept;
+  unsigned LoadMesh(const string& fileName, bool scaleToUnitSize = false, bool resetOrigin = false) noexcept;
 
   void UnloadMeshes() noexcept;
 
   void RenderMesh(unsigned id) const noexcept;
 
+#pragma region ImGui
+
+#ifdef _IMGUI
+
   void RenderNormals(unsigned id, float length) const noexcept;
+
+#endif
+
+#pragma endregion
 
 private:
   vector<Mesh> m_MeshArray;
@@ -58,6 +66,6 @@ private:
   OBJReader m_OBJReader;
 
   unsigned LoadMeshFromOBJ(const string& fileName) noexcept;
-  unsigned LoadSphere(float radius = 1.f, int numDivisions = 8) noexcept;
+  unsigned LoadSphere(float radius = 1.f, int numDivisions = 4) noexcept;
   unsigned LoadQuad() noexcept;
 };

@@ -10,6 +10,16 @@
 #include "glm/ext/scalar_constants.inl"
 #include "DebugRenderer.h"
 
+#pragma region ImGui
+
+#ifdef _IMGUI
+
+#include "ImGUIManager.h"
+
+#endif
+
+#pragma endregion
+
 MeshManager::MeshManager() noexcept :
   m_MeshArray(),
   m_OBJReader()
@@ -23,7 +33,7 @@ MeshManager::~MeshManager()
   UnloadMeshes();
 }
 
-unsigned MeshManager::LoadMesh(const string& fileName, bool scaleToUnitSize) noexcept
+unsigned MeshManager::LoadMesh(const string& fileName, bool scaleToUnitSize, bool resetOrigin) noexcept
 {
   // Check if this mesh has already been loaded
   for (unsigned i = 0u; i < m_MeshArray.size(); ++i)
@@ -61,6 +71,11 @@ unsigned MeshManager::LoadMesh(const string& fileName, bool scaleToUnitSize) noe
   if (scaleToUnitSize)
   {
     m_MeshArray[index].ScaleToUnitSize();
+  }
+
+  if (resetOrigin)
+  {
+    m_MeshArray[index].ResetOriginToCenterOfMass();
   }
 
   // The Position buffer
@@ -129,9 +144,26 @@ void MeshManager::RenderMesh(unsigned id) const noexcept
 
   //TODO: GetElementCount? Instead to save the 3 * every frame?
   glDrawElements(GL_TRIANGLES, 3 * m_MeshArray[id].GetTriangleCount(), GL_UNSIGNED_INT, 0);
-
   glBindVertexArray(0u);
+
+#pragma region ImGui
+
+#ifdef _IMGUI
+
+  if (ImGui::GraphicsDebugRenderNormals)
+  {
+    RenderNormals(id, ImGui::GraphicsDebugNormalLength);
+  }
+
+#endif
+
+#pragma endregion
+
 }
+
+#pragma region ImGui
+
+#ifdef _IMGUI
 
 void MeshManager::RenderNormals(unsigned id, float length) const noexcept
 {
@@ -141,24 +173,17 @@ void MeshManager::RenderNormals(unsigned id, float length) const noexcept
     return;
   }
 
-  for (int i = 0; i < m_MeshArray[id].m_TriangleArray.size(); ++i)
+  for (size_t i = 0; i < m_MeshArray[id].m_SurfaceNormalArray.size(); ++i)
   {
-    unsigned i1 = m_MeshArray[id].m_TriangleArray[i].Index1;
-    unsigned i2 = m_MeshArray[id].m_TriangleArray[i].Index2;
-    unsigned i3 = m_MeshArray[id].m_TriangleArray[i].Index3;
-
-    vec3 p1 = m_MeshArray[id].m_PositionArray[i1];
-    vec3 p2 = m_MeshArray[id].m_PositionArray[i2];
-    vec3 p3 = m_MeshArray[id].m_PositionArray[i3];
-
-    vec3 normal = normalize(glm::cross(p2 - p1, p3 - p1));
-
-    vec3 nStart = 0.3f * (p1 + p2 + p3);
-    vec3 nEnd = nStart + length * normal;
-
-    DebugRenderer::I().AddLine(nStart, nEnd);
+    DebugRenderer::I().AddLine(
+      m_MeshArray[id].m_SurfaceNormalPositionArray[i],
+      m_MeshArray[id].m_SurfaceNormalPositionArray[i] + m_MeshArray[id].m_SurfaceNormalArray[i] * length);
   }
 }
+
+#endif
+
+#pragma endregion
 
 unsigned MeshManager::LoadMeshFromOBJ(const string& fileName) noexcept
 {
@@ -167,7 +192,7 @@ unsigned MeshManager::LoadMeshFromOBJ(const string& fileName) noexcept
   m_MeshDataArray.emplace_back();
   m_MeshDataArray[i].FileName = fileName;
 
-  auto result = m_OBJReader.ReadOBJFile(fileName, &m_MeshArray[i], OBJReader::ReadMethod::LINE_BY_LINE);
+  auto result = m_OBJReader.ReadOBJFile(fileName, &m_MeshArray[i], OBJReader::ReadMethod::LINE_BY_LINE, false);
   return i;
 }
 
@@ -236,6 +261,7 @@ unsigned MeshManager::LoadSphere(float radius, int numDivisions) noexcept
     m_MeshArray[index].m_TriangleArray.push_back(triangle);
   }
 
+  m_MeshArray[index].CalculateNormals();
   return index;
 }
 

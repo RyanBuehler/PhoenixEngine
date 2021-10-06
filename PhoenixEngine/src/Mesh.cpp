@@ -63,6 +63,21 @@ void Mesh::AddTriangle(unsigned index1, unsigned index2, unsigned index3) noexce
   m_TriangleArray.push_back({ index1, index2, index3 });
 }
 
+const vector<vec3>& Mesh::GetVertexNormalArray() const noexcept
+{
+  return m_VertexNormalArray;
+}
+
+const vector<vec3>& Mesh::GetSurfaceNormalArray() const noexcept
+{
+  return m_SurfaceNormalArray;
+}
+
+const vector<vec3>& Mesh::SurfaceNormalPositionArray() const noexcept
+{
+  return m_SurfaceNormalPositionArray;
+}
+
 vec3 Mesh::CalculateBoundingBoxSize() noexcept
 {
   float xMin = numeric_limits<float>::max();
@@ -117,7 +132,7 @@ void Mesh::CalculateNormals(bool flipNormals) noexcept
   //vector<set<vec3, NormalCloseEnough>> normalSet;
   //normalSet.resize(GetVertexCount());
 
-  CalculateSurfaceNormals();
+  CalculateSurfaceNormals(flipNormals);
   CalculateVertexNormals();
   //// For every triangle
   //for (size_t index = 0; index < GetTriangleCount(); ++index)
@@ -167,10 +182,12 @@ void Mesh::CalculateNormals(bool flipNormals) noexcept
   //}
 }
 
-void Mesh::CalculateSurfaceNormals() noexcept
+void Mesh::CalculateSurfaceNormals(bool flipNormals) noexcept
 {
   m_SurfaceNormalArray.clear();
+  m_SurfaceNormalPositionArray.clear();
   m_SurfaceNormalArray.resize(GetTriangleCount(), vec3(0.0f));
+  m_SurfaceNormalPositionArray.resize(GetTriangleCount(), vec3(0.0f));
 
   for (size_t i = 0; i < m_TriangleArray.size(); ++i)
   {
@@ -184,7 +201,9 @@ void Mesh::CalculateSurfaceNormals() noexcept
 
     vec3 n = normalize(cross(e1, e2));
 
-    m_SurfaceNormalArray[i] = n;
+    m_SurfaceNormalArray[i] = flipNormals ? -1.f * n : n;
+
+    m_SurfaceNormalPositionArray[i] = 1.f / 3.f * (v1 + v2 + v3);
   }
 }
 
@@ -216,10 +235,63 @@ void Mesh::CalculateVertexNormals() noexcept
 
 void Mesh::ScaleToUnitSize() noexcept
 {
+  //TODO: Temporarily disabled
   float factor = 1.f / CalculateWidestPoint();
 
   for (vec3& v : m_PositionArray)
   {
     v *= factor;
+  }
+
+  for (vec3& np : m_SurfaceNormalPositionArray)
+  {
+    np *= factor;
+  }
+
+}
+
+vec3 Mesh::FindCenterOfMass() const noexcept
+{
+  float xMin = numeric_limits<float>::max();
+  float yMin = numeric_limits<float>::max();
+  float zMin = numeric_limits<float>::max();
+  float xMax = numeric_limits<float>::min();
+  float yMax = numeric_limits<float>::min();
+  float zMax = numeric_limits<float>::min();
+
+  for (const vec3& v : m_PositionArray)
+  {
+    xMin = std::min(v.x, xMin);
+    xMax = std::max(v.x, xMax);
+    yMin = std::min(v.y, yMin);
+    yMax = std::max(v.y, yMax);
+    zMin = std::min(v.z, zMin);
+    zMax = std::max(v.z, zMax);
+  }
+
+  vec3 center(
+    xMin + (xMin + xMax / 2.f),
+    yMin + (yMin + yMax / 2.f),
+    zMin + (zMin + zMax / 2.f)
+  );
+  
+  return center;
+}
+
+void Mesh::ResetOriginToCenterOfMass() noexcept
+{
+  vec3 oldOrigin = m_Origin;
+  m_Origin = FindCenterOfMass();
+
+  vec3 move = m_Origin - oldOrigin;
+
+  for (vec3& v : m_PositionArray)
+  {
+    v -= move;
+  }
+
+  for (vec3& sn : m_SurfaceNormalPositionArray)
+  {
+    sn -= move;
   }
 }

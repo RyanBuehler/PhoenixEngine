@@ -15,6 +15,7 @@ namespace ImGui
   extern unique_ptr<ImGuiManager> Manager;
   extern bool GraphicsWindowEnabled;
   extern bool GraphicsDebugRenderNormals;
+  extern float GraphicsDebugNormalLength;
 }
 #define _IMGUI_ENABLED
 #endif
