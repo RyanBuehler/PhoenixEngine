@@ -23,9 +23,9 @@ CameraManager::~CameraManager()
   Log::Trace("CameraManager destroyed.");
 }
 
-Camera& CameraManager::CreateCamera() noexcept
+Camera& CameraManager::CreateCamera(const string& name) noexcept
 {
-  m_Cameras.emplace_front(make_unique<Camera>());
+  m_Cameras.push_back(make_unique<Camera>(name));
   return *m_Cameras.front();
 }
 

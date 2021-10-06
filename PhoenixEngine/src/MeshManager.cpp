@@ -184,7 +184,7 @@ unsigned MeshManager::LoadSphere(float radius, int numDivisions) noexcept
   const unsigned BOTVERT = (STACKS * (SLICES - 1) + 1);
 
   m_MeshArray[index].m_PositionArray.resize(static_cast<size_t>(STACKS * (SLICES - 1) + 2));
-  m_MeshArray[index].m_NormalArray.resize(static_cast<size_t>(STACKS * (SLICES - 1) + 2));
+  m_MeshArray[index].m_VertexNormalArray.resize(static_cast<size_t>(STACKS * (SLICES - 1) + 2));
 
   for (unsigned i = 1; i < SLICES; ++i)
   {
@@ -194,16 +194,16 @@ unsigned MeshManager::LoadSphere(float radius, int numDivisions) noexcept
       unsigned y = STACKS * (i - 1) + j;
       float phi = 2 * glm::pi<float>() * j / STACKS;
       vec3 normal(sin(theta) * cos(phi), cos(theta), sin(theta) * sin(phi));
-      m_MeshArray[index].m_NormalArray[y] = normal;
+      m_MeshArray[index].m_VertexNormalArray[y] = normal;
     }
   }
 
-  m_MeshArray[index].m_NormalArray[TOPVERT] = vec3(0.0f, 0.0f, 1.0f);
-  m_MeshArray[index].m_NormalArray[BOTVERT] = vec3(0.0f, 0.0f, -1.0f);
+  m_MeshArray[index].m_VertexNormalArray[TOPVERT] = vec3(0.0f, 0.0f, 1.0f);
+  m_MeshArray[index].m_VertexNormalArray[BOTVERT] = vec3(0.0f, 0.0f, -1.0f);
 
-  for (unsigned n = 0; n < m_MeshArray[index].m_NormalArray.size(); ++n)
+  for (unsigned n = 0; n < m_MeshArray[index].m_VertexNormalArray.size(); ++n)
   {
-    m_MeshArray[index].m_PositionArray[n] = radius * m_MeshArray[index].m_NormalArray[n];
+    m_MeshArray[index].m_PositionArray[n] = radius * m_MeshArray[index].m_VertexNormalArray[n];
   }
 
   for (unsigned i = 2; i < SLICES; ++i)

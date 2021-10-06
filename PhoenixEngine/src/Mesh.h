@@ -66,10 +66,12 @@
     vec3 CalculateBoundingBoxSize() noexcept;
     float CalculateWidestPoint() noexcept;
     void CalculateNormals(bool flipNormals) noexcept;
-
     void ScaleToUnitSize() noexcept;
 
   private:
+    void CalculateSurfaceNormals() noexcept;
+    void CalculateVertexNormals() noexcept;
+
     friend class MeshManager;
 
     vec3 m_Origin;
@@ -78,8 +80,8 @@
     float m_NormalLength;
 
     vector<vec3> m_PositionArray;
-    vector<vec3> m_NormalArray;
-    vector<vec3> m_NormalDisplay;
+    vector<vec3> m_VertexNormalArray;
+    vector<vec3> m_SurfaceNormalArray;
     vector<Mesh::Triangle> m_TriangleArray;
 
     bool m_bIsDirty;

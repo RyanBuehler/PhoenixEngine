@@ -12,37 +12,19 @@
 
 #pragma endregion
 
-Renderer::Renderer() noexcept :
+Renderer::Renderer(bool depthBufferEnabled, bool backFaceCullEnabled) noexcept :
   m_ShaderManager(),
   m_ContextManager(),
   m_MeshManager(),
-  m_MeshRenderer(),
   m_DiffuseContextID(ContextManager::CONTEXT_ERROR),
   m_DebugContextID(ContextManager::CONTEXT_ERROR)
 {
-  // Load a default context
-  unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::DIFFUSE);
-  unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::DIFFUSE);
-  m_DiffuseContextID = m_ContextManager.CreateNewContext("Diffuse", vID, fID);
-  m_ContextManager.SetContext(m_DiffuseContextID);
+  depthBufferEnabled ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
+  backFaceCullEnabled ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
+  glClearColor(0.f, 0.f, 0.f, 1.f);
+  glClearDepth(1.0);
 
-  m_ContextManager.AddNewUniformAttribute(m_DiffuseContextID, "pers_matrix");
-  m_ContextManager.AddNewUniformAttribute(m_DiffuseContextID, "view_matrix");
-  m_ContextManager.AddNewUniformAttribute(m_DiffuseContextID, "model_matrix");
-
-  // Load a Line Drawing context
-  vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::DEBUG);
-  fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::DEBUG);
-  m_DebugContextID = m_ContextManager.CreateNewContext("Debug", vID, fID);
-  m_ContextManager.SetContext(m_DebugContextID);
-
-  m_ContextManager.AddNewUniformAttribute(m_DebugContextID, "pers_matrix");
-  m_ContextManager.AddNewUniformAttribute(m_DebugContextID, "view_matrix");
-
-  ContextManager::VertexAttribute vaPosition("position", 4, GL_FLOAT, GL_FALSE, 2 * sizeof(vec4), 0u);
-  ContextManager::VertexAttribute vaColor("color", 4, GL_FLOAT, GL_FALSE, 2 * sizeof(vec4), sizeof(vec4));
-  m_ContextManager.AddNewVertexAttribute(m_DebugContextID, vaPosition);
-  m_ContextManager.AddNewVertexAttribute(m_DebugContextID, vaColor);
+  LoadContexts();
 
   Log::Trace("Renderer initialized.");
 }
@@ -97,6 +79,37 @@ void Renderer::RenderGameObject(GameObject& gameObject)
   m_MeshManager.RenderMesh(gameObject.m_MeshID);
 }
 
+void Renderer::LoadContexts() noexcept
+{
+  // Load a default context
+  unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::DIFFUSE);
+  unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::DIFFUSE);
+  m_DiffuseContextID = m_ContextManager.CreateNewContext("Diffuse", vID, fID);
+  m_ContextManager.SetContext(m_DiffuseContextID);
+
+  m_ContextManager.AddNewUniformAttribute(m_DiffuseContextID, "pers_matrix");
+  m_ContextManager.AddNewUniformAttribute(m_DiffuseContextID, "view_matrix");
+  m_ContextManager.AddNewUniformAttribute(m_DiffuseContextID, "model_matrix");
+
+  Log::Trace("Diffuse Context loaded.");
+
+  // Load a Debug Drawing context
+  vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::DEBUG);
+  fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::DEBUG);
+  m_DebugContextID = m_ContextManager.CreateNewContext("Debug", vID, fID);
+  m_ContextManager.SetContext(m_DebugContextID);
+
+  m_ContextManager.AddNewUniformAttribute(m_DebugContextID, "pers_matrix");
+  m_ContextManager.AddNewUniformAttribute(m_DebugContextID, "view_matrix");
+
+  ContextManager::VertexAttribute vaPosition("position", 4, GL_FLOAT, GL_FALSE, 2 * sizeof(vec4), 0u);
+  ContextManager::VertexAttribute vaColor("color", 4, GL_FLOAT, GL_FALSE, 2 * sizeof(vec4), sizeof(vec4));
+  m_ContextManager.AddNewVertexAttribute(m_DebugContextID, vaPosition);
+  m_ContextManager.AddNewVertexAttribute(m_DebugContextID, vaColor);
+  
+  Log::Trace("DEBUG Context loaded.");
+}
+
 void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& activeCamera)
 {
   m_ContextManager.SetContext(m_DiffuseContextID);
@@ -142,4 +155,58 @@ void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& active
   //  }
   //}
   DebugRenderer::I().RenderLines();
+}
+
+void Renderer::EnableDepthBuffer() noexcept
+{
+  if (DepthBufferIsEnabled())
+  {
+    Log::Warn("Redundant Depth Buffer request to enable. Already enabled.");
+    return;
+  }
+
+  glEnable(GL_DEPTH_TEST);
+}
+
+void Renderer::DisableDepthBuffer() noexcept
+{
+  if (!DepthBufferIsEnabled())
+  {
+    Log::Warn("Redundant Depth Buffer request to disable. Already disabled.");
+    return;
+  }
+
+  glDisable(GL_DEPTH_TEST);
+}
+
+bool Renderer::DepthBufferIsEnabled() const noexcept
+{
+  return glIsEnabled(GL_DEPTH_TEST);
+}
+
+void Renderer::EnableBackFaceCull() noexcept
+{
+  if (BackFaceCullIsEnabled())
+  {
+    Log::Warn("Redundant Depth Buffer request to enable. Already enabled.");
+    return;
+  }
+
+  glEnable(GL_CULL_FACE);
+}
+
+void Renderer::DisableBackFaceCull() noexcept
+{
+  if (!BackFaceCullIsEnabled())
+  {
+    Log::Warn("Redundant Depth Buffer request to disable. Already disabled.");
+    return;
+  }
+
+  glDisable(GL_CULL_FACE);
+}
+
+bool Renderer::BackFaceCullIsEnabled() const noexcept
+{
+  return glIsEnabled(GL_CULL_FACE);
 }

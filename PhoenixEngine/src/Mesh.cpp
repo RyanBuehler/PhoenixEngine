@@ -14,7 +14,7 @@ Mesh::Mesh(const vec3& origin, bool isStatic) noexcept :
   m_bIsStatic(isStatic),
   m_NormalLength(0.05f),
   m_PositionArray(),
-  m_NormalArray(),
+  m_VertexNormalArray(),
   m_TriangleArray(),
   m_bIsDirty(true)
 {}
@@ -31,7 +31,7 @@ unsigned Mesh::GetTriangleCount() const noexcept
 
 unsigned Mesh::GetNormalCount() const noexcept
 {
-  return static_cast<unsigned>(m_NormalArray.size());
+  return static_cast<unsigned>(m_VertexNormalArray.size());
 }
 
 void Mesh::AddVertex(vec3 vertex) noexcept
@@ -48,13 +48,13 @@ void Mesh::AddVertex(float x, float y, float z) noexcept
 
 void Mesh::AddNormal(vec3 normal) noexcept
 {
-  m_NormalArray.push_back(normal);
+  m_VertexNormalArray.push_back(normal);
   m_bIsDirty = true;
 }
 
 void Mesh::AddNormal(float x, float y, float z) noexcept
 {
-  m_NormalArray.push_back({ x, y, z });
+  m_VertexNormalArray.push_back({ x, y, z });
   m_bIsDirty = true;
 }
 
@@ -72,7 +72,7 @@ vec3 Mesh::CalculateBoundingBoxSize() noexcept
   float yMax = numeric_limits<float>::min();
   float zMax = numeric_limits<float>::min();
 
-  for(const vec3& v : m_PositionArray)
+  for (const vec3& v : m_PositionArray)
   {
     xMin = std::min(v.x, xMin);
     xMax = std::max(v.x, xMax);
@@ -113,59 +113,104 @@ void Mesh::CalculateNormals(bool flipNormals) noexcept
   }
 
   // Initialize vertex normals
-  m_NormalArray.clear();
-  m_NormalDisplay.clear();
-  m_NormalArray.resize(GetVertexCount(), vec3(0.0f));
-  m_NormalDisplay.resize(GetVertexCount() * 2u, vec3(0.0f));
 
-  vector<set<vec3, NormalCloseEnough>> normalSet;
-  normalSet.resize(GetVertexCount());
+  //vector<set<vec3, NormalCloseEnough>> normalSet;
+  //normalSet.resize(GetVertexCount());
 
-  // For every triangle
-  for (size_t index = 0; index < GetTriangleCount(); ++index)
+  CalculateSurfaceNormals();
+  CalculateVertexNormals();
+  //// For every triangle
+  //for (size_t index = 0; index < GetTriangleCount(); ++index)
+  //{
+  //  GLuint a = m_TriangleArray.at(index).Index1;
+  //  GLuint b = m_TriangleArray.at(index).Index2;
+  //  GLuint c = m_TriangleArray.at(index).Index2;
+
+  //  vec3 vA = m_PositionArray[a];
+  //  vec3 vB = m_PositionArray[b];
+  //  vec3 vC = m_PositionArray[c];
+
+  //  // Edge Vectors
+  //  vec3 vEdge1 = vB - vA;
+  //  vec3 vEdge2 = vC - vA;
+
+  //  vec3 N = normalize(cross(vEdge1, vEdge2));
+
+  //  if (flipNormals)
+  //    N = N * -1.0f;
+
+  //  normalSet.at(a).insert(N);
+  //  normalSet.at(b).insert(N);
+  //  normalSet.at(c).insert(N);
+  //}
+
+  //for (int index = 0; index < normalSet.size(); ++index)
+  //{
+  //  vec3 vNormal(0.0f);
+
+  //  auto nIt = normalSet[index].begin();
+  //  while (nIt != normalSet[index].end())
+  //  {
+  //    vNormal += (*nIt);
+  //    ++nIt;
+  //  }
+
+  //  // Final Vertex Normal
+  //  m_VertexNormalArray[index] = normalize(vNormal);
+
+
+  //  // Calculate display normals
+  //  vec3 point1 = m_PositionArray[index];
+
+  //  m_SurfaceNormalArray[2 * static_cast<size_t>(index)] = point1;
+  //  m_SurfaceNormalArray[(2 * static_cast<size_t>(index)) + 1] = point1 + (m_NormalLength * m_VertexNormalArray[index]);
+  //}
+}
+
+void Mesh::CalculateSurfaceNormals() noexcept
+{
+  m_SurfaceNormalArray.clear();
+  m_SurfaceNormalArray.resize(GetTriangleCount(), vec3(0.0f));
+
+  for (size_t i = 0; i < m_TriangleArray.size(); ++i)
   {
-    GLuint a = m_TriangleArray.at(index).Index1;
-    GLuint b = m_TriangleArray.at(index).Index2;
-    GLuint c = m_TriangleArray.at(index).Index2;
+    Mesh::Triangle& tri = m_TriangleArray[i];
+    vec3 v1 = m_PositionArray[tri.Index1];
+    vec3 v2 = m_PositionArray[tri.Index2];
+    vec3 v3 = m_PositionArray[tri.Index3];
 
-    vec3 vA = m_PositionArray[a];
-    vec3 vB = m_PositionArray[b];
-    vec3 vC = m_PositionArray[c];
+    vec3 e1 = v2 - v1;
+    vec3 e2 = v3 - v1;
 
-    // Edge Vectors
-    vec3 vEdge1 = vB - vA;
-    vec3 vEdge2 = vC - vA;
+    vec3 n = normalize(cross(e1, e2));
 
-    vec3 N = normalize(cross(vEdge1, vEdge2));
+    m_SurfaceNormalArray[i] = n;
+  }
+}
 
-    if (flipNormals)
-      N = N * -1.0f;
+void Mesh::CalculateVertexNormals() noexcept
+{
+  m_VertexNormalArray.clear();
+  m_VertexNormalArray.resize(GetVertexCount(), vec3(0.0f));
 
-    normalSet.at(a).insert(N);
-    normalSet.at(b).insert(N);
-    normalSet.at(c).insert(N);
+  vector<pair<vec3, float>> normArray(m_VertexNormalArray.size());
+  for (size_t i = 0; i < m_SurfaceNormalArray.size(); ++i)
+  {
+    Mesh::Triangle& tri = m_TriangleArray[i];
+    vec3 sN = m_SurfaceNormalArray[tri.Index1];
+
+    normArray[tri.Index1].first += sN;
+    normArray[tri.Index2].first += sN;
+    normArray[tri.Index3].first += sN;
+    ++normArray[tri.Index1].second;
+    ++normArray[tri.Index2].second;
+    ++normArray[tri.Index3].second;
   }
 
-  for (int index = 0; index < normalSet.size(); ++index)
+  for (size_t i = 0; i < normArray.size(); ++i)
   {
-    vec3 vNormal(0.0f);
-
-    auto nIt = normalSet[index].begin();
-    while (nIt != normalSet[index].end())
-    {
-      vNormal += (*nIt);
-      ++nIt;
-    }
-
-    // Final Vertex Normal
-    m_NormalArray[index] = normalize(vNormal);
-
-
-    // Calculate display normals
-    vec3 point1 = m_PositionArray[index];
-
-    m_NormalDisplay[2 * static_cast<size_t>(index)] = point1;
-    m_NormalDisplay[(2 * static_cast<size_t>(index)) + 1] = point1 + (m_NormalLength * m_NormalArray[index]);
+    assert(normArray[i].second > 0.f);
+    m_VertexNormalArray[i] = 1.f / normArray[i].second * normArray[i].first;
   }
 }
 
