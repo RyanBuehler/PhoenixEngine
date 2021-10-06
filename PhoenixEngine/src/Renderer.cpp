@@ -110,7 +110,6 @@ void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& active
     m_ContextManager.GetCurrentUniformAttributes()[1].ID,
     1, GL_FALSE, &activeCamera.GetViewMatrix()[0][0]);
 
-  vec3 lastPosition = vec3(gameObjects[7].GetPosition());
   // Render our list of game objects
   for (GameObject& go : gameObjects)
   {
@@ -118,17 +117,12 @@ void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& active
     if (go.IsActive())
     {
       RenderGameObject(go);
-      if (go.GetMeshFileName() == "sphere")
-      {
-        ;
-        //DebugRenderer::I().AddLine(go.GetPosition(), lastPosition);
-      }
-      lastPosition = go.GetPosition();
     }
   }
   glUseProgram(0u);
 
   m_ContextManager.SetContext(m_DebugContextID);
+  // Set Perspective Matrix
   glUniformMatrix4fv(
     m_ContextManager.GetCurrentUniformAttributes()[0].ID,
     1, GL_FALSE, &activeCamera.GetPersMatrix()[0][0]);
@@ -137,13 +131,13 @@ void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& active
     m_ContextManager.GetCurrentUniformAttributes()[1].ID,
     1, GL_FALSE, &activeCamera.GetViewMatrix()[0][0]);
 
-  for (int x = -10; x <= 10; ++x)
-  {
-    for (int y = -10; y <= 10; ++y)
-    {
-      DebugRenderer::I().AddLine(vec3(x, y, 0.f), vec3(-x, y, 0.f));
-      DebugRenderer::I().AddLine(vec3(x, y, 0.f), vec3(x, -y, 0.f));
-    }
-  }
+  //for (int x = -10; x <= 10; ++x)
+  //{
+  //  for (int y = -10; y <= 10; ++y)
+  //  {
+  //    DebugRenderer::I().AddLine(vec3(x, y, 0.f), vec3(-x, y, 0.f));
+  //    DebugRenderer::I().AddLine(vec3(x, y, 0.f), vec3(x, -y, 0.f));
+  //  }
+  //}
   DebugRenderer::I().RenderLines();
 }
