@@ -9,6 +9,7 @@
 #include "Transform.h"
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
+#include "DebugRenderer.h"
 
 TestScene::TestScene() noexcept :
   IScene("Test Scene"),
@@ -37,8 +38,20 @@ void TestScene::OnInit() noexcept
   {
     m_GameObjectArray[i].SetPosition(vec3(1.f, 0.f, 0.f));
     m_GameObjectArray[i].RotateAround(360.f / 8.f * i, vec3(0.f, 0.f, 1.f));
+    //TODO: 0.1f?
     m_GameObjectArray[i].ScaleBy(0.1f);
   }
+
+  GameObject temp("sphere");
+  temp.SetPosition(vec3(1.f, 0.f, 0.f));
+  for (int i = 2; i <= 360; i += 2)
+  {
+    vec3 pt1 = temp.GetPosition();
+    temp.RotateAround(glm::radians(static_cast<float>(i)), vec3(0.f, 0.f, 1.f));
+    vec3 pt2 = temp.GetPosition();
+    DebugRenderer::I().AddPermanentLine(pt1, pt2);
+  }
+  //DebugRenderer::I().AddPermanentLine(temp.GetPosition(), vec3(1.f, 0.f, 0.f));
 
   m_GameObjectArray[8].SetPosition(vec3(0.f));
   m_GameObjectArray[8].ScaleBy(2.f);
@@ -53,25 +66,6 @@ void TestScene::OnUpdate(float dt) noexcept
   for (int i = 0; i < 8; ++i)
   {
     m_GameObjectArray[i].RotateAround(2.f * dt, vec3(0.f, 0.f, 1.f));
-    if (i > 0)
-    {
-    glBegin(GL_LINES);
-    glLineWidth(5.0f);
-    glColor4f(1.f, 0.f, 0.f, 0.5f);
-
-      glVertex3f(
-        m_GameObjectArray[i].GetPosition().x,
-        m_GameObjectArray[i].GetPosition().y,
-        m_GameObjectArray[i].GetPosition().z
-      );
-
-      glVertex3f(
-        m_GameObjectArray[i-1].GetPosition().x,
-        m_GameObjectArray[i-1].GetPosition().y,
-        m_GameObjectArray[i-1].GetPosition().z
-      );
-    glEnd();
-    }
   }
 }
 

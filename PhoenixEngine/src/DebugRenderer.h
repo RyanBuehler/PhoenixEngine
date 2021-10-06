@@ -39,6 +39,7 @@ public:
   void RenderLines() noexcept;
 
   void AddLine(const vec3& point1, const vec3& point2) noexcept;
+  void AddPermanentLine(const vec3& point1, const vec3& point2) noexcept;
 
   void SetLineWidth(float width) noexcept;
   void SetLineColor(const vec4& rgba) noexcept;
@@ -49,6 +50,7 @@ private:
   void RenderLine(const vec3& point1, const vec3& point2);
 
   vector<vec3> m_LineArray;
+  vector<vec3> m_PermanentLineArray;
 
   vec4 m_LineColor;
 

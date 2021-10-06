@@ -61,6 +61,8 @@ void ContextManager::SetContext(unsigned contextIndex) noexcept
 
   glUseProgram(m_Contexts[m_CurrentContextIndex].ProgramID);
 
+  //TODO: Must bind vertex array before attrib pointers will have any effect
+
   for (size_t i = 0; i < m_Contexts[m_CurrentContextIndex].VertexAttributes.size(); ++i)
   {
     glVertexAttribPointer(

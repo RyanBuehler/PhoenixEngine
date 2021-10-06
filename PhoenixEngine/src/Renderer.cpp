@@ -39,8 +39,8 @@ Renderer::Renderer() noexcept :
   m_ContextManager.AddNewUniformAttribute(m_DebugContextID, "pers_matrix");
   m_ContextManager.AddNewUniformAttribute(m_DebugContextID, "view_matrix");
 
-  ContextManager::VertexAttribute vaPosition("position", 4, GL_FLOAT, GL_FALSE, sizeof(vec4), 0u);
-  ContextManager::VertexAttribute vaColor("color", 4, GL_FLOAT, GL_FALSE, sizeof(vec4), sizeof(vec4));
+  ContextManager::VertexAttribute vaPosition("position", 4, GL_FLOAT, GL_FALSE, 2 * sizeof(vec4), 0u);
+  ContextManager::VertexAttribute vaColor("color", 4, GL_FLOAT, GL_FALSE, 2 * sizeof(vec4), sizeof(vec4));
   m_ContextManager.AddNewVertexAttribute(m_DebugContextID, vaPosition);
   m_ContextManager.AddNewVertexAttribute(m_DebugContextID, vaColor);
 
@@ -122,6 +122,8 @@ void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& active
   glUseProgram(0u);
 
   m_ContextManager.SetContext(m_DebugContextID);
+
+  //TODO:
   // Set Perspective Matrix
   glUniformMatrix4fv(
     m_ContextManager.GetCurrentUniformAttributes()[0].ID,
