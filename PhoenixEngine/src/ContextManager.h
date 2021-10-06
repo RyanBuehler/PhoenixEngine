@@ -53,8 +53,8 @@ private:
 
     string Name;
     GLuint ProgramID;
-    vector<UniformAttribute> UniformAttributes;
-    vector<VertexAttribute> VertexAttributes;
+    vector<ContextManager::UniformAttribute> UniformAttributes;
+    vector<ContextManager::VertexAttribute> VertexAttributes;
   };
 
 public:

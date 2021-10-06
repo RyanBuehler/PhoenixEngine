@@ -10,7 +10,7 @@
 
 DebugRenderer::DebugRenderer() noexcept :
   m_LineArray(),
-  m_DefaultLineColor(Colors::RED),
+  m_DefaultLineColor(Colors::PURPLE),
   m_VertexArrayID(numeric_limits<unsigned>::max()),
   m_VertexBufferObject(numeric_limits<unsigned>::max()),
   m_PositionAttributeID(numeric_limits<unsigned>::max())

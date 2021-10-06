@@ -64,7 +64,7 @@ void Renderer::RenderGameObject(GameObject& gameObject)
     // Unknown Mesh ID, check for new id with file name
     if (gameObject.m_MeshID == MeshManager::MESH_INDEX_ERROR)
     {
-      gameObject.m_MeshID = m_MeshManager.LoadMesh(gameObject.GetMeshFileName(), true, true);
+      gameObject.m_MeshID = m_MeshManager.LoadMesh(gameObject.GetMeshFileName(), true, false);
       if (gameObject.m_MeshID == MeshManager::MESH_INDEX_ERROR)
       {
         Log::Error("Could not load mesh: " + gameObject.GetMeshFileName());
@@ -91,6 +91,11 @@ void Renderer::LoadContexts() noexcept
   m_ContextManager.AddNewUniformAttribute(m_DiffuseContextID, "view_matrix");
   m_ContextManager.AddNewUniformAttribute(m_DiffuseContextID, "model_matrix");
 
+  ContextManager::VertexAttribute vaPosition("position", 4, GL_FLOAT, GL_FALSE, sizeof(vec3), 0u);
+  ContextManager::VertexAttribute vaNormal("normal", 4, GL_FLOAT, GL_FALSE, sizeof(vec3), sizeof(vec3));
+  m_ContextManager.AddNewVertexAttribute(m_DiffuseContextID, vaPosition);
+  m_ContextManager.AddNewVertexAttribute(m_DiffuseContextID, vaNormal);
+
   Log::Trace("Diffuse Context loaded.");
 
   // Load a Debug Drawing context
@@ -102,7 +107,7 @@ void Renderer::LoadContexts() noexcept
   m_ContextManager.AddNewUniformAttribute(m_DebugContextID, "pers_matrix");
   m_ContextManager.AddNewUniformAttribute(m_DebugContextID, "view_matrix");
 
-  ContextManager::VertexAttribute vaPosition("position", 4, GL_FLOAT, GL_FALSE, 2 * sizeof(vec4), 0u);
+  vaPosition = ContextManager::VertexAttribute("position", 4, GL_FLOAT, GL_FALSE, 2 * sizeof(vec4), 0u);
   ContextManager::VertexAttribute vaColor("color", 4, GL_FLOAT, GL_FALSE, 2 * sizeof(vec4), sizeof(vec4));
   m_ContextManager.AddNewVertexAttribute(m_DebugContextID, vaPosition);
   m_ContextManager.AddNewVertexAttribute(m_DebugContextID, vaColor);

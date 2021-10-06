@@ -25,26 +25,26 @@ void TestScene::OnLoad() noexcept
   Log::Trace("Test Scene Loaded.");
   for (int i = 0; i < 8; ++i)
   {
-    m_GameObjectArray.emplace_back("sphere");
+    m_GameObjectArray.emplace_back("sphere.obj");
   }
-  m_GameObjectArray.emplace_back("cube2.obj");
-  //m_GameObjectArray.emplace_back("bunny.obj");
+  m_GameObjectArray.emplace_back("bunny.obj");
 }
 
 void TestScene::OnInit() noexcept
 {
   Log::Trace("Test Scene Initialized.");
 
+  m_MainCamera.SetPosition({ 1.f, 1.f, -30.f });
+
   for (int i = 0; i < 8; ++i)
   {
-    m_GameObjectArray[i].SetIsActive(false);
     m_GameObjectArray[i].SetPosition(vec3(10.f, 0.f, 0.f));
     m_GameObjectArray[i].RotateAround(360.f / 8.f * i, vec3(0.f, 0.f, 1.f));
     //TODO: 0.1f?
-    //m_GameObjectArray[i].ScaleBy(0.1f);
+    m_GameObjectArray[i].ScaleBy(2.f);
   }
 
-  GameObject temp("sphere");
+  GameObject temp("sphere.obj");
   temp.SetPosition(vec3(10.f, 0.f, 0.f));
   for (int i = 2; i <= 360; i += 2)
   {
@@ -53,6 +53,7 @@ void TestScene::OnInit() noexcept
     vec3 pt2 = temp.GetPosition();
     DebugRenderer::I().AddPermanentLine(pt1, pt2);
   }
+  temp.SetIsActive(false);
   //DebugRenderer::I().AddPermanentLine(temp.GetPosition(), vec3(1.f, 0.f, 0.f));
 
   m_GameObjectArray[8].SetPosition(vec3(0.f));

@@ -15,16 +15,18 @@
 #endif
 #pragma warning( pop )
 #include "GLFW/glfw3.h"
+#include "DebugRenderer.h"
 
 namespace ImGui
 {
   unique_ptr<ImGuiManager> Manager;
   bool GraphicsWindowEnabled = true;
-  bool GraphicsDebugRenderNormals = true;
-  float GraphicsDebugNormalLength = 0.2f;
+  bool GraphicsDebugRenderNormals = false;
+  float GraphicsDebugNormalLength = 0.05f;
 }
 
-ImGuiManager::ImGuiManager(GLFWwindow* window) noexcept
+ImGuiManager::ImGuiManager(GLFWwindow* window) noexcept :
+  m_bRenderAxes(true)
 {
   // Decide GL+GLSL versions
 #if defined(IMGUI_IMPL_OPENGL_ES2)
@@ -99,10 +101,24 @@ void ImGuiManager::OnImGuiGraphicsUpdate() noexcept
   ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
   ImGui::Begin("Graphics Settings", &ImGui::GraphicsWindowEnabled);
 
+  ImGui::Text("Frame Stats");
   ImGui::Text("Frame: [%05d] Time: %lf", ImGui::GetFrameCount(), ImGui::GetTime());
+  ImGui::Separator();
+  ImGui::Spacing();
 
+  ImGui::Checkbox("Render Axes", &m_bRenderAxes);
+  if(m_bRenderAxes)
+  {
+    DebugRenderer::I().AddLine(vec3(-10000.f, 0.f, 0.f), Colors::RED, vec3(10000.f, 0.f, 0.f), Colors::RED);
+    DebugRenderer::I().AddLine(vec3(0.f, -10000.f, 0.f), Colors::GREEN, vec3(0.f, 10000.f, 0.f), Colors::GREEN);
+    DebugRenderer::I().AddLine(vec3(0.f, 0.f, -10000.f), Colors::BLUE, vec3(0.f, 0.f, 10000.f), Colors::BLUE);
+  }
+
+  ImGui::Spacing();
   ImGui::Checkbox("Debug Render Normals", &ImGui::GraphicsDebugRenderNormals);
+  ImGui::Spacing();
   ImGui::SliderFloat("Normal Length", &ImGui::GraphicsDebugNormalLength, 0.001f, 1.f);
+  ImGui::Spacing();
 
   ImGui::End();
 }

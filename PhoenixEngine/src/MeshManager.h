@@ -67,5 +67,4 @@ private:
 
   unsigned LoadMeshFromOBJ(const string& fileName) noexcept;
   unsigned LoadSphere(float radius = 1.f, int numDivisions = 4) noexcept;
-  unsigned LoadQuad() noexcept;
 };

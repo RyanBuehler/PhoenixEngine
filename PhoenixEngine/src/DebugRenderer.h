@@ -9,6 +9,7 @@
 #include "GraphicsCommon.h"
 #include "ShaderManager.h"
 #include "Camera.h"
+#include "Colors.h"
 
 class DebugRenderer
 {

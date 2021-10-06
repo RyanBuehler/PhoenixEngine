@@ -53,10 +53,6 @@ unsigned MeshManager::LoadMesh(const string& fileName, bool scaleToUnitSize, boo
     // Load procedural sphere
     index = LoadSphere();
   }
-  else if (fileName == "quad")
-  {
-    index = LoadQuad();
-  }
   else
   {
     // Hasn't been loaded. Load from OBJ
@@ -262,23 +258,5 @@ unsigned MeshManager::LoadSphere(float radius, int numDivisions) noexcept
   }
 
   m_MeshArray[index].CalculateNormals();
-  return index;
-}
-
-unsigned MeshManager::LoadQuad() noexcept
-{
-  unsigned index = static_cast<unsigned>(m_MeshArray.size());
-  m_MeshArray.emplace_back();
-  m_MeshDataArray.emplace_back();
-  m_MeshDataArray[index].FileName = "Quad";
-
-  m_MeshArray[index].AddVertex(-1.f, -1.f, 0.f);
-  m_MeshArray[index].AddVertex(1.f, -1.f, 0.f);
-  m_MeshArray[index].AddVertex(1.f, 1.f, 0.f);
-  m_MeshArray[index].AddVertex(-1.f, 1.f, 0.f);
-
-  m_MeshArray[index].AddTriangle(0u, 1u, 2u);
-  m_MeshArray[index].AddTriangle(0u, 2u, 3u);
-
   return index;
 }

@@ -8,6 +8,9 @@
 #include "Mesh.h"
 #include "GLEW/glew.h"
 #include <glm/gtc/epsilon.hpp>
+//TODO:
+#include "DebugRenderer.h"
+#include "Colors.h"
 
 Mesh::Mesh(const vec3& origin, bool isStatic) noexcept :
   m_Origin(origin),
@@ -283,15 +286,18 @@ void Mesh::ResetOriginToCenterOfMass() noexcept
   vec3 oldOrigin = m_Origin;
   m_Origin = FindCenterOfMass();
 
-  vec3 move = m_Origin - oldOrigin;
+  //TODO:
+  //DebugRenderer::I().AddPermanentLine(oldOrigin, Colors::RED, m_Origin, Colors::GREEN);
 
-  for (vec3& v : m_PositionArray)
-  {
-    v -= move;
-  }
+  //vec3 move = m_Origin - oldOrigin;
 
-  for (vec3& sn : m_SurfaceNormalPositionArray)
-  {
-    sn -= move;
-  }
+  //for (vec3& v : m_PositionArray)
+  //{
+  //  v -= move;
+  //}
+
+  //for (vec3& sn : m_SurfaceNormalPositionArray)
+  //{
+  //  sn -= move;
+  //}
 }

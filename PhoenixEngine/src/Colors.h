@@ -8,4 +8,5 @@ namespace Colors
   constexpr static vec4 RED = { 1.f, 0.f, 0.f, 1.f };
   constexpr static vec4 GREEN = { 0.f, 1.f, 0.f, 1.f };
   constexpr static vec4 BLUE = { 0.f, 0.f, 1.f, 1.f };
+  constexpr static vec4 PURPLE = { 1.f, 0.f, 1.f, 1.f };
 }

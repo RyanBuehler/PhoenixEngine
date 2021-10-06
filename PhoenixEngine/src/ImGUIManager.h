@@ -48,4 +48,6 @@ private:
   void ShowMainMenu_File() noexcept;
   void ShowMainMenu_Edit() noexcept;
   void ShowMainMenu_About() noexcept;
+
+  bool m_bRenderAxes;
 };
