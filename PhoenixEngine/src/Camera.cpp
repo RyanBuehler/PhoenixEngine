@@ -14,7 +14,7 @@
 
 Camera::Camera(const string& name) noexcept :
   m_ViewData(),
-  m_Position({ 0.f, 0.f, 3.f }),
+  m_Position({ 0.f, 0.f, 30.f }),
   m_Forward({ 0.f, 0.f, -1.f }),
   m_Up({ 0.f, 1.f, 0.f }),
   m_PersMatrix(1.f),
@@ -25,7 +25,7 @@ Camera::Camera(const string& name) noexcept :
   m_Target(nullptr),
   m_Name(name)
 {
-  Log::Trace("Camera created.");
+  Log::Trace("Camera '" + m_Name + "' created.");
 }
 
 Camera::~Camera()

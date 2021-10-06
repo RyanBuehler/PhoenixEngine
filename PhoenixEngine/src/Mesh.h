@@ -63,12 +63,15 @@
     inline void SetIsStatic(bool isStatic) noexcept { m_bIsStatic = isStatic; }
     inline bool IsStatic() const noexcept { return m_bIsStatic; }
 
+    vec3 CalculateBoundingBoxSize() noexcept;
+    float CalculateWidestPoint() noexcept;
     void CalculateNormals(bool flipNormals) noexcept;
+
+    void ScaleToUnitSize() noexcept;
 
   private:
     friend class MeshManager;
 
-    string m_FileName;
     vec3 m_Origin;
     bool m_bIsStatic;
 

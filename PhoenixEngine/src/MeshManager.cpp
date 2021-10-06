@@ -8,6 +8,7 @@
 #include "MeshManager.h"
 #include "Transform.h"
 #include "glm/ext/scalar_constants.inl"
+#include "DebugRenderer.h"
 
 MeshManager::MeshManager() noexcept :
   m_MeshArray(),
@@ -22,7 +23,7 @@ MeshManager::~MeshManager()
   UnloadMeshes();
 }
 
-unsigned MeshManager::LoadMesh(const string& fileName) noexcept
+unsigned MeshManager::LoadMesh(const string& fileName, bool scaleToUnitSize) noexcept
 {
   // Check if this mesh has already been loaded
   for (unsigned i = 0u; i < m_MeshArray.size(); ++i)
@@ -32,7 +33,7 @@ unsigned MeshManager::LoadMesh(const string& fileName) noexcept
       return i;
     }
   }
-  Log::Trace("Loading mesh: " + fileName);
+  scaleToUnitSize ? Log::Trace("Loading mesh: " + fileName) : Log::Trace("Loading [Unit] mesh: " + fileName);
 
   //TODO: check for file extension
 
@@ -57,13 +58,18 @@ unsigned MeshManager::LoadMesh(const string& fileName) noexcept
     }
   }
 
+  if (scaleToUnitSize)
+  {
+    m_MeshArray[index].ScaleToUnitSize();
+  }
+
   // The Position buffer
   glGenBuffers(1, &m_MeshDataArray[index].PositionBufferID);
   glBindBuffer(GL_ARRAY_BUFFER, m_MeshDataArray[index].PositionBufferID);
   glBufferData(GL_ARRAY_BUFFER, m_MeshArray[index].GetVertexCount() * sizeof(vec3),
     m_MeshArray[index].m_PositionArray.data(), GL_STATIC_DRAW);
 
-  // The Normal buffer
+  ////The Normal buffer
   //glGenBuffers(1, &m_MeshDataArray[index].NormalBufferID);
   //glBindBuffer(GL_ARRAY_BUFFER, m_MeshDataArray[index].NormalBufferID);
   //glBufferData(GL_ARRAY_BUFFER, m_MeshArray[index].GetNormalCount() * sizeof(vec3),
@@ -103,8 +109,8 @@ void MeshManager::UnloadMeshes() noexcept
     glDeleteBuffers(1, &m_MeshDataArray[i].TriangleBufferID);
 
     //TODO:
-    //Log::Trace("Mesh '" + m_MeshArray[i].m_FileName + "' destroyed.");
-    Log::Trace("Mesh destroyed.");
+    Log::Trace("Mesh '" + m_MeshDataArray[i].FileName + "' destroyed.");
+    //Log::Trace("Mesh destroyed.");
   }
   m_MeshArray.clear();
   m_MeshDataArray.clear();
@@ -150,13 +156,7 @@ void MeshManager::RenderNormals(unsigned id, float length) const noexcept
     vec3 nStart = 0.3f * (p1 + p2 + p3);
     vec3 nEnd = nStart + length * normal;
 
-    glBegin(GL_LINES);
-    glLineWidth(0.5f);
-    glColor4f(1.f, 0.f, 0.f, 0.5f);
-    glVertex3f(nStart.x, nStart.y, nStart.z);
-    glVertex3f(nEnd.x, nEnd.y, nEnd.z);
-    glEnd();
-
+    DebugRenderer::I().AddLine(nStart, nEnd);
   }
 }
 

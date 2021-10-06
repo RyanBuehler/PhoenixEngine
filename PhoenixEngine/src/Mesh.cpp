@@ -63,6 +63,34 @@ void Mesh::AddTriangle(unsigned index1, unsigned index2, unsigned index3) noexce
   m_TriangleArray.push_back({ index1, index2, index3 });
 }
 
+vec3 Mesh::CalculateBoundingBoxSize() noexcept
+{
+  float xMin = numeric_limits<float>::max();
+  float yMin = numeric_limits<float>::max();
+  float zMin = numeric_limits<float>::max();
+  float xMax = numeric_limits<float>::min();
+  float yMax = numeric_limits<float>::min();
+  float zMax = numeric_limits<float>::min();
+
+  for(const vec3& v : m_PositionArray)
+  {
+    xMin = std::min(v.x, xMin);
+    xMax = std::max(v.x, xMax);
+    yMin = std::min(v.y, yMin);
+    yMax = std::max(v.y, yMax);
+    zMin = std::min(v.z, zMin);
+    zMax = std::max(v.z, zMax);
+  }
+
+  return vec3(xMax - xMin, yMax - yMin, zMax - zMin);
+}
+
+float Mesh::CalculateWidestPoint() noexcept
+{
+  vec3 size = CalculateBoundingBoxSize();
+  return std::max(std::max(size.x, size.y), size.z);
+}
+
 namespace
 {
   struct NormalCloseEnough
@@ -138,5 +166,15 @@ void Mesh::CalculateNormals(bool flipNormals) noexcept
 
     m_NormalDisplay[2 * static_cast<size_t>(index)] = point1;
     m_NormalDisplay[(2 * static_cast<size_t>(index)) + 1] = point1 + (m_NormalLength * m_NormalArray[index]);
+  }
+}
+
+void Mesh::ScaleToUnitSize() noexcept
+{
+  float factor = 1.f / CalculateWidestPoint();
+
+  for (vec3& v : m_PositionArray)
+  {
+    v *= factor;
   }
 }
