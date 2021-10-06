@@ -22,9 +22,6 @@ DebugRenderer::DebugRenderer() noexcept :
   glBindBuffer(GL_ARRAY_BUFFER, m_VertexBufferObject);
   glBufferData(GL_ARRAY_BUFFER, 2 * sizeof(vec4), m_LineArray.data(), GL_STATIC_DRAW);
 
-  // glVertexAttribPointer(m_PositionAttributeID, 4, GL_FLOAT, GL_FALSE, 0, 0);
-   //glEnableVertexAttribArray(m_PositionAttributeID);
-
   glBindVertexArray(0u);
 }
 

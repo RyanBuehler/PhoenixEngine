@@ -146,7 +146,7 @@ void MeshManager::RenderMesh(unsigned id) const noexcept
 
 #ifdef _IMGUI
 
-  if (ImGui::GraphicsDebugRenderNormals)
+  if (ImGui::GraphicsDebugRenderSurfaceNormals)
   {
     RenderNormals(id, ImGui::GraphicsDebugNormalLength);
   }

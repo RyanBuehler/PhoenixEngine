@@ -17,7 +17,7 @@ out vec3 frag_diffuse;
 
 void main(void)
 {
-  frag_diffuse = vec3(0.f, 0.f, 1.f);
+  frag_diffuse = vec3(11.f / 255.f, 222.f / 255.f, 230.f / 255.f);
   frag_normal = normal;
   gl_Position = pers_matrix * view_matrix * model_matrix * vec4(position, 1.f);
 }

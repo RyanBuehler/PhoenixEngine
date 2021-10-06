@@ -34,18 +34,18 @@ void TestScene::OnInit() noexcept
 {
   Log::Trace("Test Scene Initialized.");
 
-  m_MainCamera.SetPosition({ 1.f, 1.f, -30.f });
+  m_MainCamera.SetPosition({ 1.f, 1.f, 30.f });
 
   for (int i = 0; i < 8; ++i)
   {
-    m_GameObjectArray[i].SetPosition(vec3(10.f, 0.f, 0.f));
+    //m_GameObjectArray[i].SetIsActive(false);
+    m_GameObjectArray[i].SetPosition(vec3(2.0f, 0.f, 0.f));
     m_GameObjectArray[i].RotateAround(360.f / 8.f * i, vec3(0.f, 0.f, 1.f));
-    //TODO: 0.1f?
-    m_GameObjectArray[i].ScaleBy(2.f);
+    m_GameObjectArray[i].ScaleBy(0.1f);
   }
 
   GameObject temp("sphere.obj");
-  temp.SetPosition(vec3(10.f, 0.f, 0.f));
+  temp.SetPosition(vec3(2.0f, 0.f, 0.f));
   for (int i = 2; i <= 360; i += 2)
   {
     vec3 pt1 = temp.GetPosition();

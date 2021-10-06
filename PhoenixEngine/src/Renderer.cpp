@@ -64,7 +64,7 @@ void Renderer::RenderGameObject(GameObject& gameObject)
     // Unknown Mesh ID, check for new id with file name
     if (gameObject.m_MeshID == MeshManager::MESH_INDEX_ERROR)
     {
-      gameObject.m_MeshID = m_MeshManager.LoadMesh(gameObject.GetMeshFileName(), true, false);
+      gameObject.m_MeshID = m_MeshManager.LoadMesh(gameObject.GetMeshFileName(), true , true);
       if (gameObject.m_MeshID == MeshManager::MESH_INDEX_ERROR)
       {
         Log::Error("Could not load mesh: " + gameObject.GetMeshFileName());

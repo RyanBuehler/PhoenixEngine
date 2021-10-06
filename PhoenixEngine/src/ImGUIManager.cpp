@@ -17,16 +17,21 @@
 #include "GLFW/glfw3.h"
 #include "DebugRenderer.h"
 
+#define IMGUISPACE ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing()
+
+// Instantiation
 namespace ImGui
 {
   unique_ptr<ImGuiManager> Manager;
   bool GraphicsWindowEnabled = true;
-  bool GraphicsDebugRenderNormals = false;
+  bool GraphicsDebugRenderVertexNormals = false;
+  bool GraphicsDebugRenderSurfaceNormals = false;
   float GraphicsDebugNormalLength = 0.05f;
 }
 
 ImGuiManager::ImGuiManager(GLFWwindow* window) noexcept :
-  m_bRenderAxes(true)
+  m_bRenderAxes(false),
+  m_DebugLineWidth(1.f)
 {
   // Decide GL+GLSL versions
 #if defined(IMGUI_IMPL_OPENGL_ES2)
@@ -104,7 +109,7 @@ void ImGuiManager::OnImGuiGraphicsUpdate() noexcept
   ImGui::Text("Frame Stats");
   ImGui::Text("Frame: [%05d] Time: %lf", ImGui::GetFrameCount(), ImGui::GetTime());
   ImGui::Separator();
-  ImGui::Spacing();
+  IMGUISPACE;
 
   ImGui::Checkbox("Render Axes", &m_bRenderAxes);
   if(m_bRenderAxes)
@@ -114,11 +119,39 @@ void ImGuiManager::OnImGuiGraphicsUpdate() noexcept
     DebugRenderer::I().AddLine(vec3(0.f, 0.f, -10000.f), Colors::BLUE, vec3(0.f, 0.f, 10000.f), Colors::BLUE);
   }
 
-  ImGui::Spacing();
-  ImGui::Checkbox("Debug Render Normals", &ImGui::GraphicsDebugRenderNormals);
-  ImGui::Spacing();
+  IMGUISPACE;
+
+  if (ImGui::SliderFloat("Debug Line Width", &m_DebugLineWidth, 0.05f, 10.f))
+  {
+    DebugRenderer::I().SetLineWidth(m_DebugLineWidth);
+  }
+
+  IMGUISPACE;
+
+  static int imguiNormals = 0;
+  if (ImGui::RadioButton("Per Vertex", &imguiNormals, 0))
+  {
+    ImGui::GraphicsDebugRenderVertexNormals = true;
+    ImGui::GraphicsDebugRenderSurfaceNormals = false;
+  }
+
+  ImGui::SameLine();
+  if (ImGui::RadioButton("Per Triangle", &imguiNormals, 1))
+  {
+    ImGui::GraphicsDebugRenderVertexNormals = false;
+    ImGui::GraphicsDebugRenderSurfaceNormals = true;
+  }
+  
+  ImGui::SameLine();
+  if (ImGui::RadioButton("None", &imguiNormals, 2))
+  {
+    ImGui::GraphicsDebugRenderVertexNormals = false;
+    ImGui::GraphicsDebugRenderSurfaceNormals = false;
+  }
+
+  IMGUISPACE;
+
   ImGui::SliderFloat("Normal Length", &ImGui::GraphicsDebugNormalLength, 0.001f, 1.f);
-  ImGui::Spacing();
 
   ImGui::End();
 }
@@ -181,3 +214,5 @@ void ImGuiManager::ShowMainMenu_About() noexcept
   if (ImGui::MenuItem("Phoenix Engine", PE_VERSION, false, false)) {}  // Disabled item
   if (ImGui::MenuItem("Author", "Ryan Buehler", false, false)) {}  // Disabled item
 }
+
+#undef IMGUISPACE

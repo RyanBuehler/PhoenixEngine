@@ -273,9 +273,9 @@ vec3 Mesh::FindCenterOfMass() const noexcept
   }
 
   vec3 center(
-    xMin + (xMin + xMax / 2.f),
-    yMin + (yMin + yMax / 2.f),
-    zMin + (zMin + zMax / 2.f)
+    xMin + ((xMax - xMin) / 2.f),
+    yMin + ((yMax - yMin) / 2.f),
+    zMin + ((zMax - zMin) / 2.f)
   );
   
   return center;
@@ -289,15 +289,15 @@ void Mesh::ResetOriginToCenterOfMass() noexcept
   //TODO:
   //DebugRenderer::I().AddPermanentLine(oldOrigin, Colors::RED, m_Origin, Colors::GREEN);
 
-  //vec3 move = m_Origin - oldOrigin;
+  vec3 move = m_Origin - oldOrigin;
 
-  //for (vec3& v : m_PositionArray)
-  //{
-  //  v -= move;
-  //}
+  for (vec3& v : m_PositionArray)
+  {
+    v -= move;
+  }
 
-  //for (vec3& sn : m_SurfaceNormalPositionArray)
-  //{
-  //  sn -= move;
-  //}
+  for (vec3& sn : m_SurfaceNormalPositionArray)
+  {
+    sn -= move;
+  }
 }
