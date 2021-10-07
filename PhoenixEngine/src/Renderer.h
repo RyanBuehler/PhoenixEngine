@@ -15,6 +15,13 @@
 class Renderer
 {
 public:
+  enum class RenderMode
+  {
+    Fill,
+    Wireframe,
+    COUNT
+  };
+public:
 
   Renderer(bool depthBufferEnabled = true, bool backFaceCullEnabled = true) noexcept;
   ~Renderer();
@@ -35,6 +42,9 @@ public:
   void EnableBackFaceCull() noexcept;
   void DisableBackFaceCull() noexcept;
   inline bool BackFaceCullIsEnabled() const noexcept;
+
+  static void SetRenderModeFill() noexcept;
+  static void SetRenderModeWireframe() noexcept;
 
 private:
   void RenderGameObject(GameObject& gameObject);

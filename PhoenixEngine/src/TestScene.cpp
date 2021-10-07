@@ -25,16 +25,16 @@ void TestScene::OnLoad() noexcept
   Log::Trace("Test Scene Loaded.");
   for (int i = 0; i < 8; ++i)
   {
-    m_GameObjectArray.emplace_back("sphere.obj");
+    m_GameObjectArray.emplace_back("sphere");
   }
-  m_GameObjectArray.emplace_back("bunny.obj");
+  m_GameObjectArray.emplace_back("lucy_princeton.obj");
 }
 
 void TestScene::OnInit() noexcept
 {
   Log::Trace("Test Scene Initialized.");
 
-  m_MainCamera.SetPosition({ 1.f, 1.f, 30.f });
+  m_MainCamera.SetPosition({ 1.f, 1.f, 10.f });
 
   for (int i = 0; i < 8; ++i)
   {

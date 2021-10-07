@@ -128,6 +128,7 @@ void ImGuiManager::OnImGuiGraphicsUpdate() noexcept
 
   IMGUISPACE;
 
+  ImGui::Text("Show Normals");
   static int imguiNormals = 0;
   if (ImGui::RadioButton("Per Vertex", &imguiNormals, 0))
   {
@@ -152,6 +153,29 @@ void ImGuiManager::OnImGuiGraphicsUpdate() noexcept
   IMGUISPACE;
 
   ImGui::SliderFloat("Normal Length", &ImGui::GraphicsDebugNormalLength, 0.001f, 1.f);
+
+  IMGUISPACE;
+
+  if (ImGui::SliderFloat("Render Mode", &m_DebugLineWidth, 0.05f, 10.f))
+  {
+    DebugRenderer::I().SetLineWidth(m_DebugLineWidth);
+  }
+
+  IMGUISPACE;
+
+  ImGui::Text("Render Mode");
+  static int imguiRenderMode = 0;
+  if (ImGui::RadioButton("Fill", &imguiRenderMode, 0))
+  {
+    Renderer::SetRenderModeFill();
+  }
+
+  ImGui::SameLine();
+  if (ImGui::RadioButton("Wireframe", &imguiRenderMode, 1))
+  {
+    Renderer::SetRenderModeWireframe();
+  }
+
 
   ImGui::End();
 }

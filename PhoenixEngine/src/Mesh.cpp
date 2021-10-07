@@ -221,9 +221,11 @@ void Mesh::CalculateVertexNormals() noexcept
     Mesh::Triangle& tri = m_TriangleArray[i];
     vec3 sN = m_SurfaceNormalArray[tri.Index1];
 
+    // first - Surface Normal
     normArray[tri.Index1].first += sN;
     normArray[tri.Index2].first += sN;
     normArray[tri.Index3].first += sN;
+    // second - triangles shared
     ++normArray[tri.Index1].second;
     ++normArray[tri.Index2].second;
     ++normArray[tri.Index3].second;
@@ -231,8 +233,10 @@ void Mesh::CalculateVertexNormals() noexcept
 
   for (size_t i = 0; i < normArray.size(); ++i)
   {
-    assert(normArray[i].second > 0.f);
-    m_VertexNormalArray[i] = 1.f / normArray[i].second * normArray[i].first;
+    if (normArray[i].second > 0.f)
+    {
+      m_VertexNormalArray[i] = 1.f / normArray[i].second * normArray[i].first;
+    }
   }
 }
 

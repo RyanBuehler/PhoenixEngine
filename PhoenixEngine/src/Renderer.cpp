@@ -64,7 +64,7 @@ void Renderer::RenderGameObject(GameObject& gameObject)
     // Unknown Mesh ID, check for new id with file name
     if (gameObject.m_MeshID == MeshManager::MESH_INDEX_ERROR)
     {
-      gameObject.m_MeshID = m_MeshManager.LoadMesh(gameObject.GetMeshFileName(), true , true);
+      gameObject.m_MeshID = m_MeshManager.LoadMesh(gameObject.GetMeshFileName(), true, true);
       if (gameObject.m_MeshID == MeshManager::MESH_INDEX_ERROR)
       {
         Log::Error("Could not load mesh: " + gameObject.GetMeshFileName());
@@ -111,7 +111,7 @@ void Renderer::LoadContexts() noexcept
   ContextManager::VertexAttribute vaColor("color", 4, GL_FLOAT, GL_FALSE, 2 * sizeof(vec4), sizeof(vec4));
   m_ContextManager.AddNewVertexAttribute(m_DebugContextID, vaPosition);
   m_ContextManager.AddNewVertexAttribute(m_DebugContextID, vaColor);
-  
+
   Log::Trace("DEBUG Context loaded.");
 }
 
@@ -216,4 +216,14 @@ void Renderer::DisableBackFaceCull() noexcept
 bool Renderer::BackFaceCullIsEnabled() const noexcept
 {
   return glIsEnabled(GL_CULL_FACE);
+}
+
+void Renderer::SetRenderModeFill() noexcept
+{
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
+void Renderer::SetRenderModeWireframe() noexcept
+{
+  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }

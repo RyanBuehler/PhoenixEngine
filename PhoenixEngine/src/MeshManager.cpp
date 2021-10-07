@@ -214,7 +214,7 @@ unsigned MeshManager::LoadSphere(float radius, int numDivisions) noexcept
     {
       unsigned y = STACKS * (i - 1) + j;
       float phi = 2 * glm::pi<float>() * j / STACKS;
-      vec3 normal(sin(theta) * cos(phi), cos(theta), sin(theta) * sin(phi));
+      vec3 normal(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
       m_MeshArray[index].m_VertexNormalArray[y] = normal;
     }
   }
@@ -257,6 +257,6 @@ unsigned MeshManager::LoadSphere(float radius, int numDivisions) noexcept
     m_MeshArray[index].m_TriangleArray.push_back(triangle);
   }
 
-  m_MeshArray[index].CalculateNormals();
+  //m_MeshArray[index].CalculateNormals();
   return index;
 }
