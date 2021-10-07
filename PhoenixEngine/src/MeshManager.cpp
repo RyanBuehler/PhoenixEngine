@@ -142,24 +142,7 @@ void MeshManager::RenderMesh(unsigned id) const noexcept
   glDrawElements(GL_TRIANGLES, 3 * m_MeshArray[id].GetTriangleCount(), GL_UNSIGNED_INT, 0);
   glBindVertexArray(0u);
 
-#pragma region ImGui
-
-#ifdef _IMGUI
-
-  if (ImGui::GraphicsDebugRenderSurfaceNormals)
-  {
-    RenderNormals(id, ImGui::GraphicsDebugNormalLength);
-  }
-
-#endif
-
-#pragma endregion
-
 }
-
-#pragma region ImGui
-
-#ifdef _IMGUI
 
 void MeshManager::RenderNormals(unsigned id, float length) const noexcept
 {
@@ -175,11 +158,9 @@ void MeshManager::RenderNormals(unsigned id, float length) const noexcept
       m_MeshArray[id].m_SurfaceNormalPositionArray[i],
       m_MeshArray[id].m_SurfaceNormalPositionArray[i] + m_MeshArray[id].m_SurfaceNormalArray[i] * length);
   }
+
+  DebugRenderer::I().RenderLines();
 }
-
-#endif
-
-#pragma endregion
 
 unsigned MeshManager::LoadMeshFromOBJ(const string& fileName) noexcept
 {
@@ -190,6 +171,11 @@ unsigned MeshManager::LoadMeshFromOBJ(const string& fileName) noexcept
 
   auto result = m_OBJReader.ReadOBJFile(fileName, &m_MeshArray[i], OBJReader::ReadMethod::LINE_BY_LINE, false);
   return i;
+}
+
+const Mesh& MeshManager::GetMeshByID(unsigned id) const noexcept
+{
+  return m_MeshArray[id];
 }
 
 unsigned MeshManager::LoadSphere(float radius, int numDivisions) noexcept

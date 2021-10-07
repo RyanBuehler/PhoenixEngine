@@ -156,13 +156,6 @@ void ImGuiManager::OnImGuiGraphicsUpdate() noexcept
 
   IMGUISPACE;
 
-  if (ImGui::SliderFloat("Render Mode", &m_DebugLineWidth, 0.05f, 10.f))
-  {
-    DebugRenderer::I().SetLineWidth(m_DebugLineWidth);
-  }
-
-  IMGUISPACE;
-
   ImGui::Text("Render Mode");
   static int imguiRenderMode = 0;
   if (ImGui::RadioButton("Fill", &imguiRenderMode, 0))

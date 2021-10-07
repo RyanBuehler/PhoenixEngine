@@ -50,15 +50,9 @@ public:
 
   void RenderMesh(unsigned id) const noexcept;
 
-#pragma region ImGui
-
-#ifdef _IMGUI
-
   void RenderNormals(unsigned id, float length) const noexcept;
 
-#endif
-
-#pragma endregion
+  const Mesh& GetMeshByID(unsigned id) const noexcept;
 
 private:
   vector<Mesh> m_MeshArray;

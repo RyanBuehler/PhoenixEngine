@@ -27,7 +27,7 @@ void TestScene::OnLoad() noexcept
   {
     m_GameObjectArray.emplace_back("sphere");
   }
-  m_GameObjectArray.emplace_back("lucy_princeton.obj");
+  m_GameObjectArray.emplace_back("bunny.obj");
 }
 
 void TestScene::OnInit() noexcept

@@ -57,6 +57,69 @@ void Renderer::OnEndFrame() const noexcept
   glUseProgram(0u);
 }
 
+void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& activeCamera)
+{
+  // Render any previously stored line
+  m_ContextManager.SetContext(m_DebugContextID);
+  //TODO: Check if this is being used before Rendering
+  DebugRenderer::I().RenderLines();
+
+  m_ContextManager.SetContext(m_DiffuseContextID);
+  //TODO: Combine these for efficiency
+  // Set Perspective Matrix
+  glUniformMatrix4fv(
+    m_ContextManager.GetCurrentUniformAttributes()[0].ID,
+    1, GL_FALSE, &activeCamera.GetPersMatrix()[0][0]);
+  // Set View Matrix
+  glUniformMatrix4fv(
+    m_ContextManager.GetCurrentUniformAttributes()[1].ID,
+    1, GL_FALSE, &activeCamera.GetViewMatrix()[0][0]);
+
+  // Render our list of game objects
+  for (GameObject& go : gameObjects)
+  {
+    // Skip disabled game objects
+    if (go.IsActive())
+    {
+      RenderGameObject(go);
+    }
+  }
+  glUseProgram(0u);
+
+#pragma region ImGui
+
+#ifdef _IMGUI
+
+  if (ImGui::GraphicsDebugRenderSurfaceNormals)
+  {
+    m_ContextManager.SetContext(m_DebugContextID);
+
+    glUniformMatrix4fv(
+      m_ContextManager.GetCurrentUniformAttributes()[0].ID,
+      1, GL_FALSE, &activeCamera.GetPersMatrix()[0][0]);
+    // Set View Matrix
+    glUniformMatrix4fv(
+      m_ContextManager.GetCurrentUniformAttributes()[1].ID,
+      1, GL_FALSE, &activeCamera.GetViewMatrix()[0][0]);
+
+    // RenderNormals(id, ImGui::GraphicsDebugNormalLength);
+    // Render our list of game objects
+    for (GameObject& go : gameObjects)
+    {
+      // Skip disabled game objects
+      if (go.IsActive())
+      {
+        RenderNormals(go, ImGui::GraphicsDebugNormalLength);
+      }
+    }
+    glUseProgram(0u);
+  }
+
+#endif
+
+#pragma endregion
+}
+
 void Renderer::RenderGameObject(GameObject& gameObject)
 {
   if (gameObject.m_bIsDirty)
@@ -78,6 +141,35 @@ void Renderer::RenderGameObject(GameObject& gameObject)
 
   m_MeshManager.RenderMesh(gameObject.m_MeshID);
 }
+
+#pragma region ImGui
+
+#ifdef _IMGUI
+
+void Renderer::RenderNormals(GameObject& gameObject, float length) noexcept
+{
+  if (gameObject.m_bIsDirty)
+  {
+    // Unknown Mesh ID, check for new id with file name
+    if (gameObject.m_MeshID == MeshManager::MESH_INDEX_ERROR)
+    {
+      gameObject.m_MeshID = m_MeshManager.LoadMesh(gameObject.GetMeshFileName(), true, true);
+      if (gameObject.m_MeshID == MeshManager::MESH_INDEX_ERROR)
+      {
+        Log::Error("Could not load mesh: " + gameObject.GetMeshFileName());
+        return;
+      }
+    }
+  }
+  // Bind the model transform matrix
+  glUniformMatrix4fv(m_ContextManager.GetCurrentUniformAttributes()[2].ID, 1, false, &gameObject.GetMatrix()[0][0]);
+
+  m_MeshManager.RenderNormals(gameObject.m_MeshID, length);
+}
+
+#endif
+
+#pragma endregion
 
 void Renderer::LoadContexts() noexcept
 {
@@ -106,6 +198,7 @@ void Renderer::LoadContexts() noexcept
 
   m_ContextManager.AddNewUniformAttribute(m_DebugContextID, "pers_matrix");
   m_ContextManager.AddNewUniformAttribute(m_DebugContextID, "view_matrix");
+  m_ContextManager.AddNewUniformAttribute(m_DebugContextID, "model_matrix");
 
   vaPosition = ContextManager::VertexAttribute("position", 4, GL_FLOAT, GL_FALSE, 2 * sizeof(vec4), 0u);
   ContextManager::VertexAttribute vaColor("color", 4, GL_FLOAT, GL_FALSE, 2 * sizeof(vec4), sizeof(vec4));
@@ -113,55 +206,6 @@ void Renderer::LoadContexts() noexcept
   m_ContextManager.AddNewVertexAttribute(m_DebugContextID, vaColor);
 
   Log::Trace("DEBUG Context loaded.");
-}
-
-void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& activeCamera)
-{
-  m_ContextManager.SetContext(m_DiffuseContextID);
-  //TODO: Combine these for efficiency
-  // Set Perspective Matrix
-  glUniformMatrix4fv(
-    m_ContextManager.GetCurrentUniformAttributes()[0].ID,
-    1, GL_FALSE, &activeCamera.GetPersMatrix()[0][0]);
-  // Set View Matrix
-  glUniformMatrix4fv(
-    m_ContextManager.GetCurrentUniformAttributes()[1].ID,
-    1, GL_FALSE, &activeCamera.GetViewMatrix()[0][0]);
-
-  // Render our list of game objects
-  for (GameObject& go : gameObjects)
-  {
-    // Skip disabled game objects
-    if (go.IsActive())
-    {
-      RenderGameObject(go);
-    }
-  }
-  glUseProgram(0u);
-
-  m_ContextManager.SetContext(m_DebugContextID);
-
-  //TODO:
-  // Set Perspective Matrix
-  glUniformMatrix4fv(
-    m_ContextManager.GetCurrentUniformAttributes()[0].ID,
-    1, GL_FALSE, &activeCamera.GetPersMatrix()[0][0]);
-  // Set View Matrix
-  glUniformMatrix4fv(
-    m_ContextManager.GetCurrentUniformAttributes()[1].ID,
-    1, GL_FALSE, &activeCamera.GetViewMatrix()[0][0]);
-
-  //for (int x = -10; x <= 10; ++x)
-  //{
-  //  for (int y = -10; y <= 10; ++y)
-  //  {
-  //    DebugRenderer::I().AddLine(vec3(x, y, 0.f), vec3(-x, y, 0.f));
-  //    DebugRenderer::I().AddLine(vec3(x, y, 0.f), vec3(x, -y, 0.f));
-  //  }
-  //}
-
-  //TODO: Check if this is being used before Rendering
-  DebugRenderer::I().RenderLines();
 }
 
 void Renderer::EnableDepthBuffer() noexcept

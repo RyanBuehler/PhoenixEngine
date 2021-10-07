@@ -49,6 +49,16 @@ public:
 private:
   void RenderGameObject(GameObject& gameObject);
 
+#pragma region ImGui
+
+#ifdef _IMGUI
+
+  void RenderNormals(GameObject& gameObject, float length) noexcept;
+
+#endif
+
+#pragma endregion
+
   void LoadContexts() noexcept;
 
   ShaderManager m_ShaderManager;
