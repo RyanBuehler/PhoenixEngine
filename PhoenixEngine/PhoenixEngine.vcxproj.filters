@@ -55,6 +55,12 @@
     <Filter Include="Header Files\Core\Common">
       <UniqueIdentifier>{082a0541-c584-4f18-be14-2cecce80c93f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Debug">
+      <UniqueIdentifier>{5922be34-16e7-448e-afdf-23a68c9f88ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Debug">
+      <UniqueIdentifier>{7631280e-a94e-440f-9051-3a61c20e00c3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h">
@@ -74,9 +80,6 @@
     </ClInclude>
     <ClInclude Include="src\Paths.h">
       <Filter>Header Files\Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="src\MeshRenderer.h">
-      <Filter>Header Files\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="src\ShaderManager.h">
       <Filter>Header Files\Graphics</Filter>
@@ -135,14 +138,14 @@
     <ClInclude Include="src\ImGuiManager.h">
       <Filter>Header Files\ImGUI</Filter>
     </ClInclude>
-    <ClInclude Include="src\DebugRenderer.h">
-      <Filter>Header Files\Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="src\Renderer.h">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="src\Colors.h">
       <Filter>Header Files\Core\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DebugRenderer.h">
+      <Filter>Header Files\Debug</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -151,9 +154,6 @@
     </ClCompile>
     <ClCompile Include="src\Window.cpp">
       <Filter>Source Files\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\MeshRenderer.cpp">
-      <Filter>Source Files\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="src\ShaderManager.cpp">
       <Filter>Source Files\Graphics</Filter>
@@ -212,11 +212,11 @@
     <ClCompile Include="src\ImGuiManager.cpp">
       <Filter>Source Files\ImGUI</Filter>
     </ClCompile>
-    <ClCompile Include="src\DebugRenderer.cpp">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="src\Renderer.cpp">
       <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DebugRenderer.cpp">
+      <Filter>Source Files\Debug</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

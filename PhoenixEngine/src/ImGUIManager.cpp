@@ -15,15 +15,23 @@
 #endif
 #pragma warning( pop )
 #include "GLFW/glfw3.h"
+#include "DebugRenderer.h"
 
+#define IMGUISPACE ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing()
+
+// Instantiation
 namespace ImGui
 {
   unique_ptr<ImGuiManager> Manager;
   bool GraphicsWindowEnabled = true;
-  bool GraphicsDebugRenderNormals = true;
+  bool GraphicsDebugRenderVertexNormals = false;
+  bool GraphicsDebugRenderSurfaceNormals = false;
+  float GraphicsDebugNormalLength = 0.05f;
 }
 
-ImGuiManager::ImGuiManager(GLFWwindow* window) noexcept
+ImGuiManager::ImGuiManager(GLFWwindow* window) noexcept :
+  m_bRenderAxes(false),
+  m_DebugLineWidth(1.f)
 {
   // Decide GL+GLSL versions
 #if defined(IMGUI_IMPL_OPENGL_ES2)
@@ -95,12 +103,88 @@ void ImGuiManager::OnImGuiClose() noexcept
 
 void ImGuiManager::OnImGuiGraphicsUpdate() noexcept
 {
+  static const ImVec4 IMGREEN(0.f, 1.f, 0.f, 1.f);
   ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
   ImGui::Begin("Graphics Settings", &ImGui::GraphicsWindowEnabled);
 
+  ImGui::TextColored(IMGREEN, "Frame Stats: "); ImGui::SameLine();
   ImGui::Text("Frame: [%05d] Time: %lf", ImGui::GetFrameCount(), ImGui::GetTime());
+  IMGUISPACE;
+  ImGui::Separator();
+  IMGUISPACE;
 
-  ImGui::Checkbox("Debug Render Normals", &ImGui::GraphicsDebugRenderNormals);
+  ImGui::TextColored(IMGREEN, "Render Axes: "); ImGui::SameLine();
+  ImGui::Checkbox("##Render Axes", &m_bRenderAxes);
+  if(m_bRenderAxes)
+  {
+    DebugRenderer::I().AddLine(vec3(-10000.f, 0.f, 0.f), Colors::RED, vec3(10000.f, 0.f, 0.f), Colors::RED);
+    DebugRenderer::I().AddLine(vec3(0.f, -10000.f, 0.f), Colors::GREEN, vec3(0.f, 10000.f, 0.f), Colors::GREEN);
+    DebugRenderer::I().AddLine(vec3(0.f, 0.f, -10000.f), Colors::BLUE, vec3(0.f, 0.f, 10000.f), Colors::BLUE);
+  }
+
+  IMGUISPACE;
+
+  ImGui::TextColored(IMGREEN, "Debug Line Width: "); ImGui::SameLine();
+  if (ImGui::SliderFloat("##Debug Line Width", &m_DebugLineWidth, 0.05f, 5.f))
+  {
+    DebugRenderer::I().SetLineWidth(m_DebugLineWidth);
+  }
+
+  IMGUISPACE;
+  ImGui::Separator();
+  IMGUISPACE;
+
+  ImGui::TextColored(IMGREEN, "Show Normals: "); ImGui::SameLine();
+  
+  static int imguiNormals = 2;
+  if (ImGui::RadioButton("Per Vertex", &imguiNormals, 0))
+  {
+    ImGui::GraphicsDebugRenderVertexNormals = true;
+    ImGui::GraphicsDebugRenderSurfaceNormals = false;
+  }
+
+  ImGui::SameLine();
+  if (ImGui::RadioButton("Per Triangle", &imguiNormals, 1))
+  {
+    ImGui::GraphicsDebugRenderVertexNormals = false;
+    ImGui::GraphicsDebugRenderSurfaceNormals = true;
+  }
+  
+  ImGui::SameLine();
+  if (ImGui::RadioButton("None", &imguiNormals, 2))
+  {
+    ImGui::GraphicsDebugRenderVertexNormals = false;
+    ImGui::GraphicsDebugRenderSurfaceNormals = false;
+  }
+
+  IMGUISPACE;
+
+  ImGui::TextColored(IMGREEN, "Normal Length: "); ImGui::SameLine();
+  ImGui::SliderFloat("##Normal Length", &ImGui::GraphicsDebugNormalLength, 0.001f, 0.5f);
+
+  IMGUISPACE;
+
+  ImGui::TextColored(IMGREEN, "Render Mode: "); ImGui::SameLine();
+  static int imguiRenderMode = 0;
+  if (ImGui::RadioButton("Fill", &imguiRenderMode, 0))
+  {
+    Renderer::SetRenderModeFill();
+  }
+
+  ImGui::SameLine();
+  if (ImGui::RadioButton("Wireframe", &imguiRenderMode, 1))
+  {
+    Renderer::SetRenderModeWireframe();
+  }
+
+  IMGUISPACE;
+  ImGui::Separator();
+  IMGUISPACE;
+
+  ImGui::Text("Camera Controls:");
+  ImGui::Text("WASD: Move Around");
+  ImGui::Text("Q/E: Move Up and Down");
+  ImGui::Text("Note: Camera currently focuses on the center object.");
 
   ImGui::End();
 }
@@ -114,7 +198,6 @@ void ImGuiManager::SetOnSceneChangeHandler(function<void(SceneManager::Scene)> c
 {
   m_dOnSceneChange = callback;
 }
-
 
 void ImGuiManager::ShowMainMenu() noexcept
 {
@@ -164,3 +247,5 @@ void ImGuiManager::ShowMainMenu_About() noexcept
   if (ImGui::MenuItem("Phoenix Engine", PE_VERSION, false, false)) {}  // Disabled item
   if (ImGui::MenuItem("Author", "Ryan Buehler", false, false)) {}  // Disabled item
 }
+
+#undef IMGUISPACE

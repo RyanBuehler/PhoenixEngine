@@ -8,16 +8,15 @@
 #include "SceneManager.h"
 #include "Renderer.h"
 
-#ifndef _IMGUI_ENABLED
 class ImGuiManager;
 namespace ImGui
 {
   extern unique_ptr<ImGuiManager> Manager;
   extern bool GraphicsWindowEnabled;
-  extern bool GraphicsDebugRenderNormals;
+  extern bool GraphicsDebugRenderVertexNormals;
+  extern bool GraphicsDebugRenderSurfaceNormals;
+  extern float GraphicsDebugNormalLength;
 }
-#define _IMGUI_ENABLED
-#endif
 
 struct GLFWwindow;
 
@@ -47,4 +46,7 @@ private:
   void ShowMainMenu_File() noexcept;
   void ShowMainMenu_Edit() noexcept;
   void ShowMainMenu_About() noexcept;
+
+  bool m_bRenderAxes;
+  float m_DebugLineWidth;
 };

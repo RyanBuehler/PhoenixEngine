@@ -9,6 +9,7 @@
 #include "GraphicsCommon.h"
 #include "ShaderManager.h"
 #include "Camera.h"
+#include "Colors.h"
 
 class DebugRenderer
 {
@@ -37,22 +38,27 @@ public:
   DebugRenderer& operator=(DebugRenderer&&) = delete;
 
   void RenderLines() noexcept;
+  void RenderPermanentLines() noexcept;
 
   void AddLine(const vec3& point1, const vec3& point2) noexcept;
+  void AddLine(const vec3& point1, const vec4& color1, const vec3& point2, const vec4& color2) noexcept;
   void AddPermanentLine(const vec3& point1, const vec3& point2) noexcept;
+  void AddPermanentLine(const vec3& point1, const vec4& color1, const vec3& point2, const vec4& color2) noexcept;
 
   void SetLineWidth(float width) noexcept;
-  void SetLineColor(const vec4& rgba) noexcept;
+  void SetDefaultLineColor(const vec4& rgba) noexcept;
 
 private:
   DebugRenderer() noexcept;
 
-  void RenderLine(const vec3& point1, const vec3& point2);
+  void RenderLine(const vec3& point1, const vec4& color1, const vec3& point2, const vec4& color2);
 
   vector<vec3> m_LineArray;
   vector<vec3> m_PermanentLineArray;
+  vector<vec4> m_ColorArray;
+  vector<vec4> m_PermanentColorArray;
 
-  vec4 m_LineColor;
+  vec4 m_DefaultLineColor;
 
   GLuint m_VertexArrayID;
   GLuint m_VertexBufferObject;

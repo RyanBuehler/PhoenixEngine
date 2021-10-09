@@ -18,7 +18,8 @@ public:
   CameraManager(CameraManager&&) = delete;
   CameraManager& operator=(CameraManager&&) = delete;
 
-  Camera& CreateCamera() noexcept;
+  Camera& CreateCamera(const string& name) noexcept;
+  //TODO: Delete Camera by Name
 
   void SetActiveCamera(Camera& activeCamera) noexcept;
   Camera& GetActiveCamera() noexcept;
@@ -26,7 +27,7 @@ public:
 
 private:
   Camera m_DefaultCamera;
-  forward_list<unique_ptr<Camera>> m_Cameras;
+  vector<unique_ptr<Camera>> m_Cameras;
 
   Camera* m_ActiveCamera;
 };
