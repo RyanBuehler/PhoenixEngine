@@ -103,15 +103,18 @@ void ImGuiManager::OnImGuiClose() noexcept
 
 void ImGuiManager::OnImGuiGraphicsUpdate() noexcept
 {
+  static const ImVec4 IMGREEN(0.f, 1.f, 0.f, 1.f);
   ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
   ImGui::Begin("Graphics Settings", &ImGui::GraphicsWindowEnabled);
 
-  ImGui::Text("Frame Stats");
+  ImGui::TextColored(IMGREEN, "Frame Stats: "); ImGui::SameLine();
   ImGui::Text("Frame: [%05d] Time: %lf", ImGui::GetFrameCount(), ImGui::GetTime());
+  IMGUISPACE;
   ImGui::Separator();
   IMGUISPACE;
 
-  ImGui::Checkbox("Render Axes", &m_bRenderAxes);
+  ImGui::TextColored(IMGREEN, "Render Axes: "); ImGui::SameLine();
+  ImGui::Checkbox("##Render Axes", &m_bRenderAxes);
   if(m_bRenderAxes)
   {
     DebugRenderer::I().AddLine(vec3(-10000.f, 0.f, 0.f), Colors::RED, vec3(10000.f, 0.f, 0.f), Colors::RED);
@@ -121,15 +124,19 @@ void ImGuiManager::OnImGuiGraphicsUpdate() noexcept
 
   IMGUISPACE;
 
-  if (ImGui::SliderFloat("Debug Line Width", &m_DebugLineWidth, 0.05f, 10.f))
+  ImGui::TextColored(IMGREEN, "Debug Line Width: "); ImGui::SameLine();
+  if (ImGui::SliderFloat("##Debug Line Width", &m_DebugLineWidth, 0.05f, 5.f))
   {
     DebugRenderer::I().SetLineWidth(m_DebugLineWidth);
   }
 
   IMGUISPACE;
+  ImGui::Separator();
+  IMGUISPACE;
 
-  ImGui::Text("Show Normals");
-  static int imguiNormals = 0;
+  ImGui::TextColored(IMGREEN, "Show Normals: "); ImGui::SameLine();
+  
+  static int imguiNormals = 2;
   if (ImGui::RadioButton("Per Vertex", &imguiNormals, 0))
   {
     ImGui::GraphicsDebugRenderVertexNormals = true;
@@ -152,11 +159,12 @@ void ImGuiManager::OnImGuiGraphicsUpdate() noexcept
 
   IMGUISPACE;
 
-  ImGui::SliderFloat("Normal Length", &ImGui::GraphicsDebugNormalLength, 0.001f, 1.f);
+  ImGui::TextColored(IMGREEN, "Normal Length: "); ImGui::SameLine();
+  ImGui::SliderFloat("##Normal Length", &ImGui::GraphicsDebugNormalLength, 0.001f, 0.5f);
 
   IMGUISPACE;
 
-  ImGui::Text("Render Mode");
+  ImGui::TextColored(IMGREEN, "Render Mode: "); ImGui::SameLine();
   static int imguiRenderMode = 0;
   if (ImGui::RadioButton("Fill", &imguiRenderMode, 0))
   {
@@ -169,6 +177,14 @@ void ImGuiManager::OnImGuiGraphicsUpdate() noexcept
     Renderer::SetRenderModeWireframe();
   }
 
+  IMGUISPACE;
+  ImGui::Separator();
+  IMGUISPACE;
+
+  ImGui::Text("Camera Controls:");
+  ImGui::Text("WASD: Move Around");
+  ImGui::Text("Q/E: Move Up and Down");
+  ImGui::Text("Note: Camera currently focuses on the center object.");
 
   ImGui::End();
 }

@@ -215,11 +215,11 @@ void Mesh::CalculateVertexNormals() noexcept
   m_VertexNormalArray.clear();
   m_VertexNormalArray.resize(GetVertexCount(), vec3(0.0f));
 
-  vector<pair<vec3, float>> normArray(m_VertexNormalArray.size());
+  vector<pair<vec3, float>> normArray(m_VertexNormalArray.size(), make_pair(vec3(0.f), 0.f));
   for (size_t i = 0; i < m_SurfaceNormalArray.size(); ++i)
   {
     Mesh::Triangle& tri = m_TriangleArray[i];
-    vec3 sN = m_SurfaceNormalArray[tri.Index1];
+    vec3 sN = m_SurfaceNormalArray[i];
 
     // first - Surface Normal
     normArray[tri.Index1].first += sN;

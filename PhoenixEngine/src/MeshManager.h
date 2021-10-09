@@ -50,7 +50,9 @@ public:
 
   void RenderMesh(unsigned id) const noexcept;
 
-  void RenderNormals(unsigned id, float length) const noexcept;
+  void RenderSurfaceNormals(unsigned id, float length) const noexcept;
+
+  void RenderVertexNormals(unsigned id, float length) const noexcept;
 
   const Mesh& GetMeshByID(unsigned id) const noexcept;
 

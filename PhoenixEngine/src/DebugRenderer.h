@@ -38,6 +38,7 @@ public:
   DebugRenderer& operator=(DebugRenderer&&) = delete;
 
   void RenderLines() noexcept;
+  void RenderPermanentLines() noexcept;
 
   void AddLine(const vec3& point1, const vec3& point2) noexcept;
   void AddLine(const vec3& point1, const vec4& color1, const vec3& point2, const vec4& color2) noexcept;

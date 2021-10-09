@@ -144,7 +144,7 @@ void MeshManager::RenderMesh(unsigned id) const noexcept
 
 }
 
-void MeshManager::RenderNormals(unsigned id, float length) const noexcept
+void MeshManager::RenderSurfaceNormals(unsigned id, float length) const noexcept
 {
   if (id == MESH_INDEX_ERROR)
   {
@@ -157,6 +157,24 @@ void MeshManager::RenderNormals(unsigned id, float length) const noexcept
     DebugRenderer::I().AddLine(
       m_MeshArray[id].m_SurfaceNormalPositionArray[i],
       m_MeshArray[id].m_SurfaceNormalPositionArray[i] + m_MeshArray[id].m_SurfaceNormalArray[i] * length);
+  }
+
+  DebugRenderer::I().RenderLines();
+}
+
+void MeshManager::RenderVertexNormals(unsigned id, float length) const noexcept
+{
+  if (id == MESH_INDEX_ERROR)
+  {
+    Log::Error("RenderMesh: Mesh not loaded!");
+    return;
+  }
+
+  for (size_t i = 0; i < m_MeshArray[id].m_VertexNormalArray.size(); ++i)
+  {
+    DebugRenderer::I().AddLine(
+      m_MeshArray[id].m_PositionArray[i],
+      m_MeshArray[id].m_PositionArray[i] + m_MeshArray[id].m_VertexNormalArray[i] * length);
   }
 
   DebugRenderer::I().RenderLines();

@@ -55,15 +55,26 @@ void DebugRenderer::RenderLines() noexcept
     RenderLine(m_LineArray[i], m_ColorArray[i], m_LineArray[i + 1], m_ColorArray[i + 1]);
   }
 
+  m_LineArray.clear();
+  m_ColorArray.clear();
+
+  glBindVertexArray(0);
+}
+
+void DebugRenderer::RenderPermanentLines() noexcept
+{
+  //TODO: Move these into the context manager
+  glBindVertexArray(m_VertexArrayID);
+  glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBufferObject), 0);
+  glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBufferObject), (GLvoid*)sizeof(vec4));
+  glEnableVertexAttribArray(0);
+  glEnableVertexAttribArray(1);
+
   for (size_t i = 0; i < m_PermanentLineArray.size(); i += 2)
   {
     RenderLine(m_PermanentLineArray[i], m_PermanentColorArray[i],
       m_PermanentLineArray[i + 1], m_PermanentColorArray[i + 1]);
   }
-  m_LineArray.clear();
-  m_ColorArray.clear();
-
-  glBindVertexArray(0);
 }
 
 void DebugRenderer::AddLine(const vec3& point1, const vec3& point2) noexcept

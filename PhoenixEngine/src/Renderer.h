@@ -53,7 +53,7 @@ private:
 
 #ifdef _IMGUI
 
-  void RenderNormals(GameObject& gameObject, float length) noexcept;
+  void RenderNormals(GameObject& gameObject, float length, Normals::Type normalType) noexcept;
 
 #endif
 

@@ -28,6 +28,7 @@ void TestScene::OnLoad() noexcept
     m_GameObjectArray.emplace_back("sphere");
   }
   m_GameObjectArray.emplace_back("bunny.obj");
+  //m_GameObjectArray.emplace_back("cube2.obj");
 }
 
 void TestScene::OnInit() noexcept
@@ -56,6 +57,7 @@ void TestScene::OnInit() noexcept
   temp.SetIsActive(false);
   //DebugRenderer::I().AddPermanentLine(temp.GetPosition(), vec3(1.f, 0.f, 0.f));
 
+  //m_GameObjectArray[8].SetIsActive(false);
   m_GameObjectArray[8].SetPosition(vec3(0.f));
   m_GameObjectArray[8].ScaleBy(1.f);
   m_MainCamera.SetTarget(&m_GameObjectArray[8].GetTransform());

@@ -39,3 +39,14 @@ namespace Shader
     COUNT
   };
 }
+
+namespace Normals
+{
+  enum class Type : unsigned
+  {
+    VERTEX,
+    TRIANGLE,
+    SURFACE,
+    COUNT
+  };
+}

@@ -64,6 +64,10 @@ void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& active
   //TODO: Check if this is being used before Rendering
   DebugRenderer::I().RenderLines();
 
+  //TODO:
+  static vec3 diffuse(vec3(11.f / 255.f, 222.f / 255.f, 230.f / 255.f));
+  static vec3 ambient(vec3(0.2f, 0.2f, 0.2f));
+
   m_ContextManager.SetContext(m_DiffuseContextID);
   //TODO: Combine these for efficiency
   // Set Perspective Matrix
@@ -74,6 +78,10 @@ void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& active
   glUniformMatrix4fv(
     m_ContextManager.GetCurrentUniformAttributes()[1].ID,
     1, GL_FALSE, &activeCamera.GetViewMatrix()[0][0]);
+  // Set Diffuse Light
+  glUniform3fv(m_ContextManager.GetCurrentUniformAttributes()[3].ID, 1, &diffuse[0]);
+  // Set Ambient Light
+  glUniform3fv(m_ContextManager.GetCurrentUniformAttributes()[4].ID, 1, &ambient[0]);
 
   // Render our list of game objects
   for (GameObject& go : gameObjects)
@@ -89,19 +97,25 @@ void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& active
 #pragma region ImGui
 
 #ifdef _IMGUI
+  m_ContextManager.SetContext(m_DebugContextID);
+
+  // Set Perspective Matrix
+  glUniformMatrix4fv(
+    m_ContextManager.GetCurrentUniformAttributes()[0].ID,
+    1, GL_FALSE, &activeCamera.GetPersMatrix()[0][0]);
+  // Set View Matrix
+  glUniformMatrix4fv(
+    m_ContextManager.GetCurrentUniformAttributes()[1].ID,
+    1, GL_FALSE, &activeCamera.GetViewMatrix()[0][0]);
+
+  static constexpr mat4 matIdentity(1.f);
+
+  // Bind the identity for permanent line's model matrix
+  glUniformMatrix4fv(m_ContextManager.GetCurrentUniformAttributes()[2].ID, 1, false, &matIdentity[0][0]);
+  DebugRenderer::I().RenderPermanentLines();
 
   if (ImGui::GraphicsDebugRenderSurfaceNormals)
   {
-    m_ContextManager.SetContext(m_DebugContextID);
-
-    glUniformMatrix4fv(
-      m_ContextManager.GetCurrentUniformAttributes()[0].ID,
-      1, GL_FALSE, &activeCamera.GetPersMatrix()[0][0]);
-    // Set View Matrix
-    glUniformMatrix4fv(
-      m_ContextManager.GetCurrentUniformAttributes()[1].ID,
-      1, GL_FALSE, &activeCamera.GetViewMatrix()[0][0]);
-
     // RenderNormals(id, ImGui::GraphicsDebugNormalLength);
     // Render our list of game objects
     for (GameObject& go : gameObjects)
@@ -109,10 +123,29 @@ void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& active
       // Skip disabled game objects
       if (go.IsActive())
       {
-        RenderNormals(go, ImGui::GraphicsDebugNormalLength);
+        RenderNormals(go, ImGui::GraphicsDebugNormalLength, Normals::Type::SURFACE);
       }
     }
     glUseProgram(0u);
+  }
+  else if (ImGui::GraphicsDebugRenderVertexNormals)
+  {
+    m_ContextManager.SetContext(m_DebugContextID);
+
+    // Render our list of game objects
+    for (GameObject& go : gameObjects)
+    {
+      // Skip disabled game objects
+      if (go.IsActive())
+      {
+        RenderNormals(go, ImGui::GraphicsDebugNormalLength, Normals::Type::VERTEX);
+      }
+    }
+    glUseProgram(0u);
+  }
+  else
+  {
+    DebugRenderer::I().RenderLines();
   }
 
 #endif
@@ -146,7 +179,7 @@ void Renderer::RenderGameObject(GameObject& gameObject)
 
 #ifdef _IMGUI
 
-void Renderer::RenderNormals(GameObject& gameObject, float length) noexcept
+void Renderer::RenderNormals(GameObject& gameObject, float length, Normals::Type normalType) noexcept
 {
   if (gameObject.m_bIsDirty)
   {
@@ -164,7 +197,21 @@ void Renderer::RenderNormals(GameObject& gameObject, float length) noexcept
   // Bind the model transform matrix
   glUniformMatrix4fv(m_ContextManager.GetCurrentUniformAttributes()[2].ID, 1, false, &gameObject.GetMatrix()[0][0]);
 
-  m_MeshManager.RenderNormals(gameObject.m_MeshID, length);
+  switch (normalType)
+  {
+  case Normals::Type::VERTEX:
+    m_MeshManager.RenderVertexNormals(gameObject.m_MeshID, length);
+    break;
+  case Normals::Type::TRIANGLE:
+    m_MeshManager.RenderSurfaceNormals(gameObject.m_MeshID, length);
+    break;
+  case Normals::Type::SURFACE:
+    m_MeshManager.RenderSurfaceNormals(gameObject.m_MeshID, length);
+    break;
+  case Normals::Type::COUNT:
+  default:
+    break;
+  }
 }
 
 #endif
@@ -182,6 +229,8 @@ void Renderer::LoadContexts() noexcept
   m_ContextManager.AddNewUniformAttribute(m_DiffuseContextID, "pers_matrix");
   m_ContextManager.AddNewUniformAttribute(m_DiffuseContextID, "view_matrix");
   m_ContextManager.AddNewUniformAttribute(m_DiffuseContextID, "model_matrix");
+  m_ContextManager.AddNewUniformAttribute(m_DiffuseContextID, "diffuse_light");
+  m_ContextManager.AddNewUniformAttribute(m_DiffuseContextID, "ambient_light");
 
   ContextManager::VertexAttribute vaPosition("position", 4, GL_FLOAT, GL_FALSE, sizeof(vec3), 0u);
   ContextManager::VertexAttribute vaNormal("normal", 4, GL_FLOAT, GL_FALSE, sizeof(vec3), sizeof(vec3));
