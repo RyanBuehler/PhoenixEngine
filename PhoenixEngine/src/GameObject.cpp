@@ -56,3 +56,9 @@ const Transform& GameObject::GetTransform() const noexcept
 {
   return m_Transform;
 }
+
+void GameObject::SetMeshFileName(const string& fileName) noexcept
+{
+  m_MeshFileName = fileName;
+  m_MeshID = numeric_limits<unsigned>::max();
+}

@@ -119,10 +119,7 @@ void Scene1::OnPollInput(GLFWwindow* window, float dt) noexcept
 
 void Scene1::OnDemoObjectChangeEvent()
 {
-  OnShutdown();
-  OnUnload();
-  OnLoad();
-  OnInit();
+  m_GameObjectArray[8].SetMeshFileName(ImGui::DemoObjectFile);
 }
 
 Camera& Scene1::GetCurrentCamera() noexcept
