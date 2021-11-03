@@ -16,6 +16,24 @@ namespace ImGui
   extern bool GraphicsDebugRenderVertexNormals;
   extern bool GraphicsDebugRenderSurfaceNormals;
   extern float GraphicsDebugNormalLength;
+
+  //TODO:
+  enum class DemoObject
+  {
+    Bunny,
+    BunnyHighPoly,
+    Cube,
+    Cube2,
+    Cup,
+    Lucy,
+    Quad,
+    Sphere,
+    StarWars,
+    Triangle
+  };
+
+  extern DemoObject DemoObjectMain;
+  extern const char* DemoObjectFile;
 }
 
 struct GLFWwindow;
@@ -37,10 +55,12 @@ public:
 
   void SetOnCloseHandler(function<void()> callback);
   void SetOnSceneChangeHandler(function<void(SceneManager::Scene)> callback);
+  void SetOnDemoObjectHandler(function<void()> callback);
 
 private:
   function<void()> m_dOnClose;
   function<void(SceneManager::Scene)> m_dOnSceneChange;
+  function<void()> m_dOnDemoObjectChange;
 
   void ShowMainMenu() noexcept;
   void ShowMainMenu_File() noexcept;

@@ -27,6 +27,8 @@ namespace ImGui
   bool GraphicsDebugRenderVertexNormals = false;
   bool GraphicsDebugRenderSurfaceNormals = false;
   float GraphicsDebugNormalLength = 0.05f;
+  DemoObject DemoObjectMain = DemoObject::Bunny;
+  const char* DemoObjectFile = "bunny.obj";
 }
 
 ImGuiManager::ImGuiManager(GLFWwindow* window) noexcept :
@@ -40,13 +42,6 @@ ImGuiManager::ImGuiManager(GLFWwindow* window) noexcept :
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
   glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
-#elif defined(__APPLE__)
-    // GL 3.2 + GLSL 150
-  const char* glsl_version = "#version 150";
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
-  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // Required on Mac
 #else
     // GL 3.0 + GLSL 130
   const char* glsl_version = "#version 130";
@@ -113,9 +108,54 @@ void ImGuiManager::OnImGuiGraphicsUpdate() noexcept
   ImGui::Separator();
   IMGUISPACE;
 
+  ImGui::TextColored(IMGREEN, "Demo Object: "); ImGui::SameLine();
+  static const char* DemoObjectString = "Bunny";
+  if (ImGui::BeginCombo("##Demo Object", DemoObjectString))
+  {
+    ImGui::PushID((void*)"Bunny");
+    if (ImGui::Selectable("Bunny", ImGui::DemoObjectMain == ImGui::DemoObject::Bunny))
+    {
+      ImGui::DemoObjectMain = ImGui::DemoObject::Bunny;
+      ImGui::DemoObjectFile = "bunny.obj";
+      DemoObjectString = "Bunny";
+      m_dOnDemoObjectChange();
+    }
+    ImGui::PopID();
+
+    ImGui::PushID((void*)"BunnyHighPoly");
+    if (ImGui::Selectable("BunnyHighPoly", ImGui::DemoObjectMain == ImGui::DemoObject::BunnyHighPoly))
+    {
+      ImGui::DemoObjectMain = ImGui::DemoObject::BunnyHighPoly;
+      ImGui::DemoObjectFile = "bunny_high_poly.obj";
+      DemoObjectString = "BunnyHighPoly";
+      m_dOnDemoObjectChange();
+    }
+    ImGui::PopID();
+
+    ImGui::PushID((void*)"StarWars");
+    if (ImGui::Selectable("StarWars", ImGui::DemoObjectMain == ImGui::DemoObject::StarWars))
+    {
+      ImGui::DemoObjectMain = ImGui::DemoObject::StarWars;
+      ImGui::DemoObjectFile = "starwars1.obj";
+      DemoObjectString = "StarWars";
+      m_dOnDemoObjectChange();
+    }
+    ImGui::PopID();
+
+    //for (int n = 0; n < io.Fonts->Fonts.Size; n++)
+    //{
+    //  ImFont* font = io.Fonts->Fonts[n];
+    //  ImGui::PushID((void*)font);
+    //  if (ImGui::Selectable(font->GetDebugName(), font == font_current))
+    //    io.FontDefault = font;
+    //  ImGui::PopID();
+    //}
+    ImGui::EndCombo();
+  }
+
   ImGui::TextColored(IMGREEN, "Render Axes: "); ImGui::SameLine();
   ImGui::Checkbox("##Render Axes", &m_bRenderAxes);
-  if(m_bRenderAxes)
+  if (m_bRenderAxes)
   {
     DebugRenderer::I().AddLine(vec3(-10000.f, 0.f, 0.f), Colors::RED, vec3(10000.f, 0.f, 0.f), Colors::RED);
     DebugRenderer::I().AddLine(vec3(0.f, -10000.f, 0.f), Colors::GREEN, vec3(0.f, 10000.f, 0.f), Colors::GREEN);
@@ -135,7 +175,7 @@ void ImGuiManager::OnImGuiGraphicsUpdate() noexcept
   IMGUISPACE;
 
   ImGui::TextColored(IMGREEN, "Show Normals: "); ImGui::SameLine();
-  
+
   static int imguiNormals = 2;
   if (ImGui::RadioButton("Per Vertex", &imguiNormals, 0))
   {
@@ -149,7 +189,7 @@ void ImGuiManager::OnImGuiGraphicsUpdate() noexcept
     ImGui::GraphicsDebugRenderVertexNormals = false;
     ImGui::GraphicsDebugRenderSurfaceNormals = true;
   }
-  
+
   ImGui::SameLine();
   if (ImGui::RadioButton("None", &imguiNormals, 2))
   {
@@ -199,6 +239,11 @@ void ImGuiManager::SetOnSceneChangeHandler(function<void(SceneManager::Scene)> c
   m_dOnSceneChange = callback;
 }
 
+void ImGuiManager::SetOnDemoObjectHandler(function<void()> callback)
+{
+  m_dOnDemoObjectChange = callback;
+}
+
 void ImGuiManager::ShowMainMenu() noexcept
 {
   if (ImGui::BeginMainMenuBar())
@@ -224,9 +269,13 @@ void ImGuiManager::ShowMainMenu() noexcept
 
 void ImGuiManager::ShowMainMenu_File() noexcept
 {
-  if (ImGui::MenuItem("Test Scene", ""))
+  if (ImGui::MenuItem("Scene 1", ""))
   {
-    m_dOnSceneChange(SceneManager::Scene::TestScene);
+    m_dOnSceneChange(SceneManager::Scene::Scene1);
+  }
+  if (ImGui::MenuItem("Scene 2", ""))
+  {
+    m_dOnSceneChange(SceneManager::Scene::Scene2);
   }
   if (ImGui::MenuItem("Exit", "Close the Engine"))
   {

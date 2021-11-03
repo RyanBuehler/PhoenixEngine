@@ -18,11 +18,12 @@ public:
   enum class Scene
   {
     None,
-    TestScene,
+    Scene1,
+    Scene2,
     SceneCount
   };
 private:
-  static constexpr Scene DEFAULTSCENE = Scene::TestScene;
+  static constexpr Scene DEFAULTSCENE = Scene::Scene1;
 
 public:
   /// <summary>
