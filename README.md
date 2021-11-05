@@ -1,4 +1,4 @@
-# Phoenix Engine - *Ryan Buehler's Graphics Engine/Source Code*
+# Phoenix Engine - *Ryan Buehler's Graphics Engine/Source Code Examples*
 
 The Phoenix Engine is a humble graphics engine and wrapper utilized by Ryan Buehler as a professional development project to explore, learn, experiment and present as code example to interested parties.
 
