@@ -1,11 +1,28 @@
+//------------------------------------------------------------------------------
+// File:    Material.h
+// Author:  Ryan Buehler
+// Created: 11/01/21
+// Desc:    Material Class for Phong lighting
+//------------------------------------------------------------------------------
 #include "pch.h"
 #include "Material.h"
 
-Material::Material() noexcept
+Material::Material() noexcept :
+  m_Emissive(0.f),
+  m_Ambient(0.f),
+  m_Diffuse(0.f),
+  m_Specular(0.f),
+  m_SpecularExp(0.f)
 {
+  setByType(Type::BASIC);
 }
 
-Material::Material(Type type) noexcept
+Material::Material(Type type) noexcept :
+  m_Emissive(0.f),
+  m_Ambient(0.f),
+  m_Diffuse(0.f),
+  m_Specular(0.f),
+  m_SpecularExp(0.f)
 {
   setByType(type);
 }

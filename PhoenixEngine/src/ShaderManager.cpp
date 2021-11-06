@@ -1,3 +1,9 @@
+//------------------------------------------------------------------------------
+// File:    ShaderManager.cpp
+// Author:  Ryan Buehler
+// Created: Nov 4, 2021
+// Desc:    Managers loading/unloading shaders
+//------------------------------------------------------------------------------
 #include "pch.h"
 #include "Paths.h"
 #include "ShaderManager.h"
@@ -8,29 +14,12 @@ ShaderManager::ShaderManager() noexcept :
   m_VertexShaders(),
   m_FragmentShaders()
 {
-  //TODO: safety check if its init already
-
-  m_VertexShaders[static_cast<unsigned>(Shader::Vertex::DIFFUSE)] =
-    LoadShader("Diffuse.vert", GL_VERTEX_SHADER);
-  m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::DIFFUSE)] =
-    LoadShader("Diffuse.frag", GL_FRAGMENT_SHADER);
-  m_VertexShaders[static_cast<unsigned>(Shader::Vertex::DEBUG)] =
-    LoadShader("Debug.vert", GL_VERTEX_SHADER);
-  m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::DEBUG)] =
-    LoadShader("Debug.frag", GL_FRAGMENT_SHADER);
+  LoadShaders();
 }
 
 ShaderManager::~ShaderManager()
 {
-  for (GLint id : m_VertexShaders)
-  {
-    glDeleteShader(id);
-  }
-
-  for (GLint id : m_FragmentShaders)
-  {
-    glDeleteShader(id);
-  }
+  UnloadShaders();
 }
 
 unsigned ShaderManager::GetVertexShaderID(Shader::Vertex shader) const noexcept
@@ -41,6 +30,11 @@ unsigned ShaderManager::GetVertexShaderID(Shader::Vertex shader) const noexcept
 unsigned ShaderManager::GetFragmentShaderID(Shader::Fragment shader) const noexcept
 {
   return m_FragmentShaders[static_cast<unsigned>(shader)];
+}
+
+void ShaderManager::ReloadShaders() noexcept
+{
+  LoadShaders();
 }
 
 GLint ShaderManager::LoadShader(const string& fileName, GLenum shaderType) noexcept
@@ -86,4 +80,32 @@ void ShaderManager::RetrieveShaderLog(GLint shaderID, string& log) const noexcep
   log.clear();
   log = shaderLog;
   delete[] shaderLog;
+}
+
+void ShaderManager::LoadShaders() noexcept
+{
+  UnloadShaders();
+
+  m_VertexShaders[static_cast<unsigned>(Shader::Vertex::DIFFUSE)] =
+    LoadShader("Diffuse.vert", GL_VERTEX_SHADER);
+  m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::DIFFUSE)] =
+    LoadShader("Diffuse.frag", GL_FRAGMENT_SHADER);
+
+  m_VertexShaders[static_cast<unsigned>(Shader::Vertex::DEBUG)] =
+    LoadShader("Debug.vert", GL_VERTEX_SHADER);
+  m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::DEBUG)] =
+    LoadShader("Debug.frag", GL_FRAGMENT_SHADER);
+}
+
+void ShaderManager::UnloadShaders() noexcept
+{
+  for (GLint id : m_VertexShaders)
+  {
+    glDeleteShader(id);
+  }
+
+  for (GLint id : m_FragmentShaders)
+  {
+    glDeleteShader(id);
+  }
 }

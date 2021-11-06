@@ -220,12 +220,20 @@ void Renderer::RenderNormals(GameObject& gameObject, float length, Normals::Type
 
 void Renderer::LoadContexts() noexcept
 {
+  LoadDiffuseContext();
+
+  LoadDebugContext();
+}
+
+void Renderer::LoadDiffuseContext() noexcept
+{
   // Load a default context
   unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::DIFFUSE);
   unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::DIFFUSE);
   m_DiffuseContextID = m_ContextManager.CreateNewContext("Diffuse", vID, fID);
   m_ContextManager.SetContext(m_DiffuseContextID);
 
+  // TODO: Convert this to a Uniform Block
   m_ContextManager.AddNewUniformAttribute(m_DiffuseContextID, "pers_matrix");
   m_ContextManager.AddNewUniformAttribute(m_DiffuseContextID, "view_matrix");
   m_ContextManager.AddNewUniformAttribute(m_DiffuseContextID, "model_matrix");
@@ -238,10 +246,17 @@ void Renderer::LoadContexts() noexcept
   m_ContextManager.AddNewVertexAttribute(m_DiffuseContextID, vaNormal);
 
   Log::Trace("Diffuse Context loaded.");
+}
 
+void Renderer::LoadPhongContext() noexcept
+{
+}
+
+void Renderer::LoadDebugContext() noexcept
+{
   // Load a Debug Drawing context
-  vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::DEBUG);
-  fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::DEBUG);
+  unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::DEBUG);
+  unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::DEBUG);
   m_DebugContextID = m_ContextManager.CreateNewContext("Debug", vID, fID);
   m_ContextManager.SetContext(m_DebugContextID);
 
@@ -249,7 +264,8 @@ void Renderer::LoadContexts() noexcept
   m_ContextManager.AddNewUniformAttribute(m_DebugContextID, "view_matrix");
   m_ContextManager.AddNewUniformAttribute(m_DebugContextID, "model_matrix");
 
-  vaPosition = ContextManager::VertexAttribute("position", 4, GL_FLOAT, GL_FALSE, 2 * sizeof(vec4), 0u);
+  ContextManager::VertexAttribute vaPosition = 
+    ContextManager::VertexAttribute("position", 4, GL_FLOAT, GL_FALSE, 2 * sizeof(vec4), 0u);
   ContextManager::VertexAttribute vaColor("color", 4, GL_FLOAT, GL_FALSE, 2 * sizeof(vec4), sizeof(vec4));
   m_ContextManager.AddNewVertexAttribute(m_DebugContextID, vaPosition);
   m_ContextManager.AddNewVertexAttribute(m_DebugContextID, vaColor);
