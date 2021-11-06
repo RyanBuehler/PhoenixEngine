@@ -16,6 +16,7 @@ Renderer::Renderer(bool depthBufferEnabled, bool backFaceCullEnabled) noexcept :
   m_ShaderManager(),
   m_ContextManager(),
   m_MeshManager(),
+  m_Lighting(),
   m_DiffuseContextID(ContextManager::CONTEXT_ERROR),
   m_DebugContextID(ContextManager::CONTEXT_ERROR)
 {
@@ -248,8 +249,27 @@ void Renderer::LoadDiffuseContext() noexcept
   Log::Trace("Diffuse Context loaded.");
 }
 
-void Renderer::LoadPhongContext() noexcept
+void Renderer::LoadPhongLightingContext() noexcept
 {
+  // Load Phong lighting context
+  unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::DIFFUSE);
+  unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::DIFFUSE);
+  m_PhongLightingID = m_ContextManager.CreateNewContext("Phong Lighting", vID, fID);
+  m_ContextManager.SetContext(m_PhongLightingID);
+
+  // TODO: Convert this to a Uniform Block
+  m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "pers_matrix");
+  m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "view_matrix");
+  m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "model_matrix");
+  m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "diffuse_light");
+  m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "ambient_light");
+
+  ContextManager::VertexAttribute vaPosition("position", 4, GL_FLOAT, GL_FALSE, sizeof(vec3), 0u);
+  ContextManager::VertexAttribute vaNormal("normal", 4, GL_FLOAT, GL_FALSE, sizeof(vec3), sizeof(vec3));
+  m_ContextManager.AddNewVertexAttribute(m_PhongLightingID, vaPosition);
+  m_ContextManager.AddNewVertexAttribute(m_PhongLightingID, vaNormal);
+
+  Log::Trace("Phong Lighting Context loaded.");
 }
 
 void Renderer::LoadDebugContext() noexcept

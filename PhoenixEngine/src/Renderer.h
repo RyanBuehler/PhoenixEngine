@@ -11,6 +11,7 @@
 #include "GameObject.h"
 #include "Camera.h"
 #include "MeshManager.h"
+#include "LightingSystem.h"
 
 class Renderer
 {
@@ -139,7 +140,7 @@ private:
   /// <summary>
   /// Loads the "Diffuse only" rendering context
   /// </summary>
-  void LoadPhongContext() noexcept;
+  void LoadPhongLightingContext() noexcept;
   
   /// <summary>
   /// Loads the "Debug" rendering context
@@ -151,7 +152,10 @@ private:
   ContextManager m_ContextManager;  // Handles and maintains the context information
   MeshManager m_MeshManager;        // Handles and maintains the Mesh data
 
+  LightingSystem m_Lighting;        // All lighting functionality
+
   GLint m_DiffuseContextID;         // The ID of the "Diffuse" context
+  GLint m_PhongLightingID;          // The ID of the "Diffuse" context
   GLint m_DebugContextID;           // The ID of the "Debug" context
 };
 

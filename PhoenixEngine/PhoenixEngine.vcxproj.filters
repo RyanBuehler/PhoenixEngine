@@ -159,6 +159,9 @@
     <ClInclude Include="src\LightingSystem.h">
       <Filter>Header Files\Graphics\Lighting</Filter>
     </ClInclude>
+    <ClInclude Include="src\Light.h">
+      <Filter>Header Files\Graphics\Lighting</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp">
@@ -234,6 +237,9 @@
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="src\LightingSystem.cpp">
+      <Filter>Source Files\Graphics\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Light.cpp">
       <Filter>Source Files\Graphics\Lighting</Filter>
     </ClCompile>
   </ItemGroup>
