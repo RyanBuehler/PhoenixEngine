@@ -24,7 +24,11 @@ public:
       FogNear(1.f),
       FogFar(20.f),
       Attenuation()
-    {}
+    {
+      Attenuation[0] = 0.1f;
+      Attenuation[1] = 0.1f;
+      Attenuation[2] = 0.1f;
+    }
     vec3 AmbientIntensity;        // Global Ambient intensity
     vec3 FogIntensity;            // Global fog intensity
     float FogNear;                // Fog near factor

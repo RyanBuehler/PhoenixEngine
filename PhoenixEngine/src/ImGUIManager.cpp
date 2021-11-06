@@ -28,13 +28,21 @@ namespace ImGui
   bool GraphicsDebugRenderSurfaceNormals = false;
   float GraphicsDebugNormalLength = 0.05f;
   bool GraphicsDebugRebuildShaders = false;
+  LightingSystem::GlobalLightingData LightingGlobalData;
+  Material LightingGlobalMaterial;
+
   DemoObject DemoObjectMain = DemoObject::Bunny;
   const char* DemoObjectFile = "bunny.obj";
 }
 
+#pragma region Local Namespace
+
 // For quicker iteration
 namespace
 {
+  static const ImVec4 IMGREEN(0.f, 1.f, 0.f, 1.f);
+  static const ImVec4 IMCYAN(0.f, 1.f, 0.5f, 1.f);
+
   static const ImGui::DemoObject DEMOOBJECTS[(size_t)ImGui::DemoObject::Count] =
   {
     ImGui::DemoObject::Bunny,
@@ -74,6 +82,8 @@ namespace
     "starwars1.obj"
   };
 }
+
+#pragma endregion
 
 ImGuiManager::ImGuiManager(GLFWwindow* window) noexcept :
   m_bRenderAxes(false),
@@ -142,154 +152,34 @@ void ImGuiManager::OnImGuiClose() noexcept
 
 void ImGuiManager::OnImGuiGraphicsUpdate() noexcept
 {
-  static const ImVec4 IMGREEN(0.f, 1.f, 0.f, 1.f);
   ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
   ImGui::Begin("Graphics Settings", &ImGui::GraphicsWindowEnabled);
 
-  ImGui::TextColored(IMGREEN, "Frame Stats: "); ImGui::SameLine();
-  ImGui::Text("Frame: [%05d] Time: %lf", ImGui::GetFrameCount(), ImGui::GetTime());
-  IMGUISPACE;
-  ImGui::Separator();
-  IMGUISPACE;
-
-  ImGui::TextColored(IMGREEN, "Demo Object: "); ImGui::SameLine();
-  static const char* DemoObjectString = DEMOOBJECTNAMES[0];
-  if (ImGui::BeginCombo("##Demo Object", DemoObjectString))
-  {
-    for (int i = 0; i < (size_t)ImGui::DemoObject::Count; ++i)
-    {
-      ImGui::PushID((void*)DEMOOBJECTNAMES[i]);
-      if (ImGui::Selectable(DEMOOBJECTNAMES[i], ImGui::DemoObjectMain == DEMOOBJECTS[i]))
-      {
-        ImGui::DemoObjectMain = DEMOOBJECTS[i];
-        ImGui::DemoObjectFile = DEMOOBJECTFILENAMES[i];
-        DemoObjectString = DEMOOBJECTNAMES[i];
-        m_dOnDemoObjectChange();
-      }
-      ImGui::PopID();
-    }
-    //ImGui::PushID((void*)"Bunny");
-    //if (ImGui::Selectable("Bunny", ImGui::DemoObjectMain == ImGui::DemoObject::Bunny))
-    //{
-    //  ImGui::DemoObjectMain = ImGui::DemoObject::Bunny;
-    //  ImGui::DemoObjectFile = "bunny.obj";
-    //  DemoObjectString = "Bunny";
-    //  m_dOnDemoObjectChange();
-    //}
-    //ImGui::PopID();
-
-    //ImGui::PushID((void*)"BunnyHighPoly");
-    //if (ImGui::Selectable("BunnyHighPoly", ImGui::DemoObjectMain == ImGui::DemoObject::BunnyHighPoly))
-    //{
-    //  ImGui::DemoObjectMain = ImGui::DemoObject::BunnyHighPoly;
-    //  ImGui::DemoObjectFile = "bunny_high_poly.obj";
-    //  DemoObjectString = "BunnyHighPoly";
-    //  m_dOnDemoObjectChange();
-    //}
-    //ImGui::PopID();
-
-    //ImGui::PushID((void*)"StarWars");
-    //if (ImGui::Selectable("StarWars", ImGui::DemoObjectMain == ImGui::DemoObject::StarWars))
-    //{
-    //  ImGui::DemoObjectMain = ImGui::DemoObject::StarWars;
-    //  ImGui::DemoObjectFile = "starwars1.obj";
-    //  DemoObjectString = "StarWars";
-    //  m_dOnDemoObjectChange();
-    //}
-    //ImGui::PopID();
-
-    //for (int n = 0; n < io.Fonts->Fonts.Size; n++)
-    //{
-    //  ImFont* font = io.Fonts->Fonts[n];
-    //  ImGui::PushID((void*)font);
-    //  if (ImGui::Selectable(font->GetDebugName(), font == font_current))
-    //    io.FontDefault = font;
-    //  ImGui::PopID();
-    //}
-    ImGui::EndCombo();
-  }
-
-  IMGUISPACE;
-
-  ImGui::TextColored(IMGREEN, "Render Axes: "); ImGui::SameLine();
-  ImGui::Checkbox("##Render Axes", &m_bRenderAxes);
-  if (m_bRenderAxes)
-  {
-    DebugRenderer::I().AddLine(vec3(-10000.f, 0.f, 0.f), Colors::RED, vec3(10000.f, 0.f, 0.f), Colors::RED);
-    DebugRenderer::I().AddLine(vec3(0.f, -10000.f, 0.f), Colors::GREEN, vec3(0.f, 10000.f, 0.f), Colors::GREEN);
-    DebugRenderer::I().AddLine(vec3(0.f, 0.f, -10000.f), Colors::BLUE, vec3(0.f, 0.f, 10000.f), Colors::BLUE);
-  }
-
-  IMGUISPACE;
-
-  ImGui::TextColored(IMGREEN, "Debug Line Width: "); ImGui::SameLine();
-  if (ImGui::SliderFloat("##Debug Line Width", &m_DebugLineWidth, 0.05f, 5.f))
-  {
-    DebugRenderer::I().SetLineWidth(m_DebugLineWidth);
-  }
+  graphicsUpdateStats();
 
   IMGUISPACE;
   ImGui::Separator();
   IMGUISPACE;
 
-  ImGui::TextColored(IMGREEN, "Show Normals: "); ImGui::SameLine();
-
-  static int imguiNormals = 2;
-  if (ImGui::RadioButton("Per Vertex", &imguiNormals, 0))
-  {
-    ImGui::GraphicsDebugRenderVertexNormals = true;
-    ImGui::GraphicsDebugRenderSurfaceNormals = false;
-  }
-
-  ImGui::SameLine();
-  if (ImGui::RadioButton("Per Triangle", &imguiNormals, 1))
-  {
-    ImGui::GraphicsDebugRenderVertexNormals = false;
-    ImGui::GraphicsDebugRenderSurfaceNormals = true;
-  }
-
-  ImGui::SameLine();
-  if (ImGui::RadioButton("None", &imguiNormals, 2))
-  {
-    ImGui::GraphicsDebugRenderVertexNormals = false;
-    ImGui::GraphicsDebugRenderSurfaceNormals = false;
-  }
-
-  IMGUISPACE;
-
-  ImGui::TextColored(IMGREEN, "Normal Length: "); ImGui::SameLine();
-  ImGui::SliderFloat("##Normal Length", &ImGui::GraphicsDebugNormalLength, 0.001f, 0.5f);
-
-  IMGUISPACE;
-
-  ImGui::TextColored(IMGREEN, "Render Mode: "); ImGui::SameLine();
-  static int imguiRenderMode = 0;
-  if (ImGui::RadioButton("Fill", &imguiRenderMode, 0))
-  {
-    Renderer::SetRenderModeFill();
-  }
-
-  ImGui::SameLine();
-  if (ImGui::RadioButton("Wireframe", &imguiRenderMode, 1))
-  {
-    Renderer::SetRenderModeWireframe();
-  }
-  
-  IMGUISPACE;
-
-  if (ImGui::Button("Rebuild Shaders", { 120, 32 }))
-  {
-    ImGui::GraphicsDebugRebuildShaders = true;
-  }
+  graphicsUpdateObjects();
 
   IMGUISPACE;
   ImGui::Separator();
   IMGUISPACE;
 
-  ImGui::Text("Camera Controls:");
-  ImGui::Text("WASD: Move Around");
-  ImGui::Text("Q/E: Move Up and Down");
-  ImGui::Text("Note: Camera currently focuses on the center object.");
+  graphicsUpdateLighting();
+
+  IMGUISPACE;
+  ImGui::Separator();
+  IMGUISPACE;
+
+  graphicsUpdateRendering();
+
+  IMGUISPACE;
+  ImGui::Separator();
+  IMGUISPACE;
+
+  graphicsUpdateControls();
 
   ImGui::End();
 }
@@ -360,6 +250,174 @@ void ImGuiManager::ShowMainMenu_About() noexcept
 {
   if (ImGui::MenuItem("Phoenix Engine", PE_VERSION, false, false)) {}  // Disabled item
   if (ImGui::MenuItem("Author", "Ryan Buehler", false, false)) {}      // Disabled item
+}
+
+void ImGuiManager::graphicsUpdateStats() noexcept
+{
+  ImGui::TextColored(IMCYAN, "Graphics Statistics");
+  ImGui::TextColored(IMCYAN, "-------------------");
+
+  IMGUISPACE;
+
+  ImGui::TextColored(IMGREEN, "Frame Stats: "); ImGui::SameLine();
+  ImGui::Text("Frame: [%05d] Time: %lf", ImGui::GetFrameCount(), ImGui::GetTime());
+}
+
+void ImGuiManager::graphicsUpdateObjects() noexcept
+{
+  ImGui::TextColored(IMCYAN, "Global Object Settings");
+  ImGui::TextColored(IMCYAN, "----------------------");
+
+  IMGUISPACE;
+
+  ImGui::TextColored(IMGREEN, "Demo Object: "); ImGui::SameLine();
+  static const char* DemoObjectString = DEMOOBJECTNAMES[0];
+  if (ImGui::BeginCombo("##Demo Object", DemoObjectString))
+  {
+    for (int i = 0; i < (size_t)ImGui::DemoObject::Count; ++i)
+    {
+      ImGui::PushID((void*)DEMOOBJECTNAMES[i]);
+      if (ImGui::Selectable(DEMOOBJECTNAMES[i], ImGui::DemoObjectMain == DEMOOBJECTS[i]))
+      {
+        ImGui::DemoObjectMain = DEMOOBJECTS[i];
+        ImGui::DemoObjectFile = DEMOOBJECTFILENAMES[i];
+        DemoObjectString = DEMOOBJECTNAMES[i];
+        m_dOnDemoObjectChange();
+      }
+      ImGui::PopID();
+    }
+
+    ImGui::EndCombo();
+  }
+}
+
+void ImGuiManager::graphicsUpdateLighting() noexcept
+{
+  ImGui::TextColored(IMCYAN, "Global Lighting Settings");
+  ImGui::TextColored(IMCYAN, "------------------------");
+
+  IMGUISPACE;
+
+  ImGui::TextColored(IMGREEN, "Global Ambience:   "); ImGui::SameLine();
+  ImGui::SliderFloat3("##Ambient Intensity", &ImGui::LightingGlobalData.AmbientIntensity[0], 0.f, 1.f);
+  ImGui::TextColored(IMGREEN, "Light Attenuation: "); ImGui::SameLine();
+  ImGui::SliderFloat3("##Light Attenuation", &ImGui::LightingGlobalData.Attenuation[0], 0.f, 1.f);
+  ImGui::TextColored(IMGREEN, "Fog Intensity:     "); ImGui::SameLine();
+  ImGui::SliderFloat3("##Fog Intensity", &ImGui::LightingGlobalData.FogIntensity[0], 0.f, 1.f);
+
+  ImGui::TextColored(IMGREEN, "Fog Near: "); ImGui::SameLine();
+  ImGui::SliderFloat("##Fog Near", &ImGui::LightingGlobalData.FogNear, 0.f, 5.f);
+  ImGui::TextColored(IMGREEN, "Fog Far:  "); ImGui::SameLine();
+  ImGui::SliderFloat("##Fog Far", &ImGui::LightingGlobalData.FogFar, ImGui::LightingGlobalData.FogNear, 20.f);
+
+  IMGUISPACE;
+  IMGUISPACE;
+
+  ImGui::TextColored(IMCYAN, "Global Material Settings");
+  ImGui::TextColored(IMCYAN, "------------------------");
+
+  IMGUISPACE;
+
+  ImGui::TextColored(IMGREEN, "Material Emission:     ");
+  ImGui::SliderFloat3("##Material Emission", &ImGui::LightingGlobalMaterial.m_Emissive[0], 0.f, 1.f);
+  ImGui::TextColored(IMGREEN, "Material Ambient:      "); ImGui::SameLine();
+  ImGui::SliderFloat("##Material Ambient", &ImGui::LightingGlobalMaterial.m_AmbientFactor, 0.f, 1.f);
+  ImGui::TextColored(IMGREEN, "Material Diffuse:      "); ImGui::SameLine();
+  ImGui::SliderFloat("##Material Diffuse", &ImGui::LightingGlobalMaterial.m_DiffuseFactor, 0.f, 1.f);
+  ImGui::TextColored(IMGREEN, "Material Specular:     "); ImGui::SameLine();
+  ImGui::SliderFloat("##Material Specular", &ImGui::LightingGlobalMaterial.m_SpecularFactor, 0.f, 1.f);
+  ImGui::TextColored(IMGREEN, "Material Specular Exp: "); ImGui::SameLine();
+  ImGui::SliderFloat("##Material Specular Exp", &ImGui::LightingGlobalMaterial.m_SpecularExp, 0.f, 1.f);
+}
+
+void ImGuiManager::graphicsUpdateRendering() noexcept
+{
+  ImGui::TextColored(IMCYAN, "Renderer Settings");
+  ImGui::TextColored(IMCYAN, "-----------------");
+
+  IMGUISPACE;
+
+  ImGui::TextColored(IMGREEN, "Render Axes: "); ImGui::SameLine();
+  ImGui::Checkbox("##Render Axes", &m_bRenderAxes);
+  if (m_bRenderAxes)
+  {
+    DebugRenderer::I().AddLine(vec3(-10000.f, 0.f, 0.f), Colors::RED, vec3(10000.f, 0.f, 0.f), Colors::RED);
+    DebugRenderer::I().AddLine(vec3(0.f, -10000.f, 0.f), Colors::GREEN, vec3(0.f, 10000.f, 0.f), Colors::GREEN);
+    DebugRenderer::I().AddLine(vec3(0.f, 0.f, -10000.f), Colors::BLUE, vec3(0.f, 0.f, 10000.f), Colors::BLUE);
+  }
+
+  IMGUISPACE;
+
+  ImGui::TextColored(IMGREEN, "Debug Line Width: "); ImGui::SameLine();
+  if (ImGui::SliderFloat("##Debug Line Width", &m_DebugLineWidth, 0.05f, 5.f))
+  {
+    DebugRenderer::I().SetLineWidth(m_DebugLineWidth);
+  }
+
+  IMGUISPACE;
+
+  ImGui::TextColored(IMGREEN, "Show Normals: "); ImGui::SameLine();
+
+  static int imguiNormals = 2;
+  if (ImGui::RadioButton("Per Vertex", &imguiNormals, 0))
+  {
+    ImGui::GraphicsDebugRenderVertexNormals = true;
+    ImGui::GraphicsDebugRenderSurfaceNormals = false;
+  }
+
+  ImGui::SameLine();
+  if (ImGui::RadioButton("Per Triangle", &imguiNormals, 1))
+  {
+    ImGui::GraphicsDebugRenderVertexNormals = false;
+    ImGui::GraphicsDebugRenderSurfaceNormals = true;
+  }
+
+  ImGui::SameLine();
+  if (ImGui::RadioButton("None", &imguiNormals, 2))
+  {
+    ImGui::GraphicsDebugRenderVertexNormals = false;
+    ImGui::GraphicsDebugRenderSurfaceNormals = false;
+  }
+
+  IMGUISPACE;
+
+  ImGui::TextColored(IMGREEN, "Normal Length: "); ImGui::SameLine();
+  ImGui::SliderFloat("##Normal Length", &ImGui::GraphicsDebugNormalLength, 0.001f, 0.5f);
+
+  IMGUISPACE;
+
+  ImGui::TextColored(IMGREEN, "Render Mode: "); ImGui::SameLine();
+  static int imguiRenderMode = 0;
+  if (ImGui::RadioButton("Fill", &imguiRenderMode, 0))
+  {
+    Renderer::SetRenderModeFill();
+  }
+
+  ImGui::SameLine();
+  if (ImGui::RadioButton("Wireframe", &imguiRenderMode, 1))
+  {
+    Renderer::SetRenderModeWireframe();
+  }
+
+  IMGUISPACE;
+
+  if (ImGui::Button("Rebuild Shaders", { 120, 32 }))
+  {
+    ImGui::GraphicsDebugRebuildShaders = true;
+  }
+}
+
+void ImGuiManager::graphicsUpdateControls() noexcept
+{
+  ImGui::TextColored(IMCYAN, "Engine Camera Controls");
+  ImGui::TextColored(IMCYAN, "----------------------");
+
+  IMGUISPACE;
+
+  ImGui::Text("Camera Controls:");
+  ImGui::Text("WASD: Move Around");
+  ImGui::Text("Q/E: Move Up and Down");
+  ImGui::Text("Note: Camera currently focuses on the center object.");
 }
 
 #undef IMGUISPACE

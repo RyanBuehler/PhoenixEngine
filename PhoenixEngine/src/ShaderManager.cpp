@@ -86,6 +86,13 @@ void ShaderManager::LoadShaders() noexcept
 {
   UnloadShaders();
 
+  // TODO: This should happen automatically or at least in 1 place
+
+  m_VertexShaders[static_cast<unsigned>(Shader::Vertex::PHONGLIGHT)] =
+    LoadShader("PhongLighting.vert", GL_VERTEX_SHADER);
+  m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::PHONGLIGHT)] =
+    LoadShader("PhongLighting.frag", GL_FRAGMENT_SHADER);
+
   m_VertexShaders[static_cast<unsigned>(Shader::Vertex::DIFFUSE)] =
     LoadShader("Diffuse.vert", GL_VERTEX_SHADER);
   m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::DIFFUSE)] =

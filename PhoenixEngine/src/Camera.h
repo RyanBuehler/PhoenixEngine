@@ -78,6 +78,7 @@ public:
   void SetPitch(float degrees);
   void SetRoll(float degrees);
 
+  //TODO: Should these return const vec3 references?
   vec3 GetPosition() const noexcept;
   vec3 GetForwardVector() const noexcept;
   vec3 GetUpVector() const noexcept;

@@ -9,9 +9,9 @@
 
 Material::Material() noexcept :
   m_Emissive(0.f),
-  m_Ambient(0.f),
-  m_Diffuse(0.f),
-  m_Specular(0.f),
+  m_AmbientFactor(0.f),
+  m_DiffuseFactor(0.f),
+  m_SpecularFactor(0.f),
   m_SpecularExp(0.f)
 {
   setByType(Type::BASIC);
@@ -19,9 +19,9 @@ Material::Material() noexcept :
 
 Material::Material(Type type) noexcept :
   m_Emissive(0.f),
-  m_Ambient(0.f),
-  m_Diffuse(0.f),
-  m_Specular(0.f),
+  m_AmbientFactor(0.f),
+  m_DiffuseFactor(0.f),
+  m_SpecularFactor(0.f),
   m_SpecularExp(0.f)
 {
   setByType(type);
@@ -35,9 +35,9 @@ Material::Material(const Material& material)
 Material& Material::operator=(const Material& material)
 {
   m_Emissive = material.m_Emissive;
-  m_Ambient = material.m_Ambient;
-  m_Diffuse = material.m_Diffuse;
-  m_Specular = material.m_Specular;
+  m_AmbientFactor = material.m_AmbientFactor;
+  m_DiffuseFactor = material.m_DiffuseFactor;
+  m_SpecularFactor = material.m_SpecularFactor;
   m_SpecularExp = material.m_SpecularExp;
   return *this;
 }
@@ -49,22 +49,22 @@ void Material::SetEmissive(const vec3& value) noexcept
 
 void Material::SetAmbient(float value) noexcept
 {
-  m_Ambient = clamp(value, 0.f, 1.f);
+  m_AmbientFactor = clamp(value, 0.f, 1.f);
 }
 
 void Material::SetDiffuse(float value) noexcept
 {
-  m_Diffuse = clamp(value, 0.f, 1.f);
+  m_DiffuseFactor = clamp(value, 0.f, 1.f);
 }
 
 void Material::SetSpecular(float value) noexcept
 {
-  m_Specular = clamp(value, 0.f, 1.f);
+  m_SpecularFactor = clamp(value, 0.f, 1.f);
 }
 
 void Material::SetSpecularExp(float value) noexcept
 {
-  m_SpecularExp = clamp(value, 0.f, SPECEXPMAX);
+  m_SpecularExp = clamp(value, 0.f, SPEC_EXP_MAX);
 }
 
 const vec3& Material::GetEmissive() const noexcept
@@ -74,17 +74,17 @@ const vec3& Material::GetEmissive() const noexcept
 
 float Material::GetAmbient() const noexcept
 {
-  return m_Ambient;
+  return m_AmbientFactor;
 }
 
 float Material::GetDiffuse() const noexcept
 {
-  return m_Diffuse;
+  return m_DiffuseFactor;
 }
 
 float Material::GetSpecular() const noexcept
 {
-  return m_Specular;
+  return m_SpecularFactor;
 }
 
 float Material::GetSpecularExp() const noexcept
@@ -99,9 +99,9 @@ void Material::setByType(Type type) noexcept
   {
   case Material::Type::BASIC:
     m_Emissive = { 0.f, 0.f, 0.f };
-    m_Ambient = 0.2f;
-    m_Diffuse = 0.6f;
-    m_Specular = 0.3f;
+    m_AmbientFactor = 0.2f;
+    m_DiffuseFactor = 0.6f;
+    m_SpecularFactor = 0.3f;
     m_SpecularExp = 10.f;
     break;
   case Material::Type::COUNT:

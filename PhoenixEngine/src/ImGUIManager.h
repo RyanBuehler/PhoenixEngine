@@ -7,6 +7,8 @@
 #pragma once
 #include "SceneManager.h"
 #include "Renderer.h"
+#include "LightingSystem.h"
+#include "Material.h"
 
 class ImGuiManager;
 namespace ImGui
@@ -17,6 +19,9 @@ namespace ImGui
   extern bool GraphicsDebugRenderSurfaceNormals;
   extern float GraphicsDebugNormalLength;
   extern bool GraphicsRebuildShaders;
+
+  extern LightingSystem::GlobalLightingData LightingGlobalData;
+  extern Material LightingGlobalMaterial;
 
   //TODO:
   enum class DemoObject
@@ -68,6 +73,12 @@ private:
   void ShowMainMenu_File() noexcept;
   void ShowMainMenu_Edit() noexcept;
   void ShowMainMenu_About() noexcept;
+
+  void graphicsUpdateStats() noexcept;
+  void graphicsUpdateObjects() noexcept;
+  void graphicsUpdateRendering() noexcept;
+  void graphicsUpdateControls() noexcept;
+  void graphicsUpdateLighting() noexcept;
 
   bool m_bRenderAxes;
   float m_DebugLineWidth;
