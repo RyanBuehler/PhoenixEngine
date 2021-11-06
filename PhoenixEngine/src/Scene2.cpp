@@ -10,29 +10,33 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "DebugRenderer.h"
+#include "ImGUIManager.h"
 
 Scene2::Scene2() noexcept :
-  IScene("Scene 1"),
+  IScene("Scene 2"),
   m_MainCamera(m_CameraManager.GetDefaultCamera()),
   m_Time(0.f)
 {
-  m_MainCamera.SetName("Scene 1 Camera");
-  Log::Trace("Scene 1 Created.");
+  m_MainCamera.SetName("Scene 2 Camera");
+  Log::Trace("Scene 2 Created.");
+  ImGui::Manager->SetOnDemoObjectHandler(std::bind(&Scene2::OnDemoObjectChangeEvent, this));
 }
 
 void Scene2::OnLoad() noexcept
 {
-  Log::Trace("Scene 1 Loaded.");
-  for (int i = 0; i < 8; ++i)
-  {
-    m_GameObjectArray.emplace_back("sphere");
-  }
-  m_GameObjectArray.emplace_back("bunny.obj");
+  Log::Trace("Scene 2 Loaded.");
 }
 
 void Scene2::OnInit() noexcept
 {
-  Log::Trace("Scene 1 Initialized.");
+  m_Time = 0;
+
+  Log::Trace("Scene 2 Initialized.");
+  for (int i = 0; i < 8; ++i)
+  {
+    m_GameObjectArray.emplace_back("sphere");
+  }
+  m_GameObjectArray.emplace_back(ImGui::DemoObjectFile);
 
   m_MainCamera.SetPosition({ 1.f, 1.f, 10.f });
 
@@ -75,12 +79,13 @@ void Scene2::OnUpdate(float dt) noexcept
 
 void Scene2::OnShutdown() noexcept
 {
-  Log::Trace("Scene 1 Shutdown.");
+  m_GameObjectArray.clear();
+  Log::Trace("Scene 2 Shutdown.");
 }
 
 void Scene2::OnUnload() noexcept
 {
-  Log::Trace("Scene 1 Unloaded.");
+  Log::Trace("Scene 2 Unloaded.");
 }
 
 void Scene2::OnPollInput(GLFWwindow* window, float dt) noexcept
@@ -110,6 +115,11 @@ void Scene2::OnPollInput(GLFWwindow* window, float dt) noexcept
   {
     m_MainCamera.MoveDown(move_speed * dt);
   }
+}
+
+void Scene2::OnDemoObjectChangeEvent()
+{
+  m_GameObjectArray[8].SetMeshFileName(ImGui::DemoObjectFile);
 }
 
 Camera& Scene2::GetCurrentCamera() noexcept

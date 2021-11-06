@@ -27,8 +27,52 @@ namespace ImGui
   bool GraphicsDebugRenderVertexNormals = false;
   bool GraphicsDebugRenderSurfaceNormals = false;
   float GraphicsDebugNormalLength = 0.05f;
+  bool GraphicsDebugRebuildShaders = false;
   DemoObject DemoObjectMain = DemoObject::Bunny;
   const char* DemoObjectFile = "bunny.obj";
+}
+
+// For quicker iteration
+namespace
+{
+  static const ImGui::DemoObject DEMOOBJECTS[(size_t)ImGui::DemoObject::Count] =
+  {
+    ImGui::DemoObject::Bunny,
+    ImGui::DemoObject::BunnyHighPoly,
+    ImGui::DemoObject::Cube,
+    ImGui::DemoObject::Cube2,
+    ImGui::DemoObject::Cup,
+    ImGui::DemoObject::Lucy,
+    ImGui::DemoObject::Quad,
+    ImGui::DemoObject::Sphere,
+    ImGui::DemoObject::StarWars
+  };
+
+  static const char* DEMOOBJECTNAMES[(size_t)ImGui::DemoObject::Count] =
+  {
+    "Bunny",
+    "BunnyHighPoly",
+    "Cube",
+    "Cube2",
+    "Cup",
+    "Lucy",
+    "Quad",
+    "Sphere",
+    "StarWars"
+  };
+
+  static const char* DEMOOBJECTFILENAMES[(size_t)ImGui::DemoObject::Count] =
+  {
+    "bunny.obj",
+    "bunny_high_poly.obj",
+    "cube.obj",
+    "cube2.obj",
+    "cup.obj",
+    "lucy_princeton.obj",
+    "quad.obj",
+    "sphere.obj",
+    "starwars1.obj"
+  };
 }
 
 ImGuiManager::ImGuiManager(GLFWwindow* window) noexcept :
@@ -109,38 +153,50 @@ void ImGuiManager::OnImGuiGraphicsUpdate() noexcept
   IMGUISPACE;
 
   ImGui::TextColored(IMGREEN, "Demo Object: "); ImGui::SameLine();
-  static const char* DemoObjectString = "Bunny";
+  static const char* DemoObjectString = DEMOOBJECTNAMES[0];
   if (ImGui::BeginCombo("##Demo Object", DemoObjectString))
   {
-    ImGui::PushID((void*)"Bunny");
-    if (ImGui::Selectable("Bunny", ImGui::DemoObjectMain == ImGui::DemoObject::Bunny))
+    for (int i = 0; i < (size_t)ImGui::DemoObject::Count; ++i)
     {
-      ImGui::DemoObjectMain = ImGui::DemoObject::Bunny;
-      ImGui::DemoObjectFile = "bunny.obj";
-      DemoObjectString = "Bunny";
-      m_dOnDemoObjectChange();
+      ImGui::PushID((void*)DEMOOBJECTNAMES[i]);
+      if (ImGui::Selectable(DEMOOBJECTNAMES[i], ImGui::DemoObjectMain == DEMOOBJECTS[i]))
+      {
+        ImGui::DemoObjectMain = DEMOOBJECTS[i];
+        ImGui::DemoObjectFile = DEMOOBJECTFILENAMES[i];
+        DemoObjectString = DEMOOBJECTNAMES[i];
+        m_dOnDemoObjectChange();
+      }
+      ImGui::PopID();
     }
-    ImGui::PopID();
+    //ImGui::PushID((void*)"Bunny");
+    //if (ImGui::Selectable("Bunny", ImGui::DemoObjectMain == ImGui::DemoObject::Bunny))
+    //{
+    //  ImGui::DemoObjectMain = ImGui::DemoObject::Bunny;
+    //  ImGui::DemoObjectFile = "bunny.obj";
+    //  DemoObjectString = "Bunny";
+    //  m_dOnDemoObjectChange();
+    //}
+    //ImGui::PopID();
 
-    ImGui::PushID((void*)"BunnyHighPoly");
-    if (ImGui::Selectable("BunnyHighPoly", ImGui::DemoObjectMain == ImGui::DemoObject::BunnyHighPoly))
-    {
-      ImGui::DemoObjectMain = ImGui::DemoObject::BunnyHighPoly;
-      ImGui::DemoObjectFile = "bunny_high_poly.obj";
-      DemoObjectString = "BunnyHighPoly";
-      m_dOnDemoObjectChange();
-    }
-    ImGui::PopID();
+    //ImGui::PushID((void*)"BunnyHighPoly");
+    //if (ImGui::Selectable("BunnyHighPoly", ImGui::DemoObjectMain == ImGui::DemoObject::BunnyHighPoly))
+    //{
+    //  ImGui::DemoObjectMain = ImGui::DemoObject::BunnyHighPoly;
+    //  ImGui::DemoObjectFile = "bunny_high_poly.obj";
+    //  DemoObjectString = "BunnyHighPoly";
+    //  m_dOnDemoObjectChange();
+    //}
+    //ImGui::PopID();
 
-    ImGui::PushID((void*)"StarWars");
-    if (ImGui::Selectable("StarWars", ImGui::DemoObjectMain == ImGui::DemoObject::StarWars))
-    {
-      ImGui::DemoObjectMain = ImGui::DemoObject::StarWars;
-      ImGui::DemoObjectFile = "starwars1.obj";
-      DemoObjectString = "StarWars";
-      m_dOnDemoObjectChange();
-    }
-    ImGui::PopID();
+    //ImGui::PushID((void*)"StarWars");
+    //if (ImGui::Selectable("StarWars", ImGui::DemoObjectMain == ImGui::DemoObject::StarWars))
+    //{
+    //  ImGui::DemoObjectMain = ImGui::DemoObject::StarWars;
+    //  ImGui::DemoObjectFile = "starwars1.obj";
+    //  DemoObjectString = "StarWars";
+    //  m_dOnDemoObjectChange();
+    //}
+    //ImGui::PopID();
 
     //for (int n = 0; n < io.Fonts->Fonts.Size; n++)
     //{
@@ -152,6 +208,8 @@ void ImGuiManager::OnImGuiGraphicsUpdate() noexcept
     //}
     ImGui::EndCombo();
   }
+
+  IMGUISPACE;
 
   ImGui::TextColored(IMGREEN, "Render Axes: "); ImGui::SameLine();
   ImGui::Checkbox("##Render Axes", &m_bRenderAxes);
@@ -215,6 +273,13 @@ void ImGuiManager::OnImGuiGraphicsUpdate() noexcept
   if (ImGui::RadioButton("Wireframe", &imguiRenderMode, 1))
   {
     Renderer::SetRenderModeWireframe();
+  }
+  
+  IMGUISPACE;
+
+  if (ImGui::Button("Rebuild Shaders", { 120, 32 }))
+  {
+    ImGui::GraphicsDebugRebuildShaders = true;
   }
 
   IMGUISPACE;
@@ -294,7 +359,7 @@ void ImGuiManager::ShowMainMenu_Edit() noexcept
 void ImGuiManager::ShowMainMenu_About() noexcept
 {
   if (ImGui::MenuItem("Phoenix Engine", PE_VERSION, false, false)) {}  // Disabled item
-  if (ImGui::MenuItem("Author", "Ryan Buehler", false, false)) {}  // Disabled item
+  if (ImGui::MenuItem("Author", "Ryan Buehler", false, false)) {}      // Disabled item
 }
 
 #undef IMGUISPACE

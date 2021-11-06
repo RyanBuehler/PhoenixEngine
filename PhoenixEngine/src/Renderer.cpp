@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Renderer.h"
 #include "GameObject.h"
+#include "LightingSystem.h"
 
 #pragma region ImGui
 
@@ -65,11 +66,8 @@ void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& active
   //TODO: Check if this is being used before Rendering
   DebugRenderer::I().RenderLines();
 
-  //TODO:
-  static vec3 diffuse(vec3(11.f / 255.f, 222.f / 255.f, 230.f / 255.f));
-  static vec3 ambient(vec3(0.2f, 0.2f, 0.2f));
-
   m_ContextManager.SetContext(m_DiffuseContextID);
+  //m_ContextManager.SetContext(m_PhongLightingID);
   //TODO: Combine these for efficiency
   // Set Perspective Matrix
   glUniformMatrix4fv(
@@ -79,10 +77,18 @@ void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& active
   glUniformMatrix4fv(
     m_ContextManager.GetCurrentUniformAttributes()[1].ID,
     1, GL_FALSE, &activeCamera.GetViewMatrix()[0][0]);
-  // Set Diffuse Light
-  glUniform3fv(m_ContextManager.GetCurrentUniformAttributes()[3].ID, 1, &diffuse[0]);
+
+
+  const LightingSystem::GlobalLightingData& globalLighting = m_Lighting.GetGlobalLightingData();
+  const vector<ContextManager::UniformAttribute>& uniforms = m_ContextManager.GetCurrentUniformAttributes();
   // Set Ambient Light
-  glUniform3fv(m_ContextManager.GetCurrentUniformAttributes()[4].ID, 1, &ambient[0]);
+  glUniform3fv(uniforms[3].ID, 1, &globalLighting.AmbientIntensity[0]);
+  glUniform3fv(uniforms[4].ID, 1, &globalLighting.FogIntensity[0]);
+  //glUniform1f(uniforms[5].ID, globalLighting.FogNear);
+  //glUniform1f(uniforms[6].ID, globalLighting.FogFar);
+  //glUniform1f(uniforms[7].ID, globalLighting.Attenuation[0]);
+  //glUniform1f(uniforms[8].ID, globalLighting.Attenuation[1]);
+  //glUniform1f(uniforms[9].ID, globalLighting.Attenuation[2]);
 
   // Render our list of game objects
   for (GameObject& go : gameObjects)
@@ -223,6 +229,8 @@ void Renderer::LoadContexts() noexcept
 {
   LoadDiffuseContext();
 
+  LoadPhongLightingContext();
+
   LoadDebugContext();
 }
 
@@ -261,8 +269,13 @@ void Renderer::LoadPhongLightingContext() noexcept
   m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "pers_matrix");
   m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "view_matrix");
   m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "model_matrix");
-  m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "diffuse_light");
-  m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "ambient_light");
+  m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "global_amb");
+  m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "global_fog");
+  m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "global_fog_near");
+  m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "global_fog_far");
+  m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "global_att1");
+  m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "global_att2");
+  m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "global_att3");
 
   ContextManager::VertexAttribute vaPosition("position", 4, GL_FLOAT, GL_FALSE, sizeof(vec3), 0u);
   ContextManager::VertexAttribute vaNormal("normal", 4, GL_FLOAT, GL_FALSE, sizeof(vec3), sizeof(vec3));

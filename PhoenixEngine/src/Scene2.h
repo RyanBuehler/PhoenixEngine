@@ -27,6 +27,7 @@ public:
   void OnUnload() noexcept;
 
   void OnPollInput(GLFWwindow* windowPtr, float dt) noexcept;
+  void OnDemoObjectChangeEvent();
 
   Camera& GetCurrentCamera() noexcept;
 

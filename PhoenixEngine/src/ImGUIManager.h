@@ -16,6 +16,7 @@ namespace ImGui
   extern bool GraphicsDebugRenderVertexNormals;
   extern bool GraphicsDebugRenderSurfaceNormals;
   extern float GraphicsDebugNormalLength;
+  extern bool GraphicsRebuildShaders;
 
   //TODO:
   enum class DemoObject
@@ -29,7 +30,7 @@ namespace ImGui
     Quad,
     Sphere,
     StarWars,
-    Triangle
+    Count
   };
 
   extern DemoObject DemoObjectMain;
@@ -61,6 +62,7 @@ private:
   function<void()> m_dOnClose;
   function<void(SceneManager::Scene)> m_dOnSceneChange;
   function<void()> m_dOnDemoObjectChange;
+  function<void()> m_dOnRebuildShaders;
 
   void ShowMainMenu() noexcept;
   void ShowMainMenu_File() noexcept;

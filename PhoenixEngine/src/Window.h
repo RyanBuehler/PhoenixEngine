@@ -8,7 +8,7 @@ class Window
 {
   struct WindowProperties
   {
-    WindowProperties(const string& title = "Phoenix Engine",
+    WindowProperties(const string& title = "Phoenix Engine - Ryan Buehler",
       unsigned width = 1920u,
       unsigned height = 1080u) :
       Title(title),

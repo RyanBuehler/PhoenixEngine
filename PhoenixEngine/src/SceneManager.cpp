@@ -7,6 +7,7 @@
 #include "pch.h"
 #include "SceneManager.h"
 #include "Scene1.h"
+#include "Scene2.h"
 
 SceneManager::SceneManager() noexcept :
   m_ReloadEnabled(false),
@@ -99,6 +100,10 @@ void SceneManager::transitionScene() noexcept
   case SceneManager::Scene::Scene1:
     m_CurrentScenePtr.release();
     m_CurrentScenePtr = make_unique<Scene1>();
+    break;
+  case SceneManager::Scene::Scene2:
+    m_CurrentScenePtr.release();
+    m_CurrentScenePtr = make_unique<Scene2>();
     break;
   case SceneManager::Scene::SceneCount:
   default:

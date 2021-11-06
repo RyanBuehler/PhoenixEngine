@@ -162,6 +162,9 @@
     <ClInclude Include="src\Light.h">
       <Filter>Header Files\Graphics\Lighting</Filter>
     </ClInclude>
+    <ClInclude Include="src\Scene2.h">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp">
@@ -241,6 +244,9 @@
     </ClCompile>
     <ClCompile Include="src\Light.cpp">
       <Filter>Source Files\Graphics\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene2.cpp">
+      <Filter>Source Files\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -14,3 +14,8 @@ Light::Light() noexcept :
   m_LightIsActive(false)
 {
 }
+
+Transform& Light::GetTransform() noexcept
+{
+  return m_Transform;
+}

@@ -62,6 +62,7 @@
     <ClCompile Include="src\OBJReader.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\Scene1.cpp" />
+    <ClCompile Include="src\Scene2.cpp" />
     <ClCompile Include="src\SceneManager.cpp" />
     <ClCompile Include="src\ShaderManager.cpp" />
     <ClCompile Include="src\Transform.cpp" />
@@ -94,6 +95,7 @@
     <ClInclude Include="src\Paths.h" />
     <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\Scene1.h" />
+    <ClInclude Include="src\Scene2.h" />
     <ClInclude Include="src\SceneManager.h" />
     <ClInclude Include="src\ShaderManager.h" />
     <ClInclude Include="src\Transform.h" />
