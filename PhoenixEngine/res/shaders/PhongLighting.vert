@@ -52,7 +52,8 @@ void main(void)
   vec3 view_vector_norm = normalize(view_vector);
 
   // Calculates the reflection vector
-  vec4 surface_normal = model_matrix * vec4(normal,1);
+  vec4 surface_normal = pers_matrix * view_matrix * model_matrix * vec4(normal,1);
+  //vec4 surface_normal = model_matrix * vec4(normal,1);
   vec3 reflect_vector = 2.f * dot(surface_normal.xyz, light_vector) * surface_normal.xyz - light_vector;
   vec3 reflect_vector_norm = normalize(reflect_vector);
 

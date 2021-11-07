@@ -37,6 +37,7 @@ void Scene2::OnInit() noexcept
     m_GameObjectArray.emplace_back("sphere");
   }
   m_GameObjectArray.emplace_back(ImGui::DemoObjectFile);
+  m_GameObjectArray.emplace_back("quad.obj");
 
   m_MainCamera.SetPosition({ 1.f, 1.f, 10.f });
 
@@ -63,6 +64,12 @@ void Scene2::OnInit() noexcept
   //m_GameObjectArray[8].SetIsActive(false);
   m_GameObjectArray[8].SetPosition(vec3(0.f));
   m_GameObjectArray[8].ScaleBy(1.f);
+
+  m_GameObjectArray[9].SetScale({ 5.f, 5.f, 0.f });
+  m_GameObjectArray[9].SetPosition({ 0.f, -2.f, 0.f });
+  m_GameObjectArray[9].RotateX(270.f);
+
+
   m_MainCamera.SetTarget(&m_GameObjectArray[8].GetTransform());
 
   m_Time = 0.f;
