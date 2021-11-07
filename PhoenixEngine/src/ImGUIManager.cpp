@@ -27,7 +27,66 @@ namespace ImGui
   bool GraphicsDebugRenderVertexNormals = false;
   bool GraphicsDebugRenderSurfaceNormals = false;
   float GraphicsDebugNormalLength = 0.05f;
+  bool GraphicsRebuildShaders = false;
+  LightingSystem::GlobalLightingData LightingGlobalData;
+  Light LightingLightArray[16];
+  int LightingCurrentLight = 0;
+  int LightingActiveLights = 1;
+  Material LightingGlobalMaterial;
+
+  DemoObject DemoObjectMain = DemoObject::Bunny;
+  const char* DemoObjectFile = "bunny.obj";
 }
+
+#pragma region Local Namespace
+
+// For quicker iteration
+namespace
+{
+  static const ImVec4 IMGREEN(0.f, 1.f, 0.f, 1.f);
+  static const ImVec4 IMCYAN(0.f, 1.f, 0.5f, 1.f);
+
+  static const ImGui::DemoObject DEMOOBJECTS[(size_t)ImGui::DemoObject::Count] =
+  {
+    ImGui::DemoObject::Bunny,
+    ImGui::DemoObject::BunnyHighPoly,
+    ImGui::DemoObject::Cube,
+    ImGui::DemoObject::Cube2,
+    ImGui::DemoObject::Cup,
+    ImGui::DemoObject::Lucy,
+    ImGui::DemoObject::Quad,
+    ImGui::DemoObject::Sphere,
+    ImGui::DemoObject::StarWars
+  };
+
+  static const char* DEMOOBJECTNAMES[(size_t)ImGui::DemoObject::Count] =
+  {
+    "Bunny",
+    "BunnyHighPoly",
+    "Cube",
+    "Cube2",
+    "Cup",
+    "Lucy",
+    "Quad",
+    "Sphere",
+    "StarWars"
+  };
+
+  static const char* DEMOOBJECTFILENAMES[(size_t)ImGui::DemoObject::Count] =
+  {
+    "bunny.obj",
+    "bunny_high_poly.obj",
+    "cube.obj",
+    "cube2.obj",
+    "cup.obj",
+    "lucy_princeton.obj",
+    "quad.obj",
+    "sphere.obj",
+    "starwars1.obj"
+  };
+}
+
+#pragma endregion
 
 ImGuiManager::ImGuiManager(GLFWwindow* window) noexcept :
   m_bRenderAxes(false),
@@ -40,13 +99,6 @@ ImGuiManager::ImGuiManager(GLFWwindow* window) noexcept :
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
   glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
-#elif defined(__APPLE__)
-    // GL 3.2 + GLSL 150
-  const char* glsl_version = "#version 150";
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
-  glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // Required on Mac
 #else
     // GL 3.0 + GLSL 130
   const char* glsl_version = "#version 130";
@@ -103,19 +155,217 @@ void ImGuiManager::OnImGuiClose() noexcept
 
 void ImGuiManager::OnImGuiGraphicsUpdate() noexcept
 {
-  static const ImVec4 IMGREEN(0.f, 1.f, 0.f, 1.f);
   ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
   ImGui::Begin("Graphics Settings", &ImGui::GraphicsWindowEnabled);
 
-  ImGui::TextColored(IMGREEN, "Frame Stats: "); ImGui::SameLine();
-  ImGui::Text("Frame: [%05d] Time: %lf", ImGui::GetFrameCount(), ImGui::GetTime());
+  graphicsUpdateStats();
+
   IMGUISPACE;
   ImGui::Separator();
   IMGUISPACE;
 
+  graphicsUpdateObjects();
+
+  IMGUISPACE;
+  ImGui::Separator();
+  IMGUISPACE;
+
+  graphicsUpdateLighting();
+
+  IMGUISPACE;
+  ImGui::Separator();
+  IMGUISPACE;
+
+  graphicsUpdateRendering();
+
+  IMGUISPACE;
+  ImGui::Separator();
+  IMGUISPACE;
+
+  graphicsUpdateControls();
+
+  ImGui::End();
+}
+
+void ImGuiManager::SetOnCloseHandler(std::function<void()> callback)
+{
+  m_dOnClose = callback;
+}
+
+void ImGuiManager::SetOnSceneChangeHandler(function<void(SceneManager::Scene)> callback)
+{
+  m_dOnSceneChange = callback;
+}
+
+void ImGuiManager::SetOnDemoObjectHandler(function<void()> callback)
+{
+  m_dOnDemoObjectChange = callback;
+}
+
+void ImGuiManager::ShowMainMenu() noexcept
+{
+  if (ImGui::BeginMainMenuBar())
+  {
+    if (ImGui::BeginMenu("File"))
+    {
+      ShowMainMenu_File();
+      ImGui::EndMenu();
+    }
+    if (ImGui::BeginMenu("Edit"))
+    {
+      ShowMainMenu_Edit();
+      ImGui::EndMenu();
+    }
+    if (ImGui::BeginMenu("About"))
+    {
+      ShowMainMenu_About();
+      ImGui::EndMenu();
+    }
+    ImGui::EndMainMenuBar();
+  }
+}
+
+void ImGuiManager::ShowMainMenu_File() noexcept
+{
+  if (ImGui::MenuItem("Scene 1", ""))
+  {
+    m_dOnSceneChange(SceneManager::Scene::Scene1);
+  }
+  if (ImGui::MenuItem("Scene 2", ""))
+  {
+    m_dOnSceneChange(SceneManager::Scene::Scene2);
+  }
+  if (ImGui::MenuItem("Exit", "Close the Engine"))
+  {
+    m_dOnClose();
+  }
+}
+
+void ImGuiManager::ShowMainMenu_Edit() noexcept
+{
+  if (ImGui::MenuItem("Graphics Window Enabled", "", ImGui::GraphicsWindowEnabled))
+  {
+    ImGui::GraphicsWindowEnabled = !ImGui::GraphicsWindowEnabled;
+  }
+}
+
+void ImGuiManager::ShowMainMenu_About() noexcept
+{
+  if (ImGui::MenuItem("Phoenix Engine", PE_VERSION, false, false)) {}  // Disabled item
+  if (ImGui::MenuItem("Author", "Ryan Buehler", false, false)) {}      // Disabled item
+}
+
+void ImGuiManager::graphicsUpdateStats() noexcept
+{
+  ImGui::TextColored(IMCYAN, "Graphics Statistics");
+  ImGui::TextColored(IMCYAN, "-------------------");
+
+  IMGUISPACE;
+
+  ImGui::TextColored(IMGREEN, "Frame Stats: "); ImGui::SameLine();
+  ImGui::Text("Frame: [%05d] Time: %lf", ImGui::GetFrameCount(), ImGui::GetTime());
+}
+
+void ImGuiManager::graphicsUpdateObjects() noexcept
+{
+  ImGui::TextColored(IMCYAN, "Global Object Settings");
+  ImGui::TextColored(IMCYAN, "----------------------");
+
+  IMGUISPACE;
+
+  ImGui::TextColored(IMGREEN, "Demo Object: "); ImGui::SameLine();
+  static const char* DemoObjectString = DEMOOBJECTNAMES[0];
+  if (ImGui::BeginCombo("##Demo Object", DemoObjectString))
+  {
+    for (int i = 0; i < (size_t)ImGui::DemoObject::Count; ++i)
+    {
+      ImGui::PushID((void*)DEMOOBJECTNAMES[i]);
+      if (ImGui::Selectable(DEMOOBJECTNAMES[i], ImGui::DemoObjectMain == DEMOOBJECTS[i]))
+      {
+        ImGui::DemoObjectMain = DEMOOBJECTS[i];
+        ImGui::DemoObjectFile = DEMOOBJECTFILENAMES[i];
+        DemoObjectString = DEMOOBJECTNAMES[i];
+        m_dOnDemoObjectChange();
+      }
+      ImGui::PopID();
+    }
+
+    ImGui::EndCombo();
+  }
+}
+
+void ImGuiManager::graphicsUpdateLighting() noexcept
+{
+  ImGui::TextColored(IMCYAN, "Global Lighting Settings");
+  ImGui::TextColored(IMCYAN, "------------------------");
+
+  IMGUISPACE;
+
+  ImGui::TextColored(IMGREEN, "Global Ambience:   "); ImGui::SameLine();
+  ImGui::ColorEdit3("##Global Ambient Intensity", &ImGui::LightingGlobalData.AmbientIntensity[0]);
+  ImGui::TextColored(IMGREEN, "Fog Intensity:     "); ImGui::SameLine();
+  ImGui::ColorEdit3("##Global Fog Intensity", &ImGui::LightingGlobalData.FogIntensity[0]);
+
+  ImGui::TextColored(IMGREEN, "Fog Near: "); ImGui::SameLine();
+  ImGui::SliderFloat("##Global Fog Near", &ImGui::LightingGlobalData.FogNear, 0.f, 5.f);
+  ImGui::TextColored(IMGREEN, "Fog Far:  "); ImGui::SameLine();
+  ImGui::SliderFloat("##Global Fog Far", &ImGui::LightingGlobalData.FogFar, ImGui::LightingGlobalData.FogNear, 20.f);
+
+  ImGui::TextColored(IMGREEN, "Light Attenuation: "); ImGui::SameLine();
+  ImGui::DragFloat3("##Global Light Attenuation", &ImGui::LightingGlobalData.Attenuation[0], 0.f, 1.f);
+  IMGUISPACE;
+  IMGUISPACE;
+
+  ImGui::TextColored(IMCYAN, "Light Settings");
+  ImGui::TextColored(IMCYAN, "------------------------");
+
+  IMGUISPACE;
+
+  ImGui::TextColored(IMGREEN, "Active Lights:   "); ImGui::SameLine();
+  ImGui::SliderInt("##Active Lights", &ImGui::LightingActiveLights, 0, 16);
+  ImGui::TextColored(IMGREEN, "Selected Light:  "); ImGui::SameLine();
+  ImGui::SliderInt("##Selected Light", &ImGui::LightingCurrentLight, 0, 15);
+
+  Light& light = ImGui::LightingLightArray[ImGui::LightingCurrentLight];
+  ImGui::TextColored(IMGREEN, "Light Position:     ");
+  ImGui::SliderFloat3("##Light Position", &light.m_Transform.m_Position[0], -50.f, 50.f);
+  ImGui::TextColored(IMGREEN, "Ambient Intensity:     ");
+  ImGui::ColorEdit3("##Light Ambient Intensity", &light.m_AmbientIntensity[0]);
+  ImGui::TextColored(IMGREEN, "Diffuse Intensity:     ");
+  ImGui::ColorEdit3("##Light Diffuse Intensity", &light.m_DiffuseIntensity[0]);
+  ImGui::TextColored(IMGREEN, "Specular Intensity:     ");
+  ImGui::ColorEdit3("##Light Specular Intensity", &light.m_SpecularIntensity[0]);
+
+  IMGUISPACE;
+  IMGUISPACE;
+
+  ImGui::TextColored(IMCYAN, "Global Material Settings");
+  ImGui::TextColored(IMCYAN, "------------------------");
+
+  IMGUISPACE;
+  
+  ImGui::TextColored(IMGREEN, "Material Emission:     ");
+  ImGui::ColorEdit3("##Material Emission", &ImGui::LightingGlobalMaterial.m_Emissive[0]);
+  ImGui::TextColored(IMGREEN, "Material Ambient:      "); ImGui::SameLine();
+  ImGui::SliderFloat("##Material Ambient", &ImGui::LightingGlobalMaterial.m_AmbientFactor, 0.f, 1.f);
+  ImGui::TextColored(IMGREEN, "Material Diffuse:      "); ImGui::SameLine();
+  ImGui::SliderFloat("##Material Diffuse", &ImGui::LightingGlobalMaterial.m_DiffuseFactor, 0.f, 1.f);
+  ImGui::TextColored(IMGREEN, "Material Specular:     "); ImGui::SameLine();
+  ImGui::SliderFloat("##Material Specular", &ImGui::LightingGlobalMaterial.m_SpecularFactor, 0.f, 1.f);
+  ImGui::TextColored(IMGREEN, "Material Specular Exp: "); ImGui::SameLine();
+  ImGui::SliderFloat("##Material Specular Exp", &ImGui::LightingGlobalMaterial.m_SpecularExp, 1.f, 1000.f);
+}
+
+void ImGuiManager::graphicsUpdateRendering() noexcept
+{
+  ImGui::TextColored(IMCYAN, "Renderer Settings");
+  ImGui::TextColored(IMCYAN, "-----------------");
+
+  IMGUISPACE;
+
   ImGui::TextColored(IMGREEN, "Render Axes: "); ImGui::SameLine();
   ImGui::Checkbox("##Render Axes", &m_bRenderAxes);
-  if(m_bRenderAxes)
+  if (m_bRenderAxes)
   {
     DebugRenderer::I().AddLine(vec3(-10000.f, 0.f, 0.f), Colors::RED, vec3(10000.f, 0.f, 0.f), Colors::RED);
     DebugRenderer::I().AddLine(vec3(0.f, -10000.f, 0.f), Colors::GREEN, vec3(0.f, 10000.f, 0.f), Colors::GREEN);
@@ -131,11 +381,9 @@ void ImGuiManager::OnImGuiGraphicsUpdate() noexcept
   }
 
   IMGUISPACE;
-  ImGui::Separator();
-  IMGUISPACE;
 
   ImGui::TextColored(IMGREEN, "Show Normals: "); ImGui::SameLine();
-  
+
   static int imguiNormals = 2;
   if (ImGui::RadioButton("Per Vertex", &imguiNormals, 0))
   {
@@ -149,7 +397,7 @@ void ImGuiManager::OnImGuiGraphicsUpdate() noexcept
     ImGui::GraphicsDebugRenderVertexNormals = false;
     ImGui::GraphicsDebugRenderSurfaceNormals = true;
   }
-  
+
   ImGui::SameLine();
   if (ImGui::RadioButton("None", &imguiNormals, 2))
   {
@@ -178,74 +426,24 @@ void ImGuiManager::OnImGuiGraphicsUpdate() noexcept
   }
 
   IMGUISPACE;
-  ImGui::Separator();
+
+  if (ImGui::Button("Rebuild Shaders", { 120, 32 }))
+  {
+    ImGui::GraphicsRebuildShaders = true;
+  }
+}
+
+void ImGuiManager::graphicsUpdateControls() noexcept
+{
+  ImGui::TextColored(IMCYAN, "Engine Camera Controls");
+  ImGui::TextColored(IMCYAN, "----------------------");
+
   IMGUISPACE;
 
   ImGui::Text("Camera Controls:");
   ImGui::Text("WASD: Move Around");
   ImGui::Text("Q/E: Move Up and Down");
   ImGui::Text("Note: Camera currently focuses on the center object.");
-
-  ImGui::End();
-}
-
-void ImGuiManager::SetOnCloseHandler(std::function<void()> callback)
-{
-  m_dOnClose = callback;
-}
-
-void ImGuiManager::SetOnSceneChangeHandler(function<void(SceneManager::Scene)> callback)
-{
-  m_dOnSceneChange = callback;
-}
-
-void ImGuiManager::ShowMainMenu() noexcept
-{
-  if (ImGui::BeginMainMenuBar())
-  {
-    if (ImGui::BeginMenu("File"))
-    {
-      ShowMainMenu_File();
-      ImGui::EndMenu();
-    }
-    if (ImGui::BeginMenu("Edit"))
-    {
-      ShowMainMenu_Edit();
-      ImGui::EndMenu();
-    }
-    if (ImGui::BeginMenu("About"))
-    {
-      ShowMainMenu_About();
-      ImGui::EndMenu();
-    }
-    ImGui::EndMainMenuBar();
-  }
-}
-
-void ImGuiManager::ShowMainMenu_File() noexcept
-{
-  if (ImGui::MenuItem("Test Scene", ""))
-  {
-    m_dOnSceneChange(SceneManager::Scene::TestScene);
-  }
-  if (ImGui::MenuItem("Exit", "Close the Engine"))
-  {
-    m_dOnClose();
-  }
-}
-
-void ImGuiManager::ShowMainMenu_Edit() noexcept
-{
-  if (ImGui::MenuItem("Graphics Window Enabled", "", ImGui::GraphicsWindowEnabled))
-  {
-    ImGui::GraphicsWindowEnabled = !ImGui::GraphicsWindowEnabled;
-  }
-}
-
-void ImGuiManager::ShowMainMenu_About() noexcept
-{
-  if (ImGui::MenuItem("Phoenix Engine", PE_VERSION, false, false)) {}  // Disabled item
-  if (ImGui::MenuItem("Author", "Ryan Buehler", false, false)) {}  // Disabled item
 }
 
 #undef IMGUISPACE

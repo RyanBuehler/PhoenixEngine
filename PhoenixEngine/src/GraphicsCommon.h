@@ -27,14 +27,20 @@ namespace Shader
 
   enum class Vertex : unsigned
   {
-    DIFFUSE = 0u,
+    UNKNOWN = 0u,
+    DIFFUSE,
+    PHONGLIGHT,
+    PHONGSHADE,
     DEBUG,
     COUNT
   };
 
   enum class Fragment : unsigned
   {
-    DIFFUSE = 0u,
+    UNKNOWN = 0u,
+    DIFFUSE,
+    PHONGLIGHT,
+    PHONGSHADE,
     DEBUG,
     COUNT
   };

@@ -1,39 +1,42 @@
 //------------------------------------------------------------------------------
-// File:    TestScene.cpp
+// File:    Scene1.cpp
 // Author:  Ryan Buehler
 // Created: 09/27/21
 // Desc:    A test scene for expirementation
 //------------------------------------------------------------------------------
 #include "pch.h"
-#include "TestScene.h"
+#include "Scene1.h"
 #include "Transform.h"
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "DebugRenderer.h"
+#include "ImGUIManager.h"
 
-TestScene::TestScene() noexcept :
-  IScene("Test Scene"),
+Scene1::Scene1() noexcept :
+  IScene("Scene 1"),
   m_MainCamera(m_CameraManager.GetDefaultCamera()),
   m_Time(0.f)
 {
-  m_MainCamera.SetName("Test Scene Camera");
-  Log::Trace("Test Scene Created.");
+  m_MainCamera.SetName("Scene 1 Camera");
+  Log::Trace("Scene 1 Created.");
+  ImGui::Manager->SetOnDemoObjectHandler(std::bind(&Scene1::OnDemoObjectChangeEvent, this));
 }
 
-void TestScene::OnLoad() noexcept
+void Scene1::OnLoad() noexcept
 {
-  Log::Trace("Test Scene Loaded.");
+  Log::Trace("Scene 1 Loaded.");
+}
+
+void Scene1::OnInit() noexcept
+{
+  m_Time = 0;
+
+  Log::Trace("Scene 1 Initialized.");
   for (int i = 0; i < 8; ++i)
   {
     m_GameObjectArray.emplace_back("sphere");
   }
-  m_GameObjectArray.emplace_back("bunny.obj");
-  //m_GameObjectArray.emplace_back("cube2.obj");
-}
-
-void TestScene::OnInit() noexcept
-{
-  Log::Trace("Test Scene Initialized.");
+  m_GameObjectArray.emplace_back(ImGui::DemoObjectFile);
 
   m_MainCamera.SetPosition({ 1.f, 1.f, 10.f });
 
@@ -65,7 +68,7 @@ void TestScene::OnInit() noexcept
   m_Time = 0.f;
 }
 
-void TestScene::OnUpdate(float dt) noexcept
+void Scene1::OnUpdate(float dt) noexcept
 {
   m_Time += dt;
   for (int i = 0; i < 8; ++i)
@@ -74,17 +77,18 @@ void TestScene::OnUpdate(float dt) noexcept
   }
 }
 
-void TestScene::OnShutdown() noexcept
+void Scene1::OnShutdown() noexcept
 {
-  Log::Trace("Test Scene Shutdown.");
+  m_GameObjectArray.clear();
+  Log::Trace("Scene 1 Shutdown.");
 }
 
-void TestScene::OnUnload() noexcept
+void Scene1::OnUnload() noexcept
 {
-  Log::Trace("Test Scene Unloaded.");
+  Log::Trace("Scene 1 Unloaded.");
 }
 
-void TestScene::OnPollInput(GLFWwindow* window, float dt) noexcept
+void Scene1::OnPollInput(GLFWwindow* window, float dt) noexcept
 {
   static float move_speed = 10.f;
   if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
@@ -113,7 +117,12 @@ void TestScene::OnPollInput(GLFWwindow* window, float dt) noexcept
   }
 }
 
-Camera& TestScene::GetCurrentCamera() noexcept
+void Scene1::OnDemoObjectChangeEvent()
+{
+  m_GameObjectArray[8].SetMeshFileName(ImGui::DemoObjectFile);
+}
+
+Camera& Scene1::GetCurrentCamera() noexcept
 {
   return m_MainCamera;
 }

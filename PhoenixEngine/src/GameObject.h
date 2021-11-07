@@ -6,6 +6,7 @@
 //------------------------------------------------------------------------------
 #pragma once
 #include "Transform.h"
+#include "Material.h"
 
 class GameObject
 {
@@ -21,8 +22,10 @@ public:
   void SetTransform(const Transform& transform);
   const Transform& GetTransform() const noexcept;
 
-  inline void SetMeshFileName(const string& fileName) noexcept { m_MeshFileName = fileName; }
+  void SetMeshFileName(const string& fileName) noexcept;
   inline const string& GetMeshFileName() const noexcept { return m_MeshFileName; }
+
+  inline void SetMaterial(const Material& material) noexcept { m_Material = material; }
 
   inline void SetIsActive(bool isActive) noexcept { m_bIsActive = isActive; }
   inline bool IsActive() const noexcept { return m_bIsActive; }
@@ -47,14 +50,21 @@ public:
 
   inline const mat4& GetMatrix() noexcept { return m_Transform.GetMatrix(); }
 
+  inline const Material& GetMaterial() noexcept { return m_Material; }
+
 #pragma endregion
 
 private:
   friend class Renderer;
 
   Transform m_Transform;
+
+  //TODO: Move this into a "RenderableComponent"
   unsigned m_MeshID;
   string m_MeshFileName;
+  //TODO: Move this into a "RenderableComponent"
+  Material m_Material;
+
 
   bool m_bIsActive;
   bool m_bIsDirty;

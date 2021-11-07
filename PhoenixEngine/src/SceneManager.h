@@ -18,11 +18,12 @@ public:
   enum class Scene
   {
     None,
-    TestScene,
+    Scene1, // Spheres orbiting a centerpiece
+    Scene2, // Phong Lighting scene
     SceneCount
   };
 private:
-  static constexpr Scene DEFAULTSCENE = Scene::TestScene;
+  static constexpr Scene DEFAULTSCENE = Scene::Scene2;
 
 public:
   /// <summary>
@@ -41,25 +42,30 @@ public:
   /// </summary>
   /// <returns>A Scene transition happened. T/F</returns>
   bool SceneIsTransitioning() noexcept;
+
   /// <summary>
   /// Sets the next Scene, instigating a transition
   /// </summary>
   /// <param name="nextScene"></param>
   void SetNewScene(Scene nextScene) noexcept;
+
   /// <summary>
   /// Sets the Scene to Reload on next cycle
   /// </summary>
   /// <returns></returns>
   void ReloadScene() noexcept;
+
   /// <summary>
   /// Shuts the SceneManager down
   /// </summary>
   /// <returns></returns>
   void Shutdown() noexcept;
+
   /// <summary>
   /// Called every game loop cycle
   /// </summary>
   void OnUpdate(float dt) noexcept;
+
   /// <summary>
   /// Called after polling for input
   /// </summary>
@@ -73,16 +79,17 @@ public:
   Camera& GetCurrentSceneActiveCamera() noexcept;
 
 private:
-  bool m_ReloadEnabled;
-  unique_ptr<IScene> m_CurrentScenePtr;
-  Scene m_CurrentScene;
-  Scene m_NextScene;
+  bool m_ReloadEnabled;                  // Reloading scene next iteration
+  unique_ptr<IScene> m_CurrentScenePtr;  // Pointer to the current scene
+  Scene m_CurrentScene;                  // The current scene
+  Scene m_NextScene;                     // The scene to transition to
 
   /// <summary>
   /// Private helper to transition the Scene
   /// </summary>
   /// <param name="scene">The Scene to transition to</param>
   void transitionScene() noexcept;
+
   /// <summary>
   /// Private helper to reload the Scene
   /// </summary>
