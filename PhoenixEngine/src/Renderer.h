@@ -163,5 +163,12 @@ private:
   GLint m_PhongLightingID;          // The ID of the "PhongLighting" context
   GLint m_PhongShadingID;           // The ID of the "PhongShading" context
   GLint m_DebugContextID;           // The ID of the "Debug" context
+
+  //TODO: For testing only
+  GLint uboSize;
+  GLuint uboIndex;
+  GLuint uboBuffer;
+  GLuint indices[4];
+  GLint offsets[4];
 };
 
