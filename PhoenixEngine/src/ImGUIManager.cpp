@@ -27,7 +27,7 @@ namespace ImGui
   bool GraphicsDebugRenderVertexNormals = false;
   bool GraphicsDebugRenderSurfaceNormals = false;
   float GraphicsDebugNormalLength = 0.05f;
-  bool GraphicsDebugRebuildShaders = false;
+  bool GraphicsRebuildShaders = false;
   LightingSystem::GlobalLightingData LightingGlobalData;
   Light LightingLightArray[16];
   int LightingCurrentLight = 0;
@@ -353,7 +353,7 @@ void ImGuiManager::graphicsUpdateLighting() noexcept
   ImGui::TextColored(IMGREEN, "Material Specular:     "); ImGui::SameLine();
   ImGui::SliderFloat("##Material Specular", &ImGui::LightingGlobalMaterial.m_SpecularFactor, 0.f, 1.f);
   ImGui::TextColored(IMGREEN, "Material Specular Exp: "); ImGui::SameLine();
-  ImGui::SliderFloat("##Material Specular Exp", &ImGui::LightingGlobalMaterial.m_SpecularExp, 0.f, 1000.f);
+  ImGui::SliderFloat("##Material Specular Exp", &ImGui::LightingGlobalMaterial.m_SpecularExp, 1.f, 1000.f);
 }
 
 void ImGuiManager::graphicsUpdateRendering() noexcept
@@ -429,7 +429,7 @@ void ImGuiManager::graphicsUpdateRendering() noexcept
 
   if (ImGui::Button("Rebuild Shaders", { 120, 32 }))
   {
-    ImGui::GraphicsDebugRebuildShaders = true;
+    ImGui::GraphicsRebuildShaders = true;
   }
 }
 

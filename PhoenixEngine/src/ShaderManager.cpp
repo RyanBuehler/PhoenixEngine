@@ -34,6 +34,7 @@ unsigned ShaderManager::GetFragmentShaderID(Shader::Fragment shader) const noexc
 
 void ShaderManager::ReloadShaders() noexcept
 {
+  Log::Trace("Reloading Shaders");
   LoadShaders();
 }
 
@@ -110,9 +111,11 @@ void ShaderManager::UnloadShaders() noexcept
   {
     glDeleteShader(id);
   }
+  m_VertexShaders.fill(-1);
 
   for (GLint id : m_FragmentShaders)
   {
     glDeleteShader(id);
   }
+  m_FragmentShaders.fill(-1);
 }

@@ -158,6 +158,12 @@ void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& active
     DebugRenderer::I().RenderLines();
   }
 
+  if (ImGui::GraphicsRebuildShaders)
+  {
+    ImGui::GraphicsRebuildShaders = false;
+    m_ShaderManager.ReloadShaders();
+  }
+
 #endif
 
 #pragma endregion

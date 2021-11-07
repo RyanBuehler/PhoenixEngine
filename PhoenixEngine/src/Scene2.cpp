@@ -69,7 +69,6 @@ void Scene2::OnInit() noexcept
   m_GameObjectArray[9].SetPosition({ 0.f, -2.f, 0.f });
   m_GameObjectArray[9].RotateX(270.f);
 
-
   m_MainCamera.SetTarget(&m_GameObjectArray[8].GetTransform());
 
   m_Time = 0.f;
