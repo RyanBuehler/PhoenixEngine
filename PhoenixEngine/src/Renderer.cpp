@@ -86,15 +86,12 @@ void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& active
   glUniform1f(uniforms[8].ID, globalLighting.Attenuation[1]);
   glUniform1f(uniforms[9].ID, globalLighting.Attenuation[2]);
   //TODO: Faking lights temporarily for simplicity
-  vec3 lightPos = { 2.f, 2.f, 0.f };
-  vec3 lightAmb = { 50.f, 50.f, 50.f };
-  vec3 lightDif = { 120.f, 180.f, 10.f };
-  vec3 lightSpc = { 200.f, 200.f, 200.f };
+  Light& light = ImGui::LightingLightArray[0];
 
-  glUniform3fv(uniforms[10].ID, 1, &lightPos[0]);
-  glUniform3fv(uniforms[11].ID, 1, &lightAmb[0]);
-  glUniform3fv(uniforms[12].ID, 1, &lightDif[0]);
-  glUniform3fv(uniforms[13].ID, 1, &lightSpc[0]);
+  glUniform3fv(uniforms[10].ID, 1, &light.GetTransform().GetPosition()[0]);
+  glUniform3fv(uniforms[11].ID, 1, &light.GetAmbientIntensity()[0]);
+  glUniform3fv(uniforms[12].ID, 1, &light.GetDiffuseIntensity()[0]);
+  glUniform3fv(uniforms[13].ID, 1, &light.GetSpecularIntensity()[0]);
 
   // Render our list of game objects
   for (GameObject& go : gameObjects)

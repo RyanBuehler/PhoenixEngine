@@ -23,6 +23,10 @@ public:
   Light(Light&&) = delete;
   Light& operator=(Light&&) = delete;
 
+  const vec3& GetAmbientIntensity() const noexcept;
+  const vec3& GetDiffuseIntensity() const noexcept;
+  const vec3& GetSpecularIntensity() const noexcept;
+
   /// <summary>
   /// Gets the light's transform
   /// </summary>
@@ -37,4 +41,8 @@ private:
   vec3 m_SpecularIntensity; // The light's specular intensity value
 
   bool m_LightIsActive;     // The light is active or not
+
+#ifdef _IMGUI
+  friend class ImGuiManager;
+#endif
 };

@@ -41,4 +41,8 @@ private:
   mat4 m_Matrix;
 
   bool m_bIsDirty;
+
+#ifdef _IMGUI
+  friend class ImGuiManager;
+#endif
 };

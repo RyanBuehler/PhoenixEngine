@@ -8,6 +8,7 @@
 #include "SceneManager.h"
 #include "Renderer.h"
 #include "LightingSystem.h"
+#include "Light.h"
 #include "Material.h"
 
 class ImGuiManager;
@@ -21,6 +22,9 @@ namespace ImGui
   extern bool GraphicsRebuildShaders;
 
   extern LightingSystem::GlobalLightingData LightingGlobalData;
+  extern Light LightingLightArray[16];
+  extern int LightingCurrentLight;
+  extern int LightingActiveLights;
   extern Material LightingGlobalMaterial;
 
   //TODO:

@@ -20,14 +20,14 @@ public:
   {
     GlobalLightingData() noexcept :
       AmbientIntensity({ 0.1f, 0.1f, 0.1f }),
-      FogIntensity({ 0.1f, 0.1f, 0.1f }),
+      FogIntensity({ 0.0f, 0.0f, 0.0f }),
       FogNear(1.f),
       FogFar(20.f),
       Attenuation()
     {
-      Attenuation[0] = 0.1f;
-      Attenuation[1] = 0.1f;
-      Attenuation[2] = 0.1f;
+      Attenuation[0] = 0.0f;
+      Attenuation[1] = 0.0f;
+      Attenuation[2] = 0.0f;
     }
     vec3 AmbientIntensity;        // Global Ambient intensity
     vec3 FogIntensity;            // Global fog intensity
