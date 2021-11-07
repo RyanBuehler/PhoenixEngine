@@ -12,7 +12,10 @@ class Material
 public:
   enum class Type
   {
+    CUSTOM,
     BASIC,
+    LIGHT,
+    GLOBAL,
     COUNT
   };
 
@@ -98,6 +101,12 @@ public:
   /// <returns>The specular exponent factor</returns>
   float GetSpecularExp() const noexcept;
 
+  /// <summary>
+  /// Gets the material type if it exists
+  /// </summary>
+  /// <returns>The type of the material</returns>
+  Type GetType() const noexcept;
+
 private:
   vec3 m_Emissive;            // How much light is emitted
 
@@ -106,6 +115,8 @@ private:
   float m_SpecularFactor;     // How much light is reflected
 
   float m_SpecularExp;        // The shininness of the object
+
+  Type m_Type;                // Type if it exists
 
   /// <summary>
   /// Helper function for predefined defaults of Material types

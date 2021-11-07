@@ -30,6 +30,7 @@ namespace Shader
     UNKNOWN = 0u,
     DIFFUSE,
     PHONGLIGHT,
+    PHONGSHADE,
     DEBUG,
     COUNT
   };
@@ -39,6 +40,7 @@ namespace Shader
     UNKNOWN = 0u,
     DIFFUSE,
     PHONGLIGHT,
+    PHONGSHADE,
     DEBUG,
     COUNT
   };

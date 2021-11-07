@@ -32,21 +32,31 @@ void Scene2::OnInit() noexcept
   m_Time = 0;
 
   Log::Trace("Scene 2 Initialized.");
-  for (int i = 0; i < 8; ++i)
+  for (int i = 0; i < 16; ++i)
   {
     m_GameObjectArray.emplace_back("sphere");
   }
   m_GameObjectArray.emplace_back(ImGui::DemoObjectFile);
   m_GameObjectArray.emplace_back("quad.obj");
 
-  m_MainCamera.SetPosition({ 1.f, 1.f, 10.f });
+  m_MainCamera.SetPosition({ 2.f, 2.f, 10.f });
 
+  // Lights
   for (int i = 0; i < 8; ++i)
   {
-    //m_GameObjectArray[i].SetIsActive(false);
     m_GameObjectArray[i].SetPosition(vec3(2.0f, 0.f, 0.f));
-    m_GameObjectArray[i].RotateAround(360.f / 8.f * i, vec3(0.f, 0.f, 1.f));
+    m_GameObjectArray[i].RotateAround(360.f / 8.f * i, vec3(0.f, 1.f, 0.f));
     m_GameObjectArray[i].ScaleBy(0.1f);
+    m_GameObjectArray[i].SetMaterial(Material::Type::LIGHT);
+    m_GameObjectArray[i].SetIsActive(false);
+  }
+  for (int i = 8; i < 16; ++i)
+  {
+    m_GameObjectArray[i].SetPosition(vec3(2.0f, 0.f, 0.f));
+    m_GameObjectArray[i].RotateAround(22.5f + 360.f / 8.f * i, vec3(0.f, 1.f, 0.f));
+    m_GameObjectArray[i].ScaleBy(0.12f);
+    m_GameObjectArray[i].SetMaterial(Material::Type::LIGHT);
+    m_GameObjectArray[i].SetIsActive(false);
   }
 
   GameObject temp("sphere.obj");
@@ -54,20 +64,21 @@ void Scene2::OnInit() noexcept
   for (int i = 2; i <= 360; i += 2)
   {
     vec3 pt1 = temp.GetPosition();
-    temp.RotateAround(glm::radians(static_cast<float>(i)), vec3(0.f, 0.f, 1.f));
+    temp.RotateAround(glm::radians(static_cast<float>(i)), vec3(0.f, 1.f, 0.f));
     vec3 pt2 = temp.GetPosition();
     DebugRenderer::I().AddPermanentLine(pt1, pt2);
   }
   temp.SetIsActive(false);
-  //DebugRenderer::I().AddPermanentLine(temp.GetPosition(), vec3(1.f, 0.f, 0.f));
 
-  //m_GameObjectArray[8].SetIsActive(false);
-  m_GameObjectArray[8].SetPosition(vec3(0.f));
-  m_GameObjectArray[8].ScaleBy(1.f);
+  m_GameObjectArray[16].SetPosition(vec3(0.f));
+  m_GameObjectArray[16].ScaleBy(1.f);
+  m_GameObjectArray[16].SetMaterial(Material::Type::GLOBAL);
 
-  m_GameObjectArray[9].SetScale({ 5.f, 5.f, 0.f });
-  m_GameObjectArray[9].SetPosition({ 0.f, -2.f, 0.f });
-  m_GameObjectArray[9].RotateX(270.f);
+  // Plane
+  m_GameObjectArray[17].SetScale({ 5.f, 5.f, 0.f });
+  m_GameObjectArray[17].SetPosition({ 0.f, -0.5f, 0.f });
+  m_GameObjectArray[17].RotateX(270.f);
+  m_GameObjectArray[17].SetMaterial(Material::Type::GLOBAL);
 
   m_MainCamera.SetTarget(&m_GameObjectArray[8].GetTransform());
 
@@ -77,9 +88,19 @@ void Scene2::OnInit() noexcept
 void Scene2::OnUpdate(float dt) noexcept
 {
   m_Time += dt;
-  for (int i = 0; i < 8; ++i)
+
+  for (int i = 0; i < 16; ++i)
   {
-    m_GameObjectArray[i].RotateAround(2.f * dt, vec3(0.f, 0.f, 1.f));
+    if (i + 1 <= ImGui::LightingActiveLights)
+    {
+      m_GameObjectArray[i].SetIsActive(true);
+    }
+    else
+    {
+      m_GameObjectArray[i].SetIsActive(false);
+    }
+    m_GameObjectArray[i].RotateAround(5.f * dt, vec3(0.f, 1.f, 0.f));
+    ImGui::LightingLightArray[i].GetTransform().SetPosition(m_GameObjectArray[i].GetPosition());
   }
 }
 

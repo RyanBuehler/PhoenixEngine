@@ -27,7 +27,6 @@ public:
 
   inline void SetMaterial(const Material& material) noexcept { m_Material = material; }
 
-
   inline void SetIsActive(bool isActive) noexcept { m_bIsActive = isActive; }
   inline bool IsActive() const noexcept { return m_bIsActive; }
 
@@ -50,6 +49,8 @@ public:
   inline const vec3& GetScale() const noexcept { return m_Transform.GetScale(); }
 
   inline const mat4& GetMatrix() noexcept { return m_Transform.GetMatrix(); }
+
+  inline const Material& GetMaterial() noexcept { return m_Material; }
 
 #pragma endregion
 

@@ -138,10 +138,15 @@ private:
   void LoadDiffuseContext() noexcept;
 
   /// <summary>
-  /// Loads the "Diffuse only" rendering context
+  /// Loads the "Phong Lighting" rendering context
   /// </summary>
   void LoadPhongLightingContext() noexcept;
-  
+
+  /// <summary>
+  /// Loads the "Phong Shading" rendering context
+  /// </summary>
+  void LoadPhongShadingContext() noexcept;
+
   /// <summary>
   /// Loads the "Debug" rendering context
   /// </summary>
@@ -155,7 +160,8 @@ private:
   LightingSystem m_Lighting;        // All lighting functionality
 
   GLint m_DiffuseContextID;         // The ID of the "Diffuse" context
-  GLint m_PhongLightingID;          // The ID of the "Diffuse" context
+  GLint m_PhongLightingID;          // The ID of the "PhongLighting" context
+  GLint m_PhongShadingID;           // The ID of the "PhongShading" context
   GLint m_DebugContextID;           // The ID of the "Debug" context
 };
 

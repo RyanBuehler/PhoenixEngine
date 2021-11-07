@@ -302,17 +302,17 @@ void ImGuiManager::graphicsUpdateLighting() noexcept
   IMGUISPACE;
 
   ImGui::TextColored(IMGREEN, "Global Ambience:   "); ImGui::SameLine();
-  ImGui::SliderFloat3("##Global Ambient Intensity", &ImGui::LightingGlobalData.AmbientIntensity[0], 0.f, 1.f);
-  ImGui::TextColored(IMGREEN, "Light Attenuation: "); ImGui::SameLine();
-  ImGui::SliderFloat3("##Global Light Attenuation", &ImGui::LightingGlobalData.Attenuation[0], 0.f, 1.f);
+  ImGui::ColorEdit3("##Global Ambient Intensity", &ImGui::LightingGlobalData.AmbientIntensity[0]);
   ImGui::TextColored(IMGREEN, "Fog Intensity:     "); ImGui::SameLine();
-  ImGui::SliderFloat3("##Global Fog Intensity", &ImGui::LightingGlobalData.FogIntensity[0], 0.f, 1.f);
+  ImGui::ColorEdit3("##Global Fog Intensity", &ImGui::LightingGlobalData.FogIntensity[0]);
 
   ImGui::TextColored(IMGREEN, "Fog Near: "); ImGui::SameLine();
   ImGui::SliderFloat("##Global Fog Near", &ImGui::LightingGlobalData.FogNear, 0.f, 5.f);
   ImGui::TextColored(IMGREEN, "Fog Far:  "); ImGui::SameLine();
   ImGui::SliderFloat("##Global Fog Far", &ImGui::LightingGlobalData.FogFar, ImGui::LightingGlobalData.FogNear, 20.f);
 
+  ImGui::TextColored(IMGREEN, "Light Attenuation: "); ImGui::SameLine();
+  ImGui::DragFloat3("##Global Light Attenuation", &ImGui::LightingGlobalData.Attenuation[0], 0.f, 1.f);
   IMGUISPACE;
   IMGUISPACE;
 
@@ -330,11 +330,11 @@ void ImGuiManager::graphicsUpdateLighting() noexcept
   ImGui::TextColored(IMGREEN, "Light Position:     ");
   ImGui::SliderFloat3("##Light Position", &light.m_Transform.m_Position[0], -50.f, 50.f);
   ImGui::TextColored(IMGREEN, "Ambient Intensity:     ");
-  ImGui::SliderFloat3("##Light Ambient Intensity", &light.m_AmbientIntensity[0], 0.f, 1.f);
+  ImGui::ColorEdit3("##Light Ambient Intensity", &light.m_AmbientIntensity[0]);
   ImGui::TextColored(IMGREEN, "Diffuse Intensity:     ");
-  ImGui::SliderFloat3("##Light Diffuse Intensity", &light.m_DiffuseIntensity[0], 0.f, 1.f);
+  ImGui::ColorEdit3("##Light Diffuse Intensity", &light.m_DiffuseIntensity[0]);
   ImGui::TextColored(IMGREEN, "Specular Intensity:     ");
-  ImGui::SliderFloat3("##Light Specular Intensity", &light.m_SpecularIntensity[0], 0.f, 1.f);
+  ImGui::ColorEdit3("##Light Specular Intensity", &light.m_SpecularIntensity[0]);
 
   IMGUISPACE;
   IMGUISPACE;
@@ -345,7 +345,7 @@ void ImGuiManager::graphicsUpdateLighting() noexcept
   IMGUISPACE;
   
   ImGui::TextColored(IMGREEN, "Material Emission:     ");
-  ImGui::SliderFloat3("##Material Emission", &ImGui::LightingGlobalMaterial.m_Emissive[0], 0.f, 1.f);
+  ImGui::ColorEdit3("##Material Emission", &ImGui::LightingGlobalMaterial.m_Emissive[0]);
   ImGui::TextColored(IMGREEN, "Material Ambient:      "); ImGui::SameLine();
   ImGui::SliderFloat("##Material Ambient", &ImGui::LightingGlobalMaterial.m_AmbientFactor, 0.f, 1.f);
   ImGui::TextColored(IMGREEN, "Material Diffuse:      "); ImGui::SameLine();
