@@ -31,7 +31,7 @@ public:
   /// </summary>
   /// <param name="depthBufferEnabled">Should the depth buffer be enabled?</param>
   /// <param name="backFaceCullEnabled">Should the back faces be culled?</param>
-  Renderer(bool depthBufferEnabled = true, bool backFaceCullEnabled = true) noexcept;
+  Renderer(bool depthBufferEnabled = true, bool backFaceCullEnabled = false) noexcept;
   ~Renderer(); // Destructor
 
   // Rule of 5
@@ -168,7 +168,7 @@ private:
   GLint uboSize;
   GLuint uboIndex;
   GLuint uboBuffer;
-  GLuint indices[4];
-  GLint offsets[4];
+  GLuint indices[5];
+  GLint offsets[5];
 };
 

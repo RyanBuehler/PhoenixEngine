@@ -43,9 +43,9 @@ void Renderer::OnBeginFrame() const noexcept
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   //TODO: For testing purposes only
-  const Light& light = ImGui::LightingLightArray[0];
   glBindBuffer(GL_UNIFORM_BUFFER, uboBuffer);
-  glBufferSubData(GL_UNIFORM_BUFFER, 0, uboSize, &light);
+  //glBufferSubData(GL_UNIFORM_BUFFER, 0, uboSize, &ImGui::LightingDataArray[0]);
+  glBufferData(GL_UNIFORM_BUFFER, sizeof(Light::Data) * 16, &ImGui::LightingDataArray[0], GL_DYNAMIC_DRAW);
   glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
@@ -88,16 +88,10 @@ void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& active
   glUniform3fv(uniforms[4].ID, 1, &globalLighting.FogIntensity[0]);
   glUniform1f(uniforms[5].ID, globalLighting.FogNear);
   glUniform1f(uniforms[6].ID, globalLighting.FogFar);
-  glUniform1f(uniforms[7].ID, globalLighting.Attenuation[0]);
-  glUniform1f(uniforms[8].ID, globalLighting.Attenuation[1]);
-  glUniform1f(uniforms[9].ID, globalLighting.Attenuation[2]);
+  glUniform1f(uniforms[7].ID, globalLighting.AttConstant);
+  glUniform1f(uniforms[8].ID, globalLighting.AttLinear);
+  glUniform1f(uniforms[9].ID, globalLighting.AttQuadratic);
   //TODO: Faking lights temporarily for simplicity
-  //Light& light = ImGui::LightingLightArray[0];
-
-  //glUniform3fv(uniforms[10].ID, 1, &light.GetTransform().GetPosition()[0]);
-  //glUniform3fv(uniforms[11].ID, 1, &light.GetAmbientIntensity()[0]);
-  //glUniform3fv(uniforms[12].ID, 1, &light.GetDiffuseIntensity()[0]);
-  //glUniform3fv(uniforms[13].ID, 1, &light.GetSpecularIntensity()[0]);
 
   // Render our list of game objects
   for (GameObject& go : gameObjects)
@@ -274,24 +268,24 @@ void Renderer::RenderNormals(GameObject& gameObject, float length, Normals::Type
 
 void Renderer::LoadContexts() noexcept
 {
-  LoadDiffuseContext();
+  //LoadDiffuseContext();
 
-  LoadPhongLightingContext();
+  //LoadPhongLightingContext();
 
   LoadPhongShadingContext();
 
   LoadDebugContext();
 
-  //TODO: This for testing purposes only
-  m_ContextManager.SetContext(m_PhongShadingID);
-  GLuint programID = m_ContextManager.GetCurrentProgram();
-  uboIndex = glGetUniformBlockIndex(programID, "Light");
-  // Now get the size
-  glGetActiveUniformBlockiv(programID, uboIndex, GL_UNIFORM_BLOCK_DATA_SIZE, &uboSize);
+  GLuint program = m_ContextManager.GetProgram(m_PhongLightingID);
 
-  const GLchar* names[] = {"Light.Pos", "Light.Amb", "Light.Dif", "Light.Spc" };
-  glGetUniformIndices(programID, 2, names, indices);
-  glGetActiveUniformsiv(programID, 2, indices, GL_UNIFORM_OFFSET, offsets);
+  //TODO: For testing only
+  uboIndex = glGetUniformBlockIndex(program, "LightArray");
+  // Now get the size
+  glGetActiveUniformBlockiv(program, uboIndex, GL_UNIFORM_BLOCK_DATA_SIZE, &uboSize);
+
+  const GLchar* names[] = { "Light.Position", "Light.Ambience", "Light.Diffuse", "Light.Specular" };
+  glGetUniformIndices(program, 2, names, indices);
+  glGetActiveUniformsiv(program, 2, indices, GL_UNIFORM_OFFSET, offsets);
 
   glGenBuffers(1, &uboBuffer);
   glBindBuffer(GL_UNIFORM_BUFFER, uboBuffer);
@@ -374,6 +368,7 @@ void Renderer::LoadPhongShadingContext() noexcept
   unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::PHONGSHADE);
   unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::PHONGSHADE);
   m_PhongShadingID = m_ContextManager.CreateNewContext("Phong Shading", vID, fID);
+
   m_ContextManager.SetContext(m_PhongShadingID);
 
   // TODO: Convert this to a uniform block
@@ -409,7 +404,6 @@ void Renderer::LoadPhongShadingContext() noexcept
   ContextManager::VertexAttribute vaNormal("normal", 4, GL_FLOAT, GL_FALSE, sizeof(vec3), sizeof(vec3));
   m_ContextManager.AddNewVertexAttribute(m_PhongShadingID, vaPosition);
   m_ContextManager.AddNewVertexAttribute(m_PhongShadingID, vaNormal);
-
   Log::Trace("Phong Shading Context loaded.");
 }
 

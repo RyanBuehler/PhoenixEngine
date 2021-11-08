@@ -79,6 +79,11 @@ void ContextManager::SetContext(unsigned contextIndex) noexcept
   // instead to have the context manager handle uniforms?
 }
 
+GLuint ContextManager::GetProgram(unsigned contextID) const noexcept
+{
+  return m_Contexts[contextID].ProgramID;
+}
+
 GLuint ContextManager::GetCurrentProgram() const noexcept
 {
   return m_Contexts[m_CurrentContextIndex].ProgramID;

@@ -121,14 +121,12 @@ void LightingSystem::SetFogFarDistance(float fogFar) noexcept
   m_GlobalLightingData.FogFar = fogFar;
 }
 
-void LightingSystem::SetGlobalLightAttenuation(float c0, float c1, float c2) noexcept
-{
-  m_GlobalLightingData.Attenuation = { c0, c1, c2 };
-}
 
-void LightingSystem::SetGlobalLightAttenuation(const array<float, 3>& attenuation)
+void LightingSystem::SetLightAttenuation(float constant, float linear, float quadratic) noexcept
 {
-  m_GlobalLightingData.Attenuation = attenuation;
+  m_GlobalLightingData.AttConstant = constant;
+  m_GlobalLightingData.AttLinear = linear;
+  m_GlobalLightingData.AttQuadratic = quadratic;
 }
 
 const vec3& LightingSystem::GetGlobalAmbientIntensity() const noexcept
@@ -151,9 +149,19 @@ float LightingSystem::GetFogFarDistance() const noexcept
   return m_GlobalLightingData.FogFar;
 }
 
-const array<float, 3>& LightingSystem::GetGlobalLightAttenuation() const noexcept
+float LightingSystem::GetLightAttenuationConstant() const noexcept
 {
-  return m_GlobalLightingData.Attenuation;
+  return m_GlobalLightingData.AttConstant;
+}
+
+float LightingSystem::GetLightAttenuationLinear() const noexcept
+{
+  return m_GlobalLightingData.AttLinear;
+}
+
+float LightingSystem::GetLightAttenuationQuadratic() const noexcept
+{
+  return m_GlobalLightingData.AttQuadratic;
 }
 
 unsigned LightingSystem::getFreeLightCount() const noexcept

@@ -8,29 +8,18 @@
 #include "Light.h"
 
 Light::Light() noexcept :
-  m_AmbientIntensity(0.1f, 0.1f, 0.1f),
-  m_DiffuseIntensity(0.2f, 0.6f, 0.2f),
-  m_SpecularIntensity(0.8f, 0.8f, 0.8f),
-  m_LightIsActive(false)
+  m_Transform(),
+  m_Data()
 {
+}
+
+const Light::Data& Light::GetData() noexcept
+{
+  m_Data.Position = vec4(m_Transform.GetPosition(), 1.f);
+  return m_Data;
 }
 
 Transform& Light::GetTransform() noexcept
 {
   return m_Transform;
-}
-
-const vec3& Light::GetAmbientIntensity() const noexcept
-{
-  return m_AmbientIntensity;
-}
-
-const vec3& Light::GetDiffuseIntensity() const noexcept
-{
-  return m_DiffuseIntensity;
-}
-
-const vec3& Light::GetSpecularIntensity() const noexcept
-{
-  return m_SpecularIntensity;
 }

@@ -11,6 +11,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "DebugRenderer.h"
 #include "ImGUIManager.h"
+#include "Colors.h"
 
 Scene2::Scene2() noexcept :
   IScene("Scene 2"),
@@ -59,6 +60,48 @@ void Scene2::OnInit() noexcept
     m_GameObjectArray[i].SetIsActive(false);
   }
 
+  Material mat = Material::Type::LIGHT;
+  ImGui::LightingDataArray[0].DiffuseIntensity = Colors::RED;
+  ImGui::LightingDataArray[0].AmbientIntensity = Colors::RED;
+  mat.SetEmissive(Colors::RED);
+  m_GameObjectArray[0].SetMaterial(mat);
+
+  ImGui::LightingDataArray[1].DiffuseIntensity = Colors::YELLOW;
+  ImGui::LightingDataArray[1].AmbientIntensity = Colors::YELLOW;
+  mat.SetEmissive(Colors::YELLOW);
+  m_GameObjectArray[1].SetMaterial(mat);
+
+  ImGui::LightingDataArray[2].DiffuseIntensity = Colors::BLUE;
+  ImGui::LightingDataArray[2].AmbientIntensity = Colors::BLUE;
+  mat.SetEmissive(Colors::BLUE);
+  m_GameObjectArray[2].SetMaterial(mat);
+
+  ImGui::LightingDataArray[3].DiffuseIntensity = Colors::ORANGE;
+  ImGui::LightingDataArray[3].AmbientIntensity = Colors::ORANGE;
+  mat.SetEmissive(Colors::ORANGE);
+  m_GameObjectArray[3].SetMaterial(mat);
+
+  ImGui::LightingDataArray[4].DiffuseIntensity = Colors::GREEN;
+  ImGui::LightingDataArray[4].AmbientIntensity = Colors::GREEN;
+  mat.SetEmissive(Colors::GREEN);
+  m_GameObjectArray[4].SetMaterial(mat);
+
+  ImGui::LightingDataArray[5].DiffuseIntensity = Colors::PURPLE;
+  ImGui::LightingDataArray[5].AmbientIntensity = Colors::PURPLE;
+  mat.SetEmissive(Colors::PURPLE);
+  m_GameObjectArray[5].SetMaterial(mat);
+
+  ImGui::LightingDataArray[6].DiffuseIntensity = Colors::CYAN;
+  ImGui::LightingDataArray[6].AmbientIntensity = Colors::CYAN;
+  mat.SetEmissive(Colors::CYAN);
+  m_GameObjectArray[6].SetMaterial(mat);
+
+  ImGui::LightingDataArray[7].DiffuseIntensity = Colors::PINK;
+  ImGui::LightingDataArray[7].AmbientIntensity = Colors::PINK;
+  mat.SetEmissive(Colors::PINK);
+  m_GameObjectArray[7].SetMaterial(mat);
+
+  // Lines
   GameObject temp("sphere.obj");
   temp.SetPosition(vec3(2.0f, 0.f, 0.f));
   for (int i = 2; i <= 360; i += 2)
@@ -75,12 +118,12 @@ void Scene2::OnInit() noexcept
   m_GameObjectArray[16].SetMaterial(Material::Type::GLOBAL);
 
   // Plane
-  m_GameObjectArray[17].SetScale({ 5.f, 5.f, 0.f });
+  m_GameObjectArray[17].SetScale({ 20.f, 20.f, 0.f });
   m_GameObjectArray[17].SetPosition({ 0.f, -0.5f, 0.f });
   m_GameObjectArray[17].RotateX(270.f);
   m_GameObjectArray[17].SetMaterial(Material::Type::GLOBAL);
 
-  m_MainCamera.SetTarget(&m_GameObjectArray[8].GetTransform());
+  m_MainCamera.SetTarget(&m_GameObjectArray[16].GetTransform());
 
   m_Time = 0.f;
 }
@@ -94,13 +137,15 @@ void Scene2::OnUpdate(float dt) noexcept
     if (i + 1 <= ImGui::LightingActiveLights)
     {
       m_GameObjectArray[i].SetIsActive(true);
+      ImGui::LightingDataArray[i].IsActive = true;
     }
     else
     {
       m_GameObjectArray[i].SetIsActive(false);
+      ImGui::LightingDataArray[i].IsActive = false;
     }
     m_GameObjectArray[i].RotateAround(5.f * dt, vec3(0.f, 1.f, 0.f));
-    ImGui::LightingLightArray[i].GetTransform().SetPosition(m_GameObjectArray[i].GetPosition());
+    ImGui::LightingDataArray[i].Position = vec4(m_GameObjectArray[i].GetPosition(), 1.f);
   }
 }
 
@@ -146,7 +191,7 @@ void Scene2::OnPollInput(GLFWwindow* window, float dt) noexcept
 
 void Scene2::OnDemoObjectChangeEvent()
 {
-  m_GameObjectArray[8].SetMeshFileName(ImGui::DemoObjectFile);
+  m_GameObjectArray[16].SetMeshFileName(ImGui::DemoObjectFile);
 }
 
 Camera& Scene2::GetCurrentCamera() noexcept
