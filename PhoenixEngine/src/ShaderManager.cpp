@@ -34,11 +34,48 @@ unsigned ShaderManager::GetFragmentShaderID(Shader::Fragment shader) const noexc
 
 void ShaderManager::ReloadShaders() noexcept
 {
-  Log::Trace("Reloading Shaders");
-  LoadShaders();
+  LoadShader(m_VertexShaders[static_cast<unsigned>(Shader::Vertex::PHONGLIGHT)], "PhongLighting.vert");
+  LoadShader(m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::PHONGLIGHT)], "PhongLighting.frag");
+
+  LoadShader(m_VertexShaders[static_cast<unsigned>(Shader::Vertex::PHONGSHADE)], "PhongShading.vert");
+  LoadShader(m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::PHONGSHADE)], "PhongShading.frag");
+
+  LoadShader(m_VertexShaders[static_cast<unsigned>(Shader::Vertex::DIFFUSE)], "Diffuse.vert");
+  LoadShader(m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::DIFFUSE)], "Diffuse.frag");
+
+  LoadShader(m_VertexShaders[static_cast<unsigned>(Shader::Vertex::DEBUG)], "Debug.vert");
+  LoadShader(m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::DEBUG)], "Debug.frag");
+
+  Log::Trace("Reloaded Shaders");
 }
 
-GLint ShaderManager::LoadShader(const string& fileName, GLenum shaderType) noexcept
+bool ShaderManager::ReloadShader(GLuint programID, GLint vertexShaderID, GLint fragmentShaderID) noexcept
+{
+  glAttachShader(programID, vertexShaderID);
+  glAttachShader(programID, fragmentShaderID);
+
+  glLinkProgram(programID);
+
+  GLint result;
+  glGetProgramiv(programID, GL_LINK_STATUS, &result);
+  if (!result)
+  {
+    Log::Error("Error linking OpenGL program.");
+    string error;
+    Graphics::RetrieveProgramLog(programID, error);
+    Log::Error(error);
+    return false;
+  }
+
+  return true;
+}
+
+GLint ShaderManager::CreateShader(GLenum shaderType) noexcept
+{
+  return glCreateShader(shaderType);
+}
+
+bool ShaderManager::LoadShader(GLint shaderID, const string& fileName) noexcept
 {
   string path = Paths::SHADER_PATH + fileName;
   // load fragment shader
@@ -47,41 +84,51 @@ GLint ShaderManager::LoadShader(const string& fileName, GLenum shaderType) noexc
   if (!file.is_open())
   {
     Log::Error(string("Could not open shader file: ") + path);
-    return GL_SHADER_ERROR;
+    return false;
   }
   string fstring((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
   file.close();
 
   // compile the shader
-  GLint id = glCreateShader(shaderType);
   const char* const& fs = fstring.c_str();
-  glShaderSource(id, 1, &fs, 0);
-  glCompileShader(id);
+  glShaderSource(shaderID, 1, &fs, 0);
+  glCompileShader(shaderID);
 
   GLint result;
-  glGetShaderiv(id, GL_COMPILE_STATUS, &result);
+  glGetShaderiv(shaderID, GL_COMPILE_STATUS, &result);
   if (!result)
   {
     Log::Error(string("Error compiling shader : ") + fileName);
     string error;
-    RetrieveShaderLog(id, error);
+    Graphics::RetrieveShaderLog(shaderID, error);
     Log::Error(error);
-    return GL_SHADER_ERROR;
+    return false;
   }
 
+  return true;
+}
+
+GLint ShaderManager::CreateAndLoadShader(const string& fileName, GLenum shaderType)
+{
+  GLint id = CreateShader(shaderType);
+  if (!LoadShader(id, fileName))
+  {
+    Log::Error("Failed to Create and Load shader: " + fileName);
+    return GL_SHADER_ERROR;
+  }
   return id;
 }
 
-void ShaderManager::RetrieveShaderLog(GLint shaderID, string& log) const noexcept
-{
-  int logLength;
-  glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &logLength);
-  char* shaderLog = new char[logLength];
-  glGetShaderInfoLog(shaderID, logLength, &logLength, shaderLog);
-  log.clear();
-  log = shaderLog;
-  delete[] shaderLog;
-}
+//void ShaderManager::RetrieveShaderLog(GLint shaderID, string& log) const noexcept
+//{
+//  int logLength;
+//  glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &logLength);
+//  char* shaderLog = new char[logLength];
+//  glGetShaderInfoLog(shaderID, logLength, &logLength, shaderLog);
+//  log.clear();
+//  log = shaderLog;
+//  delete[] shaderLog;
+//}
 
 void ShaderManager::LoadShaders() noexcept
 {
@@ -90,24 +137,24 @@ void ShaderManager::LoadShaders() noexcept
   // TODO: This should happen automatically or at least in 1 place
 
   m_VertexShaders[static_cast<unsigned>(Shader::Vertex::PHONGLIGHT)] =
-    LoadShader("PhongLighting.vert", GL_VERTEX_SHADER);
+    CreateAndLoadShader("PhongLighting.vert", GL_VERTEX_SHADER);
   m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::PHONGLIGHT)] =
-    LoadShader("PhongLighting.frag", GL_FRAGMENT_SHADER);
+    CreateAndLoadShader("PhongLighting.frag", GL_FRAGMENT_SHADER);
 
   m_VertexShaders[static_cast<unsigned>(Shader::Vertex::PHONGSHADE)] =
-    LoadShader("PhongShading.vert", GL_VERTEX_SHADER);
+    CreateAndLoadShader("PhongShading.vert", GL_VERTEX_SHADER);
   m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::PHONGSHADE)] =
-    LoadShader("PhongShading.frag", GL_FRAGMENT_SHADER);
+    CreateAndLoadShader("PhongShading.frag", GL_FRAGMENT_SHADER);
 
   m_VertexShaders[static_cast<unsigned>(Shader::Vertex::DIFFUSE)] =
-    LoadShader("Diffuse.vert", GL_VERTEX_SHADER);
+    CreateAndLoadShader("Diffuse.vert", GL_VERTEX_SHADER);
   m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::DIFFUSE)] =
-    LoadShader("Diffuse.frag", GL_FRAGMENT_SHADER);
+    CreateAndLoadShader("Diffuse.frag", GL_FRAGMENT_SHADER);
 
   m_VertexShaders[static_cast<unsigned>(Shader::Vertex::DEBUG)] =
-    LoadShader("Debug.vert", GL_VERTEX_SHADER);
+    CreateAndLoadShader("Debug.vert", GL_VERTEX_SHADER);
   m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::DEBUG)] =
-    LoadShader("Debug.frag", GL_FRAGMENT_SHADER);
+    CreateAndLoadShader("Debug.frag", GL_FRAGMENT_SHADER);
 }
 
 void ShaderManager::UnloadShaders() noexcept

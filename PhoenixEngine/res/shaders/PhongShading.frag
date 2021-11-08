@@ -34,8 +34,9 @@ struct Light
   vec4 Specular;
   vec4 Direction;
   int Type;
+  float InnerFalloff;
+  float OuterFalloff;
   bool IsActive;
-  float padding[2];
 };
 
 uniform LightArray
@@ -128,5 +129,35 @@ vec3 calcPointLight(int i, vec4 view_vector)
 
 vec3 calcSpotLight(int i, vec4 view_vector)
 {
-  return vec3(0.f);
+  // Calculate the light vector
+  vec4 light_vector = lights[i].Position - world_position;
+  float light_vector_len = length(light_vector);
+  vec4 light_vector_norm = normalize(light_vector);
+
+  float theta = dot(light_vector_norm, normalize(-lights[i].Direction));
+  float epsilon = lights[i].InnerFalloff - lights[i].OuterFalloff;
+  float falloff = clamp((theta - lights[i].OuterFalloff) / epsilon, 0.f, 1.f);
+  if(theta > cos(radians(lights[i].OuterFalloff)))
+  {
+//    // Calculates the reflection vector
+//    vec4 reflect_vector = 2.f * dot(world_normal, light_vector) * world_normal - light_vector;
+//    vec4 reflect_vector_norm = normalize(reflect_vector);
+//
+//    vec3 ambient_value = lights[i].Ambience.xyz * mat_amb;
+//    vec3 diffuse_value = lights[i].Diffuse.xyz * mat_dif * max(dot(world_normal, light_vector_norm), 0.f);
+//    vec3 spec_value = lights[i].Specular.xyz * mat_spc * pow(max(dot(reflect_vector_norm, view_vector), 0.f), mat_spc_exp);
+//
+//    float attenuation = global_att1 + global_att2 * light_vector_len + global_att3 * light_vector_len * light_vector_len;
+//    attenuation = min(1.f / attenuation, 1.f);
+//    return attenuation * (ambient_value + diffuse_value + spec_value);
+    return vec3(0.f, 1.0f, 0.f);
+  }
+  else
+  {
+    return vec3(1.f, 0.f, 0.f);
+//    vec3 ambient_value = lights[i].Ambience.xyz * mat_amb;
+//    float attenuation = global_att1 + global_att2 * light_vector_len + global_att3 * light_vector_len * light_vector_len;
+//    attenuation = min(1.f / attenuation, 1.f);
+//    return attenuation * ambient_value;
+  }
 }

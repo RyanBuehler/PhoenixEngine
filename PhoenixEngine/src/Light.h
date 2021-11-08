@@ -25,18 +25,20 @@ public:
       SpecularIntensity(vec4(1.f, 1.0f, 1.0f, 1.f)),
       Direction(vec4(0.f, -1.f, 0.f, 0.f)),
       Type(POINT_LIGHT),
-      IsActive(false),
-      padding()
+      InnerFalloff(15.f),
+      OuterFalloff(20.f),
+      IsActive(false)
     {}
 
     vec4 Position;          // The light's position in world space
     vec4 AmbientIntensity;  // The light's ambient intensity value
     vec4 DiffuseIntensity;  // The light's diffuse intensity value
     vec4 SpecularIntensity; // The light's specular intensity value
-    vec4 Direction;
-    int Type;
-    bool IsActive;
-    float padding[2];
+    vec4 Direction;         // The light's direction if spot/directional
+    int Type;               // The type of light (point, spot, directional)
+    float InnerFalloff;     // The degrees at which spot lights fall off
+    float OuterFalloff;     // The degrees at which spot lights fall off
+    bool IsActive;          // Is the light currently active?
   };
 public:
   /// <summary>

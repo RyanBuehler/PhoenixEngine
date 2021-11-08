@@ -366,6 +366,14 @@ void ImGuiManager::graphicsUpdateLighting() noexcept
   {
     ImGui::TextColored(IMGREEN, "Light Direction:     ");
     ImGui::SliderFloat3("##Light Direction", &lightData.Direction[0], -1.f, 1.f);
+    if (lightData.Type == Light::SPOT_LIGHT)
+    {
+      ImGui::TextColored(IMGREEN, "Light Inner Falloff:     ");
+      ImGui::SliderFloat("##Light Inner Falloff", &lightData.InnerFalloff, 0.f, lightData.OuterFalloff);
+
+      ImGui::TextColored(IMGREEN, "Light Outer Falloff:     ");
+      ImGui::SliderFloat("##Light Outer Falloff", &lightData.OuterFalloff, lightData.InnerFalloff, 45.f);
+    }
   }
 
   ImGui::TextColored(IMGREEN, "Ambient Intensity:     ");

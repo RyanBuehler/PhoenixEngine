@@ -26,9 +26,14 @@ public:
 
   void ReloadShaders() noexcept;
 
+  bool ReloadShader(GLuint programID, GLint vertexShaderID, GLint fragmentShaderID) noexcept;
+
 private:
-  GLint LoadShader(const string& fileName, GLenum shaderType) noexcept;
-  void RetrieveShaderLog(GLint shaderID, string& log) const noexcept;
+  GLint CreateShader(GLenum shaderType) noexcept;
+  bool LoadShader(GLint shaderID, const string& fileName) noexcept;
+  GLint CreateAndLoadShader(const string& fileName, GLenum shaderType);
+
+  /*void RetrieveShaderLog(GLint shaderID, string& log) const noexcept;*/
   
   void LoadShaders() noexcept;
   void UnloadShaders() noexcept;
