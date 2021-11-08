@@ -35,7 +35,7 @@ unsigned ContextManager::CreateNewContext(const string& name, GLint vertexShader
   {
     Log::Error("Error linking OpenGL program.");
     string error;
-    RetrieveProgramLog(programID, error);
+    Graphics::RetrieveProgramLog(programID, error);
     Log::Error(error);
     return GL_PROGRAM_ERROR;
   }
@@ -99,16 +99,16 @@ const vector<ContextManager::VertexAttribute>& ContextManager::GetCurrentVertexA
   return m_Contexts[m_CurrentContextIndex].VertexAttributes;
 }
 
-void ContextManager::RetrieveProgramLog(GLint programID, string& log) const noexcept
-{
-  int logLength;
-  glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &logLength);
-  char* programLog = new char[logLength];
-  glGetProgramInfoLog(programID, logLength, &logLength, programLog);
-  log.clear();
-  log = programLog;
-  delete[] programLog;
-}
+//void ContextManager::RetrieveProgramLog(GLint programID, string& log) const noexcept
+//{
+//  int logLength;
+//  glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &logLength);
+//  char* programLog = new char[logLength];
+//  glGetProgramInfoLog(programID, logLength, &logLength, programLog);
+//  log.clear();
+//  log = programLog;
+//  delete[] programLog;
+//}
 
 void ContextManager::AddNewUniformAttribute(unsigned contextIndex, const string& name)
 {
