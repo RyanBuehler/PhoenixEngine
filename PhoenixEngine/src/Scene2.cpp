@@ -63,41 +63,49 @@ void Scene2::OnInit() noexcept
   Material mat = Material::Type::LIGHT;
   ImGui::LightingDataArray[0].DiffuseIntensity = Colors::RED;
   ImGui::LightingDataArray[0].AmbientIntensity = Colors::RED;
+  ImGui::LightingDataArray[0].SpecularIntensity = Colors::RED;
   mat.SetEmissive(Colors::RED);
   m_GameObjectArray[0].SetMaterial(mat);
 
   ImGui::LightingDataArray[1].DiffuseIntensity = Colors::YELLOW;
   ImGui::LightingDataArray[1].AmbientIntensity = Colors::YELLOW;
+  ImGui::LightingDataArray[1].SpecularIntensity = Colors::YELLOW;
   mat.SetEmissive(Colors::YELLOW);
   m_GameObjectArray[1].SetMaterial(mat);
 
   ImGui::LightingDataArray[2].DiffuseIntensity = Colors::BLUE;
   ImGui::LightingDataArray[2].AmbientIntensity = Colors::BLUE;
+  ImGui::LightingDataArray[2].SpecularIntensity = Colors::BLUE;
   mat.SetEmissive(Colors::BLUE);
   m_GameObjectArray[2].SetMaterial(mat);
 
   ImGui::LightingDataArray[3].DiffuseIntensity = Colors::ORANGE;
   ImGui::LightingDataArray[3].AmbientIntensity = Colors::ORANGE;
+  ImGui::LightingDataArray[3].SpecularIntensity = Colors::ORANGE;
   mat.SetEmissive(Colors::ORANGE);
   m_GameObjectArray[3].SetMaterial(mat);
 
   ImGui::LightingDataArray[4].DiffuseIntensity = Colors::GREEN;
   ImGui::LightingDataArray[4].AmbientIntensity = Colors::GREEN;
+  ImGui::LightingDataArray[4].SpecularIntensity = Colors::GREEN;
   mat.SetEmissive(Colors::GREEN);
   m_GameObjectArray[4].SetMaterial(mat);
 
   ImGui::LightingDataArray[5].DiffuseIntensity = Colors::PURPLE;
   ImGui::LightingDataArray[5].AmbientIntensity = Colors::PURPLE;
+  ImGui::LightingDataArray[5].SpecularIntensity = Colors::PURPLE;
   mat.SetEmissive(Colors::PURPLE);
   m_GameObjectArray[5].SetMaterial(mat);
 
   ImGui::LightingDataArray[6].DiffuseIntensity = Colors::CYAN;
   ImGui::LightingDataArray[6].AmbientIntensity = Colors::CYAN;
+  ImGui::LightingDataArray[6].SpecularIntensity = Colors::CYAN;
   mat.SetEmissive(Colors::CYAN);
   m_GameObjectArray[6].SetMaterial(mat);
 
   ImGui::LightingDataArray[7].DiffuseIntensity = Colors::PINK;
   ImGui::LightingDataArray[7].AmbientIntensity = Colors::PINK;
+  ImGui::LightingDataArray[7].SpecularIntensity = Colors::PINK;
   mat.SetEmissive(Colors::PINK);
   m_GameObjectArray[7].SetMaterial(mat);
 

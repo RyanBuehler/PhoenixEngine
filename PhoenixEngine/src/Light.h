@@ -11,6 +11,11 @@
 class Light
 {
 public:
+  // TODO: Is there a less garbage way to do this?
+  const static int POINT_LIGHT = 0;
+  const static int DIRECTION_LIGHT = 1;
+  const static int SPOT_LIGHT = 2;
+
   struct Data
   {
     Data() :
@@ -18,6 +23,8 @@ public:
       AmbientIntensity(vec4(0.f, 0.f, 0.f, 1.f)),
       DiffuseIntensity(vec4(0.8f, 0.2f, 0.2f, 1.f)),
       SpecularIntensity(vec4(1.f, 1.0f, 1.0f, 1.f)),
+      Direction(vec4(0.f, -1.f, 0.f, 0.f)),
+      Type(POINT_LIGHT),
       IsActive(false),
       padding()
     {}
@@ -26,8 +33,10 @@ public:
     vec4 AmbientIntensity;  // The light's ambient intensity value
     vec4 DiffuseIntensity;  // The light's diffuse intensity value
     vec4 SpecularIntensity; // The light's specular intensity value
+    vec4 Direction;
+    int Type;
     bool IsActive;
-    float padding[3];
+    float padding[2];
   };
 public:
   /// <summary>

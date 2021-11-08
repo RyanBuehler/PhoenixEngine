@@ -5,6 +5,11 @@ Author: Ryan Buehler
 #version 460 core
 #define LIGHTCOUNT 16
 
+// TODO: Looking for a better way than macro defines
+#define POINT 0
+#define DIRECTION 1
+#define SPOT 2
+
 uniform vec3 cam_vector;
 
 uniform vec3 global_amb;
@@ -27,8 +32,10 @@ struct Light
   vec4 Ambience;
   vec4 Diffuse;
   vec4 Specular;
+  vec4 Direction;
+  int Type;
   bool IsActive;
-  float padding[3];
+  float padding[2];
 };
 
 uniform LightArray
@@ -41,9 +48,13 @@ in vec4 world_normal;
 
 out vec4 frag_color;
 
+vec3 calcDirectionLight(int i, vec4 view_vector);
+vec3 calcPointLight(int i, vec4 view_vector);
+vec3 calcSpotLight(int i, vec4 view_vector);
+
 void main(void)
 {
-  vec3 local = vec3(0.f, 0.f, 0.f);
+  vec3 local = global_amb + mat_emit;
 
   // Calculate the view vector
   vec4 view_vector = vec4(cam_vector, 1.f) - world_position;
@@ -54,23 +65,23 @@ void main(void)
   {
     if(lights[i].IsActive)
     {
-      // Calculate the light vector
-      vec4 light_vector = lights[i].Position - world_position;
-      float light_vector_len = length(light_vector);
-      vec4 light_vector_norm = normalize(light_vector);
-
-      // Calculates the reflection vector
-      vec4 reflect_vector = 2.f * dot(world_normal, light_vector) * world_normal - light_vector;
-      vec4 reflect_vector_norm = normalize(reflect_vector);
-
-      vec3 ambient_value = lights[i].Ambience.xyz * mat_amb;
-      vec3 diffuse_value = max(dot(world_normal, light_vector_norm), 0.f) * lights[i].Diffuse.xyz * mat_dif;
-      vec3 spec_value = lights[i].Specular.xyz * mat_spc * pow(max(dot(reflect_vector_norm, view_vector_norm), 0.f), mat_spc_exp);
-
-      float attenuation = global_att1 + global_att2 * light_vector_len + global_att3 * light_vector_len * light_vector_len;
-      attenuation = min(1.f / attenuation, 1.f);
-
-      local += global_amb + mat_emit + attenuation * (ambient_value + diffuse_value + spec_value);
+      switch(lights[i].Type)
+      {
+        // Point light
+        case POINT:
+          local += calcPointLight(i, view_vector_norm);
+          break;
+        // Directional light
+        case DIRECTION:
+          local += calcDirectionLight(i, view_vector_norm);
+          break;
+        // Spot light
+        case SPOT:
+          local += calcSpotLight(i, view_vector_norm);
+          break;
+        default:
+          break;
+      }
     }
   }
 
@@ -78,4 +89,44 @@ void main(void)
   float fog_value = (global_fog_far - view_vector_len) / (global_fog_far - global_fog_near);
 
   frag_color = vec4(fog_value * local + (1.f - fog_value) * global_fog, 1.f);
+}
+
+vec3 calcDirectionLight(int i, vec4 view_vector)
+{
+  // Calculate the light vector
+  vec4 light_vector = normalize(-lights[i].Direction);
+
+  // Calculates the reflection vector
+  vec4 reflect_vector = reflect(-light_vector, world_normal);
+
+  vec3 ambient_value = lights[i].Ambience.xyz * mat_amb;
+  vec3 diffuse_value = lights[i].Diffuse.xyz * mat_dif * max(dot(world_normal, light_vector), 0.f);
+  vec3 spec_value = lights[i].Specular.xyz * mat_spc * pow(max(dot(reflect_vector, view_vector), 0.f), mat_spc_exp);
+
+  return ambient_value + diffuse_value + spec_value;
+}
+
+vec3 calcPointLight(int i, vec4 view_vector)
+{
+  // Calculate the light vector
+  vec4 light_vector = lights[i].Position - world_position;
+  float light_vector_len = length(light_vector);
+  vec4 light_vector_norm = normalize(light_vector);
+
+  // Calculates the reflection vector
+  vec4 reflect_vector = 2.f * dot(world_normal, light_vector) * world_normal - light_vector;
+  vec4 reflect_vector_norm = normalize(reflect_vector);
+
+  vec3 ambient_value = lights[i].Ambience.xyz * mat_amb;
+  vec3 diffuse_value = lights[i].Diffuse.xyz * mat_dif * max(dot(world_normal, light_vector_norm), 0.f);
+  vec3 spec_value = lights[i].Specular.xyz * mat_spc * pow(max(dot(reflect_vector_norm, view_vector), 0.f), mat_spc_exp);
+
+  float attenuation = global_att1 + global_att2 * light_vector_len + global_att3 * light_vector_len * light_vector_len;
+  attenuation = min(1.f / attenuation, 1.f);
+  return attenuation * (ambient_value + diffuse_value + spec_value);
+}
+
+vec3 calcSpotLight(int i, vec4 view_vector)
+{
+  return vec3(0.f);
 }

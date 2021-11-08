@@ -328,10 +328,46 @@ void ImGuiManager::graphicsUpdateLighting() noexcept
 
   ImGui::TextColored(IMGREEN, "Active Lights:   "); ImGui::SameLine();
   ImGui::SliderInt("##Active Lights", &ImGui::LightingActiveLights, 0, 16);
+  
   ImGui::TextColored(IMGREEN, "Selected Light:  "); ImGui::SameLine();
   ImGui::SliderInt("##Selected Light", &ImGui::LightingCurrentLight, 0, 15);
 
   Light::Data& lightData = ImGui::LightingDataArray[ImGui::LightingCurrentLight];
+
+  static const char* LightTypeStr = "Point";
+  ImGui::TextColored(IMGREEN, "Light Type:      "); ImGui::SameLine();
+  if (ImGui::BeginCombo("##Light Type", LightTypeStr))
+  {
+    ImGui::PushID((void*)"Point");
+    if (ImGui::Selectable("Point", lightData.Type == Light::POINT_LIGHT))
+    {
+      lightData.Type = Light::POINT_LIGHT;
+      LightTypeStr = "Point";
+    }
+    ImGui::PopID();
+    ImGui::PushID((void*)"Directional");
+    if (ImGui::Selectable("Directional", lightData.Type == Light::DIRECTION_LIGHT))
+    {
+      lightData.Type = Light::DIRECTION_LIGHT;
+      LightTypeStr = "Directional";
+    }
+    ImGui::PopID();
+    ImGui::PushID((void*)"Spotlight");
+    if (ImGui::Selectable("Spotlight", lightData.Type == Light::SPOT_LIGHT))
+    {
+      lightData.Type = Light::SPOT_LIGHT;
+      LightTypeStr = "Spotlight";
+    }
+    ImGui::PopID();
+    ImGui::EndCombo();
+  }
+
+  if (lightData.Type != Light::POINT_LIGHT)
+  {
+    ImGui::TextColored(IMGREEN, "Light Direction:     ");
+    ImGui::SliderFloat3("##Light Direction", &lightData.Direction[0], -1.f, 1.f);
+  }
+
   ImGui::TextColored(IMGREEN, "Ambient Intensity:     ");
   ImGui::ColorEdit4("##Light Ambient Intensity", &lightData.AmbientIntensity[0]);
   ImGui::TextColored(IMGREEN, "Diffuse Intensity:     ");
