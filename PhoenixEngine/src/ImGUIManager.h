@@ -22,7 +22,7 @@ namespace ImGui
   extern bool GraphicsRebuildShaders;
 
   extern LightingSystem::GlobalLightingData LightingGlobalData;
-  extern Light LightingLightArray[16];
+  extern Light::Data LightingDataArray[16];
   extern int LightingCurrentLight;
   extern int LightingActiveLights;
   extern Material LightingGlobalMaterial;

@@ -73,6 +73,7 @@ public:
 
   void SetContext(unsigned contextID) noexcept;
 
+  GLuint GetProgram(unsigned contextID) const noexcept;
   GLuint GetCurrentProgram() const noexcept;
   const vector<UniformAttribute>& GetCurrentUniformAttributes() const noexcept;
   const vector<VertexAttribute>& GetCurrentVertexAttributes() const noexcept;

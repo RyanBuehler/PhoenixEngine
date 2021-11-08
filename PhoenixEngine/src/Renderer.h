@@ -31,7 +31,7 @@ public:
   /// </summary>
   /// <param name="depthBufferEnabled">Should the depth buffer be enabled?</param>
   /// <param name="backFaceCullEnabled">Should the back faces be culled?</param>
-  Renderer(bool depthBufferEnabled = true, bool backFaceCullEnabled = true) noexcept;
+  Renderer(bool depthBufferEnabled = true, bool backFaceCullEnabled = false) noexcept;
   ~Renderer(); // Destructor
 
   // Rule of 5
@@ -163,5 +163,12 @@ private:
   GLint m_PhongLightingID;          // The ID of the "PhongLighting" context
   GLint m_PhongShadingID;           // The ID of the "PhongShading" context
   GLint m_DebugContextID;           // The ID of the "Debug" context
+
+  //TODO: For testing only
+  GLint uboSize;
+  GLuint uboIndex;
+  GLuint uboBuffer;
+  GLuint indices[5];
+  GLint offsets[5];
 };
 

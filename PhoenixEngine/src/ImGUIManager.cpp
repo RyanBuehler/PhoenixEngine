@@ -29,9 +29,9 @@ namespace ImGui
   float GraphicsDebugNormalLength = 0.05f;
   bool GraphicsRebuildShaders = false;
   LightingSystem::GlobalLightingData LightingGlobalData;
-  Light LightingLightArray[16];
+  Light::Data LightingDataArray[16];
   int LightingCurrentLight = 0;
-  int LightingActiveLights = 1;
+  int LightingActiveLights = 8;
   Material LightingGlobalMaterial;
 
   DemoObject DemoObjectMain = DemoObject::Bunny;
@@ -307,12 +307,17 @@ void ImGuiManager::graphicsUpdateLighting() noexcept
   ImGui::ColorEdit3("##Global Fog Intensity", &ImGui::LightingGlobalData.FogIntensity[0]);
 
   ImGui::TextColored(IMGREEN, "Fog Near: "); ImGui::SameLine();
-  ImGui::SliderFloat("##Global Fog Near", &ImGui::LightingGlobalData.FogNear, 0.f, 5.f);
+  ImGui::SliderFloat("##Global Fog Near", &ImGui::LightingGlobalData.FogNear, 0.f, ImGui::LightingGlobalData.FogFar);
   ImGui::TextColored(IMGREEN, "Fog Far:  "); ImGui::SameLine();
   ImGui::SliderFloat("##Global Fog Far", &ImGui::LightingGlobalData.FogFar, ImGui::LightingGlobalData.FogNear, 20.f);
 
-  ImGui::TextColored(IMGREEN, "Light Attenuation: "); ImGui::SameLine();
-  ImGui::DragFloat3("##Global Light Attenuation", &ImGui::LightingGlobalData.Attenuation[0], 0.f, 1.f);
+  ImGui::TextColored(IMGREEN, "Light Attenuation (constant):  "); ImGui::SameLine();
+  ImGui::SliderFloat("##Light Attenuation (constant)", &ImGui::LightingGlobalData.AttConstant, 0.f, 1.f);
+  ImGui::TextColored(IMGREEN, "Light Attenuation  (linear):   "); ImGui::SameLine();
+  ImGui::SliderFloat("##Light Attenuation (linear)", &ImGui::LightingGlobalData.AttLinear, 0.f, 1.f);
+  ImGui::TextColored(IMGREEN, "Light Attenuation (quadratic): "); ImGui::SameLine();
+  ImGui::SliderFloat("##Light Attenuation (quadratic)", &ImGui::LightingGlobalData.AttQuadratic, 0.f, 1.f);
+
   IMGUISPACE;
   IMGUISPACE;
 
@@ -326,15 +331,13 @@ void ImGuiManager::graphicsUpdateLighting() noexcept
   ImGui::TextColored(IMGREEN, "Selected Light:  "); ImGui::SameLine();
   ImGui::SliderInt("##Selected Light", &ImGui::LightingCurrentLight, 0, 15);
 
-  Light& light = ImGui::LightingLightArray[ImGui::LightingCurrentLight];
-  ImGui::TextColored(IMGREEN, "Light Position:     ");
-  ImGui::SliderFloat3("##Light Position", &light.m_Transform.m_Position[0], -50.f, 50.f);
+  Light::Data& lightData = ImGui::LightingDataArray[ImGui::LightingCurrentLight];
   ImGui::TextColored(IMGREEN, "Ambient Intensity:     ");
-  ImGui::ColorEdit3("##Light Ambient Intensity", &light.m_AmbientIntensity[0]);
+  ImGui::ColorEdit4("##Light Ambient Intensity", &lightData.AmbientIntensity[0]);
   ImGui::TextColored(IMGREEN, "Diffuse Intensity:     ");
-  ImGui::ColorEdit3("##Light Diffuse Intensity", &light.m_DiffuseIntensity[0]);
+  ImGui::ColorEdit4("##Light Diffuse Intensity", &lightData.DiffuseIntensity[0]);
   ImGui::TextColored(IMGREEN, "Specular Intensity:     ");
-  ImGui::ColorEdit3("##Light Specular Intensity", &light.m_SpecularIntensity[0]);
+  ImGui::ColorEdit4("##Light Specular Intensity", &lightData.SpecularIntensity[0]);
 
   IMGUISPACE;
   IMGUISPACE;

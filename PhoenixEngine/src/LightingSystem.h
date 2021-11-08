@@ -19,21 +19,22 @@ public:
   struct GlobalLightingData
   {
     GlobalLightingData() noexcept :
-      AmbientIntensity({ 0.1f, 0.1f, 0.1f }),
+      AmbientIntensity({ 0.f, 0.f, 0.f }),
       FogIntensity({ 0.0f, 0.0f, 0.0f }),
       FogNear(1.f),
       FogFar(20.f),
-      Attenuation()
-    {
-      Attenuation[0] = 0.0f;
-      Attenuation[1] = 0.0f;
-      Attenuation[2] = 0.0f;
-    }
+      AttConstant(0.1f),
+      AttLinear(0.0f),
+      AttQuadratic(0.0f)
+    {}
+
     vec3 AmbientIntensity;        // Global Ambient intensity
     vec3 FogIntensity;            // Global fog intensity
     float FogNear;                // Fog near factor
     float FogFar;                 // Fog far factor
-    array<float,3> Attenuation;   // Light attenuation
+    float AttConstant;
+    float AttLinear;
+    float AttQuadratic;
   };
 
 public:
@@ -101,18 +102,12 @@ public:
   void SetFogFarDistance(float fogFar) noexcept;
 
   /// <summary>
-  /// Sets the global light attenuation (falloff)
+  /// Sets the light attenuation for the scene
   /// </summary>
-  /// <param name="c0">The constant parameter</param>
-  /// <param name="c1">The first degree parameter</param>
-  /// <param name="c2">The second degree parameter</param>
-  void SetGlobalLightAttenuation(float c0, float c1, float c2) noexcept;
-
-  /// <summary>
-  /// Sets the global light attenuation (falloff)
-  /// </summary>
-  /// <param name="attenuation">3 Float Array of constant, first and second degree values</param>
-  void SetGlobalLightAttenuation(const array<float, 3>& attenuation);
+  /// <param name="constant">The constant factor in the attenuation</param>
+  /// <param name="linear">The linear coefficient in the attenuation</param>
+  /// <param name="quadratic">The quadratic coefficient in the attenuation</param>
+  void SetLightAttenuation(float constant, float linear, float quadratic) noexcept;
 
   /// <summary>
   /// Gets the Global Ambient Intensity
@@ -138,11 +133,9 @@ public:
   /// <returns>The fog far distance value</returns>
   float GetFogFarDistance() const noexcept;
 
-  /// <summary>
-  /// Gets the Global Light Attenuation
-  /// </summary>
-  /// <returns>The fog near distance value</returns>
-  const array<float,3>& GetGlobalLightAttenuation() const noexcept;
+  float GetLightAttenuationConstant() const noexcept;
+  float GetLightAttenuationLinear() const noexcept;
+  float GetLightAttenuationQuadratic() const noexcept;
 
 private:
   /// <summary>

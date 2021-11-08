@@ -11,6 +11,25 @@
 class Light
 {
 public:
+  struct Data
+  {
+    Data() :
+      Position(vec4(0.f, 0.f, 0.f, 1.f)),
+      AmbientIntensity(vec4(0.f, 0.f, 0.f, 1.f)),
+      DiffuseIntensity(vec4(0.8f, 0.2f, 0.2f, 1.f)),
+      SpecularIntensity(vec4(1.f, 1.0f, 1.0f, 1.f)),
+      IsActive(false),
+      padding()
+    {}
+
+    vec4 Position;          // The light's position in world space
+    vec4 AmbientIntensity;  // The light's ambient intensity value
+    vec4 DiffuseIntensity;  // The light's diffuse intensity value
+    vec4 SpecularIntensity; // The light's specular intensity value
+    bool IsActive;
+    float padding[3];
+  };
+public:
   /// <summary>
   /// Light Constructor
   /// </summary>
@@ -23,9 +42,11 @@ public:
   Light(Light&&) = delete;
   Light& operator=(Light&&) = delete;
 
-  const vec3& GetAmbientIntensity() const noexcept;
-  const vec3& GetDiffuseIntensity() const noexcept;
-  const vec3& GetSpecularIntensity() const noexcept;
+  /// <summary>
+  /// Gets the Light Data for the GPU
+  /// </summary>
+  /// <returns>[Const] Reference to the light's data</returns>
+  const Data& GetData() noexcept;
 
   /// <summary>
   /// Gets the light's transform
@@ -35,13 +56,7 @@ public:
 
 private:
   Transform m_Transform;    // The light's transform
-
-  vec3 m_AmbientIntensity;  // The light's ambient intensity value
-  vec3 m_DiffuseIntensity;  // The light's diffuse intensity value
-  vec3 m_SpecularIntensity; // The light's specular intensity value
-
-  bool m_LightIsActive;     // The light is active or not
-
+  Data m_Data;              // Light data to be passed to the GPU
 #ifdef _IMGUI
   friend class ImGuiManager;
 #endif
