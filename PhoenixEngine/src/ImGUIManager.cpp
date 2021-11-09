@@ -28,6 +28,11 @@ namespace ImGui
   bool GraphicsDebugRenderSurfaceNormals = false;
   float GraphicsDebugNormalLength = 0.05f;
   bool GraphicsRebuildShaders = false;
+
+  int SceneScenario = 1;
+  bool SceneDrawOrbit = false;
+  bool SceneOrbitObjects = true;
+
   LightingSystem::GlobalLightingData LightingGlobalData;
   Light::Data LightingDataArray[16];
   int LightingCurrentLight = 0;
@@ -292,6 +297,27 @@ void ImGuiManager::graphicsUpdateObjects() noexcept
 
     ImGui::EndCombo();
   }
+
+  ImGui::TextColored(IMGREEN, "Enable Orbiting: "); ImGui::SameLine();
+  ImGui::Checkbox("##Enable Orbiting", &ImGui::SceneOrbitObjects);
+
+  if (ImGui::Button("Scenario 1", { 140, 40 }))
+  {
+    ImGui::SceneScenario = 1;
+    m_dOnSceneChange(SceneManager::Scene::Scene2);
+  }
+  ImGui::SameLine();
+  if (ImGui::Button("Scenario 2", { 140, 40 }))
+  {
+    ImGui::SceneScenario = 2;
+    m_dOnSceneChange(SceneManager::Scene::Scene2);
+  }
+  ImGui::SameLine();
+  if (ImGui::Button("Scenario 3", { 140, 40 }))
+  {
+    ImGui::SceneScenario = 3;
+    m_dOnSceneChange(SceneManager::Scene::Scene2);
+  }
 }
 
 void ImGuiManager::graphicsUpdateLighting() noexcept
@@ -309,7 +335,7 @@ void ImGuiManager::graphicsUpdateLighting() noexcept
   ImGui::TextColored(IMGREEN, "Fog Near: "); ImGui::SameLine();
   ImGui::SliderFloat("##Global Fog Near", &ImGui::LightingGlobalData.FogNear, 0.f, ImGui::LightingGlobalData.FogFar);
   ImGui::TextColored(IMGREEN, "Fog Far:  "); ImGui::SameLine();
-  ImGui::SliderFloat("##Global Fog Far", &ImGui::LightingGlobalData.FogFar, ImGui::LightingGlobalData.FogNear, 20.f);
+  ImGui::SliderFloat("##Global Fog Far", &ImGui::LightingGlobalData.FogFar, ImGui::LightingGlobalData.FogNear, 50.f);
 
   ImGui::TextColored(IMGREEN, "Light Attenuation (constant):  "); ImGui::SameLine();
   ImGui::SliderFloat("##Light Attenuation (constant)", &ImGui::LightingGlobalData.AttConstant, 0.f, 1.f);
@@ -321,8 +347,8 @@ void ImGuiManager::graphicsUpdateLighting() noexcept
   IMGUISPACE;
   IMGUISPACE;
 
-  ImGui::TextColored(IMCYAN, "Light Settings");
-  ImGui::TextColored(IMCYAN, "------------------------");
+  ImGui::TextColored(IMCYAN, "Individual Light Settings");
+  ImGui::TextColored(IMCYAN, "-------------------------");
 
   IMGUISPACE;
 
@@ -369,7 +395,7 @@ void ImGuiManager::graphicsUpdateLighting() noexcept
     if (lightData.Type == Light::SPOT_LIGHT)
     {
       ImGui::TextColored(IMGREEN, "Light Inner Falloff:     ");
-      ImGui::SliderFloat("##Light Inner Falloff", &lightData.InnerFalloff, 0.f, lightData.OuterFalloff);
+      ImGui::SliderFloat("##Light Inner Falloff", &lightData.InnerFalloff, 0.f, 45.f);
 
       ImGui::TextColored(IMGREEN, "Light Outer Falloff:     ");
       ImGui::SliderFloat("##Light Outer Falloff", &lightData.OuterFalloff, lightData.InnerFalloff, 45.f);

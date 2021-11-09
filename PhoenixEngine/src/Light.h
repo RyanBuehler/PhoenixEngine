@@ -25,8 +25,8 @@ public:
       SpecularIntensity(vec4(1.f, 1.0f, 1.0f, 1.f)),
       Direction(vec4(0.f, -1.f, 0.f, 0.f)),
       Type(POINT_LIGHT),
-      InnerFalloff(15.f),
-      OuterFalloff(20.f),
+      InnerFalloff(35.f),
+      OuterFalloff(37.f),
       IsActive(false)
     {}
 

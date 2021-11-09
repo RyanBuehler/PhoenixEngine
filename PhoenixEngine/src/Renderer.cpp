@@ -68,10 +68,14 @@ void Renderer::OnEndFrame() const noexcept
 
 void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& activeCamera)
 {
-  // Render any previously stored line
-  m_ContextManager.SetContext(m_DebugContextID);
-  //TODO: Check if this is being used before Rendering
-  DebugRenderer::I().RenderLines();
+  //TODO: Remove this
+  if (ImGui::SceneDrawOrbit)
+  {
+    // Render any previously stored line
+    m_ContextManager.SetContext(m_DebugContextID);
+    //TODO: Check if this is being used before Rendering
+    DebugRenderer::I().RenderLines();
+  }
 
   m_ContextManager.SetContext(m_PhongShadingID);
   const vector<ContextManager::UniformAttribute>& uniforms = m_ContextManager.GetCurrentUniformAttributes();
@@ -80,8 +84,9 @@ void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& active
   glUniformMatrix4fv(uniforms[0].ID, 1, GL_FALSE, &activeCamera.GetPersMatrix()[0][0]);
   // Set View Matrix
   glUniformMatrix4fv(uniforms[1].ID, 1, GL_FALSE, &activeCamera.GetViewMatrix()[0][0]);
-  // Set View Vector
-  glUniform3fv(uniforms[2].ID, 1, &activeCamera.GetForwardVector()[0]);
+  
+  // Set Cam Position
+  glUniform3fv(uniforms[2].ID, 1, &activeCamera.GetPosition()[0]);
 
   const LightingSystem::GlobalLightingData& globalLighting = ImGui::LightingGlobalData;
   glUniform3fv(uniforms[3].ID, 1, &globalLighting.AmbientIntensity[0]);
@@ -161,7 +166,11 @@ void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& active
   if (ImGui::GraphicsRebuildShaders)
   {
     ImGui::GraphicsRebuildShaders = false;
-    m_ShaderManager.ReloadShaders();
+    
+    m_ShaderManager.RelinkShader(
+      m_ContextManager.GetProgram(m_PhongShadingID),
+      m_ShaderManager.GetVertexShaderID(Shader::Vertex::PHONGSHADE),
+      m_ShaderManager.GetFragmentShaderID(Shader::Fragment::PHONGSHADE));
   }
 
 #endif
@@ -374,7 +383,7 @@ void Renderer::LoadPhongShadingContext() noexcept
   // TODO: Convert this to a uniform block
   m_ContextManager.AddNewUniformAttribute(m_PhongShadingID, "pers_matrix");
   m_ContextManager.AddNewUniformAttribute(m_PhongShadingID, "view_matrix");
-  m_ContextManager.AddNewUniformAttribute(m_PhongShadingID, "cam_vector");
+  m_ContextManager.AddNewUniformAttribute(m_PhongShadingID, "cam_position");
 
   // TODO: Convert this to a uniform block
   m_ContextManager.AddNewUniformAttribute(m_PhongShadingID, "global_amb");

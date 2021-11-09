@@ -79,7 +79,7 @@ void ContextManager::SetContext(unsigned contextIndex) noexcept
   // instead to have the context manager handle uniforms?
 }
 
-GLuint ContextManager::GetProgram(unsigned contextID) const noexcept
+GLuint& ContextManager::GetProgram(unsigned contextID) noexcept
 {
   return m_Contexts[contextID].ProgramID;
 }
@@ -98,17 +98,6 @@ const vector<ContextManager::VertexAttribute>& ContextManager::GetCurrentVertexA
 {
   return m_Contexts[m_CurrentContextIndex].VertexAttributes;
 }
-
-//void ContextManager::RetrieveProgramLog(GLint programID, string& log) const noexcept
-//{
-//  int logLength;
-//  glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &logLength);
-//  char* programLog = new char[logLength];
-//  glGetProgramInfoLog(programID, logLength, &logLength, programLog);
-//  log.clear();
-//  log = programLog;
-//  delete[] programLog;
-//}
 
 void ContextManager::AddNewUniformAttribute(unsigned contextIndex, const string& name)
 {

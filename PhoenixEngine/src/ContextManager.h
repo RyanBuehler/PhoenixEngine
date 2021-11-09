@@ -68,7 +68,7 @@ public:
 
   void SetContext(unsigned contextID) noexcept;
 
-  GLuint GetProgram(unsigned contextID) const noexcept;
+  GLuint& GetProgram(unsigned contextID) noexcept;
   GLuint GetCurrentProgram() const noexcept;
   const vector<UniformAttribute>& GetCurrentUniformAttributes() const noexcept;
   const vector<VertexAttribute>& GetCurrentVertexAttributes() const noexcept;
@@ -79,8 +79,6 @@ public:
   bool ReloadContext(GLuint programID, GLint vertexShaderID, GLint fragmentShaderID) noexcept;
 
 private:
-  /*void RetrieveProgramLog(GLint programID, string& log) const noexcept;*/
-
   vector<Context> m_Contexts;
 
   unsigned m_CurrentContextIndex;

@@ -32,25 +32,16 @@ unsigned ShaderManager::GetFragmentShaderID(Shader::Fragment shader) const noexc
   return m_FragmentShaders[static_cast<unsigned>(shader)];
 }
 
-void ShaderManager::ReloadShaders() noexcept
+bool ShaderManager::RelinkShader(GLuint& programID, GLint vertexShaderID, GLint fragmentShaderID) noexcept
 {
-  LoadShader(m_VertexShaders[static_cast<unsigned>(Shader::Vertex::PHONGLIGHT)], "PhongLighting.vert");
-  LoadShader(m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::PHONGLIGHT)], "PhongLighting.frag");
+  glDeleteProgram(programID);
+  
+  //TODO: hard coded for testing purposes only
+  LoadShader(vertexShaderID, "PhongShading.vert");
+  LoadShader(fragmentShaderID, "PhongShading.frag");
 
-  LoadShader(m_VertexShaders[static_cast<unsigned>(Shader::Vertex::PHONGSHADE)], "PhongShading.vert");
-  LoadShader(m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::PHONGSHADE)], "PhongShading.frag");
+  programID = glCreateProgram();
 
-  LoadShader(m_VertexShaders[static_cast<unsigned>(Shader::Vertex::DIFFUSE)], "Diffuse.vert");
-  LoadShader(m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::DIFFUSE)], "Diffuse.frag");
-
-  LoadShader(m_VertexShaders[static_cast<unsigned>(Shader::Vertex::DEBUG)], "Debug.vert");
-  LoadShader(m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::DEBUG)], "Debug.frag");
-
-  Log::Trace("Reloaded Shaders");
-}
-
-bool ShaderManager::ReloadShader(GLuint programID, GLint vertexShaderID, GLint fragmentShaderID) noexcept
-{
   glAttachShader(programID, vertexShaderID);
   glAttachShader(programID, fragmentShaderID);
 
@@ -118,17 +109,6 @@ GLint ShaderManager::CreateAndLoadShader(const string& fileName, GLenum shaderTy
   }
   return id;
 }
-
-//void ShaderManager::RetrieveShaderLog(GLint shaderID, string& log) const noexcept
-//{
-//  int logLength;
-//  glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &logLength);
-//  char* shaderLog = new char[logLength];
-//  glGetShaderInfoLog(shaderID, logLength, &logLength, shaderLog);
-//  log.clear();
-//  log = shaderLog;
-//  delete[] shaderLog;
-//}
 
 void ShaderManager::LoadShaders() noexcept
 {

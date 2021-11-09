@@ -5,7 +5,6 @@
 // Desc:    Managers loading/unloading shaders
 //------------------------------------------------------------------------------
 #pragma once
-#include "GLEW/glew.h"
 #include "GraphicsCommon.h"
 
 class ShaderManager
@@ -24,17 +23,13 @@ public:
   inline size_t GetVertexShaderCount() const noexcept { return m_VertexShaders.size(); }
   inline size_t GetFragmentShaderCount() const noexcept { return m_FragmentShaders.size(); }
 
-  void ReloadShaders() noexcept;
-
-  bool ReloadShader(GLuint programID, GLint vertexShaderID, GLint fragmentShaderID) noexcept;
+  bool RelinkShader(GLuint& programID, GLint vertexShaderID, GLint fragmentShaderID) noexcept;
 
 private:
   GLint CreateShader(GLenum shaderType) noexcept;
   bool LoadShader(GLint shaderID, const string& fileName) noexcept;
   GLint CreateAndLoadShader(const string& fileName, GLenum shaderType);
 
-  /*void RetrieveShaderLog(GLint shaderID, string& log) const noexcept;*/
-  
   void LoadShaders() noexcept;
   void UnloadShaders() noexcept;
 
