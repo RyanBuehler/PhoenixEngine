@@ -130,59 +130,8 @@ void Mesh::CalculateNormals(bool flipNormals) noexcept
     return;
   }
 
-  // Initialize vertex normals
-
-  //vector<set<vec3, NormalCloseEnough>> normalSet;
-  //normalSet.resize(GetVertexCount());
-
   CalculateSurfaceNormals(flipNormals);
   CalculateVertexNormals();
-  //// For every triangle
-  //for (size_t index = 0; index < GetTriangleCount(); ++index)
-  //{
-  //  GLuint a = m_TriangleArray.at(index).Index1;
-  //  GLuint b = m_TriangleArray.at(index).Index2;
-  //  GLuint c = m_TriangleArray.at(index).Index2;
-
-  //  vec3 vA = m_PositionArray[a];
-  //  vec3 vB = m_PositionArray[b];
-  //  vec3 vC = m_PositionArray[c];
-
-  //  // Edge Vectors
-  //  vec3 vEdge1 = vB - vA;
-  //  vec3 vEdge2 = vC - vA;
-
-  //  vec3 N = normalize(cross(vEdge1, vEdge2));
-
-  //  if (flipNormals)
-  //    N = N * -1.0f;
-
-  //  normalSet.at(a).insert(N);
-  //  normalSet.at(b).insert(N);
-  //  normalSet.at(c).insert(N);
-  //}
-
-  //for (int index = 0; index < normalSet.size(); ++index)
-  //{
-  //  vec3 vNormal(0.0f);
-
-  //  auto nIt = normalSet[index].begin();
-  //  while (nIt != normalSet[index].end())
-  //  {
-  //    vNormal += (*nIt);
-  //    ++nIt;
-  //  }
-
-  //  // Final Vertex Normal
-  //  m_VertexNormalArray[index] = normalize(vNormal);
-
-
-  //  // Calculate display normals
-  //  vec3 point1 = m_PositionArray[index];
-
-  //  m_SurfaceNormalArray[2 * static_cast<size_t>(index)] = point1;
-  //  m_SurfaceNormalArray[(2 * static_cast<size_t>(index)) + 1] = point1 + (m_NormalLength * m_VertexNormalArray[index]);
-  //}
 }
 
 void Mesh::CalculateSurfaceNormals(bool flipNormals) noexcept
@@ -242,7 +191,6 @@ void Mesh::CalculateVertexNormals() noexcept
 
 void Mesh::ScaleToUnitSize() noexcept
 {
-  //TODO: Temporarily disabled
   float factor = 1.f / CalculateWidestPoint();
 
   for (vec3& v : m_PositionArray)
@@ -289,9 +237,6 @@ void Mesh::ResetOriginToCenterOfMass() noexcept
 {
   vec3 oldOrigin = m_Origin;
   m_Origin = FindCenterOfMass();
-
-  //TODO:
-  //DebugRenderer::I().AddPermanentLine(oldOrigin, Colors::RED, m_Origin, Colors::GREEN);
 
   vec3 move = m_Origin - oldOrigin;
 

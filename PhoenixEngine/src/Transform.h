@@ -1,5 +1,4 @@
 #pragma once
-#include "GLEW/glew.h"
 #include "GraphicsCommon.h"
 
 class Transform

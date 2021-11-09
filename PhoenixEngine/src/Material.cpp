@@ -112,10 +112,10 @@ void Material::setByType(Type type) noexcept
   {
   case Material::Type::BASIC:
     m_Emissive = { 0.f, 0.f, 0.f };
-    m_AmbientFactor = 0.2f;
-    m_DiffuseFactor = 0.6f;
-    m_SpecularFactor = 0.3f;
-    m_SpecularExp = 10.f;
+    m_AmbientFactor = 0.25f;
+    m_DiffuseFactor = 1.0f;
+    m_SpecularFactor = 1.f;
+    m_SpecularExp = 300.f;
     m_Type = Type::BASIC;
     break;
   case Material::Type::LIGHT:

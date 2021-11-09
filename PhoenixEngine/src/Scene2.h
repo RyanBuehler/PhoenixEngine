@@ -31,8 +31,16 @@ public:
 
   Camera& GetCurrentCamera() noexcept;
 
+  void ChangeScenario(int which) noexcept;
+
+private:
+  void Scenario1() noexcept;
+  void Scenario2() noexcept;
+  void Scenario3() noexcept;
+
 private:
   Camera& m_MainCamera;
 
   float m_Time;
+
   };

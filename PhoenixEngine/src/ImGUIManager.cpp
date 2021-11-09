@@ -28,6 +28,11 @@ namespace ImGui
   bool GraphicsDebugRenderSurfaceNormals = false;
   float GraphicsDebugNormalLength = 0.05f;
   bool GraphicsRebuildShaders = false;
+
+  int SceneScenario = 1;
+  bool SceneDrawOrbit = false;
+  bool SceneOrbitObjects = true;
+
   LightingSystem::GlobalLightingData LightingGlobalData;
   Light::Data LightingDataArray[16];
   int LightingCurrentLight = 0;
@@ -292,6 +297,27 @@ void ImGuiManager::graphicsUpdateObjects() noexcept
 
     ImGui::EndCombo();
   }
+
+  ImGui::TextColored(IMGREEN, "Enable Orbiting: "); ImGui::SameLine();
+  ImGui::Checkbox("##Enable Orbiting", &ImGui::SceneOrbitObjects);
+
+  if (ImGui::Button("Scenario 1", { 140, 40 }))
+  {
+    ImGui::SceneScenario = 1;
+    m_dOnSceneChange(SceneManager::Scene::Scene2);
+  }
+  ImGui::SameLine();
+  if (ImGui::Button("Scenario 2", { 140, 40 }))
+  {
+    ImGui::SceneScenario = 2;
+    m_dOnSceneChange(SceneManager::Scene::Scene2);
+  }
+  ImGui::SameLine();
+  if (ImGui::Button("Scenario 3", { 140, 40 }))
+  {
+    ImGui::SceneScenario = 3;
+    m_dOnSceneChange(SceneManager::Scene::Scene2);
+  }
 }
 
 void ImGuiManager::graphicsUpdateLighting() noexcept
@@ -309,7 +335,7 @@ void ImGuiManager::graphicsUpdateLighting() noexcept
   ImGui::TextColored(IMGREEN, "Fog Near: "); ImGui::SameLine();
   ImGui::SliderFloat("##Global Fog Near", &ImGui::LightingGlobalData.FogNear, 0.f, ImGui::LightingGlobalData.FogFar);
   ImGui::TextColored(IMGREEN, "Fog Far:  "); ImGui::SameLine();
-  ImGui::SliderFloat("##Global Fog Far", &ImGui::LightingGlobalData.FogFar, ImGui::LightingGlobalData.FogNear, 20.f);
+  ImGui::SliderFloat("##Global Fog Far", &ImGui::LightingGlobalData.FogFar, ImGui::LightingGlobalData.FogNear, 50.f);
 
   ImGui::TextColored(IMGREEN, "Light Attenuation (constant):  "); ImGui::SameLine();
   ImGui::SliderFloat("##Light Attenuation (constant)", &ImGui::LightingGlobalData.AttConstant, 0.f, 1.f);
@@ -321,17 +347,61 @@ void ImGuiManager::graphicsUpdateLighting() noexcept
   IMGUISPACE;
   IMGUISPACE;
 
-  ImGui::TextColored(IMCYAN, "Light Settings");
-  ImGui::TextColored(IMCYAN, "------------------------");
+  ImGui::TextColored(IMCYAN, "Individual Light Settings");
+  ImGui::TextColored(IMCYAN, "-------------------------");
 
   IMGUISPACE;
 
   ImGui::TextColored(IMGREEN, "Active Lights:   "); ImGui::SameLine();
   ImGui::SliderInt("##Active Lights", &ImGui::LightingActiveLights, 0, 16);
+  
   ImGui::TextColored(IMGREEN, "Selected Light:  "); ImGui::SameLine();
   ImGui::SliderInt("##Selected Light", &ImGui::LightingCurrentLight, 0, 15);
 
   Light::Data& lightData = ImGui::LightingDataArray[ImGui::LightingCurrentLight];
+
+  static const char* LightTypeStr = "Point";
+  ImGui::TextColored(IMGREEN, "Light Type:      "); ImGui::SameLine();
+  if (ImGui::BeginCombo("##Light Type", LightTypeStr))
+  {
+    ImGui::PushID((void*)"Point");
+    if (ImGui::Selectable("Point", lightData.Type == Light::POINT_LIGHT))
+    {
+      lightData.Type = Light::POINT_LIGHT;
+      LightTypeStr = "Point";
+    }
+    ImGui::PopID();
+    ImGui::PushID((void*)"Directional");
+    if (ImGui::Selectable("Directional", lightData.Type == Light::DIRECTION_LIGHT))
+    {
+      lightData.Type = Light::DIRECTION_LIGHT;
+      LightTypeStr = "Directional";
+    }
+    ImGui::PopID();
+    ImGui::PushID((void*)"Spotlight");
+    if (ImGui::Selectable("Spotlight", lightData.Type == Light::SPOT_LIGHT))
+    {
+      lightData.Type = Light::SPOT_LIGHT;
+      LightTypeStr = "Spotlight";
+    }
+    ImGui::PopID();
+    ImGui::EndCombo();
+  }
+
+  if (lightData.Type != Light::POINT_LIGHT)
+  {
+    ImGui::TextColored(IMGREEN, "Light Direction:     ");
+    ImGui::SliderFloat3("##Light Direction", &lightData.Direction[0], -1.f, 1.f);
+    if (lightData.Type == Light::SPOT_LIGHT)
+    {
+      ImGui::TextColored(IMGREEN, "Light Inner Falloff:     ");
+      ImGui::SliderFloat("##Light Inner Falloff", &lightData.InnerFalloff, 0.f, 45.f);
+
+      ImGui::TextColored(IMGREEN, "Light Outer Falloff:     ");
+      ImGui::SliderFloat("##Light Outer Falloff", &lightData.OuterFalloff, lightData.InnerFalloff, 45.f);
+    }
+  }
+
   ImGui::TextColored(IMGREEN, "Ambient Intensity:     ");
   ImGui::ColorEdit4("##Light Ambient Intensity", &lightData.AmbientIntensity[0]);
   ImGui::TextColored(IMGREEN, "Diffuse Intensity:     ");

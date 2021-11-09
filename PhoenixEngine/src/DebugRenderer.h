@@ -5,7 +5,6 @@
 // Desc:    Responsible for drawing lines on the screen
 //------------------------------------------------------------------------------
 #pragma once
-#include "GLEW/glew.h"
 #include "GraphicsCommon.h"
 #include "ShaderManager.h"
 #include "Camera.h"

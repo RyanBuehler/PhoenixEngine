@@ -20,7 +20,11 @@ namespace ImGui
   extern bool GraphicsDebugRenderSurfaceNormals;
   extern float GraphicsDebugNormalLength;
   extern bool GraphicsRebuildShaders;
-
+  
+  extern int SceneScenario;
+  extern bool SceneDrawOrbit;
+  extern bool SceneOrbitObjects;
+  
   extern LightingSystem::GlobalLightingData LightingGlobalData;
   extern Light::Data LightingDataArray[16];
   extern int LightingCurrentLight;

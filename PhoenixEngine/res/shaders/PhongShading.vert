@@ -23,7 +23,7 @@ void main(void)
   world_position = model_matrix * vec4(position, 1.f);
 
   // Calculate the world position of the normal
-  world_normal = transpose(inverse(model_matrix)) * vec4(normal, 0);
+  world_normal = normalize(transpose(inverse(model_matrix)) * vec4(normal, 0));
 
   gl_Position = pers_matrix * view_matrix * world_position;
 }

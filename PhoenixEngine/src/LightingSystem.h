@@ -19,22 +19,22 @@ public:
   struct GlobalLightingData
   {
     GlobalLightingData() noexcept :
-      AmbientIntensity({ 0.f, 0.f, 0.f }),
-      FogIntensity({ 0.0f, 0.0f, 0.0f }),
+      AmbientIntensity({ 0.01f, 0.01f, 0.01f }),
+      FogIntensity({ 0.05f, 0.05f, 0.05f }),
       FogNear(1.f),
-      FogFar(20.f),
-      AttConstant(0.1f),
-      AttLinear(0.0f),
-      AttQuadratic(0.0f)
+      FogFar(50.f),
+      AttConstant(0.4f),
+      AttLinear(0.5f),
+      AttQuadratic(0.5f)
     {}
 
     vec3 AmbientIntensity;        // Global Ambient intensity
     vec3 FogIntensity;            // Global fog intensity
     float FogNear;                // Fog near factor
     float FogFar;                 // Fog far factor
-    float AttConstant;
-    float AttLinear;
-    float AttQuadratic;
+    float AttConstant;            // Constant Attenuation Factor
+    float AttLinear;              // Linear Attenuation Coefficient
+    float AttQuadratic;           // Quadratic Attenuation Coefficient
   };
 
 public:
@@ -42,7 +42,6 @@ public:
   /// LightingSystem constructor
   /// </summary>
   LightingSystem() noexcept;
-
   ~LightingSystem();
 
   // Rule of 5

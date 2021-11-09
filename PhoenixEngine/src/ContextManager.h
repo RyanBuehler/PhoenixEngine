@@ -1,6 +1,5 @@
 #pragma once
 #include "GraphicsCommon.h"
-#include "GLEW/glew.h"
 
 class ContextManager
 {
@@ -65,15 +64,11 @@ public:
   ContextManager(ContextManager&&) = delete;
   ContextManager& operator=(ContextManager&&) = delete;
 
-  unsigned CreateNewContext(
-    const string& name,
-    GLint vertexShaderID,
-    GLint fragmentShaderID
-  );
+  unsigned CreateNewContext(const string& name, GLint vertexShaderID, GLint fragmentShaderID);
 
   void SetContext(unsigned contextID) noexcept;
 
-  GLuint GetProgram(unsigned contextID) const noexcept;
+  GLuint& GetProgram(unsigned contextID) noexcept;
   GLuint GetCurrentProgram() const noexcept;
   const vector<UniformAttribute>& GetCurrentUniformAttributes() const noexcept;
   const vector<VertexAttribute>& GetCurrentVertexAttributes() const noexcept;
@@ -81,9 +76,9 @@ public:
   void AddNewUniformAttribute(unsigned contextIndex, const string& name);
   void AddNewVertexAttribute(unsigned contextIndex, const VertexAttribute& vertexAttribute);
 
-private:
-  void RetrieveProgramLog(GLint programID, string& log) const noexcept;
+  bool ReloadContext(GLuint programID, GLint vertexShaderID, GLint fragmentShaderID) noexcept;
 
+private:
   vector<Context> m_Contexts;
 
   unsigned m_CurrentContextIndex;
