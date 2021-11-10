@@ -71,7 +71,7 @@ unsigned MeshManager::LoadMesh(const string& fileName, bool scaleToUnitSize, boo
 
   if (resetOrigin)
   {
-    m_MeshArray[index].ResetOriginToCenterOfMass();
+    m_MeshArray[index].ResetOriginToCentroid();
   }
 
   m_MeshArray[index].CalculateNormals();

@@ -260,7 +260,7 @@ void OBJReader::ParseOBJRecord(char* buffer, glm::vec3& min, glm::vec3& max)
 
       vNormal[2] = static_cast<GLfloat&&>(atof(token));
 
-      _currentMesh->AddNormal(glm::normalize(vNormal));
+      _currentMesh->AddVertexNormal(glm::normalize(vNormal));
     }
 
     break;
