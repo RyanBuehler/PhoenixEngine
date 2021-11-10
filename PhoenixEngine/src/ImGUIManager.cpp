@@ -326,187 +326,193 @@ void ImGuiManager::graphicsUpdateObjects() noexcept
 
 void ImGuiManager::graphicsUpdateLighting() noexcept
 {
-  ImGui::TextColored(IMCYAN, "Global Lighting Settings");
-  ImGui::TextColored(IMCYAN, "------------------------");
-
-  IMGUISPACE;
-
-  ImGui::TextColored(IMGREEN, "Global Ambience:   "); ImGui::SameLine();
-  ImGui::ColorEdit3("##Global Ambient Intensity", &ImGui::LightingGlobalData.AmbientIntensity[0]);
-  ImGui::TextColored(IMGREEN, "Fog Intensity:     "); ImGui::SameLine();
-  ImGui::ColorEdit3("##Global Fog Intensity", &ImGui::LightingGlobalData.FogIntensity[0]);
-
-  ImGui::TextColored(IMGREEN, "Fog Near: "); ImGui::SameLine();
-  ImGui::SliderFloat("##Global Fog Near", &ImGui::LightingGlobalData.FogNear, 0.f, ImGui::LightingGlobalData.FogFar);
-  ImGui::TextColored(IMGREEN, "Fog Far:  "); ImGui::SameLine();
-  ImGui::SliderFloat("##Global Fog Far", &ImGui::LightingGlobalData.FogFar, ImGui::LightingGlobalData.FogNear, 50.f);
-
-  ImGui::TextColored(IMGREEN, "Light Attenuation (constant):  "); ImGui::SameLine();
-  ImGui::SliderFloat("##Light Attenuation (constant)", &ImGui::LightingGlobalData.AttConstant, 0.f, 1.f);
-  ImGui::TextColored(IMGREEN, "Light Attenuation  (linear):   "); ImGui::SameLine();
-  ImGui::SliderFloat("##Light Attenuation (linear)", &ImGui::LightingGlobalData.AttLinear, 0.f, 1.f);
-  ImGui::TextColored(IMGREEN, "Light Attenuation (quadratic): "); ImGui::SameLine();
-  ImGui::SliderFloat("##Light Attenuation (quadratic)", &ImGui::LightingGlobalData.AttQuadratic, 0.f, 1.f);
-
-  IMGUISPACE;
-  IMGUISPACE;
-
-  ImGui::TextColored(IMCYAN, "Individual Light Settings");
-  ImGui::TextColored(IMCYAN, "-------------------------");
-
-  IMGUISPACE;
-
-  ImGui::TextColored(IMGREEN, "Active Lights:   "); ImGui::SameLine();
-  ImGui::SliderInt("##Active Lights", &ImGui::LightingActiveLights, 0, 16);
-
-  ImGui::TextColored(IMGREEN, "Selected Light:  "); ImGui::SameLine();
-  ImGui::SliderInt("##Selected Light", &ImGui::LightingCurrentLight, 0, 15);
-
-  Light::Data& lightData = ImGui::LightingDataArray[ImGui::LightingCurrentLight];
-
-  static const char* LightTypeStr = "Point";
-  ImGui::TextColored(IMGREEN, "Light Type:      "); ImGui::SameLine();
-  if (ImGui::BeginCombo("##Light Type", LightTypeStr))
+  if (ImGui::CollapsingHeader("Lighting"))
   {
-    ImGui::PushID((void*)"Point");
-    if (ImGui::Selectable("Point", lightData.Type == Light::POINT_LIGHT))
+    ImGui::TextColored(IMCYAN, "Global Lighting Settings");
+    ImGui::TextColored(IMCYAN, "------------------------");
+
+    IMGUISPACE;
+
+    ImGui::TextColored(IMGREEN, "Global Ambience:   "); ImGui::SameLine();
+    ImGui::ColorEdit3("##Global Ambient Intensity", &ImGui::LightingGlobalData.AmbientIntensity[0]);
+    ImGui::TextColored(IMGREEN, "Fog Intensity:     "); ImGui::SameLine();
+    ImGui::ColorEdit3("##Global Fog Intensity", &ImGui::LightingGlobalData.FogIntensity[0]);
+
+    ImGui::TextColored(IMGREEN, "Fog Near: "); ImGui::SameLine();
+    ImGui::SliderFloat("##Global Fog Near", &ImGui::LightingGlobalData.FogNear, 0.f, ImGui::LightingGlobalData.FogFar);
+    ImGui::TextColored(IMGREEN, "Fog Far:  "); ImGui::SameLine();
+    ImGui::SliderFloat("##Global Fog Far", &ImGui::LightingGlobalData.FogFar, ImGui::LightingGlobalData.FogNear, 50.f);
+
+    ImGui::TextColored(IMGREEN, "Light Attenuation (constant):  "); ImGui::SameLine();
+    ImGui::SliderFloat("##Light Attenuation (constant)", &ImGui::LightingGlobalData.AttConstant, 0.f, 1.f);
+    ImGui::TextColored(IMGREEN, "Light Attenuation  (linear):   "); ImGui::SameLine();
+    ImGui::SliderFloat("##Light Attenuation (linear)", &ImGui::LightingGlobalData.AttLinear, 0.f, 1.f);
+    ImGui::TextColored(IMGREEN, "Light Attenuation (quadratic): "); ImGui::SameLine();
+    ImGui::SliderFloat("##Light Attenuation (quadratic)", &ImGui::LightingGlobalData.AttQuadratic, 0.f, 1.f);
+
+    IMGUISPACE;
+    IMGUISPACE;
+
+    ImGui::TextColored(IMCYAN, "Individual Light Settings");
+    ImGui::TextColored(IMCYAN, "-------------------------");
+
+    IMGUISPACE;
+
+    ImGui::TextColored(IMGREEN, "Active Lights:   "); ImGui::SameLine();
+    ImGui::SliderInt("##Active Lights", &ImGui::LightingActiveLights, 0, 16);
+
+    ImGui::TextColored(IMGREEN, "Selected Light:  "); ImGui::SameLine();
+    ImGui::SliderInt("##Selected Light", &ImGui::LightingCurrentLight, 0, 15);
+
+    Light::Data& lightData = ImGui::LightingDataArray[ImGui::LightingCurrentLight];
+
+    static const char* LightTypeStr = "Point";
+    ImGui::TextColored(IMGREEN, "Light Type:      "); ImGui::SameLine();
+    if (ImGui::BeginCombo("##Light Type", LightTypeStr))
     {
-      lightData.Type = Light::POINT_LIGHT;
-      LightTypeStr = "Point";
+      ImGui::PushID((void*)"Point");
+      if (ImGui::Selectable("Point", lightData.Type == Light::POINT_LIGHT))
+      {
+        lightData.Type = Light::POINT_LIGHT;
+        LightTypeStr = "Point";
+      }
+      ImGui::PopID();
+      ImGui::PushID((void*)"Directional");
+      if (ImGui::Selectable("Directional", lightData.Type == Light::DIRECTION_LIGHT))
+      {
+        lightData.Type = Light::DIRECTION_LIGHT;
+        LightTypeStr = "Directional";
+      }
+      ImGui::PopID();
+      ImGui::PushID((void*)"Spotlight");
+      if (ImGui::Selectable("Spotlight", lightData.Type == Light::SPOT_LIGHT))
+      {
+        lightData.Type = Light::SPOT_LIGHT;
+        LightTypeStr = "Spotlight";
+      }
+      ImGui::PopID();
+      ImGui::EndCombo();
     }
-    ImGui::PopID();
-    ImGui::PushID((void*)"Directional");
-    if (ImGui::Selectable("Directional", lightData.Type == Light::DIRECTION_LIGHT))
+
+    if (lightData.Type != Light::POINT_LIGHT)
     {
-      lightData.Type = Light::DIRECTION_LIGHT;
-      LightTypeStr = "Directional";
+      ImGui::TextColored(IMGREEN, "Light Direction:     ");
+      ImGui::SliderFloat3("##Light Direction", &lightData.Direction[0], -1.f, 1.f);
+      if (lightData.Type == Light::SPOT_LIGHT)
+      {
+        ImGui::TextColored(IMGREEN, "Light Inner Falloff:     ");
+        ImGui::SliderFloat("##Light Inner Falloff", &lightData.InnerFalloff, 0.f, 45.f);
+
+        ImGui::TextColored(IMGREEN, "Light Outer Falloff:     ");
+        ImGui::SliderFloat("##Light Outer Falloff", &lightData.OuterFalloff, lightData.InnerFalloff, 45.f);
+      }
     }
-    ImGui::PopID();
-    ImGui::PushID((void*)"Spotlight");
-    if (ImGui::Selectable("Spotlight", lightData.Type == Light::SPOT_LIGHT))
-    {
-      lightData.Type = Light::SPOT_LIGHT;
-      LightTypeStr = "Spotlight";
-    }
-    ImGui::PopID();
-    ImGui::EndCombo();
+
+    ImGui::TextColored(IMGREEN, "Ambient Intensity:     ");
+    ImGui::ColorEdit4("##Light Ambient Intensity", &lightData.AmbientIntensity[0]);
+    ImGui::TextColored(IMGREEN, "Diffuse Intensity:     ");
+    ImGui::ColorEdit4("##Light Diffuse Intensity", &lightData.DiffuseIntensity[0]);
+    ImGui::TextColored(IMGREEN, "Specular Intensity:     ");
+    ImGui::ColorEdit4("##Light Specular Intensity", &lightData.SpecularIntensity[0]);
+
+    IMGUISPACE;
+    IMGUISPACE;
+
+    ImGui::TextColored(IMCYAN, "Global Material Settings");
+    ImGui::TextColored(IMCYAN, "------------------------");
+
+    IMGUISPACE;
+
+    ImGui::TextColored(IMGREEN, "Material Emission:     ");
+    ImGui::ColorEdit3("##Material Emission", &ImGui::LightingGlobalMaterial.m_Emissive[0]);
+    ImGui::TextColored(IMGREEN, "Material Ambient:      "); ImGui::SameLine();
+    ImGui::SliderFloat("##Material Ambient", &ImGui::LightingGlobalMaterial.m_AmbientFactor, 0.f, 1.f);
+    ImGui::TextColored(IMGREEN, "Material Diffuse:      "); ImGui::SameLine();
+    ImGui::SliderFloat("##Material Diffuse", &ImGui::LightingGlobalMaterial.m_DiffuseFactor, 0.f, 1.f);
+    ImGui::TextColored(IMGREEN, "Material Specular:     "); ImGui::SameLine();
+    ImGui::SliderFloat("##Material Specular", &ImGui::LightingGlobalMaterial.m_SpecularFactor, 0.f, 1.f);
+    ImGui::TextColored(IMGREEN, "Material Specular Exp: "); ImGui::SameLine();
+    ImGui::SliderFloat("##Material Specular Exp", &ImGui::LightingGlobalMaterial.m_SpecularExp, 1.f, 1000.f);
   }
-
-  if (lightData.Type != Light::POINT_LIGHT)
-  {
-    ImGui::TextColored(IMGREEN, "Light Direction:     ");
-    ImGui::SliderFloat3("##Light Direction", &lightData.Direction[0], -1.f, 1.f);
-    if (lightData.Type == Light::SPOT_LIGHT)
-    {
-      ImGui::TextColored(IMGREEN, "Light Inner Falloff:     ");
-      ImGui::SliderFloat("##Light Inner Falloff", &lightData.InnerFalloff, 0.f, 45.f);
-
-      ImGui::TextColored(IMGREEN, "Light Outer Falloff:     ");
-      ImGui::SliderFloat("##Light Outer Falloff", &lightData.OuterFalloff, lightData.InnerFalloff, 45.f);
-    }
-  }
-
-  ImGui::TextColored(IMGREEN, "Ambient Intensity:     ");
-  ImGui::ColorEdit4("##Light Ambient Intensity", &lightData.AmbientIntensity[0]);
-  ImGui::TextColored(IMGREEN, "Diffuse Intensity:     ");
-  ImGui::ColorEdit4("##Light Diffuse Intensity", &lightData.DiffuseIntensity[0]);
-  ImGui::TextColored(IMGREEN, "Specular Intensity:     ");
-  ImGui::ColorEdit4("##Light Specular Intensity", &lightData.SpecularIntensity[0]);
-
-  IMGUISPACE;
-  IMGUISPACE;
-
-  ImGui::TextColored(IMCYAN, "Global Material Settings");
-  ImGui::TextColored(IMCYAN, "------------------------");
-
-  IMGUISPACE;
-
-  ImGui::TextColored(IMGREEN, "Material Emission:     ");
-  ImGui::ColorEdit3("##Material Emission", &ImGui::LightingGlobalMaterial.m_Emissive[0]);
-  ImGui::TextColored(IMGREEN, "Material Ambient:      "); ImGui::SameLine();
-  ImGui::SliderFloat("##Material Ambient", &ImGui::LightingGlobalMaterial.m_AmbientFactor, 0.f, 1.f);
-  ImGui::TextColored(IMGREEN, "Material Diffuse:      "); ImGui::SameLine();
-  ImGui::SliderFloat("##Material Diffuse", &ImGui::LightingGlobalMaterial.m_DiffuseFactor, 0.f, 1.f);
-  ImGui::TextColored(IMGREEN, "Material Specular:     "); ImGui::SameLine();
-  ImGui::SliderFloat("##Material Specular", &ImGui::LightingGlobalMaterial.m_SpecularFactor, 0.f, 1.f);
-  ImGui::TextColored(IMGREEN, "Material Specular Exp: "); ImGui::SameLine();
-  ImGui::SliderFloat("##Material Specular Exp", &ImGui::LightingGlobalMaterial.m_SpecularExp, 1.f, 1000.f);
 }
 
 void ImGuiManager::graphicsUpdateRendering() noexcept
 {
-  ImGui::TextColored(IMCYAN, "Renderer Settings");
-  ImGui::TextColored(IMCYAN, "-----------------");
-
-  IMGUISPACE;
-
-  ImGui::TextColored(IMGREEN, "Render Axes: "); ImGui::SameLine();
-  ImGui::Checkbox("##Render Axes", &m_bRenderAxes);
-  if (m_bRenderAxes)
+  if (ImGui::CollapsingHeader("Rendering"))
   {
-    DebugRenderer::I().AddLine(vec3(-10000.f, 0.f, 0.f), Colors::RED, vec3(10000.f, 0.f, 0.f), Colors::RED);
-    DebugRenderer::I().AddLine(vec3(0.f, -10000.f, 0.f), Colors::GREEN, vec3(0.f, 10000.f, 0.f), Colors::GREEN);
-    DebugRenderer::I().AddLine(vec3(0.f, 0.f, -10000.f), Colors::BLUE, vec3(0.f, 0.f, 10000.f), Colors::BLUE);
-  }
+    ImGui::TextColored(IMCYAN, "Renderer Settings");
+    ImGui::TextColored(IMCYAN, "-----------------");
 
-  IMGUISPACE;
+    IMGUISPACE;
 
-  ImGui::TextColored(IMGREEN, "Debug Line Width: "); ImGui::SameLine();
-  if (ImGui::SliderFloat("##Debug Line Width", &m_DebugLineWidth, 0.05f, 5.f))
-  {
-    DebugRenderer::I().SetLineWidth(m_DebugLineWidth);
-  }
+    ImGui::TextColored(IMGREEN, "Render Axes: "); ImGui::SameLine();
+    ImGui::Checkbox("##Render Axes", &m_bRenderAxes);
+    if (m_bRenderAxes)
+    {
+      DebugRenderer::I().AddLine(vec3(-10000.f, 0.f, 0.f), Colors::RED, vec3(10000.f, 0.f, 0.f), Colors::RED);
+      DebugRenderer::I().AddLine(vec3(0.f, -10000.f, 0.f), Colors::GREEN, vec3(0.f, 10000.f, 0.f), Colors::GREEN);
+      DebugRenderer::I().AddLine(vec3(0.f, 0.f, -10000.f), Colors::BLUE, vec3(0.f, 0.f, 10000.f), Colors::BLUE);
+    }
 
-  IMGUISPACE;
+    IMGUISPACE;
 
-  ImGui::TextColored(IMGREEN, "Show Normals: "); ImGui::SameLine();
+    ImGui::TextColored(IMGREEN, "Debug Line Width: "); ImGui::SameLine();
+    if (ImGui::SliderFloat("##Debug Line Width", &m_DebugLineWidth, 0.05f, 5.f))
+    {
+      DebugRenderer::I().SetLineWidth(m_DebugLineWidth);
+    }
 
-  static int imguiNormals = 2;
-  if (ImGui::RadioButton("Per Vertex", &imguiNormals, 0))
-  {
-    ImGui::GraphicsDebugRenderVertexNormals = true;
-    ImGui::GraphicsDebugRenderSurfaceNormals = false;
-  }
+    IMGUISPACE;
 
-  ImGui::SameLine();
-  if (ImGui::RadioButton("Per Triangle", &imguiNormals, 1))
-  {
-    ImGui::GraphicsDebugRenderVertexNormals = false;
-    ImGui::GraphicsDebugRenderSurfaceNormals = true;
-  }
+    ImGui::TextColored(IMGREEN, "Show Normals: "); ImGui::SameLine();
 
-  ImGui::SameLine();
-  if (ImGui::RadioButton("None", &imguiNormals, 2))
-  {
-    ImGui::GraphicsDebugRenderVertexNormals = false;
-    ImGui::GraphicsDebugRenderSurfaceNormals = false;
-  }
+    static int imguiNormals = 2;
+    if (ImGui::RadioButton("Per Vertex", &imguiNormals, 0))
+    {
+      ImGui::GraphicsDebugRenderVertexNormals = true;
+      ImGui::GraphicsDebugRenderSurfaceNormals = false;
+    }
 
-  IMGUISPACE;
+    ImGui::SameLine();
+    if (ImGui::RadioButton("Per Triangle", &imguiNormals, 1))
+    {
+      ImGui::GraphicsDebugRenderVertexNormals = false;
+      ImGui::GraphicsDebugRenderSurfaceNormals = true;
+    }
 
-  ImGui::TextColored(IMGREEN, "Normal Length: "); ImGui::SameLine();
-  ImGui::SliderFloat("##Normal Length", &ImGui::GraphicsDebugNormalLength, 0.001f, 0.5f);
+    ImGui::SameLine();
+    if (ImGui::RadioButton("None", &imguiNormals, 2))
+    {
+      ImGui::GraphicsDebugRenderVertexNormals = false;
+      ImGui::GraphicsDebugRenderSurfaceNormals = false;
+    }
 
-  IMGUISPACE;
+    IMGUISPACE;
 
-  ImGui::TextColored(IMGREEN, "Render Mode: "); ImGui::SameLine();
-  static int imguiRenderMode = 0;
-  if (ImGui::RadioButton("Fill", &imguiRenderMode, 0))
-  {
-    Renderer::SetRenderModeFill();
-  }
+    ImGui::TextColored(IMGREEN, "Normal Length: "); ImGui::SameLine();
+    ImGui::SliderFloat("##Normal Length", &ImGui::GraphicsDebugNormalLength, 0.001f, 0.5f);
 
-  ImGui::SameLine();
-  if (ImGui::RadioButton("Wireframe", &imguiRenderMode, 1))
-  {
-    Renderer::SetRenderModeWireframe();
-  }
+    IMGUISPACE;
 
-  IMGUISPACE;
+    ImGui::TextColored(IMGREEN, "Render Mode: "); ImGui::SameLine();
+    static int imguiRenderMode = 0;
+    if (ImGui::RadioButton("Fill", &imguiRenderMode, 0))
+    {
+      Renderer::SetRenderModeFill();
+    }
 
-  if (ImGui::Button("Rebuild Shaders", { 120, 32 }))
-  {
-    ImGui::GraphicsRebuildShaders = true;
+    ImGui::SameLine();
+    if (ImGui::RadioButton("Wireframe", &imguiRenderMode, 1))
+    {
+      Renderer::SetRenderModeWireframe();
+    }
+
+    IMGUISPACE;
+
+    if (ImGui::Button("Rebuild Shaders", { 120, 32 }))
+    {
+      ImGui::GraphicsRebuildShaders = true;
+    }
   }
 }
 
