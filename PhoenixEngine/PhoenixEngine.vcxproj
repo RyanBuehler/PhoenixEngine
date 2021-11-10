@@ -64,7 +64,10 @@
     <ClCompile Include="src\Scene1.cpp" />
     <ClCompile Include="src\Scene2.cpp" />
     <ClCompile Include="src\SceneManager.cpp" />
+    <ClCompile Include="src\SceneSingleObject.cpp" />
     <ClCompile Include="src\ShaderManager.cpp" />
+    <ClCompile Include="src\Texture.cpp" />
+    <ClCompile Include="src\TextureManager.cpp" />
     <ClCompile Include="src\Transform.cpp" />
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
@@ -97,16 +100,27 @@
     <ClInclude Include="src\Scene1.h" />
     <ClInclude Include="src\Scene2.h" />
     <ClInclude Include="src\SceneManager.h" />
+    <ClInclude Include="src\SceneSingleObject.h" />
     <ClInclude Include="src\ShaderManager.h" />
+    <ClInclude Include="src\Texture.h" />
+    <ClInclude Include="src\TextureManager.h" />
     <ClInclude Include="src\Transform.h" />
     <ClInclude Include="src\Utility.h" />
     <ClInclude Include="src\Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\shaders\BlinnPhong.frag" />
+    <None Include="res\shaders\BlinnPhong.vert" />
     <None Include="res\shaders\Diffuse.frag" />
     <None Include="res\shaders\Debug.frag" />
     <None Include="res\shaders\Diffuse.vert" />
     <None Include="res\shaders\Debug.vert" />
+    <None Include="res\shaders\PhongLighting.frag" />
+    <None Include="res\shaders\PhongLighting.vert" />
+    <None Include="res\shaders\PhongShading.frag" />
+    <None Include="res\shaders\PhongShading.vert" />
+    <None Include="res\shaders\PhongTexture.frag" />
+    <None Include="res\shaders\PhongTexture.vert" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

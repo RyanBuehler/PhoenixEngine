@@ -67,6 +67,12 @@
     <Filter Include="Source Files\Graphics\Lighting">
       <UniqueIdentifier>{8863e104-2b39-4185-a088-c40d800e5c1f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Graphics\Assets">
+      <UniqueIdentifier>{48e2d7ec-c7a8-4fbb-8665-60e1f1c64662}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\Assets">
+      <UniqueIdentifier>{824f0840-a350-4b27-9543-131c6971fff7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h">
@@ -165,6 +171,15 @@
     <ClInclude Include="src\Scene2.h">
       <Filter>Header Files\Scenes</Filter>
     </ClInclude>
+    <ClInclude Include="src\TextureManager.h">
+      <Filter>Header Files\Graphics\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Texture.h">
+      <Filter>Header Files\Graphics\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SceneSingleObject.h">
+      <Filter>Source Files\Scenes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp">
@@ -248,6 +263,15 @@
     <ClCompile Include="src\Scene2.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="src\TextureManager.cpp">
+      <Filter>Source Files\Graphics\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Texture.cpp">
+      <Filter>Source Files\Graphics\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SceneSingleObject.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\Diffuse.vert">
@@ -260,6 +284,30 @@
       <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
     </None>
     <None Include="res\shaders\Diffuse.frag">
+      <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
+    </None>
+    <None Include="res\shaders\PhongLighting.frag">
+      <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
+    </None>
+    <None Include="res\shaders\PhongLighting.vert">
+      <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
+    </None>
+    <None Include="res\shaders\PhongShading.frag">
+      <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
+    </None>
+    <None Include="res\shaders\PhongShading.vert">
+      <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
+    </None>
+    <None Include="res\shaders\PhongTexture.frag">
+      <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
+    </None>
+    <None Include="res\shaders\PhongTexture.vert">
+      <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
+    </None>
+    <None Include="res\shaders\BlinnPhong.frag">
+      <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
+    </None>
+    <None Include="res\shaders\BlinnPhong.vert">
       <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
     </None>
   </ItemGroup>

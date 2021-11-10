@@ -20,6 +20,7 @@ public:
     None,
     Scene1, // Spheres orbiting a centerpiece
     Scene2, // Phong Lighting scene
+    SceneSingleObject, // Single object for testing
     SceneCount
   };
 private:

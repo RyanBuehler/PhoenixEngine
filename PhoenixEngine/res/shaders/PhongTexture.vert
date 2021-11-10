@@ -1,5 +1,5 @@
 /*******************************************************************************
-Shader: PhongLighting Shader [Vertex]
+Shader: PhongTexture Shader [Vertex]
 Author: Ryan Buehler
 *******************************************************************************/
 #version 460 core

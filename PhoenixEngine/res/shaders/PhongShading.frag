@@ -46,6 +46,7 @@ uniform LightArray
 
 in vec4 world_position;
 in vec4 world_normal;
+in vec2 uv;
 
 out vec4 frag_color;
 
@@ -98,7 +99,8 @@ vec3 calcDirectionLight(int i, vec4 view_vector)
   vec4 light_vector = normalize(-lights[i].Direction);
 
   // Calculates the reflection vector
-  vec4 reflect_vector = reflect(-light_vector, world_normal);
+  vec4 reflect_vector = 2.f * dot(world_normal, light_vector) * world_normal - light_vector;
+  vec4 reflect_vector_norm = normalize(reflect_vector);
 
   vec3 ambient_value = lights[i].Ambience.xyz * mat_amb;
   vec3 diffuse_value = lights[i].Diffuse.xyz * mat_dif * max(dot(world_normal, light_vector), 0.f);

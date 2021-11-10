@@ -117,7 +117,7 @@ void Scene2::OnPollInput(GLFWwindow* window, float dt) noexcept
 
 void Scene2::OnDemoObjectChangeEvent()
 {
-  m_GameObjectArray[16].SetMeshFileName(ImGui::DemoObjectFile);
+  m_GameObjectArray[17].SetMeshFileName(ImGui::DemoObjectFile);
 }
 
 Camera& Scene2::GetCurrentCamera() noexcept
@@ -135,8 +135,8 @@ void Scene2::Scenario1() noexcept
   {
     m_GameObjectArray.emplace_back("sphere");
   }
+  m_GameObjectArray.emplace_back("quad.obj");
   m_GameObjectArray.emplace_back(ImGui::DemoObjectFile);
-  m_GameObjectArray.emplace_back("cube.obj");
 
   m_MainCamera.SetPosition({ 2.f, 2.f, 10.f });
 
@@ -182,17 +182,16 @@ void Scene2::Scenario1() noexcept
   }
   temp.SetIsActive(false);
 
-  m_GameObjectArray[16].SetPosition(vec3(0.f));
-  m_GameObjectArray[16].ScaleBy(1.f);
+  // Plane
+  m_GameObjectArray[16].SetScale({ 5.f, 5.f, 1.f });
+  m_GameObjectArray[16].SetPosition({ 0.f, -0.5f, 0.f });
+  m_GameObjectArray[16].RotateX(-90.f);
   m_GameObjectArray[16].SetMaterial(Material::Type::GLOBAL);
 
-  // Plane
-  m_GameObjectArray[17].SetScale({ 5.f, 0.01f, 5.f });
-  m_GameObjectArray[17].SetPosition({ 0.f, -0.5f, 0.f });
-  m_GameObjectArray[17].RotateX(0.f);
+  m_GameObjectArray[17].SetPosition(vec3(0.f));
+  m_GameObjectArray[17].ScaleBy(1.f);
   m_GameObjectArray[17].SetMaterial(Material::Type::GLOBAL);
-
-  m_MainCamera.SetTarget(&m_GameObjectArray[16].GetTransform());
+  m_MainCamera.SetTarget(&m_GameObjectArray[17].GetTransform());
 }
 
 void Scene2::Scenario2() noexcept
@@ -201,8 +200,8 @@ void Scene2::Scenario2() noexcept
   {
     m_GameObjectArray.emplace_back("sphere");
   }
+  m_GameObjectArray.emplace_back("cube2.obj");
   m_GameObjectArray.emplace_back(ImGui::DemoObjectFile);
-  m_GameObjectArray.emplace_back("cube.obj");
 
   m_MainCamera.SetPosition({ 2.f, 2.f, 10.f });
 
@@ -286,17 +285,17 @@ void Scene2::Scenario2() noexcept
   }
   temp.SetIsActive(false);
 
-  m_GameObjectArray[16].SetPosition(vec3(0.f));
-  m_GameObjectArray[16].ScaleBy(1.f);
+  // Plane
+  m_GameObjectArray[16].SetScale({ 5.f, 0.01f, 5.f });
+  m_GameObjectArray[16].SetPosition({ 0.f, -0.5f, 0.f });
+  m_GameObjectArray[16].RotateX(0.f);
   m_GameObjectArray[16].SetMaterial(Material::Type::GLOBAL);
 
-  // Plane
-  m_GameObjectArray[17].SetScale({ 5.f, 0.01f, 5.f });
-  m_GameObjectArray[17].SetPosition({ 0.f, -0.5f, 0.f });
-  m_GameObjectArray[17].RotateX(0.f);
+  m_GameObjectArray[17].SetPosition(vec3(0.f));
+  m_GameObjectArray[17].ScaleBy(1.f);
   m_GameObjectArray[17].SetMaterial(Material::Type::GLOBAL);
 
-  m_MainCamera.SetTarget(&m_GameObjectArray[16].GetTransform());
+  m_MainCamera.SetTarget(&m_GameObjectArray[17].GetTransform());
 }
 
 void Scene2::Scenario3() noexcept
@@ -305,8 +304,8 @@ void Scene2::Scenario3() noexcept
   {
     m_GameObjectArray.emplace_back("sphere");
   }
+  m_GameObjectArray.emplace_back("cube2.obj");
   m_GameObjectArray.emplace_back(ImGui::DemoObjectFile);
-  m_GameObjectArray.emplace_back("cube.obj");
 
   m_MainCamera.SetPosition({ 2.f, 2.f, 10.f });
 
@@ -405,15 +404,15 @@ void Scene2::Scenario3() noexcept
   }
   temp.SetIsActive(false);
 
-  m_GameObjectArray[16].SetPosition(vec3(0.f));
-  m_GameObjectArray[16].ScaleBy(1.f);
-  m_GameObjectArray[16].SetMaterial(Material::Type::GLOBAL);
 
   // Plane
-  m_GameObjectArray[17].SetScale({ 5.f, 0.01f, 5.f });
-  m_GameObjectArray[17].SetPosition({ 0.f, -0.5f, 0.f });
-  m_GameObjectArray[17].RotateX(0.f);
-  m_GameObjectArray[17].SetMaterial(Material::Type::GLOBAL);
+  m_GameObjectArray[16].SetScale({ 5.f, 0.01f, 5.f });
+  m_GameObjectArray[16].SetPosition({ 0.f, -0.5f, 0.f });
+  m_GameObjectArray[16].RotateX(0.f);
+  m_GameObjectArray[16].SetMaterial(Material::Type::GLOBAL);
 
-  m_MainCamera.SetTarget(&m_GameObjectArray[16].GetTransform());
+  m_GameObjectArray[17].SetPosition(vec3(0.f));
+  m_GameObjectArray[17].ScaleBy(1.f);
+  m_GameObjectArray[17].SetMaterial(Material::Type::TEXTURE);
+  m_MainCamera.SetTarget(&m_GameObjectArray[17].GetTransform());
 }

@@ -112,8 +112,8 @@ void Material::setByType(Type type) noexcept
   {
   case Material::Type::BASIC:
     m_Emissive = { 0.f, 0.f, 0.f };
-    m_AmbientFactor = 0.25f;
-    m_DiffuseFactor = 1.0f;
+    m_AmbientFactor = 0.3f;
+    m_DiffuseFactor = 0.9f;
     m_SpecularFactor = 1.f;
     m_SpecularExp = 300.f;
     m_Type = Type::BASIC;
@@ -131,6 +131,14 @@ void Material::setByType(Type type) noexcept
     break;
   case Material::Type::CUSTOM:
     m_Type = Type::CUSTOM;
+    break;
+  case Material::Type::TEXTURE:
+    m_Emissive = { 0.f, 0.f, 0.f };
+    m_AmbientFactor = 0.25f;
+    m_DiffuseFactor = 1.0f;
+    m_SpecularFactor = 1.f;
+    m_SpecularExp = 300.f;
+    m_Type = Type::TEXTURE;
     break;
   case Material::Type::COUNT:
   default:

@@ -8,6 +8,7 @@
 #include "Mesh.h"
 #include "GLEW/glew.h"
 #include <glm/gtc/epsilon.hpp>
+#include <glm/gtc/constants.hpp>
 //TODO:
 #include "DebugRenderer.h"
 #include "Colors.h"
@@ -18,7 +19,10 @@ Mesh::Mesh(const vec3& origin, bool isStatic) noexcept :
   m_NormalLength(0.05f),
   m_PositionArray(),
   m_VertexNormalArray(),
+  m_SurfaceNormalArray(),
+  m_SurfaceNormalPositionArray(),
   m_TriangleArray(),
+  m_TexcoordArray(),
   m_bIsDirty(true)
 {}
 
@@ -35,6 +39,11 @@ unsigned Mesh::GetTriangleCount() const noexcept
 unsigned Mesh::GetNormalCount() const noexcept
 {
   return static_cast<unsigned>(m_VertexNormalArray.size());
+}
+
+unsigned Mesh::GetTexcoordCount() const noexcept
+{
+  return static_cast<unsigned>(m_TexcoordArray.size());
 }
 
 void Mesh::AddVertex(vec3 vertex) noexcept
@@ -76,9 +85,14 @@ const vector<vec3>& Mesh::GetSurfaceNormalArray() const noexcept
   return m_SurfaceNormalArray;
 }
 
-const vector<vec3>& Mesh::SurfaceNormalPositionArray() const noexcept
+const vector<vec3>& Mesh::GetSurfaceNormalPositionArray() const noexcept
 {
   return m_SurfaceNormalPositionArray;
+}
+
+const vector<vec2>& Mesh::GetTexcoordArray() const noexcept
+{
+  return m_TexcoordArray;
 }
 
 vec3 Mesh::CalculateBoundingBoxSize() noexcept
@@ -130,63 +144,8 @@ void Mesh::CalculateNormals(bool flipNormals) noexcept
     return;
   }
 
-  CalculateSurfaceNormals(flipNormals);
-  CalculateVertexNormals();
-}
-
-void Mesh::CalculateSurfaceNormals(bool flipNormals) noexcept
-{
-  m_SurfaceNormalArray.clear();
-  m_SurfaceNormalPositionArray.clear();
-  m_SurfaceNormalArray.resize(GetTriangleCount(), vec3(0.0f));
-  m_SurfaceNormalPositionArray.resize(GetTriangleCount(), vec3(0.0f));
-
-  for (size_t i = 0; i < m_TriangleArray.size(); ++i)
-  {
-    Mesh::Triangle& tri = m_TriangleArray[i];
-    vec3 v1 = m_PositionArray[tri.Index1];
-    vec3 v2 = m_PositionArray[tri.Index2];
-    vec3 v3 = m_PositionArray[tri.Index3];
-
-    vec3 e1 = v2 - v1;
-    vec3 e2 = v3 - v1;
-
-    vec3 n = normalize(cross(e1, e2));
-
-    m_SurfaceNormalArray[i] = flipNormals ? -1.f * n : n;
-
-    m_SurfaceNormalPositionArray[i] = 1.f / 3.f * (v1 + v2 + v3);
-  }
-}
-
-void Mesh::CalculateVertexNormals() noexcept
-{
-  m_VertexNormalArray.clear();
-  m_VertexNormalArray.resize(GetVertexCount(), vec3(0.0f));
-
-  vector<pair<vec3, float>> normArray(m_VertexNormalArray.size(), make_pair(vec3(0.f), 0.f));
-  for (size_t i = 0; i < m_SurfaceNormalArray.size(); ++i)
-  {
-    Mesh::Triangle& tri = m_TriangleArray[i];
-    vec3 sN = m_SurfaceNormalArray[i];
-
-    // first - Surface Normal
-    normArray[tri.Index1].first += sN;
-    normArray[tri.Index2].first += sN;
-    normArray[tri.Index3].first += sN;
-    // second - triangles shared
-    ++normArray[tri.Index1].second;
-    ++normArray[tri.Index2].second;
-    ++normArray[tri.Index3].second;
-  }
-
-  for (size_t i = 0; i < normArray.size(); ++i)
-  {
-    if (normArray[i].second > 0.f)
-    {
-      m_VertexNormalArray[i] = 1.f / normArray[i].second * normArray[i].first;
-    }
-  }
+  calculateSurfaceNormals(flipNormals);
+  calculateVertexNormals();
 }
 
 void Mesh::ScaleToUnitSize() noexcept
@@ -229,7 +188,7 @@ vec3 Mesh::FindCenterOfMass() const noexcept
     yMin + ((yMax - yMin) / 2.f),
     zMin + ((zMax - zMin) / 2.f)
   );
-  
+
   return center;
 }
 
@@ -249,4 +208,166 @@ void Mesh::ResetOriginToCenterOfMass() noexcept
   {
     sn -= move;
   }
+}
+
+void Mesh::GenerateTexcoords(UV::Generation generation) noexcept
+{
+  switch (generation)
+  {
+  case UV::Generation::SPHERICAL:
+    calculateSphereUVs();
+    break;
+  case UV::Generation::CYLINDRICAL:
+    calculateCylinderUVs();
+    break;
+  case UV::Generation::PLANAR:
+    break;
+  case UV::Generation::CUSTOM:
+  default:
+    break;
+  }
+}
+
+//TODO: Fix this
+void Mesh::AssembleVertexData() noexcept
+{
+  for (size_t i = 0; i < m_PositionArray.size(); ++i)
+  {
+    m_VertexData.emplace_back(m_PositionArray[i], m_VertexNormalArray[i], m_TexcoordArray[i]);
+  }
+}
+
+void Mesh::calculateSurfaceNormals(bool flipNormals) noexcept
+{
+  m_SurfaceNormalArray.clear();
+  m_SurfaceNormalPositionArray.clear();
+  m_SurfaceNormalArray.resize(GetTriangleCount(), vec3(0.0f));
+  m_SurfaceNormalPositionArray.resize(GetTriangleCount(), vec3(0.0f));
+
+  for (size_t i = 0; i < m_TriangleArray.size(); ++i)
+  {
+    Mesh::Triangle& tri = m_TriangleArray[i];
+    vec3 v1 = m_PositionArray[tri.Index1];
+    vec3 v2 = m_PositionArray[tri.Index2];
+    vec3 v3 = m_PositionArray[tri.Index3];
+
+    vec3 e1 = v2 - v1;
+    vec3 e2 = v3 - v1;
+
+    vec3 n = normalize(cross(e1, e2));
+
+    m_SurfaceNormalArray[i] = flipNormals ? -1.f * n : n;
+
+    m_SurfaceNormalPositionArray[i] = 1.f / 3.f * (v1 + v2 + v3);
+  }
+}
+
+void Mesh::calculateVertexNormals() noexcept
+{
+  m_VertexNormalArray.clear();
+  m_VertexNormalArray.resize(GetVertexCount(), vec3(0.0f));
+
+  vector<pair<vec3, float>> normArray(m_VertexNormalArray.size(), make_pair(vec3(0.f), 0.f));
+  for (size_t i = 0; i < m_SurfaceNormalArray.size(); ++i)
+  {
+    Mesh::Triangle& tri = m_TriangleArray[i];
+    vec3 sN = m_SurfaceNormalArray[i];
+
+    // first - Surface Normal
+    normArray[tri.Index1].first += sN;
+    normArray[tri.Index2].first += sN;
+    normArray[tri.Index3].first += sN;
+    // second - triangles shared
+    ++normArray[tri.Index1].second;
+    ++normArray[tri.Index2].second;
+    ++normArray[tri.Index3].second;
+  }
+
+  for (size_t i = 0; i < normArray.size(); ++i)
+  {
+    if (normArray[i].second > 0.f)
+    {
+      m_VertexNormalArray[i] = 1.f / normArray[i].second * normArray[i].first;
+    }
+  }
+}
+
+void Mesh::calculateSphereUVs() noexcept
+{
+  m_TexcoordArray.clear();
+  vec3 bounds = CalculateBoundingBoxSize();
+  vec3 centroid = FindCenterOfMass();
+  for (const vec3& vertex : m_PositionArray)
+  {
+    vec3 pos = vertex - centroid;
+    float theta = glm::atan(pos.z / pos.x);
+
+    if (pos.z < 0)
+    {
+      if (pos.x < 0)
+      {
+        theta += glm::pi<float>();
+      }
+      else
+      {
+        theta += glm::pi<float>() * 3.f / 2.f;
+      }
+    }
+    else
+    {
+      if (pos.x < 0)
+      {
+        theta += glm::pi<float>() / 2.f;
+      }
+    }
+
+    float phi = acos(pos.y / glm::length(pos));
+
+    float u = theta / glm::two_pi<float>();
+    float v = (glm::pi<float>() - phi) / glm::pi<float>();
+
+    m_TexcoordArray.emplace_back(u, v);
+  }
+}
+
+void Mesh::calculateCylinderUVs() noexcept
+{
+  m_TexcoordArray.clear();
+  vec3 bounds = CalculateBoundingBoxSize();
+  vec3 centroid = FindCenterOfMass();
+  for (const vec3& vertex : m_PositionArray)
+  {
+    vec3 pos = vertex - centroid;
+    float theta = glm::atan(pos.z / pos.x);
+
+    if (pos.z < 0)
+    {
+      if (pos.x < 0)
+      {
+        theta += glm::pi<float>();
+      }
+      else
+      {
+        theta += glm::pi<float>() * 3.f / 2.f;
+      }
+    }
+    else
+    {
+      if (pos.x < 0)
+      {
+        theta += glm::pi<float>() / 2.f;
+      }
+    }
+
+    float u = theta / glm::two_pi<float>();
+    float v = (pos.y - bounds.y / -2.f) / bounds.y;
+
+    m_TexcoordArray.emplace_back(u, v);
+  }
+}
+
+void Mesh::calculateCubeMapUVs() noexcept
+{
+  m_TexcoordArray.clear();
+  
 }

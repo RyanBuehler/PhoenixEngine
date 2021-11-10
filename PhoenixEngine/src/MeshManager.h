@@ -21,11 +21,13 @@ private:
       GLuint positionBufferID = MESH_INDEX_ERROR,
       GLuint normalBufferID = MESH_INDEX_ERROR,
       GLuint triangleBufferID = MESH_INDEX_ERROR,
+      GLuint texcoordBufferID = MESH_INDEX_ERROR,
       GLuint vertexArrayID = MESH_INDEX_ERROR) :
       FileName(fileName),
       PositionBufferID(positionBufferID),
       NormalBufferID(normalBufferID),
       TriangleBufferID(triangleBufferID),
+      TexcoordBufferID(texcoordBufferID),
       VertexArrayID(vertexArrayID)
     {}
 
@@ -33,6 +35,7 @@ private:
     GLuint PositionBufferID;
     GLuint TriangleBufferID;
     GLuint NormalBufferID;
+    GLuint TexcoordBufferID;
     GLuint VertexArrayID;
   };
 
@@ -44,7 +47,7 @@ public:
   MeshManager(MeshManager&&) = delete;
   MeshManager& operator=(MeshManager&&) = delete;
 
-  unsigned LoadMesh(const string& fileName, bool scaleToUnitSize = false, bool resetOrigin = false) noexcept;
+  unsigned LoadMesh(const string& fileName, bool scaleToUnitSize = false, bool resetOrigin = false, int TODO = 1) noexcept;
 
   void UnloadMeshes() noexcept;
 

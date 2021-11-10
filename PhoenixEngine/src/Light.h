@@ -21,7 +21,7 @@ public:
     Data() :
       Position(vec4(0.f, 0.f, 0.f, 1.f)),
       AmbientIntensity(vec4(0.f, 0.f, 0.f, 1.f)),
-      DiffuseIntensity(vec4(0.8f, 0.2f, 0.2f, 1.f)),
+      DiffuseIntensity(vec4(0.8f, 0.8f, 0.8f, 1.f)),
       SpecularIntensity(vec4(1.f, 1.0f, 1.0f, 1.f)),
       Direction(vec4(0.f, -1.f, 0.f, 0.f)),
       Type(POINT_LIGHT),
