@@ -10,49 +10,57 @@ Author: Ryan Buehler
 #define DIRECTION 1
 #define SPOT 2
 
+// Per Scene
 uniform vec3 cam_position;
 
-uniform vec3 global_amb;
-uniform vec3 global_fog;
-uniform float global_fog_near;
-uniform float global_fog_far;
-uniform float global_att1;
-uniform float global_att2;
-uniform float global_att3;
+// Global Lighting Data
+// WIP TODO: Convert these to a uniform block
+uniform vec3 global_amb;        // Global ambience
+uniform vec3 global_fog;        // Global fog intensity
+uniform float global_fog_near;  // Global fog near distance
+uniform float global_fog_far;   // Global fog far distance
+uniform float global_att1;      // Global attenuation (constant)
+uniform float global_att2;      // Global attenuation (linear)
+uniform float global_att3;      // Global attenuation (quadratic)
 
+// Per Object
+// Material Data
+// WIP TODO: Convert these to a uniform block
 uniform vec3 mat_emit;
 uniform float mat_amb;
 uniform float mat_dif;
 uniform float mat_spc;
 uniform float mat_spc_exp;
 
+// Per Light Data
 struct Light
 {
-  vec4 Position;
-  vec4 Ambience;
-  vec4 Diffuse;
-  vec4 Specular;
-  vec4 Direction;
-  int Type;
-  float InnerFalloff;
-  float OuterFalloff;
-  bool IsActive;
+  vec4 Position;      // Light's location in world space
+  vec4 Ambience;      // Light's ambient intensity
+  vec4 Diffuse;       // Light's diffuse intensity
+  vec4 Specular;      // Light's specular intensity
+  vec4 Direction;     // Light's direction (spot, directional lights only)
+  int Type;           // Light type (point, spot, directional)
+  float InnerFalloff; // Inner falloff (spot light only)
+  float OuterFalloff; // Outer falloff (spot light only)
+  bool IsActive;      // [T/F] The light should be factored in calculations
 };
 
+// Uniform block for Light Data
 uniform LightArray
 {
   Light lights[LIGHTCOUNT];
 };
 
-in vec4 world_position;
-in vec4 world_normal;
-in vec2 uv;
+in vec4 world_position; // Fragment's world position
+in vec4 world_normal;   // Fragment's world normal
+in vec2 uv;             // Texture coordinates
 
-out vec4 frag_color;
+out vec4 frag_color;    // Final fragment color
 
-vec3 calcDirectionLight(int i, vec4 view_vector);
-vec3 calcPointLight(int i, vec4 view_vector);
-vec3 calcSpotLight(int i, vec4 view_vector);
+vec3 calcDirectionLight(int i, vec4 view_vector); // Calculates light intensity from a directional light
+vec3 calcPointLight(int i, vec4 view_vector);     // Calculates light intensity from a point light
+vec3 calcSpotLight(int i, vec4 view_vector);      // Calculates light intensity from a spot light
 
 void main(void)
 {
@@ -105,6 +113,7 @@ vec3 calcDirectionLight(int i, vec4 view_vector)
   vec3 diffuse_value = lights[i].Diffuse.xyz * mat_dif * max(dot(world_normal, light_vector), 0.f);
   vec3 specular_value = lights[i].Specular.xyz * mat_spc * pow(max(dot(world_normal, half_vector), 0.f), mat_spc_exp);
 
+  // No light attenuation on directional lights
   return ambient_value + diffuse_value + specular_value;
 }
 
@@ -122,6 +131,7 @@ vec3 calcPointLight(int i, vec4 view_vector)
   vec3 diffuse_value = lights[i].Diffuse.xyz * mat_dif * max(dot(world_normal, light_vector_norm), 0.f);
   vec3 specular_value = lights[i].Specular.xyz * mat_spc * pow(max(dot(world_normal, half_vector), 0.f), mat_spc_exp);
 
+  // Factor in light attenuation
   float attenuation = global_att1 + global_att2 * light_vector_len + global_att3 * light_vector_len * light_vector_len;
   attenuation = min(1.f / attenuation, 1.f);
   return attenuation * (ambient_value + diffuse_value + specular_value);
@@ -154,13 +164,17 @@ vec3 calcSpotLight(int i, vec4 view_vector)
     vec3 diffuse_value = falloff * lights[i].Diffuse.xyz * mat_dif * max(dot(world_normal, light_vector_norm), 0.f);
     vec3 specular_value = falloff * lights[i].Specular.xyz * mat_spc * pow(max(dot(world_normal, half_vector), 0.f), mat_spc_exp);
 
+    // Factor in light attenuation
     float attenuation = global_att1 + global_att2 * light_vector_len + global_att3 * light_vector_len * light_vector_len;
     attenuation = min(1.f / attenuation, 1.f);
     return attenuation * (ambient_value + diffuse_value + specular_value);
   }
   else
   {
+    // The spot light does not fall upon this fragment. Use ambient only.
     vec3 ambient_value = lights[i].Ambience.xyz * mat_amb;
+
+    // Factor in light attenuation
     float attenuation = global_att1 + global_att2 * light_vector_len + global_att3 * light_vector_len * light_vector_len;
     attenuation = min(1.f / attenuation, 1.f);
     return attenuation * ambient_value;
