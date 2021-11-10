@@ -72,9 +72,9 @@ void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& active
   if (ImGui::SceneDrawOrbit)
   {
     // Render any previously stored line
-    m_ContextManager.SetContext(m_DebugContextID);
+    //m_ContextManager.SetContext(m_DebugContextID);
     //TODO: Check if this is being used before Rendering
-    DebugRenderer::I().RenderLines();
+    //DebugRenderer::I().RenderLines();
   }
 
   m_ContextManager.SetContext(m_PhongShadingID);
@@ -127,7 +127,7 @@ void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& active
 
   // Bind the identity for permanent line's model matrix
   glUniformMatrix4fv(m_ContextManager.GetCurrentUniformAttributes()[2].ID, 1, false, &matIdentity[0][0]);
-  DebugRenderer::I().RenderPermanentLines();
+  //DebugRenderer::I().RenderPermanentLines();
 
   if (ImGui::GraphicsDebugRenderSurfaceNormals)
   {
@@ -363,10 +363,12 @@ void Renderer::LoadPhongLightingContext() noexcept
   m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "mat_spc");
   m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "mat_spc_exp");
 
-  ContextManager::VertexAttribute vaPosition("position", 4, GL_FLOAT, GL_FALSE, sizeof(vec3), 0u);
-  ContextManager::VertexAttribute vaNormal("normal", 4, GL_FLOAT, GL_FALSE, sizeof(vec3), sizeof(vec3));
+  ContextManager::VertexAttribute vaPosition("position", 3, GL_FLOAT, GL_FALSE, sizeof(vec3), 0u);
+  ContextManager::VertexAttribute vaNormal("normal", 3, GL_FLOAT, GL_FALSE, sizeof(vec3), sizeof(vec3));
+  ContextManager::VertexAttribute vaTexcoords("texcoords", 2, GL_FLOAT, GL_FALSE, sizeof(vec2), 2 * sizeof(vec3));
   m_ContextManager.AddNewVertexAttribute(m_PhongLightingID, vaPosition);
   m_ContextManager.AddNewVertexAttribute(m_PhongLightingID, vaNormal);
+  m_ContextManager.AddNewVertexAttribute(m_PhongLightingID, vaTexcoords);
 
   Log::Trace("Phong Lighting Context loaded.");
 }
@@ -409,10 +411,16 @@ void Renderer::LoadPhongShadingContext() noexcept
   m_ContextManager.AddNewUniformAttribute(m_PhongShadingID, "mat_spc");
   m_ContextManager.AddNewUniformAttribute(m_PhongShadingID, "mat_spc_exp");
 
-  ContextManager::VertexAttribute vaPosition("position", 4, GL_FLOAT, GL_FALSE, sizeof(vec3), 0u);
-  ContextManager::VertexAttribute vaNormal("normal", 4, GL_FLOAT, GL_FALSE, sizeof(vec3), sizeof(vec3));
+  //ContextManager::VertexAttribute vaPosition("position", 3, GL_FLOAT, GL_FALSE, sizeof(vec3), 0u);
+  //ContextManager::VertexAttribute vaNormal("normal", 3, GL_FLOAT, GL_FALSE, sizeof(vec3), sizeof(vec3));
+  //ContextManager::VertexAttribute vaTexcoords("texcoord", 2, GL_FLOAT, GL_FALSE, sizeof(vec2), 2 * sizeof(vec3));
+  ContextManager::VertexAttribute vaPosition("position", 3, GL_FLOAT, GL_FALSE, sizeof(vec3), 0u);
+  ContextManager::VertexAttribute vaNormal("normal", 3, GL_FLOAT, GL_FALSE, sizeof(vec3), 0u);
+  ContextManager::VertexAttribute vaTexcoords("texcoord", 2, GL_FLOAT, GL_FALSE, sizeof(vec2), 0u);
   m_ContextManager.AddNewVertexAttribute(m_PhongShadingID, vaPosition);
   m_ContextManager.AddNewVertexAttribute(m_PhongShadingID, vaNormal);
+  m_ContextManager.AddNewVertexAttribute(m_PhongShadingID, vaTexcoords);
+
   Log::Trace("Phong Shading Context loaded.");
 }
 

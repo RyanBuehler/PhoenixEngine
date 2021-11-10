@@ -136,7 +136,7 @@ void Scene2::Scenario1() noexcept
     m_GameObjectArray.emplace_back("sphere");
   }
   m_GameObjectArray.emplace_back(ImGui::DemoObjectFile);
-  m_GameObjectArray.emplace_back("cube.obj");
+  m_GameObjectArray.emplace_back("cube2.obj");
 
   m_MainCamera.SetPosition({ 2.f, 2.f, 10.f });
 
@@ -202,7 +202,7 @@ void Scene2::Scenario2() noexcept
     m_GameObjectArray.emplace_back("sphere");
   }
   m_GameObjectArray.emplace_back(ImGui::DemoObjectFile);
-  m_GameObjectArray.emplace_back("cube.obj");
+  m_GameObjectArray.emplace_back("cube2.obj");
 
   m_MainCamera.SetPosition({ 2.f, 2.f, 10.f });
 
@@ -306,7 +306,7 @@ void Scene2::Scenario3() noexcept
     m_GameObjectArray.emplace_back("sphere");
   }
   m_GameObjectArray.emplace_back(ImGui::DemoObjectFile);
-  m_GameObjectArray.emplace_back("cube.obj");
+  m_GameObjectArray.emplace_back("cube2.obj");
 
   m_MainCamera.SetPosition({ 2.f, 2.f, 10.f });
 

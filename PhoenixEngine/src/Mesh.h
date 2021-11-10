@@ -11,6 +11,12 @@
   {
 #pragma region Features
   public:
+    struct VertexData
+    {
+      vec3 Position;
+      vec3 Normal;
+      vec2 Texcoord;
+    };
 
     struct Edge
     {
@@ -48,6 +54,7 @@
     unsigned GetVertexCount() const noexcept;
     unsigned GetTriangleCount() const noexcept;
     unsigned GetNormalCount() const noexcept;
+    unsigned GetTexcoordCount() const noexcept;
 
     void AddVertex(vec3 vertex) noexcept;
     void AddVertex(float x, float y, float z) noexcept;
@@ -65,7 +72,8 @@
 
     const vector<vec3>& GetVertexNormalArray() const noexcept;
     const vector<vec3>& GetSurfaceNormalArray() const noexcept;
-    const vector<vec3>& SurfaceNormalPositionArray() const noexcept;
+    const vector<vec3>& GetSurfaceNormalPositionArray() const noexcept;
+    const vector<vec2>& GetTexcoordArray() const noexcept;
 
     vec3 CalculateBoundingBoxSize() noexcept;
     float CalculateWidestPoint() noexcept;
@@ -73,11 +81,17 @@
     void ScaleToUnitSize() noexcept;
     vec3 FindCenterOfMass() const noexcept;
     void ResetOriginToCenterOfMass() noexcept;
+    void GenerateTexcoords(UV::Generation generation) noexcept;
+
+    void AssembleVertexData() noexcept;
 
   private:
-    void CalculateSurfaceNormals(bool flipNormals = false) noexcept;
-    void CalculateVertexNormals() noexcept;
+    void calculateSurfaceNormals(bool flipNormals = false) noexcept;
+    void calculateVertexNormals() noexcept;
+    void calculateSphereUVs() noexcept;
+    void calculateCylinderUVs() noexcept;
 
+  private:
     friend class MeshManager;
 
     vec3 m_Origin;
@@ -90,6 +104,10 @@
     vector<vec3> m_SurfaceNormalArray;
     vector<vec3> m_SurfaceNormalPositionArray;
     vector<Mesh::Triangle> m_TriangleArray;
+    vector<vec2> m_TexcoordArray;
+    
+    vector<VertexData> m_VertexData;
 
     bool m_bIsDirty;
+
   };

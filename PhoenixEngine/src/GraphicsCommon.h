@@ -73,9 +73,20 @@ namespace Normals
 {
   enum class Type : unsigned
   {
-    VERTEX,
+    VERTEX = 0u,
     TRIANGLE,
     SURFACE,
     COUNT
+  };
+}
+
+namespace UV
+{
+  enum class Generation : unsigned
+  {
+    CUSTOM = 0u,
+    SPHERICAL,
+    CYLINDRICAL,
+    PLANAR
   };
 }

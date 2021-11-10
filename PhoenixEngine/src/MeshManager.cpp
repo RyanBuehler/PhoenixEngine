@@ -74,17 +74,30 @@ unsigned MeshManager::LoadMesh(const string& fileName, bool scaleToUnitSize, boo
     m_MeshArray[index].ResetOriginToCenterOfMass();
   }
 
+  m_MeshArray[index].CalculateNormals();
+  m_MeshArray[index].GenerateTexcoords(UV::Generation::SPHERICAL);
+  // TODO:
+  m_MeshArray[index].AssembleVertexData();
+
+
+
   // The Position buffer
   glGenBuffers(1, &m_MeshDataArray[index].PositionBufferID);
   glBindBuffer(GL_ARRAY_BUFFER, m_MeshDataArray[index].PositionBufferID);
-  glBufferData(GL_ARRAY_BUFFER, m_MeshArray[index].GetVertexCount() * sizeof(vec3),
-    m_MeshArray[index].m_PositionArray.data(), GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, m_MeshArray[index].GetVertexCount() * sizeof(Mesh::VertexData),
+    m_MeshArray[index].m_VertexData.data(), GL_STATIC_DRAW);
 
-  ////The Normal buffer
+  //// The Normal buffer
   //glGenBuffers(1, &m_MeshDataArray[index].NormalBufferID);
   //glBindBuffer(GL_ARRAY_BUFFER, m_MeshDataArray[index].NormalBufferID);
   //glBufferData(GL_ARRAY_BUFFER, m_MeshArray[index].GetNormalCount() * sizeof(vec3),
-  //  m_MeshArray[index].m_NormalArray.data(), GL_STATIC_DRAW);
+  //m_MeshArray[index].m_VertexNormalArray.data(), GL_STATIC_DRAW);
+
+  //// The Texcoord buffer
+  //glGenBuffers(1, &m_MeshDataArray[index].TexcoordBufferID);
+  //glBindBuffer(GL_ARRAY_BUFFER, m_MeshDataArray[index].TexcoordBufferID);
+  //glBufferData(GL_ARRAY_BUFFER, m_MeshArray[index].GetTexcoordCount() * sizeof(vec2),
+  //m_MeshArray[index].m_TexcoordArray.data(), GL_STATIC_DRAW);
 
   // The Triangle buffer
   glGenBuffers(1, &m_MeshDataArray[index].TriangleBufferID);
@@ -96,10 +109,18 @@ unsigned MeshManager::LoadMesh(const string& fileName, bool scaleToUnitSize, boo
   glBindVertexArray(m_MeshDataArray[index].VertexArrayID);
 
   // TODO: Position buffer index, normal buffer index, etc
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), 0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), 0);
   glEnableVertexAttribArray(0);
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), 0);
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), (void*)(sizeof(vec3)));
   glEnableVertexAttribArray(1);
+  glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), (void*)(sizeof(vec3)*2));
+  glEnableVertexAttribArray(2);
+  //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0u, 0);
+  //glEnableVertexAttribArray(0);
+  //glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0u, 0);
+  //glEnableVertexAttribArray(1);
+  //glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0u, 0);
+  //glEnableVertexAttribArray(2);
 
   glBindVertexArray(0u);
 
@@ -116,12 +137,11 @@ void MeshManager::UnloadMeshes() noexcept
     glDeleteVertexArrays(1, &m_MeshDataArray[i].VertexArrayID);
 
     glDeleteBuffers(1, &m_MeshDataArray[i].PositionBufferID);
-    glDeleteBuffers(1, &m_MeshDataArray[i].NormalBufferID);
+    //glDeleteBuffers(1, &m_MeshDataArray[i].NormalBufferID);
+    //glDeleteBuffers(1, &m_MeshDataArray[i].TexcoordBufferID);
     glDeleteBuffers(1, &m_MeshDataArray[i].TriangleBufferID);
 
-    //TODO:
     Log::Trace("Mesh '" + m_MeshDataArray[i].FileName + "' destroyed.");
-    //Log::Trace("Mesh destroyed.");
   }
   m_MeshArray.clear();
   m_MeshDataArray.clear();
@@ -137,6 +157,8 @@ void MeshManager::RenderMesh(unsigned id) const noexcept
 
   glBindVertexArray(m_MeshDataArray[id].VertexArrayID);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_MeshDataArray[id].TriangleBufferID);
+  //glBindBuffer(GL_ARRAY_BUFFER, m_MeshDataArray[id].NormalBufferID);
+  //glBindBuffer(GL_ARRAY_BUFFER, m_MeshDataArray[id].TexcoordBufferID);
 
   //TODO: GetElementCount? Instead to save the 3 * every frame?
   glDrawElements(GL_TRIANGLES, 3 * m_MeshArray[id].GetTriangleCount(), GL_UNSIGNED_INT, 0);
@@ -261,6 +283,5 @@ unsigned MeshManager::LoadSphere(float radius, int numDivisions) noexcept
     m_MeshArray[index].m_TriangleArray.push_back(triangle);
   }
 
-  //m_MeshArray[index].CalculateNormals();
   return index;
 }

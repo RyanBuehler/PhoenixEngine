@@ -76,7 +76,9 @@ double OBJReader::ReadOBJFile(std::string filepath, Mesh* pMesh,
 
 
   // Now calculate vertex normals
-  _currentMesh->CalculateNormals(bFlipNormals);
+  //_currentMesh->CalculateNormals(bFlipNormals);
+  //_currentMesh->GenerateTexcoords(UV::Generation::SPHERICAL);
+  //_currentMesh->GenerateTexcoords(UV::Generation::CYLINDRICAL);
   //_currentMesh->calcUVs(Mesh::UVType::CYLINDRICAL_UV);
 
   return timeDuration;

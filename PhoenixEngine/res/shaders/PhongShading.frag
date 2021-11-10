@@ -46,6 +46,7 @@ uniform LightArray
 
 in vec4 world_position;
 in vec4 world_normal;
+in vec2 uv;
 
 out vec4 frag_color;
 
@@ -56,6 +57,10 @@ vec3 calcSpotLight(int i, vec4 view_vector);
 void main(void)
 {
   vec3 local = global_amb + mat_emit;
+
+  //TODO:
+  if(uv.x < 0.f)
+    local += vec3(0.1, 0.f, 0.f);
 
   // Calculate the view vector
   vec4 view_vector = vec4(cam_position, 1.f) - world_position;

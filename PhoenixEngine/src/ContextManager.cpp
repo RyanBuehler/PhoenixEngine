@@ -65,13 +65,13 @@ void ContextManager::SetContext(unsigned contextIndex) noexcept
 
   for (size_t i = 0; i < m_Contexts[m_CurrentContextIndex].VertexAttributes.size(); ++i)
   {
-    glVertexAttribPointer(
-      m_Contexts[m_CurrentContextIndex].VertexAttributes[i].ID,
-      m_Contexts[m_CurrentContextIndex].VertexAttributes[i].ElementCount,
-      m_Contexts[m_CurrentContextIndex].VertexAttributes[i].ElementType,
-      m_Contexts[m_CurrentContextIndex].VertexAttributes[i].bIsNormalized,
-      m_Contexts[m_CurrentContextIndex].VertexAttributes[i].Stride,
-      reinterpret_cast<GLvoid*>(m_Contexts[m_CurrentContextIndex].VertexAttributes[i].Offset));
+    //glVertexAttribPointer(
+    //  m_Contexts[m_CurrentContextIndex].VertexAttributes[i].ID,
+    //  m_Contexts[m_CurrentContextIndex].VertexAttributes[i].ElementCount,
+    //  m_Contexts[m_CurrentContextIndex].VertexAttributes[i].ElementType,
+    //  m_Contexts[m_CurrentContextIndex].VertexAttributes[i].bIsNormalized,
+    //  m_Contexts[m_CurrentContextIndex].VertexAttributes[i].Stride,
+    //  reinterpret_cast<GLvoid*>(m_Contexts[m_CurrentContextIndex].VertexAttributes[i].Offset));
     glEnableVertexAttribArray(m_Contexts[m_CurrentContextIndex].VertexAttributes[i].ID);
   }
 

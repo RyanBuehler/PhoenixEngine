@@ -240,6 +240,10 @@ void ImGuiManager::ShowMainMenu_File() noexcept
   {
     m_dOnSceneChange(SceneManager::Scene::Scene2);
   }
+  if (ImGui::MenuItem("Scene Single Object", ""))
+  {
+    m_dOnSceneChange(SceneManager::Scene::SceneSingleObject);
+  }
   if (ImGui::MenuItem("Exit", "Close the Engine"))
   {
     m_dOnClose();
@@ -354,7 +358,7 @@ void ImGuiManager::graphicsUpdateLighting() noexcept
 
   ImGui::TextColored(IMGREEN, "Active Lights:   "); ImGui::SameLine();
   ImGui::SliderInt("##Active Lights", &ImGui::LightingActiveLights, 0, 16);
-  
+
   ImGui::TextColored(IMGREEN, "Selected Light:  "); ImGui::SameLine();
   ImGui::SliderInt("##Selected Light", &ImGui::LightingCurrentLight, 0, 15);
 
@@ -416,7 +420,7 @@ void ImGuiManager::graphicsUpdateLighting() noexcept
   ImGui::TextColored(IMCYAN, "------------------------");
 
   IMGUISPACE;
-  
+
   ImGui::TextColored(IMGREEN, "Material Emission:     ");
   ImGui::ColorEdit3("##Material Emission", &ImGui::LightingGlobalMaterial.m_Emissive[0]);
   ImGui::TextColored(IMGREEN, "Material Ambient:      "); ImGui::SameLine();
