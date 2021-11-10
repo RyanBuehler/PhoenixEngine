@@ -304,5 +304,11 @@
     <None Include="res\shaders\PhongTexture.vert">
       <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
     </None>
+    <None Include="res\shaders\BlinnPhong.frag">
+      <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
+    </None>
+    <None Include="res\shaders\BlinnPhong.vert">
+      <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
+    </None>
   </ItemGroup>
 </Project>

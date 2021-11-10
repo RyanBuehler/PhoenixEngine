@@ -19,30 +19,6 @@
 
 #define IMGUISPACE ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing()
 
-// Instantiation
-namespace ImGui
-{
-  unique_ptr<ImGuiManager> Manager;
-  bool GraphicsWindowEnabled = true;
-  bool GraphicsDebugRenderVertexNormals = false;
-  bool GraphicsDebugRenderSurfaceNormals = false;
-  float GraphicsDebugNormalLength = 0.05f;
-  bool GraphicsRebuildShaders = false;
-
-  int SceneScenario = 1;
-  bool SceneDrawOrbit = false;
-  bool SceneOrbitObjects = true;
-
-  LightingSystem::GlobalLightingData LightingGlobalData;
-  Light::Data LightingDataArray[16];
-  int LightingCurrentLight = 0;
-  int LightingActiveLights = 8;
-  Material LightingGlobalMaterial;
-
-  DemoObject DemoObjectMain = DemoObject::Bunny;
-  const char* DemoObjectFile = "bunny.obj";
-}
-
 #pragma region Local Namespace
 
 // For quicker iteration
@@ -89,9 +65,50 @@ namespace
     "sphere.obj",
     "starwars1.obj"
   };
+
+  static const char* SHADERNAMES[4] =
+  {
+    "Phong Lighting",
+    "Phong Shading",
+    "Blinn-Phong",
+    "Phong Texture"
+  };
+
+  static const char* PROJECTNAMES[2] =
+  {
+    "Spherical",
+    "Cylindrical"
+  };
 }
 
 #pragma endregion
+
+// Instantiation
+namespace ImGui
+{
+  unique_ptr<ImGuiManager> Manager;
+  bool GraphicsWindowEnabled = true;
+  bool GraphicsDebugRenderVertexNormals = false;
+  bool GraphicsDebugRenderSurfaceNormals = false;
+  float GraphicsDebugNormalLength = 0.05f;
+  bool GraphicsRebuildShaders = false;
+  int GraphicsSelectedShader = 1;
+  int GraphicsSelectedProjection = 1;
+
+  int SceneScenario = 1;
+  bool SceneDrawOrbit = false;
+  bool SceneOrbitObjects = true;
+
+  LightingSystem::GlobalLightingData LightingGlobalData;
+  Light::Data LightingDataArray[16];
+  int LightingCurrentLight = 0;
+  int LightingActiveLights = 8;
+  Material LightingGlobalMaterial;
+
+  DemoObject DemoObjectMain = DemoObject::Lucy;
+  const char* DemoObjectFile = DEMOOBJECTFILENAMES[(size_t)ImGui::DemoObject::Lucy];
+}
+
 
 ImGuiManager::ImGuiManager(GLFWwindow* window) noexcept :
   m_bRenderAxes(false),
@@ -273,6 +290,54 @@ void ImGuiManager::graphicsUpdateStats() noexcept
 
   ImGui::TextColored(IMGREEN, "Frame Stats: "); ImGui::SameLine();
   ImGui::Text("Frame: [%05d] Time: %lf", ImGui::GetFrameCount(), ImGui::GetTime());
+
+  IMGUISPACE;
+
+  ImGui::TextColored(IMGREEN, "Shader: "); ImGui::SameLine();
+  static const char* ShaderString = SHADERNAMES[1];
+  if (ImGui::BeginCombo("##Selected Shader", ShaderString))
+  {
+    for (int i = 0; i < 4; ++i)
+    {
+      ImGui::PushID((void*)SHADERNAMES[i]);
+      if (ImGui::Selectable(SHADERNAMES[i], ImGui::GraphicsSelectedShader == i))
+      {
+        ShaderString = SHADERNAMES[i];
+        ImGui::GraphicsSelectedShader = i;
+      }
+      ImGui::PopID();
+    }
+
+    ImGui::EndCombo();
+  }
+
+  IMGUISPACE;
+
+  ImGui::TextColored(IMGREEN, "Projection: "); ImGui::SameLine();
+  static const char* ProjectString = PROJECTNAMES[1];
+  if (ImGui::BeginCombo("##Projection", ProjectString))
+  {
+    for (int i = 0; i < 2; ++i)
+    {
+      ImGui::PushID((void*)PROJECTNAMES[i]);
+      if (ImGui::Selectable(PROJECTNAMES[i], ImGui::GraphicsSelectedProjection == i))
+      {
+        ProjectString = PROJECTNAMES[i];
+        ImGui::GraphicsSelectedProjection = i;
+        m_dOnSceneChange(SceneManager::Scene::Scene2);
+      }
+      ImGui::PopID();
+    }
+
+    ImGui::EndCombo();
+  }
+
+  IMGUISPACE;
+
+  if (ImGui::Button("Rebuild Shaders", { 120, 32 }))
+  {
+    ImGui::GraphicsRebuildShaders = true;
+  }
 }
 
 void ImGuiManager::graphicsUpdateObjects() noexcept
@@ -283,7 +348,7 @@ void ImGuiManager::graphicsUpdateObjects() noexcept
   IMGUISPACE;
 
   ImGui::TextColored(IMGREEN, "Demo Object: "); ImGui::SameLine();
-  static const char* DemoObjectString = DEMOOBJECTNAMES[0];
+  static const char* DemoObjectString = DEMOOBJECTNAMES[(size_t)ImGui::DemoObject::Lucy];
   if (ImGui::BeginCombo("##Demo Object", DemoObjectString))
   {
     for (int i = 0; i < (size_t)ImGui::DemoObject::Count; ++i)
@@ -321,6 +386,9 @@ void ImGuiManager::graphicsUpdateObjects() noexcept
   {
     ImGui::SceneScenario = 3;
     m_dOnSceneChange(SceneManager::Scene::Scene2);
+    ImGui::GraphicsSelectedShader = 3;
+    ImGui::DemoObjectMain = DEMOOBJECTS[4];
+    ImGui::DemoObjectFile = DEMOOBJECTFILENAMES[4];
   }
 }
 
@@ -505,13 +573,6 @@ void ImGuiManager::graphicsUpdateRendering() noexcept
     if (ImGui::RadioButton("Wireframe", &imguiRenderMode, 1))
     {
       Renderer::SetRenderModeWireframe();
-    }
-
-    IMGUISPACE;
-
-    if (ImGui::Button("Rebuild Shaders", { 120, 32 }))
-    {
-      ImGui::GraphicsRebuildShaders = true;
     }
   }
 }

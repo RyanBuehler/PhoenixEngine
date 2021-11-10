@@ -20,7 +20,9 @@ namespace ImGui
   extern bool GraphicsDebugRenderSurfaceNormals;
   extern float GraphicsDebugNormalLength;
   extern bool GraphicsRebuildShaders;
-  
+  extern int GraphicsSelectedShader;
+  extern int GraphicsSelectedProjection;
+
   extern int SceneScenario;
   extern bool SceneDrawOrbit;
   extern bool SceneOrbitObjects;

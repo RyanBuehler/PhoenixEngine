@@ -33,7 +33,7 @@ MeshManager::~MeshManager()
   UnloadMeshes();
 }
 
-unsigned MeshManager::LoadMesh(const string& fileName, bool scaleToUnitSize, bool resetOrigin) noexcept
+unsigned MeshManager::LoadMesh(const string& fileName, bool scaleToUnitSize, bool resetOrigin, int TODO) noexcept
 {
   // Check if this mesh has already been loaded
   for (unsigned i = 0u; i < m_MeshArray.size(); ++i)
@@ -75,7 +75,10 @@ unsigned MeshManager::LoadMesh(const string& fileName, bool scaleToUnitSize, boo
   }
 
   m_MeshArray[index].CalculateNormals();
-  m_MeshArray[index].GenerateTexcoords(UV::Generation::SPHERICAL);
+  if (TODO == 1)
+    m_MeshArray[index].GenerateTexcoords(UV::Generation::CYLINDRICAL);
+  else
+    m_MeshArray[index].GenerateTexcoords(UV::Generation::SPHERICAL);
   // TODO:
   m_MeshArray[index].AssembleVertexData();
 
@@ -112,7 +115,7 @@ unsigned MeshManager::LoadMesh(const string& fileName, bool scaleToUnitSize, boo
   glEnableVertexAttribArray(0);
   glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), (void*)(sizeof(vec3)));
   glEnableVertexAttribArray(1);
-  glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), (void*)(sizeof(vec3)*2));
+  glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), (void*)(sizeof(vec3) * 2));
   glEnableVertexAttribArray(2);
   //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0u, 0);
   //glEnableVertexAttribArray(0);

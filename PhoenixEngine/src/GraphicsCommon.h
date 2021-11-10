@@ -54,6 +54,7 @@ namespace Shader
     DIFFUSE,
     PHONGLIGHT,
     PHONGSHADE,
+    BLINNPHONG,
     PHONGTEXTURE,
     DEBUG,
     COUNT
@@ -65,6 +66,7 @@ namespace Shader
     DIFFUSE,
     PHONGLIGHT,
     PHONGSHADE,
+    BLINNPHONG,
     PHONGTEXTURE,
     DEBUG,
     COUNT

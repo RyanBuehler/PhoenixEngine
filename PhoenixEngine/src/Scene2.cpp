@@ -135,7 +135,7 @@ void Scene2::Scenario1() noexcept
   {
     m_GameObjectArray.emplace_back("sphere");
   }
-  m_GameObjectArray.emplace_back("cube2.obj");
+  m_GameObjectArray.emplace_back("quad.obj");
   m_GameObjectArray.emplace_back(ImGui::DemoObjectFile);
 
   m_MainCamera.SetPosition({ 2.f, 2.f, 10.f });
@@ -183,9 +183,9 @@ void Scene2::Scenario1() noexcept
   temp.SetIsActive(false);
 
   // Plane
-  m_GameObjectArray[16].SetScale({ 5.f, 0.01f, 5.f });
+  m_GameObjectArray[16].SetScale({ 5.f, 5.f, 1.f });
   m_GameObjectArray[16].SetPosition({ 0.f, -0.5f, 0.f });
-  m_GameObjectArray[16].RotateX(0.f);
+  m_GameObjectArray[16].RotateX(-90.f);
   m_GameObjectArray[16].SetMaterial(Material::Type::GLOBAL);
 
   m_GameObjectArray[17].SetPosition(vec3(0.f));

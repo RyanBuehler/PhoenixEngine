@@ -149,6 +149,11 @@ private:
   void LoadPhongShadingContext() noexcept;
 
   /// <summary>
+  /// Loads the "Blinn Phong" rendering context
+  /// </summary>
+  void LoadBlinnPhongContext() noexcept;
+
+  /// <summary>
   /// Loads the "Phong Texture" rendering context
   /// </summary>
   void LoadPhongTextureContext() noexcept;
@@ -168,6 +173,7 @@ private:
   GLint m_DiffuseContextID;         // The ID of the "Diffuse" context
   GLint m_PhongLightingID;          // The ID of the "PhongLighting" context
   GLint m_PhongShadingID;           // The ID of the "PhongShading" context
+  GLint m_BlinnPhongID;           // The ID of the "BlinnPhong" context
   GLint m_PhongTextureID;           // The ID of the "PhongTexture" context
   GLint m_DebugContextID;           // The ID of the "Debug" context
 

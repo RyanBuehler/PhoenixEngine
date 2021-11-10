@@ -47,7 +47,7 @@ public:
   MeshManager(MeshManager&&) = delete;
   MeshManager& operator=(MeshManager&&) = delete;
 
-  unsigned LoadMesh(const string& fileName, bool scaleToUnitSize = false, bool resetOrigin = false) noexcept;
+  unsigned LoadMesh(const string& fileName, bool scaleToUnitSize = false, bool resetOrigin = false, int TODO = 1) noexcept;
 
   void UnloadMeshes() noexcept;
 

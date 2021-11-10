@@ -94,8 +94,6 @@ void main(void)
   float fog_value = (global_fog_far - view_vector_len) / (global_fog_far - global_fog_near);
 
   frag_color = vec4(fog_value * local + (1.f - fog_value) * global_fog, 1.f);
-
-  frag_color = texture(samp_dif, uv);
 }
 
 vec3 calcDirectionLight(int i, vec4 view_vector)
@@ -104,7 +102,7 @@ vec3 calcDirectionLight(int i, vec4 view_vector)
   vec4 light_vector = normalize(-lights[i].Direction);
 
   // Calculates the reflection vector
-  vec4 reflect_vector = reflect(-light_vector, world_normal);
+  vec4 reflect_vector = 2.f * dot(world_normal, light_vector) * world_normal - light_vector;
 
   vec3 ambient_value = lights[i].Ambience.xyz * mat_amb;
   vec3 diffuse_value = lights[i].Diffuse.xyz * texture(samp_dif, uv).xyz * max(dot(world_normal, light_vector), 0.f);

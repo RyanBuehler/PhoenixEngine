@@ -109,6 +109,8 @@
     <ClInclude Include="src\Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\shaders\BlinnPhong.frag" />
+    <None Include="res\shaders\BlinnPhong.vert" />
     <None Include="res\shaders\Diffuse.frag" />
     <None Include="res\shaders\Debug.frag" />
     <None Include="res\shaders\Diffuse.vert" />

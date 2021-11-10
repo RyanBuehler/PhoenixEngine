@@ -116,6 +116,11 @@ void ShaderManager::LoadShaders() noexcept
 
   // TODO: This should happen automatically or at least in 1 place
 
+  //m_VertexShaders[static_cast<unsigned>(Shader::Vertex::DIFFUSE)] =
+  //  CreateAndLoadShader("Diffuse.vert", GL_VERTEX_SHADER);
+  //m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::DIFFUSE)] =
+  //  CreateAndLoadShader("Diffuse.frag", GL_FRAGMENT_SHADER);
+
   m_VertexShaders[static_cast<unsigned>(Shader::Vertex::PHONGLIGHT)] =
     CreateAndLoadShader("PhongLighting.vert", GL_VERTEX_SHADER);
   m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::PHONGLIGHT)] =
@@ -126,15 +131,15 @@ void ShaderManager::LoadShaders() noexcept
   m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::PHONGSHADE)] =
     CreateAndLoadShader("PhongShading.frag", GL_FRAGMENT_SHADER);
 
+  m_VertexShaders[static_cast<unsigned>(Shader::Vertex::BLINNPHONG)] =
+    CreateAndLoadShader("BlinnPhong.vert", GL_VERTEX_SHADER);
+  m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::BLINNPHONG)] =
+    CreateAndLoadShader("BlinnPhong.frag", GL_FRAGMENT_SHADER);
+
   m_VertexShaders[static_cast<unsigned>(Shader::Vertex::PHONGTEXTURE)] =
     CreateAndLoadShader("PhongTexture.vert", GL_VERTEX_SHADER);
   m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::PHONGTEXTURE)] =
     CreateAndLoadShader("PhongTexture.frag", GL_FRAGMENT_SHADER);
-
-  //m_VertexShaders[static_cast<unsigned>(Shader::Vertex::DIFFUSE)] =
-  //  CreateAndLoadShader("Diffuse.vert", GL_VERTEX_SHADER);
-  //m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::DIFFUSE)] =
-  //  CreateAndLoadShader("Diffuse.frag", GL_FRAGMENT_SHADER);
 
   m_VertexShaders[static_cast<unsigned>(Shader::Vertex::DEBUG)] =
     CreateAndLoadShader("Debug.vert", GL_VERTEX_SHADER);
