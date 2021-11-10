@@ -7,12 +7,16 @@
 #pragma once
 #include "GraphicsCommon.h"
 
+//TODO:
+class Texture;
+
 class Material
 {
 public:
   enum class Type
   {
     CUSTOM,
+    TEXTURE,
     BASIC,
     LIGHT,
     GLOBAL,
@@ -117,6 +121,7 @@ private:
   float m_SpecularExp;        // The shininness of the object
 
   Type m_Type;                // Type if it exists
+
 
   /// <summary>
   /// Helper function for predefined defaults of Material types

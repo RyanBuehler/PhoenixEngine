@@ -8,6 +8,7 @@
 #include "Mesh.h"
 #include "GLEW/glew.h"
 #include <glm/gtc/epsilon.hpp>
+#include <glm/gtc/constants.hpp>
 //TODO:
 #include "DebugRenderer.h"
 #include "Colors.h"
@@ -294,41 +295,36 @@ void Mesh::calculateVertexNormals() noexcept
 void Mesh::calculateSphereUVs() noexcept
 {
   m_TexcoordArray.clear();
-
-  m_TexcoordArray.resize(m_PositionArray.size(), vec2(0.1f, 0.2f));
-  return;
-
-
   vec3 bounds = CalculateBoundingBoxSize();
   vec3 centroid = FindCenterOfMass();
   for (const vec3& vertex : m_PositionArray)
   {
     vec3 pos = vertex - centroid;
-    float theta = glm::atan(pos.y / pos.x);
+    float theta = glm::atan(pos.z / pos.x);
 
-    if (pos.y < 0)
+    if (pos.z < 0)
     {
       if (pos.x < 0)
       {
-        theta += 180.f;
+        theta += glm::pi<float>();
       }
       else
       {
-        theta += 270.f;
+        theta += glm::pi<float>() * 3.f / 2.f;
       }
     }
     else
     {
       if (pos.x < 0)
       {
-        theta += 90.f;
+        theta += glm::pi<float>() / 2.f;
       }
     }
 
-    float phi = acos(pos.z / glm::length(pos));
+    float phi = acos(pos.y / glm::length(pos));
 
-    float u = theta / 360.f;
-    float v = (180.f - phi) / 180.f;
+    float u = theta / glm::two_pi<float>();
+    float v = (glm::pi<float>() - phi) / glm::pi<float>();
 
     m_TexcoordArray.emplace_back(u, v);
   }
@@ -342,11 +338,36 @@ void Mesh::calculateCylinderUVs() noexcept
   for (const vec3& vertex : m_PositionArray)
   {
     vec3 pos = vertex - centroid;
-    float theta = glm::atan(pos.y / pos.x);
+    float theta = glm::atan(pos.z / pos.x);
 
-    float u = theta / 360.f;
-    float v = (pos.z - bounds.z / -2.f) / bounds.z;
+    if (pos.z < 0)
+    {
+      if (pos.x < 0)
+      {
+        theta += glm::pi<float>();
+      }
+      else
+      {
+        theta += glm::pi<float>() * 3.f / 2.f;
+      }
+    }
+    else
+    {
+      if (pos.x < 0)
+      {
+        theta += glm::pi<float>() / 2.f;
+      }
+    }
+
+    float u = theta / glm::two_pi<float>();
+    float v = (pos.y - bounds.y / -2.f) / bounds.y;
 
     m_TexcoordArray.emplace_back(u, v);
   }
+}
+
+void Mesh::calculateCubeMapUVs() noexcept
+{
+  m_TexcoordArray.clear();
+  
 }

@@ -82,7 +82,6 @@
     vec3 FindCenterOfMass() const noexcept;
     void ResetOriginToCenterOfMass() noexcept;
     void GenerateTexcoords(UV::Generation generation) noexcept;
-
     void AssembleVertexData() noexcept;
 
   private:
@@ -90,6 +89,7 @@
     void calculateVertexNormals() noexcept;
     void calculateSphereUVs() noexcept;
     void calculateCylinderUVs() noexcept;
+    void calculateCubeMapUVs() noexcept;
 
   private:
     friend class MeshManager;

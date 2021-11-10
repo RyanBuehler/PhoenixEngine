@@ -132,6 +132,9 @@ void Material::setByType(Type type) noexcept
   case Material::Type::CUSTOM:
     m_Type = Type::CUSTOM;
     break;
+  case Material::Type::TEXTURE:
+    m_Type = Type::TEXTURE;
+    break;
   case Material::Type::COUNT:
   default:
     break;

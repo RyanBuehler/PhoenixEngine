@@ -32,13 +32,13 @@ unsigned ShaderManager::GetFragmentShaderID(Shader::Fragment shader) const noexc
   return m_FragmentShaders[static_cast<unsigned>(shader)];
 }
 
-bool ShaderManager::RelinkShader(GLuint& programID, GLint vertexShaderID, GLint fragmentShaderID) noexcept
+bool ShaderManager::RelinkShader(GLuint& programID, GLint vertexShaderID, GLint fragmentShaderID, const char* vertexFile, const char* fragmentFile) noexcept
 {
   glDeleteProgram(programID);
   
   //TODO: hard coded for testing purposes only
-  LoadShader(vertexShaderID, "PhongShading.vert");
-  LoadShader(fragmentShaderID, "PhongShading.frag");
+  LoadShader(vertexShaderID, vertexFile);
+  LoadShader(fragmentShaderID, fragmentFile);
 
   programID = glCreateProgram();
 
@@ -126,10 +126,15 @@ void ShaderManager::LoadShaders() noexcept
   m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::PHONGSHADE)] =
     CreateAndLoadShader("PhongShading.frag", GL_FRAGMENT_SHADER);
 
-  m_VertexShaders[static_cast<unsigned>(Shader::Vertex::DIFFUSE)] =
-    CreateAndLoadShader("Diffuse.vert", GL_VERTEX_SHADER);
-  m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::DIFFUSE)] =
-    CreateAndLoadShader("Diffuse.frag", GL_FRAGMENT_SHADER);
+  m_VertexShaders[static_cast<unsigned>(Shader::Vertex::PHONGTEXTURE)] =
+    CreateAndLoadShader("PhongTexture.vert", GL_VERTEX_SHADER);
+  m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::PHONGTEXTURE)] =
+    CreateAndLoadShader("PhongTexture.frag", GL_FRAGMENT_SHADER);
+
+  //m_VertexShaders[static_cast<unsigned>(Shader::Vertex::DIFFUSE)] =
+  //  CreateAndLoadShader("Diffuse.vert", GL_VERTEX_SHADER);
+  //m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::DIFFUSE)] =
+  //  CreateAndLoadShader("Diffuse.frag", GL_FRAGMENT_SHADER);
 
   m_VertexShaders[static_cast<unsigned>(Shader::Vertex::DEBUG)] =
     CreateAndLoadShader("Debug.vert", GL_VERTEX_SHADER);

@@ -23,7 +23,7 @@ public:
   inline size_t GetVertexShaderCount() const noexcept { return m_VertexShaders.size(); }
   inline size_t GetFragmentShaderCount() const noexcept { return m_FragmentShaders.size(); }
 
-  bool RelinkShader(GLuint& programID, GLint vertexShaderID, GLint fragmentShaderID) noexcept;
+  bool RelinkShader(GLuint& programID, GLint vertexShaderID, GLint fragmentShaderID, const char* vertexFile, const char* fragmentFile) noexcept;
 
 private:
   GLint CreateShader(GLenum shaderType) noexcept;

@@ -16,6 +16,7 @@ Texture::Texture(const string& name) noexcept :
   m_Height(-1),
   m_ChannelCount(-1)
 {
+  Log::Trace("Texture Created: " + name);
 }
 
 GLuint Texture::LoadTextureFromFile(const string& file) noexcept
@@ -35,7 +36,7 @@ GLuint Texture::LoadTextureFromFile(const string& file) noexcept
 
   if (data)
   {
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_Width, m_Height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
   }
   else
@@ -50,5 +51,10 @@ GLuint Texture::LoadTextureFromFile(const string& file) noexcept
   // Disable Texture state
   glBindTexture(GL_TEXTURE_2D, 0u);
 
+  return m_TextureID;
+}
+
+GLuint Texture::GetTextureID() const noexcept
+{
   return m_TextureID;
 }

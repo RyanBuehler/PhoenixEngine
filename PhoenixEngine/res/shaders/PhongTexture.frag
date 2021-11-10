@@ -1,5 +1,5 @@
 /*******************************************************************************
-Shader: PhongLighting Shader [Fragment]
+Shader: PhongTexture Shader [Fragment]
 Author: Ryan Buehler
 *******************************************************************************/
 #version 460 core
@@ -44,6 +44,9 @@ uniform LightArray
   Light lights[LIGHTCOUNT];
 };
 
+uniform sampler2D samp_dif;
+uniform sampler2D samp_spec;
+
 in vec4 world_position;
 in vec4 world_normal;
 in vec2 uv;
@@ -57,7 +60,7 @@ vec3 calcSpotLight(int i, vec4 view_vector);
 void main(void)
 {
   vec3 local = global_amb + mat_emit;
-
+  
   // Calculate the view vector
   vec4 view_vector = vec4(cam_position, 1.f) - world_position;
   float view_vector_len = length(view_vector);
@@ -91,6 +94,8 @@ void main(void)
   float fog_value = (global_fog_far - view_vector_len) / (global_fog_far - global_fog_near);
 
   frag_color = vec4(fog_value * local + (1.f - fog_value) * global_fog, 1.f);
+
+  frag_color = texture(samp_dif, uv);
 }
 
 vec3 calcDirectionLight(int i, vec4 view_vector)
@@ -102,8 +107,8 @@ vec3 calcDirectionLight(int i, vec4 view_vector)
   vec4 reflect_vector = reflect(-light_vector, world_normal);
 
   vec3 ambient_value = lights[i].Ambience.xyz * mat_amb;
-  vec3 diffuse_value = lights[i].Diffuse.xyz * mat_dif * max(dot(world_normal, light_vector), 0.f);
-  vec3 specular_value = lights[i].Specular.xyz * mat_spc * pow(max(dot(reflect_vector, view_vector), 0.f), mat_spc_exp);
+  vec3 diffuse_value = lights[i].Diffuse.xyz * texture(samp_dif, uv).xyz * max(dot(world_normal, light_vector), 0.f);
+  vec3 specular_value = lights[i].Specular.xyz * texture(samp_spec, uv).xyz * pow(max(dot(reflect_vector, view_vector), 0.f), mat_spc_exp);
 
   return ambient_value + diffuse_value + specular_value;
 }
@@ -120,8 +125,8 @@ vec3 calcPointLight(int i, vec4 view_vector)
   vec4 reflect_vector_norm = normalize(reflect_vector);
 
   vec3 ambient_value = lights[i].Ambience.xyz * mat_amb;
-  vec3 diffuse_value = lights[i].Diffuse.xyz * mat_dif * max(dot(world_normal, light_vector_norm), 0.f);
-  vec3 specular_value = lights[i].Specular.xyz * mat_spc * pow(max(dot(reflect_vector_norm, view_vector), 0.f), mat_spc_exp);
+  vec3 diffuse_value = lights[i].Diffuse.xyz * texture(samp_dif, uv).xyz * max(dot(world_normal, light_vector_norm), 0.f);
+  vec3 specular_value = lights[i].Specular.xyz * texture(samp_spec, uv).xyz * pow(max(dot(reflect_vector_norm, view_vector), 0.f), mat_spc_exp);
 
   float attenuation = global_att1 + global_att2 * light_vector_len + global_att3 * light_vector_len * light_vector_len;
   attenuation = min(1.f / attenuation, 1.f);
@@ -153,8 +158,8 @@ vec3 calcSpotLight(int i, vec4 view_vector)
 
     //return vec3(falloff, falloff, falloff);
     vec3 ambient_value = lights[i].Ambience.xyz * mat_amb;
-    vec3 diffuse_value = falloff * lights[i].Diffuse.xyz * mat_dif * max(dot(world_normal, light_vector_norm), 0.f);
-    vec3 specular_value = falloff * lights[i].Specular.xyz * mat_spc * pow(max(dot(reflect_vector_norm, view_vector), 0.f), mat_spc_exp);
+    vec3 diffuse_value = falloff * lights[i].Diffuse.xyz * texture(samp_dif, uv).xyz * max(dot(world_normal, light_vector_norm), 0.f);
+    vec3 specular_value = falloff * lights[i].Specular.xyz * texture(samp_spec, uv).xyz * pow(max(dot(reflect_vector_norm, view_vector), 0.f), mat_spc_exp);
 
     float attenuation = global_att1 + global_att2 * light_vector_len + global_att3 * light_vector_len * light_vector_len;
     attenuation = min(1.f / attenuation, 1.f);

@@ -12,6 +12,7 @@
 #include "Camera.h"
 #include "MeshManager.h"
 #include "LightingSystem.h"
+#include "Texture.h"
 
 class Renderer
 {
@@ -148,6 +149,11 @@ private:
   void LoadPhongShadingContext() noexcept;
 
   /// <summary>
+  /// Loads the "Phong Texture" rendering context
+  /// </summary>
+  void LoadPhongTextureContext() noexcept;
+
+  /// <summary>
   /// Loads the "Debug" rendering context
   /// </summary>
   /// <returns></returns>
@@ -162,6 +168,7 @@ private:
   GLint m_DiffuseContextID;         // The ID of the "Diffuse" context
   GLint m_PhongLightingID;          // The ID of the "PhongLighting" context
   GLint m_PhongShadingID;           // The ID of the "PhongShading" context
+  GLint m_PhongTextureID;           // The ID of the "PhongTexture" context
   GLint m_DebugContextID;           // The ID of the "Debug" context
 
   //TODO: For testing only
@@ -170,5 +177,8 @@ private:
   GLuint uboBuffer;
   GLuint indices[5];
   GLint offsets[5];
+
+  Texture diffTex;
+  Texture specTex;
 };
 

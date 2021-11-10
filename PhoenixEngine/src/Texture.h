@@ -28,6 +28,8 @@ public:
 
   GLuint LoadTextureFromFile(const string& file) noexcept;
 
+  GLuint GetTextureID() const noexcept;
+
 private:
   string m_Name;
   GLuint m_TextureID;

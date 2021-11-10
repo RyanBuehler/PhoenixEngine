@@ -80,7 +80,6 @@ unsigned MeshManager::LoadMesh(const string& fileName, bool scaleToUnitSize, boo
   m_MeshArray[index].AssembleVertexData();
 
 
-
   // The Position buffer
   glGenBuffers(1, &m_MeshDataArray[index].PositionBufferID);
   glBindBuffer(GL_ARRAY_BUFFER, m_MeshDataArray[index].PositionBufferID);
