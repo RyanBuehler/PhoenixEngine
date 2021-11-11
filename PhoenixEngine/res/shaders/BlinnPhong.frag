@@ -95,7 +95,7 @@ void main(void)
     }
   }
 
-  // Fog
+  // Fog Calculations
   float fog_value = (global_fog_far - view_vector_len) / (global_fog_far - global_fog_near);
 
   frag_color = vec4(fog_value * local + (1.f - fog_value) * global_fog, 1.f);
@@ -159,7 +159,6 @@ vec3 calcSpotLight(int i, vec4 view_vector)
 
     float falloff = 1.f - clamp((theta - inner) / (outer - inner), 0.f, 1.f);
 
-    //return vec3(falloff, falloff, falloff);
     vec3 ambient_value = lights[i].Ambience.xyz * mat_amb;
     vec3 diffuse_value = falloff * lights[i].Diffuse.xyz * mat_dif * max(dot(world_normal, light_vector_norm), 0.f);
     vec3 specular_value = falloff * lights[i].Specular.xyz * mat_spc * pow(max(dot(world_normal, half_vector), 0.f), mat_spc_exp);
