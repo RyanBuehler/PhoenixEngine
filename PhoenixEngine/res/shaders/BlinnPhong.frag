@@ -1,5 +1,5 @@
 /*******************************************************************************
-Shader: PhongLighting Shader [Fragment]
+Shader: BlinnPhong Shader [Fragment]
 Author: Ryan Buehler
 *******************************************************************************/
 #version 460 core
