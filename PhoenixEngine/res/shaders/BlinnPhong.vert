@@ -27,7 +27,7 @@ void main(void)
   // Calculate the world position of the normal
   world_normal = normalize(transpose(inverse(model_matrix)) * vec4(normal, 0));
 
-  // Pass the texture coordinates 
+  // Pass the texture coordinates
   uv = texcoord;
 
   gl_Position = pers_matrix * view_matrix * world_position;
