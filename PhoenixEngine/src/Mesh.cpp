@@ -19,6 +19,7 @@ Mesh::Mesh(const vec3& origin, bool isStatic) noexcept :
   m_SurfaceNormalPositionArray(),
   m_TriangleArray(),
   m_TexcoordArray(),
+  m_VertexData(),
   m_bIsDirty(true)
 {}
 
