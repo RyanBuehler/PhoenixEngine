@@ -3,11 +3,12 @@
 The Phoenix Engine is a humble rendering engine and wrapper utilized by Ryan Buehler as a professional development project to explore, learn, experiment and present as code example to interested parties.
 
 ## Currently Implemented Features
-- [X] Phong lighting with custom materials
+- [X] Texture Loading/Mapping
+- [X] Phong/Blinn-Phong lighting with custom materials
 - [x] Context Manager allows for easy switching of a single render style
 - [x] ImGui integration
 - [x] Custom loader for .obj files
-- [x] Normals
+- [x] Normal Generation
 - [x] GameObject class
 - [x] Scene and Scene Manager
 
