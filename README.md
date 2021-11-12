@@ -1,6 +1,6 @@
 # Phoenix Engine - *Ryan Buehler's Independent Rendering Engine*
 
-The Phoenix Engine is a humble rendering engine and wrapper utilized by Ryan Buehler as a professional development project to explore, learn, experiment and present as code example to interested parties.
+The Phoenix Engine is a humble rendering engine and wrapper utilized by Ryan Buehler as a professional development project to explore, learn, experiment and present as code example to interested parties. It is a Work In Progress and will be continuously evolving.
 
 ## Currently Implemented Features
 - [X] Texture Loading/Mapping
