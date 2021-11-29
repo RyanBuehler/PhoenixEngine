@@ -33,7 +33,11 @@ MeshManager::~MeshManager()
   UnloadMeshes();
 }
 
-unsigned MeshManager::LoadMesh(const string& fileName, bool scaleToUnitSize, bool resetOrigin, int TODO) noexcept
+unsigned MeshManager::LoadMesh(
+  const string& fileName,
+  bool scaleToUnitSize,
+  bool resetOrigin,
+  UV::Generation uvGeneration) noexcept
 {
   // Check if this mesh has already been loaded
   for (unsigned i = 0u; i < m_MeshArray.size(); ++i)
@@ -80,17 +84,14 @@ unsigned MeshManager::LoadMesh(const string& fileName, bool scaleToUnitSize, boo
   }
 
   // If the normals weren't calculated, calculate them now
-  if(!mesh.NormalsAreCalculated())
+  if (!mesh.NormalsAreCalculated())
     mesh.CalculateNormals();
 
-  if (TODO == 1)
-    mesh.GenerateTexcoords(UV::Generation::CYLINDRICAL);
-  else
-    mesh.GenerateTexcoords(UV::Generation::SPHERICAL);
+  // Generate the UVs
+  mesh.GenerateTexcoords(uvGeneration);
 
-  // TODO:
+  // Assemble the Vertex Data for the GPU
   mesh.AssembleVertexData();
-
 
   // The Vertex buffer
   glGenBuffers(1, &m_MeshDataArray[index].PositionBufferID);

@@ -51,6 +51,11 @@
 
 #pragma endregion
 
+    struct BoundingBox
+    {
+      float xMin, yMin, zMin, xMax, yMax, zMax;
+    };
+
   public:
     /// <summary>
     /// Default constructor
@@ -187,6 +192,12 @@
     const vector<vec2>& GetTexcoordArray() const noexcept;
 
     /// <summary>
+    /// Calculates the bounding box around the mesh in object space (min->max in x,y,z)
+    /// </summary>
+    /// <returns>A structure of min/max in x,y,z</returns>
+    BoundingBox CalculateBoundingBox() const noexcept;
+
+    /// <summary>
     /// Calculates the bounding box size around the mesh in object space (min->max in x,y,z)
     /// </summary>
     /// <returns>A 3 float vector of the length between min and max in each dimension</returns>
@@ -243,6 +254,11 @@
     /// Helper function to calculate vertex normals
     /// </summary>
     void calculateVertexNormals() noexcept;
+
+    /// <summary>
+    /// Helper function to calculate UV coordinates with a planar projection
+    /// </summary>
+    void calculatePlanarUVs() noexcept;
 
     /// <summary>
     /// Helper function to calculate UV coordinates with a spherical projection

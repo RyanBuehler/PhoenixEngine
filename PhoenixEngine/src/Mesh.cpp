@@ -94,27 +94,35 @@ const vector<vec2>& Mesh::GetTexcoordArray() const noexcept
   return m_TexcoordArray;
 }
 
-vec3 Mesh::CalculateBoundingBoxSize() noexcept
+Mesh::BoundingBox Mesh::CalculateBoundingBox() const noexcept
 {
-  float xMin = numeric_limits<float>::max();
-  float yMin = numeric_limits<float>::max();
-  float zMin = numeric_limits<float>::max();
-  float xMax = numeric_limits<float>::min();
-  float yMax = numeric_limits<float>::min();
-  float zMax = numeric_limits<float>::min();
+  BoundingBox bounds = { 0.f };
+  bounds.xMin = numeric_limits<float>::max();
+  bounds.yMin = numeric_limits<float>::max();
+  bounds.zMin = numeric_limits<float>::max();
+  bounds.xMax = numeric_limits<float>::min();
+  bounds.yMax = numeric_limits<float>::min();
+  bounds.zMax = numeric_limits<float>::min();
 
   // Find the minimum x, y, z values
   for (const vec3& v : m_PositionArray)
   {
-    xMin = std::min(v.x, xMin);
-    xMax = std::max(v.x, xMax);
-    yMin = std::min(v.y, yMin);
-    yMax = std::max(v.y, yMax);
-    zMin = std::min(v.z, zMin);
-    zMax = std::max(v.z, zMax);
+    bounds.xMin = std::min(v.x, bounds.xMin);
+    bounds.xMax = std::max(v.x, bounds.xMax);
+    bounds.yMin = std::min(v.y, bounds.yMin);
+    bounds.yMax = std::max(v.y, bounds.yMax);
+    bounds.zMin = std::min(v.z, bounds.zMin);
+    bounds.zMax = std::max(v.z, bounds.zMax);
   }
 
-  return vec3(xMax - xMin, yMax - yMin, zMax - zMin);
+  return bounds;
+}
+
+vec3 Mesh::CalculateBoundingBoxSize() noexcept
+{
+  BoundingBox bounds = CalculateBoundingBox();
+
+  return vec3(bounds.xMax - bounds.xMin, bounds.yMax - bounds.yMin, bounds.zMax - bounds.zMin);
 }
 
 float Mesh::CalculateWidestPoint() noexcept
@@ -171,34 +179,17 @@ void Mesh::ScaleToUnitSize() noexcept
   {
     np *= factor;
   }
-
 }
 
 vec3 Mesh::FindCentroid() const noexcept
 {
-  float xMin = numeric_limits<float>::max();
-  float yMin = numeric_limits<float>::max();
-  float zMin = numeric_limits<float>::max();
-  float xMax = numeric_limits<float>::min();
-  float yMax = numeric_limits<float>::min();
-  float zMax = numeric_limits<float>::min();
-
-  // Find the min/max of each vertex in x,y,z location
-  for (const vec3& v : m_PositionArray)
-  {
-    xMin = std::min(v.x, xMin);
-    xMax = std::max(v.x, xMax);
-    yMin = std::min(v.y, yMin);
-    yMax = std::max(v.y, yMax);
-    zMin = std::min(v.z, zMin);
-    zMax = std::max(v.z, zMax);
-  }
+  BoundingBox bounds = CalculateBoundingBox();
 
   // Average the center of 
   vec3 center(
-    xMin + ((xMax - xMin) / 2.f),
-    yMin + ((yMax - yMin) / 2.f),
-    zMin + ((zMax - zMin) / 2.f)
+    bounds.xMin + ((bounds.xMax - bounds.xMin) / 2.f),
+    bounds.yMin + ((bounds.yMax - bounds.yMin) / 2.f),
+    bounds.zMin + ((bounds.zMax - bounds.zMin) / 2.f)
   );
 
   return center;
@@ -234,6 +225,7 @@ void Mesh::GenerateTexcoords(UV::Generation generation) noexcept
     calculateCylinderUVs();
     break;
   case UV::Generation::PLANAR:
+    calculatePlanarUVs();
     break;
   case UV::Generation::CUSTOM:
   default:
@@ -242,7 +234,6 @@ void Mesh::GenerateTexcoords(UV::Generation generation) noexcept
   m_MeshIsDirty = true;
 }
 
-//TODO: Fix this
 void Mesh::AssembleVertexData() noexcept
 {
   for (size_t i = 0; i < m_PositionArray.size(); ++i)
@@ -306,6 +297,23 @@ void Mesh::calculateVertexNormals() noexcept
       m_VertexNormalArray[i] = 1.f / normArray[i].second * normArray[i].first;
     }
   }
+  m_MeshIsDirty = true;
+}
+
+void Mesh::calculatePlanarUVs() noexcept
+{
+  m_TexcoordArray.clear();
+
+  // First get the bounding box size
+  BoundingBox bounds = CalculateBoundingBox();
+
+  for (const vec3& vertex : m_PositionArray)
+  {
+    float u = (vertex.x - bounds.xMin) / (bounds.xMax - bounds.xMin);
+    float v = (vertex.y - bounds.yMin) / (bounds.yMax - bounds.yMin);
+    m_TexcoordArray.emplace_back(u, v);
+  }
+
   m_MeshIsDirty = true;
 }
 

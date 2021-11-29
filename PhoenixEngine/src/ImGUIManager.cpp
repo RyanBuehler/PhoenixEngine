@@ -73,12 +73,6 @@ namespace
     "Blinn-Phong",
     "Phong Texture"
   };
-
-  static const char* PROJECTNAMES[2] =
-  {
-    "Spherical",
-    "Cylindrical"
-  };
 }
 
 #pragma endregion
@@ -93,7 +87,7 @@ namespace ImGui
   float GraphicsDebugNormalLength = 0.05f;
   bool GraphicsRebuildShaders = false;
   int GraphicsSelectedShader = 1;
-  int GraphicsSelectedProjection = 1;
+  UV::Generation GraphicsSelectedProjection = UV::Generation::PLANAR;
 
   int SceneScenario = 1;
   bool SceneDrawOrbit = false;
@@ -314,18 +308,33 @@ void ImGuiManager::graphicsUpdateStats() noexcept
   IMGUISPACE;
 
   ImGui::TextColored(IMGREEN, "Projection: "); ImGui::SameLine();
-  static const char* ProjectString = PROJECTNAMES[1];
+  static const char* ProjectString = "Planar";
   if (ImGui::BeginCombo("##Projection", ProjectString))
   {
-    for (int i = 0; i < 2; ++i)
+    ImGui::PushID((void*)"Planar");
+    if (ImGui::Selectable("Planar", ImGui::GraphicsSelectedProjection == UV::Generation::PLANAR))
     {
-      ImGui::PushID((void*)PROJECTNAMES[i]);
-      if (ImGui::Selectable(PROJECTNAMES[i], ImGui::GraphicsSelectedProjection == i))
-      {
-        ProjectString = PROJECTNAMES[i];
-        ImGui::GraphicsSelectedProjection = i;
-        m_dOnSceneChange(SceneManager::Scene::Scene2);
-      }
+      ProjectString = "Planar";
+      ImGui::GraphicsSelectedProjection = UV::Generation::PLANAR;
+      m_dOnSceneChange(SceneManager::Scene::Scene2);
+      ImGui::PopID();
+    }
+
+    ImGui::PushID((void*)"Spherical");
+    if (ImGui::Selectable("Spherical", ImGui::GraphicsSelectedProjection == UV::Generation::SPHERICAL))
+    {
+      ProjectString = "Spherical";
+      ImGui::GraphicsSelectedProjection = UV::Generation::SPHERICAL;
+      m_dOnSceneChange(SceneManager::Scene::Scene2);
+      ImGui::PopID();
+    }
+
+    ImGui::PushID((void*)"Cylindrical");
+    if (ImGui::Selectable("Cylindrical", ImGui::GraphicsSelectedProjection == UV::Generation::CYLINDRICAL))
+    {
+      ProjectString = "Cylindrical";
+      ImGui::GraphicsSelectedProjection = UV::Generation::CYLINDRICAL;
+      m_dOnSceneChange(SceneManager::Scene::Scene2);
       ImGui::PopID();
     }
 

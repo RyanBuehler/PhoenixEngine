@@ -51,7 +51,7 @@ public:
     const string& fileName,
     bool scaleToUnitSize = false,
     bool resetOrigin = false,
-    int TODO = 1) noexcept;
+    UV::Generation uvGeneration = UV::Generation::PLANAR) noexcept;
 
   void UnloadMeshes() noexcept;
 
