@@ -64,48 +64,45 @@ unsigned MeshManager::LoadMesh(const string& fileName, bool scaleToUnitSize, boo
     }
   }
 
+  // Set up reference for legibility
+  Mesh& mesh = m_MeshArray[index];
+
+  // Scale to unit size (1x1x1 cube)
   if (scaleToUnitSize)
   {
-    m_MeshArray[index].ScaleToUnitSize();
+    mesh.ScaleToUnitSize();
   }
 
+  // Reset the origin to the centroid
   if (resetOrigin)
   {
-    m_MeshArray[index].ResetOriginToCentroid();
+    mesh.ResetOriginToCentroid();
   }
 
-  m_MeshArray[index].CalculateNormals();
+  // If the normals weren't calculated, calculate them now
+  if(!mesh.NormalsAreCalculated())
+    mesh.CalculateNormals();
+
   if (TODO == 1)
-    m_MeshArray[index].GenerateTexcoords(UV::Generation::CYLINDRICAL);
+    mesh.GenerateTexcoords(UV::Generation::CYLINDRICAL);
   else
-    m_MeshArray[index].GenerateTexcoords(UV::Generation::SPHERICAL);
+    mesh.GenerateTexcoords(UV::Generation::SPHERICAL);
+
   // TODO:
-  m_MeshArray[index].AssembleVertexData();
+  mesh.AssembleVertexData();
 
 
-  // The Position buffer
+  // The Vertex buffer
   glGenBuffers(1, &m_MeshDataArray[index].PositionBufferID);
   glBindBuffer(GL_ARRAY_BUFFER, m_MeshDataArray[index].PositionBufferID);
-  glBufferData(GL_ARRAY_BUFFER, m_MeshArray[index].GetVertexCount() * sizeof(Mesh::VertexData),
-    m_MeshArray[index].m_VertexData.data(), GL_STATIC_DRAW);
-
-  //// The Normal buffer
-  //glGenBuffers(1, &m_MeshDataArray[index].NormalBufferID);
-  //glBindBuffer(GL_ARRAY_BUFFER, m_MeshDataArray[index].NormalBufferID);
-  //glBufferData(GL_ARRAY_BUFFER, m_MeshArray[index].GetNormalCount() * sizeof(vec3),
-  //m_MeshArray[index].m_VertexNormalArray.data(), GL_STATIC_DRAW);
-
-  //// The Texcoord buffer
-  //glGenBuffers(1, &m_MeshDataArray[index].TexcoordBufferID);
-  //glBindBuffer(GL_ARRAY_BUFFER, m_MeshDataArray[index].TexcoordBufferID);
-  //glBufferData(GL_ARRAY_BUFFER, m_MeshArray[index].GetTexcoordCount() * sizeof(vec2),
-  //m_MeshArray[index].m_TexcoordArray.data(), GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, mesh.GetVertexCount() * sizeof(Mesh::VertexData),
+    mesh.m_VertexData.data(), GL_STATIC_DRAW);
 
   // The Triangle buffer
   glGenBuffers(1, &m_MeshDataArray[index].TriangleBufferID);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_MeshDataArray[index].TriangleBufferID);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_MeshArray[index].GetTriangleCount() * sizeof(Mesh::Triangle),
-    m_MeshArray[index].m_TriangleArray.data(), GL_STATIC_DRAW);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.GetTriangleCount() * sizeof(Mesh::Triangle),
+    mesh.m_TriangleArray.data(), GL_STATIC_DRAW);
 
   glGenVertexArrays(1, &m_MeshDataArray[index].VertexArrayID);
   glBindVertexArray(m_MeshDataArray[index].VertexArrayID);
@@ -117,18 +114,11 @@ unsigned MeshManager::LoadMesh(const string& fileName, bool scaleToUnitSize, boo
   glEnableVertexAttribArray(1);
   glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), (void*)(sizeof(vec3) * 2));
   glEnableVertexAttribArray(2);
-  //glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0u, 0);
-  //glEnableVertexAttribArray(0);
-  //glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0u, 0);
-  //glEnableVertexAttribArray(1);
-  //glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0u, 0);
-  //glEnableVertexAttribArray(2);
 
   glBindVertexArray(0u);
 
   Log::Trace("Mesh: " + fileName + " loaded.");
-  //TODO: is this repeated somewhere?
-  m_MeshDataArray[index].FileName = fileName;
+
   return index;
 }
 
@@ -232,8 +222,11 @@ unsigned MeshManager::LoadSphere(float radius, int numDivisions) noexcept
   const unsigned TOPVERT = (STACKS * (SLICES - 1));
   const unsigned BOTVERT = (STACKS * (SLICES - 1) + 1);
 
-  m_MeshArray[index].m_PositionArray.resize(static_cast<size_t>(STACKS * (SLICES - 1) + 2));
-  m_MeshArray[index].m_VertexNormalArray.resize(static_cast<size_t>(STACKS * (SLICES - 1) + 2));
+  // Reference for legibility
+  Mesh& mesh = m_MeshArray[index];
+
+  mesh.m_PositionArray.resize(static_cast<size_t>(STACKS * (SLICES - 1) + 2));
+  mesh.m_VertexNormalArray.resize(static_cast<size_t>(STACKS * (SLICES - 1) + 2));
 
   for (unsigned i = 1; i < SLICES; ++i)
   {
@@ -243,16 +236,16 @@ unsigned MeshManager::LoadSphere(float radius, int numDivisions) noexcept
       unsigned y = STACKS * (i - 1) + j;
       float phi = 2 * glm::pi<float>() * j / STACKS;
       vec3 normal(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
-      m_MeshArray[index].m_VertexNormalArray[y] = normal;
+      mesh.m_VertexNormalArray[y] = normal;
     }
   }
 
-  m_MeshArray[index].m_VertexNormalArray[TOPVERT] = vec3(0.0f, 0.0f, 1.0f);
-  m_MeshArray[index].m_VertexNormalArray[BOTVERT] = vec3(0.0f, 0.0f, -1.0f);
+  mesh.m_VertexNormalArray[TOPVERT] = vec3(0.0f, 0.0f, 1.0f);
+  mesh.m_VertexNormalArray[BOTVERT] = vec3(0.0f, 0.0f, -1.0f);
 
-  for (unsigned n = 0; n < m_MeshArray[index].m_VertexNormalArray.size(); ++n)
+  for (unsigned n = 0; n < mesh.m_VertexNormalArray.size(); ++n)
   {
-    m_MeshArray[index].m_PositionArray[n] = radius * m_MeshArray[index].m_VertexNormalArray[n];
+    mesh.m_PositionArray[n] = radius * mesh.m_VertexNormalArray[n];
   }
 
   for (unsigned i = 2; i < SLICES; ++i)
@@ -264,10 +257,10 @@ unsigned MeshManager::LoadSphere(float radius, int numDivisions) noexcept
       triangle.Index1 = STACKS * (i - 2) + j;
       triangle.Index2 = STACKS * (i - 1) + nextIndex;
       triangle.Index3 = STACKS * (i - 2) + nextIndex;
-      m_MeshArray[index].m_TriangleArray.push_back(triangle);
+      mesh.m_TriangleArray.push_back(triangle);
       triangle.Index2 = STACKS * (i - 1) + j;
       triangle.Index3 = STACKS * (i - 1) + nextIndex;
-      m_MeshArray[index].m_TriangleArray.push_back(triangle);
+      mesh.m_TriangleArray.push_back(triangle);
     }
   }
 
@@ -278,11 +271,11 @@ unsigned MeshManager::LoadSphere(float radius, int numDivisions) noexcept
     triangle.Index1 = j;
     triangle.Index2 = nextIndex;
     triangle.Index3 = TOPVERT;
-    m_MeshArray[index].m_TriangleArray.push_back(triangle);
+    mesh.m_TriangleArray.push_back(triangle);
     triangle.Index1 = STACKS * (SLICES - 2) + j;
     triangle.Index2 = BOTVERT;
     triangle.Index3 = STACKS * (SLICES - 2) + nextIndex;
-    m_MeshArray[index].m_TriangleArray.push_back(triangle);
+    mesh.m_TriangleArray.push_back(triangle);
   }
 
   return index;

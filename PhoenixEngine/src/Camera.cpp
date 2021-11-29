@@ -7,9 +7,9 @@
 //------------------------------------------------------------------------------
 #include "pch.h"
 #include "Camera.h"
-#include <glm/ext/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale
-#include <glm/ext/matrix_clip_space.hpp> // glm::perspective
-#include <glm/ext/scalar_constants.hpp> // glm::pi
+#include <glm/ext/matrix_transform.hpp>   // glm::translate, glm::rotate, glm::scale
+#include <glm/ext/matrix_clip_space.hpp>  // glm::perspective
+#include <glm/ext/scalar_constants.hpp>   // glm::pi
 #include "Transform.h"
 
 Camera::Camera(const string& name) noexcept :
@@ -35,6 +35,7 @@ Camera::~Camera()
 
 const mat4& Camera::GetPersMatrix() noexcept
 {
+  // Only update the matrix if dirty
   if (m_bProjectionIsDirty)
   {
     m_PersMatrix =
@@ -50,6 +51,7 @@ const mat4& Camera::GetPersMatrix() noexcept
 
 const mat4& Camera::GetViewMatrix() noexcept
 {
+  // Convenience of targeting, the camera can have a follow target
   if (m_Target != nullptr)
   {
     m_Forward = glm::normalize(m_Target->GetPosition() - m_Position);
@@ -129,17 +131,17 @@ void Camera::SetRoll(float degrees)
   Log::Error("Camera::SetRoll Not implemented yet.");
 }
 
-vec3 Camera::GetPosition() const noexcept
+const vec3& Camera::GetPosition() const noexcept
 {
   return m_Position;
 }
 
-vec3 Camera::GetForwardVector() const noexcept
+const vec3& Camera::GetForwardVector() const noexcept
 {
   return m_Forward;
 }
 
-vec3 Camera::GetUpVector() const noexcept
+const vec3& Camera::GetUpVector() const noexcept
 {
   return m_Up;
 }

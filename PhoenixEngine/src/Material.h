@@ -7,9 +7,6 @@
 #pragma once
 #include "GraphicsCommon.h"
 
-//TODO:
-class Texture;
-
 class Material
 {
 public:

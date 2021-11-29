@@ -11,7 +11,7 @@
 
 Mesh::Mesh(const vec3& origin, bool isStatic) noexcept :
   m_Origin(origin),
-  m_bIsStatic(isStatic),
+  m_MeshIsStatic(isStatic),
   m_NormalLength(0.05f),
   m_PositionArray(),
   m_VertexNormalArray(),
@@ -20,7 +20,8 @@ Mesh::Mesh(const vec3& origin, bool isStatic) noexcept :
   m_TriangleArray(),
   m_TexcoordArray(),
   m_VertexData(),
-  m_bIsDirty(true)
+  m_MeshIsDirty(true),
+  m_NormalsAreCalculated(false)
 {}
 
 unsigned Mesh::GetVertexCount() const noexcept
@@ -46,31 +47,31 @@ unsigned Mesh::GetTexcoordCount() const noexcept
 void Mesh::AddVertex(const vec3& vertex) noexcept
 {
   m_PositionArray.push_back(vertex);
-  m_bIsDirty = true;
+  m_MeshIsDirty = true;
 }
 
 void Mesh::AddVertex(float x, float y, float z) noexcept
 {
   m_PositionArray.push_back({ x, y, z });
-  m_bIsDirty = true;
+  m_MeshIsDirty = true;
 }
 
 void Mesh::AddVertexNormal(const vec3& normal) noexcept
 {
   m_VertexNormalArray.push_back(normal);
-  m_bIsDirty = true;
+  m_MeshIsDirty = true;
 }
 
 void Mesh::AddVertexNormal(float x, float y, float z) noexcept
 {
   m_VertexNormalArray.push_back({ x, y, z });
-  m_bIsDirty = true;
+  m_MeshIsDirty = true;
 }
 
 void Mesh::AddTriangle(unsigned index1, unsigned index2, unsigned index3) noexcept
 {
   m_TriangleArray.emplace_back(index1, index2, index3);
-  m_bIsDirty = true;
+  m_MeshIsDirty = true;
 }
 
 const vector<vec3>& Mesh::GetVertexNormalArray() const noexcept
@@ -219,7 +220,7 @@ void Mesh::ResetOriginToCentroid() noexcept
   {
     sn -= move;
   }
-  m_bIsDirty = true;
+  m_MeshIsDirty = true;
 }
 
 void Mesh::GenerateTexcoords(UV::Generation generation) noexcept
@@ -238,7 +239,7 @@ void Mesh::GenerateTexcoords(UV::Generation generation) noexcept
   default:
     break;
   }
-  m_bIsDirty = true;
+  m_MeshIsDirty = true;
 }
 
 //TODO: Fix this
@@ -248,7 +249,7 @@ void Mesh::AssembleVertexData() noexcept
   {
     m_VertexData.emplace_back(m_PositionArray[i], m_VertexNormalArray[i], m_TexcoordArray[i]);
   }
-  m_bIsDirty = true;
+  m_MeshIsDirty = true;
 }
 
 void Mesh::calculateSurfaceNormals(bool flipNormals) noexcept
@@ -274,7 +275,7 @@ void Mesh::calculateSurfaceNormals(bool flipNormals) noexcept
 
     m_SurfaceNormalPositionArray[i] = 1.f / 3.f * (v1 + v2 + v3);
   }
-  m_bIsDirty = true;
+  m_MeshIsDirty = true;
 }
 
 void Mesh::calculateVertexNormals() noexcept
@@ -305,7 +306,7 @@ void Mesh::calculateVertexNormals() noexcept
       m_VertexNormalArray[i] = 1.f / normArray[i].second * normArray[i].first;
     }
   }
-  m_bIsDirty = true;
+  m_MeshIsDirty = true;
 }
 
 void Mesh::calculateSphereUVs() noexcept
@@ -353,7 +354,7 @@ void Mesh::calculateSphereUVs() noexcept
 
     m_TexcoordArray.emplace_back(u, v);
   }
-  m_bIsDirty = true;
+  m_MeshIsDirty = true;
 }
 
 void Mesh::calculateCylinderUVs() noexcept
@@ -399,7 +400,7 @@ void Mesh::calculateCylinderUVs() noexcept
 
     m_TexcoordArray.emplace_back(u, v);
   }
-  m_bIsDirty = true;
+  m_MeshIsDirty = true;
 }
 
 void Mesh::calculateCubeMapUVs() noexcept

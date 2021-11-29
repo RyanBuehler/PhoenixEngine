@@ -44,8 +44,6 @@ double OBJReader::ReadOBJFile(std::string filepath, Mesh* pMesh,
   else
     return rFlag;
 
-  //    clock_t  startTime, endTime;
-
   auto startTime = std::chrono::high_resolution_clock::now();
 
   switch (r)
@@ -67,19 +65,8 @@ double OBJReader::ReadOBJFile(std::string filepath, Mesh* pMesh,
 
   auto endTime = std::chrono::high_resolution_clock::now();
 
-  double timeDuration = std::chrono::duration< double, std::milli >(endTime - 
+  double timeDuration = std::chrono::duration< double, std::milli >(endTime -
     startTime).count();
-
-  //std::cout << "OBJ file read in "
-  //  << timeDuration
-  //  << "  milli seconds." << std::endl;
-
-
-  // Now calculate vertex normals
-  //_currentMesh->CalculateNormals(bFlipNormals);
-  //_currentMesh->GenerateTexcoords(UV::Generation::SPHERICAL);
-  //_currentMesh->GenerateTexcoords(UV::Generation::CYLINDRICAL);
-  //_currentMesh->calcUVs(Mesh::UVType::CYLINDRICAL_UV);
 
   return timeDuration;
 }
@@ -104,13 +91,8 @@ int OBJReader::ReadOBJFile_LineByLine(std::string filepath)
     char buffer[256] = "\0";
     inFile.getline(buffer, 256, '\n');
 
-    // Use only for debugging purpose
-//        std::cout << buffer << std::endl;
     ParseOBJRecord(buffer, min, max);
   }
-
-  //_currentMesh->boundingBox[0] = min;
-  //_currentMesh->boundingBox[1] = max;
 
   return rFlag;
 }
@@ -177,9 +159,6 @@ int OBJReader::ReadOBJFile_BlockIO(std::string filepath)
     }
 
     free(fileContents);
-
-    //_currentMesh->boundingBox[0] = min;
-    //_currentMesh->boundingBox[1] = max;
   }
 
   return rFlag;
@@ -195,15 +174,16 @@ void OBJReader::ParseOBJRecord(char* buffer, glm::vec3& min, glm::vec3& max)
 
   GLfloat   temp;
   GLuint    firstIndex, secondIndex, thirdIndex;
-  
+
   char* token = NULL;
   char* next_token = NULL;
   token = strtok_s(buffer, delims, &next_token);
-  //char* token = strtok(buffer, delims);
 
   // account for empty lines
   if (token == nullptr)
     return;
+
+  bool foundNormals = false;
 
   switch (token[0])
   {
@@ -240,6 +220,8 @@ void OBJReader::ParseOBJRecord(char* buffer, glm::vec3& min, glm::vec3& max)
     // vertex normals
     else if (token[1] == 'n')
     {
+      foundNormals = true;
+
       glm::vec3 vNormal(0.f);
 
       token = strtok_s(nullptr, delims, &next_token);
@@ -302,6 +284,8 @@ void OBJReader::ParseOBJRecord(char* buffer, glm::vec3& min, glm::vec3& max)
   default:
     break;
   }
+
+  _currentMesh->SetNormalsAreCalculated(foundNormals);
 
   return;
 }
