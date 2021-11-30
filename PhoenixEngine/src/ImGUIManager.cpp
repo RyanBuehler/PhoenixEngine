@@ -86,6 +86,7 @@ namespace ImGui
   bool GraphicsDebugRenderSurfaceNormals = false;
   float GraphicsDebugNormalLength = 0.05f;
   bool GraphicsRebuildShaders = false;
+  bool GraphicsRebuildMeshes = false;
   int GraphicsSelectedShader = 1;
   UV::Generation GraphicsSelectedProjection = UV::Generation::PLANAR;
 
@@ -120,8 +121,6 @@ ImGuiManager::ImGuiManager(GLFWwindow* window) noexcept :
   const char* glsl_version = "#version 130";
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-  //glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
-  //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
 #endif
 
   // Setup Dear ImGui context
@@ -130,7 +129,6 @@ ImGuiManager::ImGuiManager(GLFWwindow* window) noexcept :
   ImGuiIO& io = ImGui::GetIO();
   io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
   io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-  //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
   // Setup Dear ImGui style
   ImGui::StyleColorsDark();
@@ -316,27 +314,30 @@ void ImGuiManager::graphicsUpdateStats() noexcept
     {
       ProjectString = "Planar";
       ImGui::GraphicsSelectedProjection = UV::Generation::PLANAR;
+      ImGui::GraphicsRebuildMeshes = true;
       m_dOnSceneChange(SceneManager::Scene::Scene2);
-      ImGui::PopID();
     }
+    ImGui::PopID();
 
     ImGui::PushID((void*)"Spherical");
     if (ImGui::Selectable("Spherical", ImGui::GraphicsSelectedProjection == UV::Generation::SPHERICAL))
     {
       ProjectString = "Spherical";
       ImGui::GraphicsSelectedProjection = UV::Generation::SPHERICAL;
+      ImGui::GraphicsRebuildMeshes = true;
       m_dOnSceneChange(SceneManager::Scene::Scene2);
-      ImGui::PopID();
     }
+    ImGui::PopID();
 
     ImGui::PushID((void*)"Cylindrical");
     if (ImGui::Selectable("Cylindrical", ImGui::GraphicsSelectedProjection == UV::Generation::CYLINDRICAL))
     {
       ProjectString = "Cylindrical";
       ImGui::GraphicsSelectedProjection = UV::Generation::CYLINDRICAL;
+      ImGui::GraphicsRebuildMeshes = true;
       m_dOnSceneChange(SceneManager::Scene::Scene2);
-      ImGui::PopID();
     }
+    ImGui::PopID();
 
     ImGui::EndCombo();
   }

@@ -20,6 +20,7 @@ namespace ImGui
   extern bool GraphicsDebugRenderSurfaceNormals;
   extern float GraphicsDebugNormalLength;
   extern bool GraphicsRebuildShaders;
+  extern bool GraphicsRebuildMeshes;
   extern int GraphicsSelectedShader;
   extern UV::Generation GraphicsSelectedProjection;
 

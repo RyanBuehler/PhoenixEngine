@@ -51,6 +51,7 @@
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\CameraManager.cpp" />
     <ClCompile Include="src\ContextManager.cpp" />
+    <ClCompile Include="src\Cubemap.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
     <ClCompile Include="src\ImGuiManager.cpp" />
     <ClCompile Include="src\DebugRenderer.cpp" />
@@ -60,6 +61,7 @@
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\MeshManager.cpp" />
     <ClCompile Include="src\OBJReader.cpp" />
+    <ClCompile Include="src\PNGReader.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\Scene1.cpp" />
     <ClCompile Include="src\Scene2.cpp" />
@@ -79,6 +81,7 @@
     <ClInclude Include="dep\imgui\imgui_impl_opengl3_loader.h" />
     <ClInclude Include="dep\imgui\imgui_internal.h" />
     <ClInclude Include="src\Colors.h" />
+    <ClInclude Include="src\Cubemap.h" />
     <ClInclude Include="src\GameObject.h" />
     <ClInclude Include="src\ImGuiManager.h" />
     <ClInclude Include="src\IScene.h" />
@@ -96,6 +99,7 @@
     <ClInclude Include="src\Logger.h" />
     <ClInclude Include="src\OBJReader.h" />
     <ClInclude Include="src\Paths.h" />
+    <ClInclude Include="src\PNGReader.h" />
     <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\Scene1.h" />
     <ClInclude Include="src\Scene2.h" />
@@ -121,6 +125,8 @@
     <None Include="res\shaders\PhongShading.vert" />
     <None Include="res\shaders\PhongTexture.frag" />
     <None Include="res\shaders\PhongTexture.vert" />
+    <None Include="res\shaders\Skybox.frag" />
+    <None Include="res\shaders\Skybox.vert" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

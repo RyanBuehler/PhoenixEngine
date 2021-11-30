@@ -73,6 +73,39 @@
     <Filter Include="Source Files\Graphics\Assets">
       <UniqueIdentifier>{824f0840-a350-4b27-9543-131c6971fff7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Graphics\Camera">
+      <UniqueIdentifier>{813aa44c-b8cc-42f1-844a-2efa710f5fb8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\Camera">
+      <UniqueIdentifier>{165ffd7a-ad3e-4d84-90e0-fa299b70a6f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\Contexts">
+      <UniqueIdentifier>{53163c37-444c-4631-b68a-d67d92e65d3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\Contexts">
+      <UniqueIdentifier>{82710a53-80aa-4789-ab5a-dede3567b27e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\Textures">
+      <UniqueIdentifier>{65774e2f-a02a-4420-8d4c-74c0887117bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\Textures">
+      <UniqueIdentifier>{92106ce1-dc29-4df3-960f-104a5e9f3f1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\Materials">
+      <UniqueIdentifier>{99f3816c-7d52-4bb1-89d8-cc60e130f800}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\Materials">
+      <UniqueIdentifier>{711b1280-b33a-474d-9615-4371614579c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\Mesh">
+      <UniqueIdentifier>{57630b24-fbfb-46ef-bada-1878d473c1b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\Mesh">
+      <UniqueIdentifier>{9da63d38-24ba-408c-87ab-a35cf001746c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\Shaders">
+      <UniqueIdentifier>{90bd1cf7-5ab2-4dd4-a7c0-bce2a9b08886}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h">
@@ -93,20 +126,8 @@
     <ClInclude Include="src\Paths.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="src\ShaderManager.h">
-      <Filter>Header Files\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ContextManager.h">
-      <Filter>Header Files\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Camera.h">
-      <Filter>Header Files\Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="src\Transform.h">
       <Filter>Header Files\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="src\MeshManager.h">
-      <Filter>Header Files\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="src\IScene.h">
       <Filter>Header Files\Core</Filter>
@@ -114,17 +135,8 @@
     <ClInclude Include="src\SceneManager.h">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\CameraManager.h">
-      <Filter>Header Files\Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="src\GameObject.h">
       <Filter>Header Files\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Mesh.h">
-      <Filter>Header Files\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="src\OBJReader.h">
-      <Filter>Header Files\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="dep\imgui\imconfig.h">
       <Filter>Header Files\ImGUI</Filter>
@@ -159,9 +171,6 @@
     <ClInclude Include="src\Scene1.h">
       <Filter>Header Files\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="src\Material.h">
-      <Filter>Header Files\Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="src\LightingSystem.h">
       <Filter>Header Files\Graphics\Lighting</Filter>
     </ClInclude>
@@ -171,14 +180,44 @@
     <ClInclude Include="src\Scene2.h">
       <Filter>Header Files\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="src\TextureManager.h">
+    <ClInclude Include="src\SceneSingleObject.h">
+      <Filter>Source Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Camera.h">
+      <Filter>Header Files\Graphics\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CameraManager.h">
+      <Filter>Header Files\Graphics\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ContextManager.h">
+      <Filter>Header Files\Graphics\Contexts</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Material.h">
+      <Filter>Header Files\Graphics\Materials</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mesh.h">
+      <Filter>Header Files\Graphics\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MeshManager.h">
+      <Filter>Header Files\Graphics\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="src\OBJReader.h">
       <Filter>Header Files\Graphics\Assets</Filter>
     </ClInclude>
     <ClInclude Include="src\Texture.h">
-      <Filter>Header Files\Graphics\Assets</Filter>
+      <Filter>Header Files\Graphics\Textures</Filter>
     </ClInclude>
-    <ClInclude Include="src\SceneSingleObject.h">
-      <Filter>Source Files\Scenes</Filter>
+    <ClInclude Include="src\TextureManager.h">
+      <Filter>Header Files\Graphics\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ShaderManager.h">
+      <Filter>Header Files\Graphics\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Cubemap.h">
+      <Filter>Header Files\Graphics\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PNGReader.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -188,35 +227,14 @@
     <ClCompile Include="src\Window.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\ShaderManager.cpp">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ContextManager.cpp">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Camera.cpp">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="src\Transform.cpp">
       <Filter>Source Files\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="src\MeshManager.cpp">
-      <Filter>Source Files\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="src\SceneManager.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\Mesh.cpp">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="src\CameraManager.cpp">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="src\GameObject.cpp">
       <Filter>Source Files\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="src\OBJReader.cpp">
-      <Filter>Source Files\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="dep\imgui\imgui.cpp">
       <Filter>Source Files\ImGUI</Filter>
@@ -251,9 +269,6 @@
     <ClCompile Include="src\Scene1.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="src\Material.cpp">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="src\LightingSystem.cpp">
       <Filter>Source Files\Graphics\Lighting</Filter>
     </ClCompile>
@@ -263,14 +278,44 @@
     <ClCompile Include="src\Scene2.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="src\TextureManager.cpp">
-      <Filter>Source Files\Graphics\Assets</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Texture.cpp">
-      <Filter>Source Files\Graphics\Assets</Filter>
-    </ClCompile>
     <ClCompile Include="src\SceneSingleObject.cpp">
       <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Camera.cpp">
+      <Filter>Source Files\Graphics\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CameraManager.cpp">
+      <Filter>Source Files\Graphics\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ContextManager.cpp">
+      <Filter>Source Files\Graphics\Contexts</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Material.cpp">
+      <Filter>Source Files\Graphics\Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mesh.cpp">
+      <Filter>Source Files\Graphics\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MeshManager.cpp">
+      <Filter>Source Files\Graphics\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Texture.cpp">
+      <Filter>Source Files\Graphics\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TextureManager.cpp">
+      <Filter>Source Files\Graphics\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="src\OBJReader.cpp">
+      <Filter>Source Files\Graphics\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ShaderManager.cpp">
+      <Filter>Source Files\Graphics\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Cubemap.cpp">
+      <Filter>Source Files\Graphics\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PNGReader.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -308,6 +353,12 @@
       <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
     </None>
     <None Include="res\shaders\BlinnPhong.vert">
+      <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
+    </None>
+    <None Include="res\shaders\Skybox.frag">
+      <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
+    </None>
+    <None Include="res\shaders\Skybox.vert">
       <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
     </None>
   </ItemGroup>
