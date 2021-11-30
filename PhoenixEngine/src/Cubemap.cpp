@@ -20,7 +20,7 @@ Cubemap::Cubemap(const char* filenames[6]) noexcept :
     PNGReader reader;
     if (!reader.LoadPNG(filenames[i]))
     {
-      Log::Error("Cubemap - Error loading image \"" + string(filenames[i]) + "\"");
+      Log::Error("[Cubemap.cpp] Error loading image \"" + string(filenames[i]) + "\"");
       return;
     }
     PNGReader::ImageData image = reader.GetImageData();
