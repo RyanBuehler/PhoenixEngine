@@ -30,11 +30,14 @@ public:
 
   GLuint GetTextureID() const noexcept;
 
+  int GetWidth() const noexcept;
+  int GetHeight() const noexcept;
+
 private:
   string m_Name;
   GLuint m_TextureID;
 
   int m_Width;
   int m_Height;
-  int m_ChannelCount;
+  int m_Channels;
 };

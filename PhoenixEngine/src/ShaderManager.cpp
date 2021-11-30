@@ -35,7 +35,7 @@ unsigned ShaderManager::GetFragmentShaderID(Shader::Fragment shader) const noexc
 bool ShaderManager::RelinkShader(GLuint& programID, GLint vertexShaderID, GLint fragmentShaderID, const char* vertexFile, const char* fragmentFile) noexcept
 {
   glDeleteProgram(programID);
-  
+
   //TODO: hard coded for testing purposes only
   LoadShader(vertexShaderID, vertexFile);
   LoadShader(fragmentShaderID, fragmentFile);
@@ -120,6 +120,11 @@ void ShaderManager::LoadShaders() noexcept
   //  CreateAndLoadShader("Diffuse.vert", GL_VERTEX_SHADER);
   //m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::DIFFUSE)] =
   //  CreateAndLoadShader("Diffuse.frag", GL_FRAGMENT_SHADER);
+
+  m_VertexShaders[static_cast<unsigned>(Shader::Vertex::SKYBOX)] =
+    CreateAndLoadShader("Skybox.vert", GL_VERTEX_SHADER);
+  m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::SKYBOX)] =
+    CreateAndLoadShader("Skybox.frag", GL_FRAGMENT_SHADER);
 
   m_VertexShaders[static_cast<unsigned>(Shader::Vertex::PHONGLIGHT)] =
     CreateAndLoadShader("PhongLighting.vert", GL_VERTEX_SHADER);

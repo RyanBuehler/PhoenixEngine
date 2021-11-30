@@ -14,6 +14,16 @@
 
 #pragma endregion
 
+//TODO: Temporary solution for testing
+const char* tempcubemap[6] = {
+    "res/textures/skybox/posx.jpg",
+    "res/textures/skybox/negx.jpg",
+    "res/textures/skybox/posy.jpg",
+    "res/textures/skybox/negy.jpg",
+    "res/textures/skybox/posz.jpg",
+    "res/textures/skybox/negz.jpg"
+};
+
 Renderer::Renderer(bool depthBufferEnabled, bool backFaceCullEnabled) noexcept :
   m_ShaderManager(),
   m_ContextManager(),
@@ -22,7 +32,8 @@ Renderer::Renderer(bool depthBufferEnabled, bool backFaceCullEnabled) noexcept :
   m_DiffuseContextID(ContextManager::CONTEXT_ERROR),
   m_DebugContextID(ContextManager::CONTEXT_ERROR),
   diffTex("Debug Diff Texture"),
-  specTex("Debug Spec Texture")
+  specTex("Debug Spec Texture"),
+  m_Skybox(tempcubemap)
 {
   depthBufferEnabled ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
   backFaceCullEnabled ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
@@ -33,7 +44,7 @@ Renderer::Renderer(bool depthBufferEnabled, bool backFaceCullEnabled) noexcept :
 
   Log::Trace("Renderer initialized.");
 
-  //TODO:
+  //TODO: make these boolean results
   diffTex.LoadTextureFromFile("res/textures/metal_roof_diff_512x512.png");
   specTex.LoadTextureFromFile("res/textures/metal_roof_spec_512x512.png");
 }
@@ -111,6 +122,9 @@ void Renderer::OnEndFrame() noexcept
 
 void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& activeCamera)
 {
+  //TODO: Don't render this first, and don't render it here
+  RenderSkybox(activeCamera);
+
   // Render our list of game objects
   for (GameObject& go : gameObjects)
   {
@@ -236,6 +250,29 @@ void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& active
 #pragma endregion
 }
 
+void Renderer::RenderSkybox(Camera& activeCamera)
+{
+  m_ContextManager.SetContext(m_SkyboxContextID);
+
+  glDepthMask(GL_FALSE);
+
+  glBindTexture(GL_TEXTURE_CUBE_MAP, m_Skybox.GetID());
+  glActiveTexture(GL_TEXTURE0);
+
+  const vector<ContextManager::UniformAttribute>& uniforms = m_ContextManager.GetCurrentUniformAttributes();
+
+  glm::mat4 view = glm::mat4(glm::mat3(activeCamera.GetViewMatrix()));
+
+  // Set Perspective Matrix
+  glUniformMatrix4fv(uniforms[0].ID, 1, GL_FALSE, &activeCamera.GetPersMatrix()[0][0]);
+  // Set View Matrix
+  glUniformMatrix4fv(uniforms[1].ID, 1, GL_FALSE, &view[0][0]);
+
+  m_MeshManager.RenderMesh(SkyboxMeshID);
+
+  glDepthMask(GL_TRUE);
+}
+
 void Renderer::RenderGameObject(GameObject& gameObject)
 {
   if (gameObject.m_bIsDirty)
@@ -350,6 +387,9 @@ void Renderer::LoadContexts() noexcept
 
   LoadDebugContext();
 
+  LoadSkyboxContext();
+
+  //TODO: Look into this
   GLuint program = m_ContextManager.GetProgram(m_PhongLightingID);
 
   //TODO: For testing only
@@ -581,6 +621,26 @@ void Renderer::LoadDebugContext() noexcept
   m_ContextManager.AddNewVertexAttribute(m_DebugContextID, vaColor);
 
   Log::Trace("DEBUG Context loaded.");
+}
+
+void Renderer::LoadSkyboxContext() noexcept
+{
+  // Load skybox context
+  unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::SKYBOX);
+  unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::SKYBOX);
+  m_SkyboxContextID = m_ContextManager.CreateNewContext("Skybox", vID, fID);
+
+  m_ContextManager.SetContext(m_SkyboxContextID);
+
+  m_ContextManager.AddNewUniformAttribute(m_SkyboxContextID, "pers_matrix");
+  m_ContextManager.AddNewUniformAttribute(m_SkyboxContextID, "view_matrix");
+
+  ContextManager::VertexAttribute vaPosition("position", 4, GL_FLOAT, GL_FALSE, sizeof(vec3), 0u);
+  m_ContextManager.AddNewVertexAttribute(m_SkyboxContextID, vaPosition);
+
+  SkyboxMeshID = m_MeshManager.LoadMesh("cube2.obj");
+
+  Log::Trace("Skybox Context loaded.");
 }
 
 void Renderer::EnableDepthBuffer() noexcept

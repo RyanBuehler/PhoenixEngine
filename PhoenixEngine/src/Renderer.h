@@ -13,6 +13,7 @@
 #include "MeshManager.h"
 #include "LightingSystem.h"
 #include "Texture.h"
+#include "Cubemap.h"
 
 class Renderer
 {
@@ -60,6 +61,11 @@ public:
   /// TODO: Is there any way to make this constant?
   /// <param name="activeCamera">A reference to the active camera</param>
   void RenderGameObjects(vector<GameObject>& gameObjects, Camera& activeCamera);
+
+  /// <summary>
+  /// Renders the skybox
+  /// </summary>
+  void RenderSkybox(Camera& activeCamera);
 
   /// <summary>
   /// Enables the Depth Buffer
@@ -161,8 +167,12 @@ private:
   /// <summary>
   /// Loads the "Debug" rendering context
   /// </summary>
-  /// <returns></returns>
   void LoadDebugContext() noexcept;
+
+  /// <summary>
+  /// Loads the "Skybox" rendering context
+  /// </summary>
+  void LoadSkyboxContext() noexcept;
 
   ShaderManager m_ShaderManager;    // Handles shader related functionality
   ContextManager m_ContextManager;  // Handles and maintains the context information
@@ -170,14 +180,19 @@ private:
 
   LightingSystem m_Lighting;        // All lighting functionality
 
+  Cubemap m_Skybox;                 // The 6-sided cubemap skybox
+
+  GLint m_SkyboxContextID;          // The ID of the "Skybox" context
   GLint m_DiffuseContextID;         // The ID of the "Diffuse" context
   GLint m_PhongLightingID;          // The ID of the "PhongLighting" context
   GLint m_PhongShadingID;           // The ID of the "PhongShading" context
-  GLint m_BlinnPhongID;           // The ID of the "BlinnPhong" context
+  GLint m_BlinnPhongID;             // The ID of the "BlinnPhong" context
   GLint m_PhongTextureID;           // The ID of the "PhongTexture" context
   GLint m_DebugContextID;           // The ID of the "Debug" context
 
   //TODO: For testing only
+  unsigned SkyboxMeshID;
+
   GLint uboSize;
   GLuint uboIndex;
   GLuint uboBuffer;

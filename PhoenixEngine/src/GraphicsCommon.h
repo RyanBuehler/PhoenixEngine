@@ -52,6 +52,7 @@ namespace Shader
   {
     UNKNOWN = 0u,
     DIFFUSE,
+    SKYBOX,
     PHONGLIGHT,
     PHONGSHADE,
     BLINNPHONG,
@@ -64,6 +65,7 @@ namespace Shader
   {
     UNKNOWN = 0u,
     DIFFUSE,
+    SKYBOX,
     PHONGLIGHT,
     PHONGSHADE,
     BLINNPHONG,
