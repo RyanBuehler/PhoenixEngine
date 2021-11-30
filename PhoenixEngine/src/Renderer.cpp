@@ -122,9 +122,6 @@ void Renderer::OnEndFrame() noexcept
 
 void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& activeCamera)
 {
-  //TODO: Don't render this first, and don't render it here
-  RenderSkybox(activeCamera);
-
   // Render our list of game objects
   for (GameObject& go : gameObjects)
   {
@@ -187,8 +184,11 @@ void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& active
     // Skip disabled game objects
     RenderGameObject(go);
   }
-  glUseProgram(0u);
 
+  //TODO: Don't render this first, and don't render it here
+  RenderSkybox(activeCamera);
+
+  glUseProgram(0u);
 #pragma region ImGui
 
 #ifdef _IMGUI
@@ -254,7 +254,8 @@ void Renderer::RenderSkybox(Camera& activeCamera)
 {
   m_ContextManager.SetContext(m_SkyboxContextID);
 
-  glDepthMask(GL_FALSE);
+  glDepthFunc(GL_LEQUAL);
+  //glDepthMask(GL_FALSE);
 
   glBindTexture(GL_TEXTURE_CUBE_MAP, m_Skybox.GetID());
   glActiveTexture(GL_TEXTURE0);
@@ -270,7 +271,8 @@ void Renderer::RenderSkybox(Camera& activeCamera)
 
   m_MeshManager.RenderMesh(SkyboxMeshID);
 
-  glDepthMask(GL_TRUE);
+  glDepthFunc(GL_LESS);
+  //glDepthMask(GL_TRUE);
 }
 
 void Renderer::RenderGameObject(GameObject& gameObject)

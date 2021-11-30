@@ -15,5 +15,5 @@ void main(void)
 {
   texcoords = position;
   vec4 pos = pers_matrix * view_matrix * vec4(position, 1.f);
-  gl_Position = pos.xyzw;
+  gl_Position = pos.xyww;
 }
