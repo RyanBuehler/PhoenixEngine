@@ -14,7 +14,7 @@ The Phoenix Engine is a humble rendering engine and wrapper utilized by Ryan Bue
 
 ## Short Term Roadmap
 * Refactor of MVP code
-* Cube Map projections
+* Cube Map and Cube Map UV Projection
 * Reflection
 * Refraction
 * Deferred Rendering
