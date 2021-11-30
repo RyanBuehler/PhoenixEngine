@@ -50,7 +50,7 @@ public:
   /// Called once at the end of the frame
   /// </summary>
   /// <returns></returns>
-  void OnEndFrame() const noexcept;
+  void OnEndFrame() noexcept;
 
   /// <summary>
   /// Render a draw call with the given objects from the scene

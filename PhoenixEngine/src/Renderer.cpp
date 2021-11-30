@@ -54,14 +54,52 @@ void Renderer::OnBeginFrame() const noexcept
   glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-void Renderer::OnEndFrame() const noexcept
+void Renderer::OnEndFrame() noexcept
 {
+
 #pragma region ImGUI
 #ifdef _IMGUI
 
   if (ImGui::GraphicsWindowEnabled)
   {
     ImGui::Manager->OnImGuiGraphicsUpdate();
+
+    // TODO: Cool feature, but needs to be rebuilt and relocated
+    if (ImGui::GraphicsRebuildShaders)
+    {
+      ImGui::GraphicsRebuildShaders = false;
+
+      m_ShaderManager.RelinkShader(
+        m_ContextManager.GetProgram(m_PhongLightingID),
+        m_ShaderManager.GetVertexShaderID(Shader::Vertex::PHONGLIGHT),
+        m_ShaderManager.GetFragmentShaderID(Shader::Fragment::PHONGLIGHT),
+        "PhongLighting.vert", "PhongLighting.frag");
+
+      m_ShaderManager.RelinkShader(
+        m_ContextManager.GetProgram(m_PhongShadingID),
+        m_ShaderManager.GetVertexShaderID(Shader::Vertex::PHONGSHADE),
+        m_ShaderManager.GetFragmentShaderID(Shader::Fragment::PHONGSHADE),
+        "PhongShading.vert", "PhongShading.frag");
+
+      m_ShaderManager.RelinkShader(
+        m_ContextManager.GetProgram(m_BlinnPhongID),
+        m_ShaderManager.GetVertexShaderID(Shader::Vertex::BLINNPHONG),
+        m_ShaderManager.GetFragmentShaderID(Shader::Fragment::BLINNPHONG),
+        "BlinnPhong.vert", "BlinnPhong.frag");
+
+      m_ShaderManager.RelinkShader(
+        m_ContextManager.GetProgram(m_PhongTextureID),
+        m_ShaderManager.GetVertexShaderID(Shader::Vertex::PHONGTEXTURE),
+        m_ShaderManager.GetFragmentShaderID(Shader::Fragment::PHONGTEXTURE),
+        "PhongTexture.vert", "PhongTexture.frag");
+    }
+
+    if (ImGui::GraphicsRebuildMeshes)
+    {
+      ImGui::GraphicsRebuildMeshes = false;
+
+      m_MeshManager.UnloadMeshes();
+    }
   }
 
 #endif // _IMGUI
@@ -193,37 +231,6 @@ void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& active
     m_ContextManager.SetContext(m_DebugContextID);
     DebugRenderer::I().RenderLines();
   }
-
-  // TODO: Cool feature, but needs to be rebuilt and relocated
-  if (ImGui::GraphicsRebuildShaders)
-  {
-    ImGui::GraphicsRebuildShaders = false;
-
-    m_ShaderManager.RelinkShader(
-      m_ContextManager.GetProgram(m_PhongLightingID),
-      m_ShaderManager.GetVertexShaderID(Shader::Vertex::PHONGLIGHT),
-      m_ShaderManager.GetFragmentShaderID(Shader::Fragment::PHONGLIGHT),
-      "PhongLighting.vert", "PhongLighting.frag");
-
-    m_ShaderManager.RelinkShader(
-      m_ContextManager.GetProgram(m_PhongShadingID),
-      m_ShaderManager.GetVertexShaderID(Shader::Vertex::PHONGSHADE),
-      m_ShaderManager.GetFragmentShaderID(Shader::Fragment::PHONGSHADE),
-      "PhongShading.vert", "PhongShading.frag");
-
-    m_ShaderManager.RelinkShader(
-      m_ContextManager.GetProgram(m_BlinnPhongID),
-      m_ShaderManager.GetVertexShaderID(Shader::Vertex::BLINNPHONG),
-      m_ShaderManager.GetFragmentShaderID(Shader::Fragment::BLINNPHONG),
-      "BlinnPhong.vert", "BlinnPhong.frag");
-
-    m_ShaderManager.RelinkShader(
-      m_ContextManager.GetProgram(m_PhongTextureID),
-      m_ShaderManager.GetVertexShaderID(Shader::Vertex::PHONGTEXTURE),
-      m_ShaderManager.GetFragmentShaderID(Shader::Fragment::PHONGTEXTURE),
-      "PhongTexture.vert", "PhongTexture.frag");
-  }
-
 #endif
 
 #pragma endregion
