@@ -51,6 +51,11 @@
 
 #pragma endregion
 
+    struct BoundingBox
+    {
+      float xMin, yMin, zMin, xMax, yMax, zMax;
+    };
+
   public:
     /// <summary>
     /// Default constructor
@@ -142,13 +147,25 @@
     /// Sets the mesh to be static or dynamic (not static)
     /// </summary>
     /// <param name="isStatic">[T/F] The mesh will be static</param>
-    inline void SetIsStatic(bool isStatic) noexcept { m_bIsStatic = isStatic; }
+    inline void SetMeshIsStatic(bool isStatic) noexcept { m_MeshIsStatic = isStatic; }
+
+    /// <summary>
+    /// Sets that the normals have been calculated
+    /// </summary>
+    /// <param name="isStatic">[T/F] The normals have been calculated</param>
+    inline void SetNormalsAreCalculated(bool areNormalsCalculated) noexcept { m_MeshIsStatic = areNormalsCalculated; }
 
     /// <summary>
     /// Gets whether or not the mesh is set to be static
     /// </summary>
     /// <returns>[T/F] The mesh is set to static</returns>
-    inline bool IsStatic() const noexcept { return m_bIsStatic; }
+    inline bool MeshIsStatic() const noexcept { return m_MeshIsStatic; }
+
+    /// <summary>
+    /// Gets whether or not the normals are calculated from either import or calculation
+    /// </summary>
+    /// <returns>[T/F] The mesh has normals calculated</returns>
+    inline bool NormalsAreCalculated() const noexcept { return m_NormalsAreCalculated; }
 
     /// <summary>
     /// Gets the Vertex Normal Array
@@ -173,6 +190,12 @@
     /// </summary>
     /// <returns>[Const Ref] The vector of UV coordinates</returns>
     const vector<vec2>& GetTexcoordArray() const noexcept;
+
+    /// <summary>
+    /// Calculates the bounding box around the mesh in object space (min->max in x,y,z)
+    /// </summary>
+    /// <returns>A structure of min/max in x,y,z</returns>
+    BoundingBox CalculateBoundingBox() const noexcept;
 
     /// <summary>
     /// Calculates the bounding box size around the mesh in object space (min->max in x,y,z)
@@ -233,6 +256,11 @@
     void calculateVertexNormals() noexcept;
 
     /// <summary>
+    /// Helper function to calculate UV coordinates with a planar projection
+    /// </summary>
+    void calculatePlanarUVs() noexcept;
+
+    /// <summary>
     /// Helper function to calculate UV coordinates with a spherical projection
     /// </summary>
     void calculateSphereUVs() noexcept;
@@ -251,8 +279,8 @@
   private:
     friend class MeshManager; // Allows the Mesh Manager class exclusive access
 
-    vec3 m_Origin;    // The mesh's origin point (pivot point)
-    bool m_bIsStatic; // [T/F] The mesh is static (not dynamic)
+    vec3 m_Origin;        // The mesh's origin point (pivot point)
+    bool m_MeshIsStatic;  // [T/F] The mesh is static (not dynamic)
 
     float m_NormalLength; // The length of the debug draw lines to showcase normals
 
@@ -265,6 +293,6 @@
     
     vector<VertexData> m_VertexData;            // GPU data for rendering
 
-    bool m_bIsDirty;                            // The mesh has changed fundamentally
-
+    bool m_MeshIsDirty;                         // [T/F] The mesh has changed fundamentally
+    bool m_NormalsAreCalculated;                // [T/F] If the normals have been calculated (ie. imported, or calculated)
   };

@@ -25,8 +25,23 @@ CameraManager::~CameraManager()
 
 Camera& CameraManager::CreateCamera(const string& name) noexcept
 {
-  m_Cameras.push_back(make_unique<Camera>(name));
+  m_Cameras.push_front(make_unique<Camera>(name));
   return *m_Cameras.front();
+}
+
+void CameraManager::DeleteCameraByName(const string& name) noexcept
+{
+  for (const auto& camera : m_Cameras)
+  {
+    if (camera->GetName() == name)
+    {
+      m_Cameras.remove(camera);
+      Log::Trace("Deleted camera by name: " + name + ".");
+      return;
+    }
+  }
+
+  Log::Error("Tried to delete camera by name: " + name + ", but such a camera doesn't exist.");
 }
 
 void CameraManager::SetActiveCamera(Camera& activeCamera) noexcept

@@ -47,7 +47,11 @@ public:
   MeshManager(MeshManager&&) = delete;
   MeshManager& operator=(MeshManager&&) = delete;
 
-  unsigned LoadMesh(const string& fileName, bool scaleToUnitSize = false, bool resetOrigin = false, int TODO = 1) noexcept;
+  unsigned LoadMesh(
+    const string& fileName,
+    bool scaleToUnitSize = false,
+    bool resetOrigin = false,
+    UV::Generation uvGeneration = UV::Generation::PLANAR) noexcept;
 
   void UnloadMeshes() noexcept;
 

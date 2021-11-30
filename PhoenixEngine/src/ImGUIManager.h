@@ -21,7 +21,7 @@ namespace ImGui
   extern float GraphicsDebugNormalLength;
   extern bool GraphicsRebuildShaders;
   extern int GraphicsSelectedShader;
-  extern int GraphicsSelectedProjection;
+  extern UV::Generation GraphicsSelectedProjection;
 
   extern int SceneScenario;
   extern bool SceneDrawOrbit;
@@ -33,7 +33,6 @@ namespace ImGui
   extern int LightingActiveLights;
   extern Material LightingGlobalMaterial;
 
-  //TODO:
   enum class DemoObject
   {
     Bunny,
@@ -45,7 +44,7 @@ namespace ImGui
     Quad,
     Sphere,
     StarWars,
-    Count
+    COUNT
   };
 
   extern DemoObject DemoObjectMain;
