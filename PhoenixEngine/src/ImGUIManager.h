@@ -33,7 +33,6 @@ namespace ImGui
   extern int LightingActiveLights;
   extern Material LightingGlobalMaterial;
 
-  //TODO:
   enum class DemoObject
   {
     Bunny,
@@ -45,7 +44,7 @@ namespace ImGui
     Quad,
     Sphere,
     StarWars,
-    Count
+    COUNT
   };
 
   extern DemoObject DemoObjectMain;

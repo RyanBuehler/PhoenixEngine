@@ -50,7 +50,6 @@ void Renderer::OnBeginFrame() const noexcept
 
   //TODO: For testing purposes only
   glBindBuffer(GL_UNIFORM_BUFFER, uboBuffer);
-  //glBufferSubData(GL_UNIFORM_BUFFER, 0, uboSize, &ImGui::LightingDataArray[0]);
   glBufferData(GL_UNIFORM_BUFFER, sizeof(Light::Data) * 16, &ImGui::LightingDataArray[0], GL_DYNAMIC_DRAW);
   glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
@@ -74,40 +73,6 @@ void Renderer::OnEndFrame() const noexcept
 
 void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& activeCamera)
 {
-  //TODO: Remove this
-  //if (ImGui::SceneDrawOrbit)
-  //{
-  //  // Render any previously stored line
-  //  m_ContextManager.SetContext(m_DebugContextID);
-  //  //TODO: Check if this is being used before Rendering
-  //  DebugRenderer::I().RenderLines();
-  //}
-
-  //m_ContextManager.SetContext(m_PhongTextureID);
-  //const vector<ContextManager::UniformAttribute>& uniforms = m_ContextManager.GetCurrentUniformAttributes();
-  ////TODO: Combine these for efficiency
-  //// Set Perspective Matrix
-  //glUniformMatrix4fv(uniforms[0].ID, 1, GL_FALSE, &activeCamera.GetPersMatrix()[0][0]);
-  //// Set View Matrix
-  //glUniformMatrix4fv(uniforms[1].ID, 1, GL_FALSE, &activeCamera.GetViewMatrix()[0][0]);
-  //
-  //// Set Cam Position
-  //glUniform3fv(uniforms[2].ID, 1, &activeCamera.GetPosition()[0]);
-
-  //const LightingSystem::GlobalLightingData& globalLighting = ImGui::LightingGlobalData;
-  //glUniform3fv(uniforms[3].ID, 1, &globalLighting.AmbientIntensity[0]);
-  //glUniform3fv(uniforms[4].ID, 1, &globalLighting.FogIntensity[0]);
-  //glUniform1f(uniforms[5].ID, globalLighting.FogNear);
-  //glUniform1f(uniforms[6].ID, globalLighting.FogFar);
-  //glUniform1f(uniforms[7].ID, globalLighting.AttConstant);
-  //glUniform1f(uniforms[8].ID, globalLighting.AttLinear);
-  //glUniform1f(uniforms[9].ID, globalLighting.AttQuadratic);
-  //
-  //glActiveTexture(GL_TEXTURE0);
-  //glBindTexture(GL_TEXTURE_2D, diffTex.GetTextureID());
-  //glActiveTexture(GL_TEXTURE1);
-  //glBindTexture(GL_TEXTURE_2D, specTex.GetTextureID());
-
   // Render our list of game objects
   for (GameObject& go : gameObjects)
   {
@@ -293,7 +258,6 @@ void Renderer::RenderGameObject(GameObject& gameObject)
   glUniformMatrix4fv(uniforms[10].ID, 1, false, &gameObject.GetMatrix()[0][0]);
 
   //TODO: Material faked temporarily for simplicity
-
   if (gameObject.GetMaterial().GetType() != Material::Type::GLOBAL)
   {
     const Material& mat = gameObject.GetMaterial();
@@ -369,8 +333,6 @@ void Renderer::RenderNormals(GameObject& gameObject, float length, Normals::Type
 
 void Renderer::LoadContexts() noexcept
 {
-  //LoadDiffuseContext();
-
   LoadPhongLightingContext();
 
   LoadPhongShadingContext();

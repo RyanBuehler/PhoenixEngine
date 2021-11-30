@@ -27,7 +27,7 @@ namespace
   static const ImVec4 IMGREEN(0.f, 1.f, 0.f, 1.f);
   static const ImVec4 IMCYAN(0.f, 1.f, 0.5f, 1.f);
 
-  static const ImGui::DemoObject DEMOOBJECTS[(size_t)ImGui::DemoObject::Count] =
+  static const ImGui::DemoObject DEMOOBJECTS[(size_t)ImGui::DemoObject::COUNT] =
   {
     ImGui::DemoObject::Bunny,
     ImGui::DemoObject::BunnyHighPoly,
@@ -40,7 +40,7 @@ namespace
     ImGui::DemoObject::StarWars
   };
 
-  static const char* DEMOOBJECTNAMES[(size_t)ImGui::DemoObject::Count] =
+  static const char* DEMOOBJECTNAMES[(size_t)ImGui::DemoObject::COUNT] =
   {
     "Bunny",
     "BunnyHighPoly",
@@ -53,7 +53,7 @@ namespace
     "StarWars"
   };
 
-  static const char* DEMOOBJECTFILENAMES[(size_t)ImGui::DemoObject::Count] =
+  static const char* DEMOOBJECTFILENAMES[(size_t)ImGui::DemoObject::COUNT] =
   {
     "bunny.obj",
     "bunny_high_poly.obj",
@@ -360,7 +360,7 @@ void ImGuiManager::graphicsUpdateObjects() noexcept
   static const char* DemoObjectString = DEMOOBJECTNAMES[(size_t)ImGui::DemoObject::Lucy];
   if (ImGui::BeginCombo("##Demo Object", DemoObjectString))
   {
-    for (int i = 0; i < (size_t)ImGui::DemoObject::Count; ++i)
+    for (int i = 0; i < (size_t)ImGui::DemoObject::COUNT; ++i)
     {
       ImGui::PushID((void*)DEMOOBJECTNAMES[i]);
       if (ImGui::Selectable(DEMOOBJECTNAMES[i], ImGui::DemoObjectMain == DEMOOBJECTS[i]))

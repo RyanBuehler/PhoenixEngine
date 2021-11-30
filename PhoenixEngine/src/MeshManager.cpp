@@ -24,7 +24,7 @@ MeshManager::MeshManager() noexcept :
   m_MeshArray(),
   m_OBJReader()
 {
-  //TODO: LULWUT
+  //TODO: This can probably be circumvented
   m_OBJReader.initData();
 }
 
@@ -48,8 +48,6 @@ unsigned MeshManager::LoadMesh(
     }
   }
   scaleToUnitSize ? Log::Trace("Loading mesh: " + fileName) : Log::Trace("Loading [Unit] mesh: " + fileName);
-
-  //TODO: check for file extension
 
   unsigned index = numeric_limits<unsigned>::max();
   if (fileName == "sphere")
@@ -108,11 +106,13 @@ unsigned MeshManager::LoadMesh(
   glGenVertexArrays(1, &m_MeshDataArray[index].VertexArrayID);
   glBindVertexArray(m_MeshDataArray[index].VertexArrayID);
 
-  // TODO: Position buffer index, normal buffer index, etc
+  // Position
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), 0);
   glEnableVertexAttribArray(0);
+  // Normal
   glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), (void*)(sizeof(vec3)));
   glEnableVertexAttribArray(1);
+  // Texcoord
   glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), (void*)(sizeof(vec3) * 2));
   glEnableVertexAttribArray(2);
 
@@ -150,13 +150,9 @@ void MeshManager::RenderMesh(unsigned id) const noexcept
 
   glBindVertexArray(m_MeshDataArray[id].VertexArrayID);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_MeshDataArray[id].TriangleBufferID);
-  //glBindBuffer(GL_ARRAY_BUFFER, m_MeshDataArray[id].NormalBufferID);
-  //glBindBuffer(GL_ARRAY_BUFFER, m_MeshDataArray[id].TexcoordBufferID);
 
-  //TODO: GetElementCount? Instead to save the 3 * every frame?
   glDrawElements(GL_TRIANGLES, 3 * m_MeshArray[id].GetTriangleCount(), GL_UNSIGNED_INT, 0);
   glBindVertexArray(0u);
-
 }
 
 void MeshManager::RenderSurfaceNormals(unsigned id, float length) const noexcept
