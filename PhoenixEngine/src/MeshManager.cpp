@@ -59,10 +59,10 @@ unsigned MeshManager::LoadMesh(
   {
     // Hasn't been loaded. Load from OBJ
     index = LoadMeshFromOBJ(fileName);
-    if (index == MESH_INDEX_ERROR)
+    if (index == Error::INVALID_INDEX)
     {
       Log::Error("Could not load from OBJ file: " + fileName);
-      return MESH_INDEX_ERROR;
+      return Error::INVALID_INDEX;
     }
   }
 
@@ -142,7 +142,7 @@ void MeshManager::UnloadMeshes() noexcept
 
 void MeshManager::RenderMesh(unsigned id) const noexcept
 {
-  if (id == MESH_INDEX_ERROR)
+  if (id == Error::INVALID_INDEX)
   {
     Log::Error("RenderMesh: Mesh not loaded!");
     return;
@@ -157,7 +157,7 @@ void MeshManager::RenderMesh(unsigned id) const noexcept
 
 void MeshManager::RenderSurfaceNormals(unsigned id, float length) const noexcept
 {
-  if (id == MESH_INDEX_ERROR)
+  if (id == Error::INVALID_INDEX)
   {
     Log::Error("RenderMesh: Mesh not loaded!");
     return;
@@ -175,7 +175,7 @@ void MeshManager::RenderSurfaceNormals(unsigned id, float length) const noexcept
 
 void MeshManager::RenderVertexNormals(unsigned id, float length) const noexcept
 {
-  if (id == MESH_INDEX_ERROR)
+  if (id == Error::INVALID_INDEX)
   {
     Log::Error("RenderMesh: Mesh not loaded!");
     return;

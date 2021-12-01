@@ -66,21 +66,82 @@ public:
   /// <param name="position">Vec3 World Position</param>
   void SetPosition(vec3 position);
 
+  /// <summary>
+  /// Moves the camera forward
+  /// </summary>
+  /// <param name="distance">The world distance to move the camera forward</param>
   void MoveForward(float distance) noexcept;
+
+  /// <summary>
+  /// Moves the camera backward
+  /// </summary>
+  /// <param name="distance">The world distance to move the camera backward</param>
   void MoveBackward(float distance) noexcept;
+
+  /// <summary>
+  /// Moves the camera directly to the camera's right
+  /// </summary>
+  /// <param name="distance">The world distance to move the camera right</param>
   void MoveRight(float distance) noexcept;
+
+  /// <summary>
+  /// Moves the camera directly to the camera's left
+  /// </summary>
+  /// <param name="distance">The world distance to move the camera left</param>
   void MoveLeft(float distance) noexcept;
+
+  /// <summary>
+  /// Moves the camera up
+  /// </summary>
+  /// <param name="distance">The world distance to move the camera up</param>
   void MoveUp(float distance) noexcept;
+
+  /// <summary>
+  /// Moves the camera down
+  /// </summary>
+  /// <param name="distance">The world distance to move the camera down</param>
   void MoveDown(float distance) noexcept;
 
+  /// <summary>
+  /// Sets the camera's yaw
+  /// </summary>
+  /// <param name="degrees">Yaw in degrees</param>
   void SetYaw(float degrees);
+
+  /// <summary>
+  /// Sets the camera's pitch
+  /// </summary>
+  /// <param name="degrees">Pitch in degrees</param>
   void SetPitch(float degrees);
+
+  /// <summary>
+  /// Sets the camera's roll
+  /// </summary>
+  /// <param name="degrees">Roll in degrees</param>
   void SetRoll(float degrees);
 
+  /// <summary>
+  /// Sets the viewing data for the camera
+  /// </summary>
+  /// <param name="viewData">FOV, Aspect Ratio, Culling Distance</param>
   void SetViewData(const ViewData& viewData);
 
+  /// <summary>
+  /// Gets the camera's position in world space
+  /// </summary>
+  /// <returns>[Const Ref] The camera's position</returns>
   const vec3& GetPosition() const noexcept;
+
+  /// <summary>
+  /// Gets the camera's forward vector
+  /// </summary>
+  /// <returns>[Const Ref] The camera's forward vector</returns>
   const vec3& GetForwardVector() const noexcept;
+
+  /// <summary>
+  /// Gets the camera's up vector
+  /// </summary>
+  /// <returns>[Const Ref] The camera's up vector</returns>
   const vec3& GetUpVector() const noexcept;
 
   /// <summary>

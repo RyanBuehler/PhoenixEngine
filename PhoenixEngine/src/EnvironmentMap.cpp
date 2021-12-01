@@ -82,3 +82,12 @@ void EnvironmentMap::Bind(int i) noexcept
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glEnable(GL_DEPTH_TEST);
 }
+
+void EnvironmentMap::EnableTextures() noexcept
+{
+  for (int i = 0; i < 6; ++i)
+  {
+    glActiveTexture(GL_TEXTURE0 + i);
+    glBindTexture(GL_TEXTURE_2D, m_hTexture[i]);
+  }
+}

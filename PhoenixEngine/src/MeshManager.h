@@ -11,18 +11,15 @@
 
 class MeshManager
 {
-public:
-  static constexpr unsigned MESH_INDEX_ERROR = numeric_limits<unsigned>::max();
-
 private:
   struct MeshData
   {
     MeshData(const string& fileName = "Unknown",
-      GLuint positionBufferID = MESH_INDEX_ERROR,
-      GLuint normalBufferID = MESH_INDEX_ERROR,
-      GLuint triangleBufferID = MESH_INDEX_ERROR,
-      GLuint texcoordBufferID = MESH_INDEX_ERROR,
-      GLuint vertexArrayID = MESH_INDEX_ERROR) :
+      GLuint positionBufferID = Error::INVALID_INDEX,
+      GLuint normalBufferID = Error::INVALID_INDEX,
+      GLuint triangleBufferID = Error::INVALID_INDEX,
+      GLuint texcoordBufferID = Error::INVALID_INDEX,
+      GLuint vertexArrayID = Error::INVALID_INDEX) :
       FileName(fileName),
       PositionBufferID(positionBufferID),
       NormalBufferID(normalBufferID),

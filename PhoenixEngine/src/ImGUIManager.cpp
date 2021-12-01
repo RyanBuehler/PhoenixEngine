@@ -87,7 +87,7 @@ namespace ImGui
   float GraphicsDebugNormalLength = 0.05f;
   bool GraphicsRebuildShaders = false;
   bool GraphicsRebuildMeshes = false;
-  int GraphicsSelectedShader = 1;
+  int GraphicsSelectedShader = 4;
   UV::Generation GraphicsSelectedProjection = UV::Generation::PLANAR;
   GLuint GraphicsDisplayTexture[6] =
   {
@@ -109,8 +109,8 @@ namespace ImGui
   int LightingActiveLights = 8;
   Material LightingGlobalMaterial;
 
-  DemoObject DemoObjectMain = DemoObject::Lucy;
-  const char* DemoObjectFile = DEMOOBJECTFILENAMES[(size_t)ImGui::DemoObject::Lucy];
+  DemoObject DemoObjectMain = DemoObject::Sphere;
+  const char* DemoObjectFile = DEMOOBJECTFILENAMES[(size_t)ImGui::DemoObject::Sphere];
 }
 
 
@@ -625,7 +625,7 @@ void ImGuiManager::graphicsUpdateTexture() noexcept
       {
         ImGui::SameLine();
       }
-      ImGui::Image((void*)(intptr_t)ImGui::GraphicsDisplayTexture[i], ImVec2(128, 128), ImVec2(1.f, 1.f), ImVec2(0.f, 0.f));
+      ImGui::Image((void*)(intptr_t)ImGui::GraphicsDisplayTexture[i], ImVec2(128, 128));
     }
   }
 }

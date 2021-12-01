@@ -14,6 +14,7 @@ public:
   {
     CUSTOM,
     TEXTURE,
+    REFLECTIVE,
     BASIC,
     LIGHT,
     GLOBAL,

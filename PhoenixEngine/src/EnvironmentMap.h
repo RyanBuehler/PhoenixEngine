@@ -11,17 +11,6 @@
 class EnvironmentMap
 {
 public:
-  const GLenum DrawBuffers[6] =
-  {
-    GL_COLOR_ATTACHMENT0,
-    GL_COLOR_ATTACHMENT1,
-    GL_COLOR_ATTACHMENT2,
-    GL_COLOR_ATTACHMENT3,
-    GL_COLOR_ATTACHMENT4,
-    GL_COLOR_ATTACHMENT5,
-  };
-
-public:
   EnvironmentMap() noexcept;
   ~EnvironmentMap();
   EnvironmentMap(const EnvironmentMap&) = delete;
@@ -33,6 +22,7 @@ public:
   GLuint GetTextureHandle(GLuint index) const noexcept;
   Camera& GetCamera() noexcept;
   void Bind(int i) noexcept;
+  void EnableTextures() noexcept;
 
 private:
   //TODO: Rename all OpenGL handles to hVariable

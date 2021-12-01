@@ -222,6 +222,9 @@
     <ClInclude Include="src\EnvironmentMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\ReflectionScene.h">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp">
@@ -323,6 +326,9 @@
     <ClCompile Include="src\EnvironmentMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ReflectionScene.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\Diffuse.vert">
@@ -367,10 +373,10 @@
     <None Include="res\shaders\Skybox.vert">
       <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
     </None>
-    <None Include="res\shaders\EnvironmentMap.frag">
+    <None Include="res\shaders\Reflection.frag">
       <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
     </None>
-    <None Include="res\shaders\EnvironmentMap.vert">
+    <None Include="res\shaders\Reflection.vert">
       <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
     </None>
   </ItemGroup>

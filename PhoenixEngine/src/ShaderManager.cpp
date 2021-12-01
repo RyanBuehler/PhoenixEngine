@@ -126,10 +126,10 @@ void ShaderManager::LoadShaders() noexcept
   m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::SKYBOX)] =
     CreateAndLoadShader("Skybox.frag", GL_FRAGMENT_SHADER);
 
-  //m_VertexShaders[static_cast<unsigned>(Shader::Vertex::ENVMAP)] =
-  //  CreateAndLoadShader("EnvironmentMap.vert", GL_VERTEX_SHADER);
-  //m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::ENVMAP)] =
-  //  CreateAndLoadShader("EnvironmentMap.frag", GL_FRAGMENT_SHADER);
+  m_VertexShaders[static_cast<unsigned>(Shader::Vertex::REFLECTION)] =
+    CreateAndLoadShader("Reflection.vert", GL_VERTEX_SHADER);
+  m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::REFLECTION)] =
+    CreateAndLoadShader("Reflection.frag", GL_FRAGMENT_SHADER);
 
   m_VertexShaders[static_cast<unsigned>(Shader::Vertex::PHONGLIGHT)] =
     CreateAndLoadShader("PhongLighting.vert", GL_VERTEX_SHADER);

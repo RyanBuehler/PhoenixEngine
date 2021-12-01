@@ -29,8 +29,8 @@ Renderer::Renderer(bool depthBufferEnabled, bool backFaceCullEnabled) noexcept :
   m_ContextManager(),
   m_MeshManager(),
   m_Lighting(),
-  m_DiffuseContextID(ContextManager::CONTEXT_ERROR),
-  m_DebugContextID(ContextManager::CONTEXT_ERROR),
+  m_hDiffuseContext(ContextManager::CONTEXT_ERROR),
+  m_hDebugContext(ContextManager::CONTEXT_ERROR),
   diffTex("Debug Diff Texture"),
   specTex("Debug Spec Texture"),
   m_Skybox(tempcubemap),
@@ -45,7 +45,7 @@ Renderer::Renderer(bool depthBufferEnabled, bool backFaceCullEnabled) noexcept :
 
   Log::Trace("Renderer initialized.");
 
-  //TODO: make these boolean results
+  //TODO: make these boolean results and move them elsewhere
   diffTex.LoadTextureFromFile("res/textures/metal_roof_diff_512x512.png");
   specTex.LoadTextureFromFile("res/textures/metal_roof_spec_512x512.png");
 }
@@ -81,28 +81,34 @@ void Renderer::OnEndFrame() noexcept
       ImGui::GraphicsRebuildShaders = false;
 
       m_ShaderManager.RelinkShader(
-        m_ContextManager.GetProgram(m_PhongLightingID),
+        m_ContextManager.GetProgram(m_hPhongLighting),
         m_ShaderManager.GetVertexShaderID(Shader::Vertex::PHONGLIGHT),
         m_ShaderManager.GetFragmentShaderID(Shader::Fragment::PHONGLIGHT),
         "PhongLighting.vert", "PhongLighting.frag");
 
       m_ShaderManager.RelinkShader(
-        m_ContextManager.GetProgram(m_PhongShadingID),
+        m_ContextManager.GetProgram(m_hPhongShading),
         m_ShaderManager.GetVertexShaderID(Shader::Vertex::PHONGSHADE),
         m_ShaderManager.GetFragmentShaderID(Shader::Fragment::PHONGSHADE),
         "PhongShading.vert", "PhongShading.frag");
 
       m_ShaderManager.RelinkShader(
-        m_ContextManager.GetProgram(m_BlinnPhongID),
+        m_ContextManager.GetProgram(m_hBlinnPhong),
         m_ShaderManager.GetVertexShaderID(Shader::Vertex::BLINNPHONG),
         m_ShaderManager.GetFragmentShaderID(Shader::Fragment::BLINNPHONG),
         "BlinnPhong.vert", "BlinnPhong.frag");
 
       m_ShaderManager.RelinkShader(
-        m_ContextManager.GetProgram(m_PhongTextureID),
+        m_ContextManager.GetProgram(m_hPhongTexture),
         m_ShaderManager.GetVertexShaderID(Shader::Vertex::PHONGTEXTURE),
         m_ShaderManager.GetFragmentShaderID(Shader::Fragment::PHONGTEXTURE),
         "PhongTexture.vert", "PhongTexture.frag");
+
+      m_ShaderManager.RelinkShader(
+        m_ContextManager.GetProgram(m_hReflection),
+        m_ShaderManager.GetVertexShaderID(Shader::Vertex::REFLECTION),
+        m_ShaderManager.GetFragmentShaderID(Shader::Fragment::REFLECTION),
+        "Reflection.vert", "Reflection.frag");
     }
 
     if (ImGui::GraphicsRebuildMeshes)
@@ -134,7 +140,7 @@ void Renderer::RenderScene(vector<GameObject>& gameObjects, Camera& activeCamera
 #pragma region ImGui
 
 #ifdef _IMGUI
-  m_ContextManager.SetContext(m_DebugContextID);
+  m_ContextManager.SetContext(m_hDebugContext);
 
   // Set Perspective Matrix
   glUniformMatrix4fv(
@@ -156,7 +162,7 @@ void Renderer::RenderScene(vector<GameObject>& gameObjects, Camera& activeCamera
   {
     // RenderNormals(id, ImGui::GraphicsDebugNormalLength);
     // Render our list of game objects
-    m_ContextManager.SetContext(m_DebugContextID);
+    m_ContextManager.SetContext(m_hDebugContext);
     for (GameObject& go : gameObjects)
     {
       // Skip disabled game objects
@@ -169,7 +175,7 @@ void Renderer::RenderScene(vector<GameObject>& gameObjects, Camera& activeCamera
   }
   else if (ImGui::GraphicsDebugRenderVertexNormals)
   {
-    m_ContextManager.SetContext(m_DebugContextID);
+    m_ContextManager.SetContext(m_hDebugContext);
 
     // Render our list of game objects
     for (GameObject& go : gameObjects)
@@ -184,7 +190,7 @@ void Renderer::RenderScene(vector<GameObject>& gameObjects, Camera& activeCamera
   }
   else
   {
-    m_ContextManager.SetContext(m_DebugContextID);
+    m_ContextManager.SetContext(m_hDebugContext);
     DebugRenderer::I().RenderLines();
   }
 #endif
@@ -202,22 +208,22 @@ void Renderer::RenderFirstPass(vector<GameObject>& gameObjects)
     switch (i)
     {
     case 0:
-      activeCamera.LookAt({ 1.f, 0.f, 0.f }, { 0.f, 1.f, 0.f });
-      break;
-    case 1:
       activeCamera.LookAt({ -1.f, 0.f, 0.f }, { 0.f, 1.f, 0.f });
       break;
+    case 1:
+      activeCamera.LookAt({ 1.f, 0.f, 0.f }, { 0.f, 1.f, 0.f });
+      break;
     case 2:
-      activeCamera.LookAt({ 0.f, 0.f, 1.f }, { 0.f, 1.f, 0.f });
+      activeCamera.LookAt({ 0.f, -1.f, 0.f }, { 0.f, 0.f, 1.f });
       break;
     case 3:
-      activeCamera.LookAt({ 0.f, 0.f, -1.f }, { 0.f, 1.f, 0.f });
+      activeCamera.LookAt({ 0.f, 1.f, 0.f }, { 1.f, 0.f, 0.f });
       break;
     case 4:
-      activeCamera.LookAt({ 0.f, 1.f, 0.f }, { 0.f, 0.f, -1.f });
+      activeCamera.LookAt({ 0.f, 0.f, -1.f }, { 0.f, 1.f, 0.f });
       break;
     case 5:
-      activeCamera.LookAt({ 0.f, -1.f, 0.f }, { 0.f, 0.f, 1.f });
+      activeCamera.LookAt({ 0.f, 0.f, 1.f }, { 0.f, 1.f, 0.f });
       break;
     default:
       return;
@@ -226,16 +232,28 @@ void Renderer::RenderFirstPass(vector<GameObject>& gameObjects)
     // Render our list of game objects
     for (GameObject& go : gameObjects)
     {
+      // Skip disabled game objects
       if (!go.IsActive())
         continue;
 
       switch (ImGui::GraphicsSelectedShader)
       {
+        // Reflection
+      case 4:
+        if (go.GetMaterial().GetType() == Material::Type::REFLECTIVE)
+        {
+          continue;
+        }
+        else
+        {
+          m_ContextManager.SetContext(m_hPhongShading);
+        }
+        break;
         //Texture
       case 3:
         if (go.GetMaterial().GetType() == Material::Type::TEXTURE)
         {
-          m_ContextManager.SetContext(m_PhongTextureID);
+          m_ContextManager.SetContext(m_hPhongTexture);
           glActiveTexture(GL_TEXTURE0);
           glBindTexture(GL_TEXTURE_2D, diffTex.GetTextureID());
           glActiveTexture(GL_TEXTURE1);
@@ -243,21 +261,21 @@ void Renderer::RenderFirstPass(vector<GameObject>& gameObjects)
         }
         else
         {
-          m_ContextManager.SetContext(m_PhongShadingID);
+          m_ContextManager.SetContext(m_hPhongShading);
         }
         break;
         //Lighting
       case 0:
-        m_ContextManager.SetContext(m_PhongLightingID);
+        m_ContextManager.SetContext(m_hPhongLighting);
         break;
         //Shading
       case 1:
-        m_ContextManager.SetContext(m_PhongShadingID);
+        m_ContextManager.SetContext(m_hPhongShading);
         break;
         //Blinn
       case 2:
       default:
-        m_ContextManager.SetContext(m_BlinnPhongID);
+        m_ContextManager.SetContext(m_hBlinnPhong);
         break;
       }
 
@@ -280,7 +298,6 @@ void Renderer::RenderFirstPass(vector<GameObject>& gameObjects)
       glUniform1f(uniforms[8].ID, globalLighting.AttLinear);
       glUniform1f(uniforms[9].ID, globalLighting.AttQuadratic);
 
-      // Skip disabled game objects
       RenderGameObject(go);
     }
 
@@ -306,11 +323,23 @@ void Renderer::RenderSecondPass(vector<GameObject>& gameObjects, Camera& activeC
 
     switch (ImGui::GraphicsSelectedShader)
     {
+      // Reflection
+    case 4:
+      if (go.GetMaterial().GetType() == Material::Type::REFLECTIVE)
+      {
+        m_ContextManager.SetContext(m_hReflection);
+        envMap.EnableTextures();
+      }
+      else
+      {
+        m_ContextManager.SetContext(m_hPhongShading);
+      }
+      break;
       //Texture
     case 3:
       if (go.GetMaterial().GetType() == Material::Type::TEXTURE)
       {
-        m_ContextManager.SetContext(m_PhongTextureID);
+        m_ContextManager.SetContext(m_hPhongTexture);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, diffTex.GetTextureID());
         glActiveTexture(GL_TEXTURE1);
@@ -318,21 +347,21 @@ void Renderer::RenderSecondPass(vector<GameObject>& gameObjects, Camera& activeC
       }
       else
       {
-        m_ContextManager.SetContext(m_PhongShadingID);
+        m_ContextManager.SetContext(m_hPhongShading);
       }
       break;
       //Lighting
     case 0:
-      m_ContextManager.SetContext(m_PhongLightingID);
+      m_ContextManager.SetContext(m_hPhongLighting);
       break;
       //Shading
     case 1:
-      m_ContextManager.SetContext(m_PhongShadingID);
+      m_ContextManager.SetContext(m_hPhongShading);
       break;
       //Blinn
     case 2:
     default:
-      m_ContextManager.SetContext(m_BlinnPhongID);
+      m_ContextManager.SetContext(m_hBlinnPhong);
       break;
     }
 
@@ -355,7 +384,6 @@ void Renderer::RenderSecondPass(vector<GameObject>& gameObjects, Camera& activeC
     glUniform1f(uniforms[8].ID, globalLighting.AttLinear);
     glUniform1f(uniforms[9].ID, globalLighting.AttQuadratic);
 
-
     // Skip disabled game objects
     RenderGameObject(go);
   }
@@ -368,7 +396,7 @@ void Renderer::RenderSecondPass(vector<GameObject>& gameObjects, Camera& activeC
 
 void Renderer::RenderSkybox(Camera& activeCamera)
 {
-  m_ContextManager.SetContext(m_SkyboxContextID);
+  m_ContextManager.SetContext(m_hSkyboxContext);
 
   glDepthFunc(GL_LEQUAL);
   //glDepthMask(GL_FALSE);
@@ -396,10 +424,10 @@ void Renderer::RenderGameObject(GameObject& gameObject)
   if (gameObject.m_bIsDirty)
   {
     // Unknown Mesh ID, check for new id with file name
-    if (gameObject.m_MeshID == MeshManager::MESH_INDEX_ERROR)
+    if (gameObject.m_MeshID == Error::INVALID_INDEX)
     {
       gameObject.m_MeshID = m_MeshManager.LoadMesh(gameObject.GetMeshFileName(), true, true, ImGui::GraphicsSelectedProjection);
-      if (gameObject.m_MeshID == MeshManager::MESH_INDEX_ERROR)
+      if (gameObject.m_MeshID == Error::INVALID_INDEX)
       {
         Log::Error("Could not load mesh: " + gameObject.GetMeshFileName());
         return;
@@ -409,9 +437,8 @@ void Renderer::RenderGameObject(GameObject& gameObject)
 
   if (gameObject.GetMaterial().GetType() == Material::Type::TEXTURE)
   {
-    m_ContextManager.SetContext(m_PhongTextureID);
+    m_ContextManager.SetContext(m_hPhongTexture);
   }
-
 
   const vector<ContextManager::UniformAttribute>& uniforms = m_ContextManager.GetCurrentUniformAttributes();
 
@@ -459,10 +486,10 @@ void Renderer::RenderNormals(GameObject& gameObject, float length, Normals::Type
   if (gameObject.m_bIsDirty)
   {
     // Unknown Mesh ID, check for new id with file name
-    if (gameObject.m_MeshID == MeshManager::MESH_INDEX_ERROR)
+    if (gameObject.m_MeshID == Error::INVALID_INDEX)
     {
       gameObject.m_MeshID = m_MeshManager.LoadMesh(gameObject.GetMeshFileName(), true, true);
-      if (gameObject.m_MeshID == MeshManager::MESH_INDEX_ERROR)
+      if (gameObject.m_MeshID == Error::INVALID_INDEX)
       {
         Log::Error("Could not load mesh: " + gameObject.GetMeshFileName());
         return;
@@ -507,8 +534,10 @@ void Renderer::LoadContexts() noexcept
 
   LoadSkyboxContext();
 
+  LoadReflectionContext();
+
   //TODO: Look into this
-  GLuint program = m_ContextManager.GetProgram(m_PhongLightingID);
+  GLuint program = m_ContextManager.GetProgram(m_hPhongLighting);
 
   //TODO: For testing only
   uboIndex = glGetUniformBlockIndex(program, "LightArray");
@@ -522,7 +551,6 @@ void Renderer::LoadContexts() noexcept
   glGenBuffers(1, &uboBuffer);
   glBindBuffer(GL_UNIFORM_BUFFER, uboBuffer);
   glBufferData(GL_UNIFORM_BUFFER, uboSize, NULL, GL_DYNAMIC_DRAW);
-  //glBindBufferBase(GL_UNIFORM_BUFFER, uboIndex, uboHandle);
   glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboBuffer, 0, uboSize);
 }
 
@@ -531,20 +559,20 @@ void Renderer::LoadDiffuseContext() noexcept
   // Load a default context
   unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::DIFFUSE);
   unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::DIFFUSE);
-  m_DiffuseContextID = m_ContextManager.CreateNewContext("Diffuse", vID, fID);
-  m_ContextManager.SetContext(m_DiffuseContextID);
+  m_hDiffuseContext = m_ContextManager.CreateNewContext("Diffuse", vID, fID);
+  m_ContextManager.SetContext(m_hDiffuseContext);
 
   // TODO: Convert this to a Uniform Block
-  m_ContextManager.AddNewUniformAttribute(m_DiffuseContextID, "pers_matrix");
-  m_ContextManager.AddNewUniformAttribute(m_DiffuseContextID, "view_matrix");
-  m_ContextManager.AddNewUniformAttribute(m_DiffuseContextID, "model_matrix");
-  m_ContextManager.AddNewUniformAttribute(m_DiffuseContextID, "diffuse_light");
-  m_ContextManager.AddNewUniformAttribute(m_DiffuseContextID, "ambient_light");
+  m_ContextManager.AddNewUniformAttribute(m_hDiffuseContext, "pers_matrix");
+  m_ContextManager.AddNewUniformAttribute(m_hDiffuseContext, "view_matrix");
+  m_ContextManager.AddNewUniformAttribute(m_hDiffuseContext, "model_matrix");
+  m_ContextManager.AddNewUniformAttribute(m_hDiffuseContext, "diffuse_light");
+  m_ContextManager.AddNewUniformAttribute(m_hDiffuseContext, "ambient_light");
 
   ContextManager::VertexAttribute vaPosition("position", 4, GL_FLOAT, GL_FALSE, sizeof(vec3), 0u);
   ContextManager::VertexAttribute vaNormal("normal", 4, GL_FLOAT, GL_FALSE, sizeof(vec3), sizeof(vec3));
-  m_ContextManager.AddNewVertexAttribute(m_DiffuseContextID, vaPosition);
-  m_ContextManager.AddNewVertexAttribute(m_DiffuseContextID, vaNormal);
+  m_ContextManager.AddNewVertexAttribute(m_hDiffuseContext, vaPosition);
+  m_ContextManager.AddNewVertexAttribute(m_hDiffuseContext, vaNormal);
 
   Log::Trace("Diffuse Context loaded.");
 }
@@ -554,39 +582,39 @@ void Renderer::LoadPhongLightingContext() noexcept
   // Load Phong lighting context
   unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::PHONGLIGHT);
   unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::PHONGLIGHT);
-  m_PhongLightingID = m_ContextManager.CreateNewContext("Phong Lighting", vID, fID);
+  m_hPhongLighting = m_ContextManager.CreateNewContext("Phong Lighting", vID, fID);
 
-  m_ContextManager.SetContext(m_PhongLightingID);
-
-  // TODO: Convert this to a uniform block
-  m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "pers_matrix");
-  m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "view_matrix");
-  m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "cam_position");
+  m_ContextManager.SetContext(m_hPhongLighting);
 
   // TODO: Convert this to a uniform block
-  m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "global_amb");
-  m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "global_fog");
-  m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "global_fog_near");
-  m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "global_fog_far");
-  m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "global_att1");
-  m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "global_att2");
-  m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "global_att3");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "pers_matrix");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "view_matrix");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "cam_position");
 
-  m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "model_matrix");
+  // TODO: Convert this to a uniform block
+  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "global_amb");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "global_fog");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "global_fog_near");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "global_fog_far");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "global_att1");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "global_att2");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "global_att3");
+
+  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "model_matrix");
 
   //TODO: Uniform block
-  m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "mat_emit");
-  m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "mat_amb");
-  m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "mat_dif");
-  m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "mat_spc");
-  m_ContextManager.AddNewUniformAttribute(m_PhongLightingID, "mat_spc_exp");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "mat_emit");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "mat_amb");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "mat_dif");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "mat_spc");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "mat_spc_exp");
 
   ContextManager::VertexAttribute vaPosition("position", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), 0);
   ContextManager::VertexAttribute vaNormal("normal", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), sizeof(vec3));
   ContextManager::VertexAttribute vaTexcoords("texcoord", 2, GL_FLOAT, GL_FALSE, sizeof(vec2), sizeof(vec3) * 2);
-  m_ContextManager.AddNewVertexAttribute(m_PhongLightingID, vaPosition);
-  m_ContextManager.AddNewVertexAttribute(m_PhongLightingID, vaNormal);
-  m_ContextManager.AddNewVertexAttribute(m_PhongLightingID, vaTexcoords);
+  m_ContextManager.AddNewVertexAttribute(m_hPhongLighting, vaPosition);
+  m_ContextManager.AddNewVertexAttribute(m_hPhongLighting, vaNormal);
+  m_ContextManager.AddNewVertexAttribute(m_hPhongLighting, vaTexcoords);
 
   Log::Trace("Phong Lighting Context loaded.");
 }
@@ -596,39 +624,39 @@ void Renderer::LoadPhongShadingContext() noexcept
   // Load Phong shading context
   unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::PHONGSHADE);
   unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::PHONGSHADE);
-  m_PhongShadingID = m_ContextManager.CreateNewContext("Phong Shading", vID, fID);
+  m_hPhongShading = m_ContextManager.CreateNewContext("Phong Shading", vID, fID);
 
-  m_ContextManager.SetContext(m_PhongShadingID);
-
-  // TODO: Convert this to a uniform block
-  m_ContextManager.AddNewUniformAttribute(m_PhongShadingID, "pers_matrix");
-  m_ContextManager.AddNewUniformAttribute(m_PhongShadingID, "view_matrix");
-  m_ContextManager.AddNewUniformAttribute(m_PhongShadingID, "cam_position");
+  m_ContextManager.SetContext(m_hPhongShading);
 
   // TODO: Convert this to a uniform block
-  m_ContextManager.AddNewUniformAttribute(m_PhongShadingID, "global_amb");
-  m_ContextManager.AddNewUniformAttribute(m_PhongShadingID, "global_fog");
-  m_ContextManager.AddNewUniformAttribute(m_PhongShadingID, "global_fog_near");
-  m_ContextManager.AddNewUniformAttribute(m_PhongShadingID, "global_fog_far");
-  m_ContextManager.AddNewUniformAttribute(m_PhongShadingID, "global_att1");
-  m_ContextManager.AddNewUniformAttribute(m_PhongShadingID, "global_att2");
-  m_ContextManager.AddNewUniformAttribute(m_PhongShadingID, "global_att3");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "pers_matrix");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "view_matrix");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "cam_position");
 
-  m_ContextManager.AddNewUniformAttribute(m_PhongShadingID, "model_matrix");
+  // TODO: Convert this to a uniform block
+  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "global_amb");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "global_fog");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "global_fog_near");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "global_fog_far");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "global_att1");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "global_att2");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "global_att3");
+
+  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "model_matrix");
 
   //TODO: Uniform block
-  m_ContextManager.AddNewUniformAttribute(m_PhongShadingID, "mat_emit");
-  m_ContextManager.AddNewUniformAttribute(m_PhongShadingID, "mat_amb");
-  m_ContextManager.AddNewUniformAttribute(m_PhongShadingID, "mat_dif");
-  m_ContextManager.AddNewUniformAttribute(m_PhongShadingID, "mat_spc");
-  m_ContextManager.AddNewUniformAttribute(m_PhongShadingID, "mat_spc_exp");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "mat_emit");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "mat_amb");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "mat_dif");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "mat_spc");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "mat_spc_exp");
 
   ContextManager::VertexAttribute vaPosition("position", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), 0);
   ContextManager::VertexAttribute vaNormal("normal", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), sizeof(vec3));
   ContextManager::VertexAttribute vaTexcoords("texcoord", 2, GL_FLOAT, GL_FALSE, sizeof(vec2), sizeof(vec3) * 2);
-  m_ContextManager.AddNewVertexAttribute(m_PhongShadingID, vaPosition);
-  m_ContextManager.AddNewVertexAttribute(m_PhongShadingID, vaNormal);
-  m_ContextManager.AddNewVertexAttribute(m_PhongShadingID, vaTexcoords);
+  m_ContextManager.AddNewVertexAttribute(m_hPhongShading, vaPosition);
+  m_ContextManager.AddNewVertexAttribute(m_hPhongShading, vaNormal);
+  m_ContextManager.AddNewVertexAttribute(m_hPhongShading, vaTexcoords);
 
   Log::Trace("Phong Shading Context loaded.");
 }
@@ -638,39 +666,39 @@ void Renderer::LoadBlinnPhongContext() noexcept
   // Load Phong lighting context
   unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::BLINNPHONG);
   unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::BLINNPHONG);
-  m_BlinnPhongID = m_ContextManager.CreateNewContext("Blinn Phong", vID, fID);
+  m_hBlinnPhong = m_ContextManager.CreateNewContext("Blinn Phong", vID, fID);
 
-  m_ContextManager.SetContext(m_BlinnPhongID);
-
-  // TODO: Convert this to a uniform block
-  m_ContextManager.AddNewUniformAttribute(m_BlinnPhongID, "pers_matrix");
-  m_ContextManager.AddNewUniformAttribute(m_BlinnPhongID, "view_matrix");
-  m_ContextManager.AddNewUniformAttribute(m_BlinnPhongID, "cam_position");
+  m_ContextManager.SetContext(m_hBlinnPhong);
 
   // TODO: Convert this to a uniform block
-  m_ContextManager.AddNewUniformAttribute(m_BlinnPhongID, "global_amb");
-  m_ContextManager.AddNewUniformAttribute(m_BlinnPhongID, "global_fog");
-  m_ContextManager.AddNewUniformAttribute(m_BlinnPhongID, "global_fog_near");
-  m_ContextManager.AddNewUniformAttribute(m_BlinnPhongID, "global_fog_far");
-  m_ContextManager.AddNewUniformAttribute(m_BlinnPhongID, "global_att1");
-  m_ContextManager.AddNewUniformAttribute(m_BlinnPhongID, "global_att2");
-  m_ContextManager.AddNewUniformAttribute(m_BlinnPhongID, "global_att3");
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhong, "pers_matrix");
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhong, "view_matrix");
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhong, "cam_position");
 
-  m_ContextManager.AddNewUniformAttribute(m_BlinnPhongID, "model_matrix");
+  // TODO: Convert this to a uniform block
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhong, "global_amb");
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhong, "global_fog");
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhong, "global_fog_near");
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhong, "global_fog_far");
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhong, "global_att1");
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhong, "global_att2");
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhong, "global_att3");
+
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhong, "model_matrix");
 
   //TODO: Uniform block
-  m_ContextManager.AddNewUniformAttribute(m_BlinnPhongID, "mat_emit");
-  m_ContextManager.AddNewUniformAttribute(m_BlinnPhongID, "mat_amb");
-  m_ContextManager.AddNewUniformAttribute(m_BlinnPhongID, "mat_dif");
-  m_ContextManager.AddNewUniformAttribute(m_BlinnPhongID, "mat_spc");
-  m_ContextManager.AddNewUniformAttribute(m_BlinnPhongID, "mat_spc_exp");
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhong, "mat_emit");
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhong, "mat_amb");
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhong, "mat_dif");
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhong, "mat_spc");
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhong, "mat_spc_exp");
 
   ContextManager::VertexAttribute vaPosition("position", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), 0);
   ContextManager::VertexAttribute vaNormal("normal", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), sizeof(vec3));
   ContextManager::VertexAttribute vaTexcoords("texcoord", 2, GL_FLOAT, GL_FALSE, sizeof(vec2), sizeof(vec3) * 2);
-  m_ContextManager.AddNewVertexAttribute(m_BlinnPhongID, vaPosition);
-  m_ContextManager.AddNewVertexAttribute(m_BlinnPhongID, vaNormal);
-  m_ContextManager.AddNewVertexAttribute(m_BlinnPhongID, vaTexcoords);
+  m_ContextManager.AddNewVertexAttribute(m_hBlinnPhong, vaPosition);
+  m_ContextManager.AddNewVertexAttribute(m_hBlinnPhong, vaNormal);
+  m_ContextManager.AddNewVertexAttribute(m_hBlinnPhong, vaTexcoords);
 
   Log::Trace("Phong Shading Context loaded.");
 }
@@ -680,32 +708,32 @@ void Renderer::LoadPhongTextureContext() noexcept
   // Load Phong lighting context
   unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::PHONGTEXTURE);
   unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::PHONGTEXTURE);
-  m_PhongTextureID = m_ContextManager.CreateNewContext("Phong Texturing", vID, fID);
+  m_hPhongTexture = m_ContextManager.CreateNewContext("Phong Texturing", vID, fID);
 
-  m_ContextManager.SetContext(m_PhongTextureID);
-
-  // TODO: Convert this to a uniform block
-  m_ContextManager.AddNewUniformAttribute(m_PhongTextureID, "pers_matrix");
-  m_ContextManager.AddNewUniformAttribute(m_PhongTextureID, "view_matrix");
-  m_ContextManager.AddNewUniformAttribute(m_PhongTextureID, "cam_position");
+  m_ContextManager.SetContext(m_hPhongTexture);
 
   // TODO: Convert this to a uniform block
-  m_ContextManager.AddNewUniformAttribute(m_PhongTextureID, "global_amb");
-  m_ContextManager.AddNewUniformAttribute(m_PhongTextureID, "global_fog");
-  m_ContextManager.AddNewUniformAttribute(m_PhongTextureID, "global_fog_near");
-  m_ContextManager.AddNewUniformAttribute(m_PhongTextureID, "global_fog_far");
-  m_ContextManager.AddNewUniformAttribute(m_PhongTextureID, "global_att1");
-  m_ContextManager.AddNewUniformAttribute(m_PhongTextureID, "global_att2");
-  m_ContextManager.AddNewUniformAttribute(m_PhongTextureID, "global_att3");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "pers_matrix");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "view_matrix");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "cam_position");
 
-  m_ContextManager.AddNewUniformAttribute(m_PhongTextureID, "model_matrix");
+  // TODO: Convert this to a uniform block
+  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "global_amb");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "global_fog");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "global_fog_near");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "global_fog_far");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "global_att1");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "global_att2");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "global_att3");
+
+  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "model_matrix");
 
   //TODO: Uniform block
-  m_ContextManager.AddNewUniformAttribute(m_PhongTextureID, "mat_emit");
-  m_ContextManager.AddNewUniformAttribute(m_PhongTextureID, "mat_amb");
-  m_ContextManager.AddNewUniformAttribute(m_PhongTextureID, "mat_dif");
-  m_ContextManager.AddNewUniformAttribute(m_PhongTextureID, "mat_spc");
-  m_ContextManager.AddNewUniformAttribute(m_PhongTextureID, "mat_spc_exp");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "mat_emit");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "mat_amb");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "mat_dif");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "mat_spc");
+  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "mat_spc_exp");
 
   //ContextManager::VertexAttribute vaPosition("position", 3, GL_FLOAT, GL_FALSE, sizeof(vec3), 0u);
   //ContextManager::VertexAttribute vaNormal("normal", 3, GL_FLOAT, GL_FALSE, sizeof(vec3), sizeof(vec3));
@@ -713,9 +741,9 @@ void Renderer::LoadPhongTextureContext() noexcept
   ContextManager::VertexAttribute vaPosition("position", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), 0);
   ContextManager::VertexAttribute vaNormal("normal", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), sizeof(vec3));
   ContextManager::VertexAttribute vaTexcoords("texcoord", 2, GL_FLOAT, GL_FALSE, sizeof(vec2), sizeof(vec3) * 2);
-  m_ContextManager.AddNewVertexAttribute(m_PhongTextureID, vaPosition);
-  m_ContextManager.AddNewVertexAttribute(m_PhongTextureID, vaNormal);
-  m_ContextManager.AddNewVertexAttribute(m_PhongTextureID, vaTexcoords);
+  m_ContextManager.AddNewVertexAttribute(m_hPhongTexture, vaPosition);
+  m_ContextManager.AddNewVertexAttribute(m_hPhongTexture, vaNormal);
+  m_ContextManager.AddNewVertexAttribute(m_hPhongTexture, vaTexcoords);
 
   Log::Trace("Phong Texture Context loaded.");
 }
@@ -725,18 +753,18 @@ void Renderer::LoadDebugContext() noexcept
   // Load a Debug Drawing context
   unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::DEBUG);
   unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::DEBUG);
-  m_DebugContextID = m_ContextManager.CreateNewContext("Debug", vID, fID);
-  m_ContextManager.SetContext(m_DebugContextID);
+  m_hDebugContext = m_ContextManager.CreateNewContext("Debug", vID, fID);
+  m_ContextManager.SetContext(m_hDebugContext);
 
-  m_ContextManager.AddNewUniformAttribute(m_DebugContextID, "pers_matrix");
-  m_ContextManager.AddNewUniformAttribute(m_DebugContextID, "view_matrix");
-  m_ContextManager.AddNewUniformAttribute(m_DebugContextID, "model_matrix");
+  m_ContextManager.AddNewUniformAttribute(m_hDebugContext, "pers_matrix");
+  m_ContextManager.AddNewUniformAttribute(m_hDebugContext, "view_matrix");
+  m_ContextManager.AddNewUniformAttribute(m_hDebugContext, "model_matrix");
 
   ContextManager::VertexAttribute vaPosition =
     ContextManager::VertexAttribute("position", 4, GL_FLOAT, GL_FALSE, 2 * sizeof(vec4), 0u);
   ContextManager::VertexAttribute vaColor("color", 4, GL_FLOAT, GL_FALSE, 2 * sizeof(vec4), sizeof(vec4));
-  m_ContextManager.AddNewVertexAttribute(m_DebugContextID, vaPosition);
-  m_ContextManager.AddNewVertexAttribute(m_DebugContextID, vaColor);
+  m_ContextManager.AddNewVertexAttribute(m_hDebugContext, vaPosition);
+  m_ContextManager.AddNewVertexAttribute(m_hDebugContext, vaColor);
 
   Log::Trace("DEBUG Context loaded.");
 }
@@ -746,19 +774,59 @@ void Renderer::LoadSkyboxContext() noexcept
   // Load skybox context
   unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::SKYBOX);
   unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::SKYBOX);
-  m_SkyboxContextID = m_ContextManager.CreateNewContext("Skybox", vID, fID);
+  m_hSkyboxContext = m_ContextManager.CreateNewContext("Skybox", vID, fID);
 
-  m_ContextManager.SetContext(m_SkyboxContextID);
+  m_ContextManager.SetContext(m_hSkyboxContext);
 
-  m_ContextManager.AddNewUniformAttribute(m_SkyboxContextID, "pers_matrix");
-  m_ContextManager.AddNewUniformAttribute(m_SkyboxContextID, "view_matrix");
+  m_ContextManager.AddNewUniformAttribute(m_hSkyboxContext, "pers_matrix");
+  m_ContextManager.AddNewUniformAttribute(m_hSkyboxContext, "view_matrix");
 
   ContextManager::VertexAttribute vaPosition("position", 4, GL_FLOAT, GL_FALSE, sizeof(vec3), 0u);
-  m_ContextManager.AddNewVertexAttribute(m_SkyboxContextID, vaPosition);
+  m_ContextManager.AddNewVertexAttribute(m_hSkyboxContext, vaPosition);
 
   SkyboxMeshID = m_MeshManager.LoadMesh("cube2.obj");
 
   Log::Trace("Skybox Context loaded.");
+}
+
+void Renderer::LoadReflectionContext() noexcept
+{
+  // Load reflection context
+  unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::REFLECTION);
+  unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::REFLECTION);
+  m_hReflection = m_ContextManager.CreateNewContext("Reflection", vID, fID);
+
+  m_ContextManager.SetContext(m_hReflection);
+
+  m_ContextManager.AddNewUniformAttribute(m_hReflection, "pers_matrix");
+  m_ContextManager.AddNewUniformAttribute(m_hReflection, "view_matrix");
+
+  m_ContextManager.AddNewUniformAttribute(m_hReflection, "cam_position");
+
+  // TODO: get rid of this
+  m_ContextManager.AddNewUniformAttribute(m_hReflection, "global_amb");
+  m_ContextManager.AddNewUniformAttribute(m_hReflection, "global_fog");
+  m_ContextManager.AddNewUniformAttribute(m_hReflection, "global_fog_near");
+  m_ContextManager.AddNewUniformAttribute(m_hReflection, "global_fog_far");
+  m_ContextManager.AddNewUniformAttribute(m_hReflection, "global_att1");
+  m_ContextManager.AddNewUniformAttribute(m_hReflection, "global_att2");
+  m_ContextManager.AddNewUniformAttribute(m_hReflection, "global_att3");
+
+  m_ContextManager.AddNewUniformAttribute(m_hReflection, "model_matrix");
+
+  //TODO: get rid of this
+  m_ContextManager.AddNewUniformAttribute(m_hReflection, "mat_emit");
+  m_ContextManager.AddNewUniformAttribute(m_hReflection, "mat_amb");
+  m_ContextManager.AddNewUniformAttribute(m_hReflection, "mat_dif");
+  m_ContextManager.AddNewUniformAttribute(m_hReflection, "mat_spc");
+  m_ContextManager.AddNewUniformAttribute(m_hReflection, "mat_spc_exp");
+
+  ContextManager::VertexAttribute vaPosition("position", 4, GL_FLOAT, GL_FALSE, sizeof(vec3), 0u);
+  ContextManager::VertexAttribute vaNormal("normal", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), sizeof(vec3));
+  m_ContextManager.AddNewVertexAttribute(m_hReflection, vaPosition);
+  m_ContextManager.AddNewVertexAttribute(m_hReflection, vaNormal);
+
+  Log::Trace("Reflection Context loaded.");
 }
 
 void Renderer::EnableDepthBuffer() noexcept

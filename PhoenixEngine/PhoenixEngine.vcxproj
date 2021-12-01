@@ -63,6 +63,7 @@
     <ClCompile Include="src\MeshManager.cpp" />
     <ClCompile Include="src\OBJReader.cpp" />
     <ClCompile Include="src\PNGReader.cpp" />
+    <ClCompile Include="src\ReflectionScene.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\Scene1.cpp" />
     <ClCompile Include="src\Scene2.cpp" />
@@ -102,6 +103,7 @@
     <ClInclude Include="src\OBJReader.h" />
     <ClInclude Include="src\Paths.h" />
     <ClInclude Include="src\PNGReader.h" />
+    <ClInclude Include="src\ReflectionScene.h" />
     <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\Scene1.h" />
     <ClInclude Include="src\Scene2.h" />
@@ -121,14 +123,14 @@
     <None Include="res\shaders\Debug.frag" />
     <None Include="res\shaders\Diffuse.vert" />
     <None Include="res\shaders\Debug.vert" />
-    <None Include="res\shaders\EnvironmentMap.frag" />
-    <None Include="res\shaders\EnvironmentMap.vert" />
     <None Include="res\shaders\PhongLighting.frag" />
     <None Include="res\shaders\PhongLighting.vert" />
     <None Include="res\shaders\PhongShading.frag" />
     <None Include="res\shaders\PhongShading.vert" />
     <None Include="res\shaders\PhongTexture.frag" />
     <None Include="res\shaders\PhongTexture.vert" />
+    <None Include="res\shaders\Reflection.frag" />
+    <None Include="res\shaders\Reflection.vert" />
     <None Include="res\shaders\Skybox.frag" />
     <None Include="res\shaders\Skybox.vert" />
   </ItemGroup>

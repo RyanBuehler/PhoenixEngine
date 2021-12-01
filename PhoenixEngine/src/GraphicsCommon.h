@@ -53,7 +53,7 @@ namespace Shader
     UNKNOWN = 0u,
     DIFFUSE,
     SKYBOX,
-    //ENVMAP,
+    REFLECTION,
     PHONGLIGHT,
     PHONGSHADE,
     BLINNPHONG,
@@ -67,7 +67,7 @@ namespace Shader
     UNKNOWN = 0u,
     DIFFUSE,
     SKYBOX,
-    //ENVMAP,
+    REFLECTION,
     PHONGLIGHT,
     PHONGSHADE,
     BLINNPHONG,
@@ -102,4 +102,5 @@ namespace UV
 namespace Error
 {
   constexpr GLuint INVALID_HANDLE = numeric_limits<GLuint>::max();
+  constexpr unsigned INVALID_INDEX = numeric_limits<unsigned>::max();
 }
