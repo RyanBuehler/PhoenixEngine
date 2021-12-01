@@ -23,6 +23,7 @@ namespace ImGui
   extern bool GraphicsRebuildMeshes;
   extern int GraphicsSelectedShader;
   extern UV::Generation GraphicsSelectedProjection;
+  extern GLuint GraphicsDisplayTexture[6];
 
   extern int SceneScenario;
   extern bool SceneDrawOrbit;
@@ -89,6 +90,7 @@ private:
   void graphicsUpdateRendering() noexcept;
   void graphicsUpdateControls() noexcept;
   void graphicsUpdateLighting() noexcept;
+  void graphicsUpdateTexture() noexcept;
 
   bool m_bRenderAxes;
   float m_DebugLineWidth;

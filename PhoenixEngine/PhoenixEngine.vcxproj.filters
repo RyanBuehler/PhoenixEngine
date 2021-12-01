@@ -217,6 +217,9 @@
       <Filter>Header Files\Graphics\Textures</Filter>
     </ClInclude>
     <ClInclude Include="src\PNGReader.h">
+      <Filter>Header Files\Graphics\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EnvironmentMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -315,6 +318,9 @@
       <Filter>Source Files\Graphics\Textures</Filter>
     </ClCompile>
     <ClCompile Include="src\PNGReader.cpp">
+      <Filter>Source Files\Graphics\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EnvironmentMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -359,6 +365,12 @@
       <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
     </None>
     <None Include="res\shaders\Skybox.vert">
+      <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
+    </None>
+    <None Include="res\shaders\EnvironmentMap.frag">
+      <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
+    </None>
+    <None Include="res\shaders\EnvironmentMap.vert">
       <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
     </None>
   </ItemGroup>

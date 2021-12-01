@@ -13,7 +13,8 @@
 #include "MeshManager.h"
 #include "LightingSystem.h"
 #include "Texture.h"
-#include "Cubemap.h"
+#include "Cubemap.h"        //TODO: Include this?
+#include "EnvironmentMap.h" //TODO: Include this?
 
 class Renderer
 {
@@ -60,7 +61,11 @@ public:
   /// <param name="gameObjects">A vector reference of game objects</param>
   /// TODO: Is there any way to make this constant?
   /// <param name="activeCamera">A reference to the active camera</param>
-  void RenderGameObjects(vector<GameObject>& gameObjects, Camera& activeCamera);
+  void RenderScene(vector<GameObject>& gameObjects, Camera& activeCamera);
+
+  void RenderFirstPass(vector<GameObject>& gameObjects);
+
+  void RenderSecondPass(vector<GameObject>& gameObjects, Camera& activeCamera);
 
   /// <summary>
   /// Renders the skybox
@@ -190,8 +195,10 @@ private:
   GLint m_PhongTextureID;           // The ID of the "PhongTexture" context
   GLint m_DebugContextID;           // The ID of the "Debug" context
 
-  //TODO: For testing only
+  //TODO: Below for testing only
   unsigned SkyboxMeshID;
+
+  EnvironmentMap envMap;
 
   GLint uboSize;
   GLuint uboIndex;

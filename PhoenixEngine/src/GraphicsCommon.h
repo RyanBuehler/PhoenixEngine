@@ -53,6 +53,7 @@ namespace Shader
     UNKNOWN = 0u,
     DIFFUSE,
     SKYBOX,
+    //ENVMAP,
     PHONGLIGHT,
     PHONGSHADE,
     BLINNPHONG,
@@ -66,6 +67,7 @@ namespace Shader
     UNKNOWN = 0u,
     DIFFUSE,
     SKYBOX,
+    //ENVMAP,
     PHONGLIGHT,
     PHONGSHADE,
     BLINNPHONG,
@@ -95,4 +97,9 @@ namespace UV
     CYLINDRICAL,
     PLANAR
   };
+}
+
+namespace Error
+{
+  constexpr GLuint INVALID_HANDLE = numeric_limits<GLuint>::max();
 }

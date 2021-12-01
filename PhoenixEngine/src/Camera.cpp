@@ -17,11 +17,14 @@ Camera::Camera(const string& name) noexcept :
   m_Position({ 0.f, 0.f, 30.f }),
   m_Forward({ 0.f, 0.f, -1.f }),
   m_Up({ 0.f, 1.f, 0.f }),
+  m_Pitch(0.f),
+  m_Roll(0.f),
+  m_Yaw(0.f),
   m_PersMatrix(1.f),
   m_ViewMatrix(1.f),
   m_IsEnabled(false),
-  m_bProjectionIsDirty(true),
-  m_bViewIsDirty(true),
+  m_ProjectionIsDirty(true),
+  m_ViewIsDirty(true),
   m_Target(nullptr),
   m_Name(name)
 {
@@ -36,7 +39,7 @@ Camera::~Camera()
 const mat4& Camera::GetPersMatrix() noexcept
 {
   // Only update the matrix if dirty
-  if (m_bProjectionIsDirty)
+  if (m_ProjectionIsDirty)
   {
     m_PersMatrix =
       glm::perspective(
@@ -44,7 +47,7 @@ const mat4& Camera::GetPersMatrix() noexcept
         m_ViewData.Aspect,
         m_ViewData.NearCull,
         m_ViewData.FarCull);
-    m_bProjectionIsDirty = false;
+    m_ProjectionIsDirty = false;
   }
   return m_PersMatrix;
 }
@@ -55,12 +58,14 @@ const mat4& Camera::GetViewMatrix() noexcept
   if (m_Target != nullptr)
   {
     m_Forward = glm::normalize(m_Target->GetPosition() - m_Position);
-    m_ViewMatrix = glm::lookAt(m_Position, m_Forward, m_Up);
-  }
-  else if (m_bViewIsDirty)
-  {
     m_ViewMatrix = glm::lookAt(m_Position, m_Position + m_Forward, m_Up);
-    m_bViewIsDirty = false;
+  }
+  else if (m_ViewIsDirty)
+  {
+    //TODO: Set up Pitch,Roll,Yaw
+    //updateOrientation();
+    m_ViewMatrix = glm::lookAt(m_Position, m_Position + m_Forward, m_Up);
+    m_ViewIsDirty = false;
   }
   return m_ViewMatrix;
 }
@@ -68,25 +73,25 @@ const mat4& Camera::GetViewMatrix() noexcept
 void Camera::SetTarget(const Transform* target) noexcept
 {
   m_Target = target;
-  m_bViewIsDirty = true;
+  m_ViewIsDirty = true;
 }
 
 void Camera::ClearTarget() noexcept
 {
   m_Target = nullptr;
-  m_bViewIsDirty = true;
+  m_ViewIsDirty = true;
 }
 
 void Camera::SetPosition(vec3 position)
 {
   m_Position = position;
-  m_bViewIsDirty = true;
+  m_ViewIsDirty = true;
 }
 
 void Camera::MoveForward(float distance) noexcept
 {
   m_Position += distance * m_Forward;
-  m_bViewIsDirty = true;
+  m_ViewIsDirty = true;
 }
 
 void Camera::MoveBackward(float distance) noexcept
@@ -97,7 +102,7 @@ void Camera::MoveBackward(float distance) noexcept
 void Camera::MoveRight(float distance) noexcept
 {
   m_Position += distance * glm::cross(m_Forward, m_Up);
-  m_bViewIsDirty = true;
+  m_ViewIsDirty = true;
 }
 
 void Camera::MoveLeft(float distance) noexcept
@@ -108,7 +113,7 @@ void Camera::MoveLeft(float distance) noexcept
 void Camera::MoveUp(float distance) noexcept
 {
   m_Position += distance * m_Up;
-  m_bViewIsDirty = true;
+  m_ViewIsDirty = true;
 }
 
 void Camera::MoveDown(float distance) noexcept
@@ -118,17 +123,25 @@ void Camera::MoveDown(float distance) noexcept
 
 void Camera::SetYaw(float degrees)
 {
-  Log::Error("Camera::SetYaw Not implemented yet.");
+  m_Yaw = degrees;
+  m_ViewIsDirty = true;
 }
 
 void Camera::SetPitch(float degrees)
 {
-  Log::Error("Camera::SetPitch Not implemented yet.");
+  m_Pitch = degrees;
+  m_ViewIsDirty = true;
 }
 
 void Camera::SetRoll(float degrees)
 {
-  Log::Error("Camera::SetRoll Not implemented yet.");
+  m_Roll = degrees;
+  m_ViewIsDirty = true;
+}
+
+void Camera::SetViewData(const ViewData& viewData)
+{
+  m_ViewData = viewData;
 }
 
 const vec3& Camera::GetPosition() const noexcept
@@ -146,9 +159,17 @@ const vec3& Camera::GetUpVector() const noexcept
   return m_Up;
 }
 
-void Camera::LookAt(vec3 position)
+void Camera::LookAt(const vec3& forward, const vec3& up)
 {
-  m_Forward = glm::normalize(position - m_Position);
+  if (glm::dot(forward, up) != 0)
+  {
+    Log::Warn("[Camera.cpp] Invalid vectors given to LookAt.");
+    return;
+  }
+
+  m_Forward = forward;
+  m_Up = up;
+  m_ViewIsDirty = true;
 }
 
 void Camera::SetName(const string& name) noexcept
@@ -159,4 +180,12 @@ void Camera::SetName(const string& name) noexcept
 const string& Camera::GetName() const noexcept
 {
   return m_Name;
+}
+
+void Camera::updateOrientation() noexcept
+{
+  m_Forward.x = cos(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
+  m_Forward.y = sin(glm::radians(m_Pitch));
+  m_Forward.z = sin(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
+  m_Forward = glm::normalize(m_Forward);
 }

@@ -89,6 +89,15 @@ namespace ImGui
   bool GraphicsRebuildMeshes = false;
   int GraphicsSelectedShader = 1;
   UV::Generation GraphicsSelectedProjection = UV::Generation::PLANAR;
+  GLuint GraphicsDisplayTexture[6] =
+  {
+    numeric_limits<GLuint>::max(),
+    numeric_limits<GLuint>::max(),
+    numeric_limits<GLuint>::max(),
+    numeric_limits<GLuint>::max(),
+    numeric_limits<GLuint>::max(),
+    numeric_limits<GLuint>::max()
+  };
 
   int SceneScenario = 1;
   bool SceneDrawOrbit = false;
@@ -197,6 +206,12 @@ void ImGuiManager::OnImGuiGraphicsUpdate() noexcept
   IMGUISPACE;
 
   graphicsUpdateControls();
+
+  IMGUISPACE;
+  ImGui::Separator();
+  IMGUISPACE;
+
+  graphicsUpdateTexture();
 
   ImGui::End();
 }
@@ -598,6 +613,21 @@ void ImGuiManager::graphicsUpdateControls() noexcept
   ImGui::Text("WASD: Move Around");
   ImGui::Text("Q/E: Move Up and Down");
   ImGui::Text("Note: Camera currently focuses on the center object.");
+}
+
+void ImGuiManager::graphicsUpdateTexture() noexcept
+{
+  for (int i = 0; i < 6; ++i)
+  {
+    if (ImGui::GraphicsDisplayTexture[i] != numeric_limits<GLuint>::max())
+    {
+      if ((i + 3) % 3 != 0)
+      {
+        ImGui::SameLine();
+      }
+      ImGui::Image((void*)(intptr_t)ImGui::GraphicsDisplayTexture[i], ImVec2(128, 128), ImVec2(1.f, 1.f), ImVec2(0.f, 0.f));
+    }
+  }
 }
 
 #undef IMGUISPACE

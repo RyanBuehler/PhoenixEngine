@@ -33,7 +33,8 @@ Renderer::Renderer(bool depthBufferEnabled, bool backFaceCullEnabled) noexcept :
   m_DebugContextID(ContextManager::CONTEXT_ERROR),
   diffTex("Debug Diff Texture"),
   specTex("Debug Spec Texture"),
-  m_Skybox(tempcubemap)
+  m_Skybox(tempcubemap),
+  envMap()
 {
   depthBufferEnabled ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
   backFaceCullEnabled ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
@@ -67,7 +68,6 @@ void Renderer::OnBeginFrame() const noexcept
 
 void Renderer::OnEndFrame() noexcept
 {
-
 #pragma region ImGUI
 #ifdef _IMGUI
 
@@ -111,6 +111,11 @@ void Renderer::OnEndFrame() noexcept
 
       m_MeshManager.UnloadMeshes();
     }
+
+    for (int i = 0; i < 6; ++i)
+    {
+      ImGui::GraphicsDisplayTexture[i] = envMap.GetTextureHandle(i);
+    }
   }
 
 #endif // _IMGUI
@@ -120,75 +125,12 @@ void Renderer::OnEndFrame() noexcept
   glUseProgram(0u);
 }
 
-void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& activeCamera)
+void Renderer::RenderScene(vector<GameObject>& gameObjects, Camera& activeCamera)
 {
-  // Render our list of game objects
-  for (GameObject& go : gameObjects)
-  {
-    if (!go.IsActive())
-      continue;
-    
-    switch (ImGui::GraphicsSelectedShader)
-    {
-      //Texture
-    case 3:
-      if (go.GetMaterial().GetType() == Material::Type::TEXTURE)
-      {
-        m_ContextManager.SetContext(m_PhongTextureID);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, diffTex.GetTextureID());
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, specTex.GetTextureID());
-      }
-      else
-      {
-        m_ContextManager.SetContext(m_PhongShadingID);
-      }
-      break;
-      //Lighting
-    case 0:
-      m_ContextManager.SetContext(m_PhongLightingID);
-      break;
-      //Shading
-    case 1:
-      m_ContextManager.SetContext(m_PhongShadingID);
-      break;
-      //Blinn
-    case 2:
-    default:
-      m_ContextManager.SetContext(m_BlinnPhongID);
-      break;
-    }
+  RenderFirstPass(gameObjects);
 
+  RenderSecondPass(gameObjects, activeCamera);
 
-    const vector<ContextManager::UniformAttribute>& uniforms = m_ContextManager.GetCurrentUniformAttributes();
-    //TODO: Combine these for efficiency
-    // Set Perspective Matrix
-    glUniformMatrix4fv(uniforms[0].ID, 1, GL_FALSE, &activeCamera.GetPersMatrix()[0][0]);
-    // Set View Matrix
-    glUniformMatrix4fv(uniforms[1].ID, 1, GL_FALSE, &activeCamera.GetViewMatrix()[0][0]);
-
-    // Set Cam Position
-    glUniform3fv(uniforms[2].ID, 1, &activeCamera.GetPosition()[0]);
-
-    const LightingSystem::GlobalLightingData& globalLighting = ImGui::LightingGlobalData;
-    glUniform3fv(uniforms[3].ID, 1, &globalLighting.AmbientIntensity[0]);
-    glUniform3fv(uniforms[4].ID, 1, &globalLighting.FogIntensity[0]);
-    glUniform1f(uniforms[5].ID, globalLighting.FogNear);
-    glUniform1f(uniforms[6].ID, globalLighting.FogFar);
-    glUniform1f(uniforms[7].ID, globalLighting.AttConstant);
-    glUniform1f(uniforms[8].ID, globalLighting.AttLinear);
-    glUniform1f(uniforms[9].ID, globalLighting.AttQuadratic);
-
-
-    // Skip disabled game objects
-    RenderGameObject(go);
-  }
-
-  //TODO: Don't render this first, and don't render it here
-  RenderSkybox(activeCamera);
-
-  glUseProgram(0u);
 #pragma region ImGui
 
 #ifdef _IMGUI
@@ -248,6 +190,180 @@ void Renderer::RenderGameObjects(vector<GameObject>& gameObjects, Camera& active
 #endif
 
 #pragma endregion
+}
+
+void Renderer::RenderFirstPass(vector<GameObject>& gameObjects)
+{
+  Camera& activeCamera = envMap.GetCamera();
+
+  for (int i = 0; i < 6; ++i)
+  {
+    envMap.Bind(i);
+    switch (i)
+    {
+    case 0:
+      activeCamera.LookAt({ 1.f, 0.f, 0.f }, { 0.f, 1.f, 0.f });
+      break;
+    case 1:
+      activeCamera.LookAt({ -1.f, 0.f, 0.f }, { 0.f, 1.f, 0.f });
+      break;
+    case 2:
+      activeCamera.LookAt({ 0.f, 0.f, 1.f }, { 0.f, 1.f, 0.f });
+      break;
+    case 3:
+      activeCamera.LookAt({ 0.f, 0.f, -1.f }, { 0.f, 1.f, 0.f });
+      break;
+    case 4:
+      activeCamera.LookAt({ 0.f, 1.f, 0.f }, { 0.f, 0.f, -1.f });
+      break;
+    case 5:
+      activeCamera.LookAt({ 0.f, -1.f, 0.f }, { 0.f, 0.f, 1.f });
+      break;
+    default:
+      return;
+    }
+
+    // Render our list of game objects
+    for (GameObject& go : gameObjects)
+    {
+      if (!go.IsActive())
+        continue;
+
+      switch (ImGui::GraphicsSelectedShader)
+      {
+        //Texture
+      case 3:
+        if (go.GetMaterial().GetType() == Material::Type::TEXTURE)
+        {
+          m_ContextManager.SetContext(m_PhongTextureID);
+          glActiveTexture(GL_TEXTURE0);
+          glBindTexture(GL_TEXTURE_2D, diffTex.GetTextureID());
+          glActiveTexture(GL_TEXTURE1);
+          glBindTexture(GL_TEXTURE_2D, specTex.GetTextureID());
+        }
+        else
+        {
+          m_ContextManager.SetContext(m_PhongShadingID);
+        }
+        break;
+        //Lighting
+      case 0:
+        m_ContextManager.SetContext(m_PhongLightingID);
+        break;
+        //Shading
+      case 1:
+        m_ContextManager.SetContext(m_PhongShadingID);
+        break;
+        //Blinn
+      case 2:
+      default:
+        m_ContextManager.SetContext(m_BlinnPhongID);
+        break;
+      }
+
+      const vector<ContextManager::UniformAttribute>& uniforms = m_ContextManager.GetCurrentUniformAttributes();
+      //TODO: Combine these for efficiency
+      // Set Perspective Matrix
+      glUniformMatrix4fv(uniforms[0].ID, 1, GL_FALSE, &activeCamera.GetPersMatrix()[0][0]);
+      // Set View Matrix
+      glUniformMatrix4fv(uniforms[1].ID, 1, GL_FALSE, &activeCamera.GetViewMatrix()[0][0]);
+
+      // Set Cam Position
+      glUniform3fv(uniforms[2].ID, 1, &activeCamera.GetPosition()[0]);
+
+      const LightingSystem::GlobalLightingData& globalLighting = ImGui::LightingGlobalData;
+      glUniform3fv(uniforms[3].ID, 1, &globalLighting.AmbientIntensity[0]);
+      glUniform3fv(uniforms[4].ID, 1, &globalLighting.FogIntensity[0]);
+      glUniform1f(uniforms[5].ID, globalLighting.FogNear);
+      glUniform1f(uniforms[6].ID, globalLighting.FogFar);
+      glUniform1f(uniforms[7].ID, globalLighting.AttConstant);
+      glUniform1f(uniforms[8].ID, globalLighting.AttLinear);
+      glUniform1f(uniforms[9].ID, globalLighting.AttQuadratic);
+
+      // Skip disabled game objects
+      RenderGameObject(go);
+    }
+
+    RenderSkybox(activeCamera);
+  }
+
+  glUseProgram(0u);
+}
+
+void Renderer::RenderSecondPass(vector<GameObject>& gameObjects, Camera& activeCamera)
+{
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+  glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glEnable(GL_DEPTH_TEST);
+
+  // Render our list of game objects
+  for (GameObject& go : gameObjects)
+  {
+    if (!go.IsActive())
+      continue;
+
+    switch (ImGui::GraphicsSelectedShader)
+    {
+      //Texture
+    case 3:
+      if (go.GetMaterial().GetType() == Material::Type::TEXTURE)
+      {
+        m_ContextManager.SetContext(m_PhongTextureID);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, diffTex.GetTextureID());
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, specTex.GetTextureID());
+      }
+      else
+      {
+        m_ContextManager.SetContext(m_PhongShadingID);
+      }
+      break;
+      //Lighting
+    case 0:
+      m_ContextManager.SetContext(m_PhongLightingID);
+      break;
+      //Shading
+    case 1:
+      m_ContextManager.SetContext(m_PhongShadingID);
+      break;
+      //Blinn
+    case 2:
+    default:
+      m_ContextManager.SetContext(m_BlinnPhongID);
+      break;
+    }
+
+    const vector<ContextManager::UniformAttribute>& uniforms = m_ContextManager.GetCurrentUniformAttributes();
+    //TODO: Combine these for efficiency
+    // Set Perspective Matrix
+    glUniformMatrix4fv(uniforms[0].ID, 1, GL_FALSE, &activeCamera.GetPersMatrix()[0][0]);
+    // Set View Matrix
+    glUniformMatrix4fv(uniforms[1].ID, 1, GL_FALSE, &activeCamera.GetViewMatrix()[0][0]);
+
+    // Set Cam Position
+    glUniform3fv(uniforms[2].ID, 1, &activeCamera.GetPosition()[0]);
+
+    const LightingSystem::GlobalLightingData& globalLighting = ImGui::LightingGlobalData;
+    glUniform3fv(uniforms[3].ID, 1, &globalLighting.AmbientIntensity[0]);
+    glUniform3fv(uniforms[4].ID, 1, &globalLighting.FogIntensity[0]);
+    glUniform1f(uniforms[5].ID, globalLighting.FogNear);
+    glUniform1f(uniforms[6].ID, globalLighting.FogFar);
+    glUniform1f(uniforms[7].ID, globalLighting.AttConstant);
+    glUniform1f(uniforms[8].ID, globalLighting.AttLinear);
+    glUniform1f(uniforms[9].ID, globalLighting.AttQuadratic);
+
+
+    // Skip disabled game objects
+    RenderGameObject(go);
+  }
+
+  //TODO: Don't render this first, and don't render it here
+  RenderSkybox(activeCamera);
+
+  glUseProgram(0u);
 }
 
 void Renderer::RenderSkybox(Camera& activeCamera)
@@ -382,7 +498,7 @@ void Renderer::LoadContexts() noexcept
   LoadPhongLightingContext();
 
   LoadPhongShadingContext();
-  
+
   LoadBlinnPhongContext();
 
   LoadPhongTextureContext();

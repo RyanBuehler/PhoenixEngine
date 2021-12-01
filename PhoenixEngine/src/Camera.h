@@ -77,6 +77,8 @@ public:
   void SetPitch(float degrees);
   void SetRoll(float degrees);
 
+  void SetViewData(const ViewData& viewData);
+
   const vec3& GetPosition() const noexcept;
   const vec3& GetForwardVector() const noexcept;
   const vec3& GetUpVector() const noexcept;
@@ -85,7 +87,7 @@ public:
   /// Makes the Camera look at a target position
   /// </summary>
   /// <param name="position">Vec3 World Position</param>
-  void LookAt(vec3 position);
+  void LookAt(const vec3& forward, const vec3& up);
 
   /// <summary>
   /// Sets the Camera's name
@@ -100,6 +102,8 @@ public:
   const string& GetName() const noexcept;
 
 private:
+  void updateOrientation() noexcept;
+
   // Camera Viewing Data
   ViewData m_ViewData;
 
@@ -108,13 +112,18 @@ private:
   vec3 m_Forward;
   vec3 m_Up;
 
+  // Euler Rotation
+  float m_Pitch;
+  float m_Roll;
+  float m_Yaw;
+
   // Matrices
   mat4 m_PersMatrix;
   mat4 m_ViewMatrix;
 
   bool m_IsEnabled;
-  bool m_bProjectionIsDirty;
-  bool m_bViewIsDirty;
+  bool m_ProjectionIsDirty;
+  bool m_ViewIsDirty;
 
   // Camera Target
   const Transform* m_Target;
