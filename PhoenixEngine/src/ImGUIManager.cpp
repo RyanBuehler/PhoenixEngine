@@ -373,7 +373,7 @@ void ImGuiManager::graphicsUpdateObjects() noexcept
   IMGUISPACE;
 
   ImGui::TextColored(IMGREEN, "Demo Object: "); ImGui::SameLine();
-  static const char* DemoObjectString = DEMOOBJECTNAMES[(size_t)ImGui::DemoObject::Lucy];
+  static const char* DemoObjectString = DEMOOBJECTNAMES[(size_t)ImGui::DemoObject::Sphere];
   if (ImGui::BeginCombo("##Demo Object", DemoObjectString))
   {
     for (int i = 0; i < (size_t)ImGui::DemoObject::COUNT; ++i)
@@ -392,7 +392,7 @@ void ImGuiManager::graphicsUpdateObjects() noexcept
     ImGui::EndCombo();
   }
 
-  ImGui::TextColored(IMGREEN, "Enable Orbiting: "); ImGui::SameLine();
+  /*ImGui::TextColored(IMGREEN, "Enable Orbiting: "); ImGui::SameLine();
   ImGui::Checkbox("##Enable Orbiting", &ImGui::SceneOrbitObjects);
 
   if (ImGui::Button("Scenario 1", { 140, 40 }))
@@ -414,7 +414,7 @@ void ImGuiManager::graphicsUpdateObjects() noexcept
     ImGui::GraphicsSelectedShader = 3;
     ImGui::DemoObjectMain = DEMOOBJECTS[4];
     ImGui::DemoObjectFile = DEMOOBJECTFILENAMES[4];
-  }
+  }*/
 }
 
 void ImGuiManager::graphicsUpdateLighting() noexcept

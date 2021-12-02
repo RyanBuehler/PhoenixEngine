@@ -201,6 +201,7 @@ void Renderer::RenderScene(vector<GameObject>& gameObjects, Camera& activeCamera
 void Renderer::RenderFirstPass(vector<GameObject>& gameObjects)
 {
   Camera& activeCamera = envMap.GetCamera();
+  glViewport(0, 0, 1024, 1024);
 
   for (int i = 0; i < 6; ++i)
   {
@@ -208,22 +209,22 @@ void Renderer::RenderFirstPass(vector<GameObject>& gameObjects)
     switch (i)
     {
     case 0:
-      activeCamera.LookAt({ -1.f, 0.f, 0.f }, { 0.f, 1.f, 0.f });
+      activeCamera.LookAt({ 1.f, 0.f, 0.f }, { 0.f, 1.f, 0.f });
       break;
     case 1:
-      activeCamera.LookAt({ 1.f, 0.f, 0.f }, { 0.f, 1.f, 0.f });
+      activeCamera.LookAt({ -1.f, 0.f, 0.f }, { 0.f, 1.f, 0.f });
       break;
     case 2:
       activeCamera.LookAt({ 0.f, -1.f, 0.f }, { 0.f, 0.f, 1.f });
       break;
     case 3:
-      activeCamera.LookAt({ 0.f, 1.f, 0.f }, { 1.f, 0.f, 0.f });
+      activeCamera.LookAt({ 0.f, 1.f, 0.f }, { 0.f, 0.f, -1.f });
       break;
     case 4:
-      activeCamera.LookAt({ 0.f, 0.f, -1.f }, { 0.f, 1.f, 0.f });
+      activeCamera.LookAt({ 0.f, 0.f, 1.f }, { 0.f, 1.f, 0.f });
       break;
     case 5:
-      activeCamera.LookAt({ 0.f, 0.f, 1.f }, { 0.f, 1.f, 0.f });
+      activeCamera.LookAt({ 0.f, 0.f, -1.f }, { 0.f, 1.f, 0.f });
       break;
     default:
       return;
@@ -301,6 +302,12 @@ void Renderer::RenderFirstPass(vector<GameObject>& gameObjects)
       RenderGameObject(go);
     }
 
+    const vector<ContextManager::UniformAttribute>& uniforms = m_ContextManager.GetCurrentUniformAttributes();
+    //TODO: Combine these for efficiency
+    // Set Perspective Matrix
+    glUniformMatrix4fv(uniforms[0].ID, 1, GL_FALSE, &activeCamera.GetPersMatrix()[0][0]);
+    // Set View Matrix
+    glUniformMatrix4fv(uniforms[1].ID, 1, GL_FALSE, &activeCamera.GetViewMatrix()[0][0]);
     RenderSkybox(activeCamera);
   }
 
@@ -314,6 +321,7 @@ void Renderer::RenderSecondPass(vector<GameObject>& gameObjects, Camera& activeC
   glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glEnable(GL_DEPTH_TEST);
+  glViewport(0, 0, 1920, 1080);
 
   // Render our list of game objects
   for (GameObject& go : gameObjects)
@@ -387,6 +395,13 @@ void Renderer::RenderSecondPass(vector<GameObject>& gameObjects, Camera& activeC
     // Skip disabled game objects
     RenderGameObject(go);
   }
+
+  const vector<ContextManager::UniformAttribute>& uniforms = m_ContextManager.GetCurrentUniformAttributes();
+  //TODO: Combine these for efficiency
+  // Set Perspective Matrix
+  glUniformMatrix4fv(uniforms[0].ID, 1, GL_FALSE, &activeCamera.GetPersMatrix()[0][0]);
+  // Set View Matrix
+  glUniformMatrix4fv(uniforms[1].ID, 1, GL_FALSE, &activeCamera.GetViewMatrix()[0][0]);
 
   //TODO: Don't render this first, and don't render it here
   RenderSkybox(activeCamera);

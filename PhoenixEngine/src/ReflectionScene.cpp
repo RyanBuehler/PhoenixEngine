@@ -33,6 +33,7 @@ void ReflectionScene::OnInit() noexcept
 
   Log::Trace("Reflection Scene Initialized.");
   m_GameObjectArray.emplace_back(ImGui::DemoObjectFile);
+  m_GameObjectArray.emplace_back("sphere");
 
   m_MainCamera.SetPosition({ 0.f, 0.f, 2.f });
 
@@ -40,6 +41,10 @@ void ReflectionScene::OnInit() noexcept
   m_GameObjectArray[0].ScaleBy(1.f);
   m_GameObjectArray[0].SetMaterial(Material::Type::REFLECTIVE);
   m_MainCamera.SetTarget(&m_GameObjectArray[0].GetTransform());
+
+  m_GameObjectArray[1].SetPosition(vec3(4.f, 0.f, 0.f));
+  m_GameObjectArray[1].ScaleBy(0.5f);
+  m_GameObjectArray[1].SetMaterial(Material::Type::LIGHT);
 }
 
 void ReflectionScene::OnUpdate(float dt) noexcept

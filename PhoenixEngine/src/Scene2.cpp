@@ -135,6 +135,7 @@ void Scene2::Scenario1() noexcept
   {
     m_GameObjectArray.emplace_back("sphere");
   }
+
   m_GameObjectArray.emplace_back("quad.obj");
   m_GameObjectArray.emplace_back(ImGui::DemoObjectFile);
 

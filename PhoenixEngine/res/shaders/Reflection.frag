@@ -29,8 +29,8 @@ vec3 SampleCubeMap(vec3 vEntity);
 
 void main(void)
 {
-  vec3 view_vector = normalize(world_position.xyz - cam_position);
-  vec3 reflect_vector = 2.f * dot(view_vector, world_normal.xyz) * view_vector - world_normal.xyz;
+  vec3 view_vector = normalize(cam_position - world_position.xyz);
+  vec3 reflect_vector = 2.f * dot(view_vector, world_normal.xyz) * world_normal.xyz - view_vector;
 
   //frag_color = world_normal;
   frag_color = vec4(SampleCubeMap(reflect_vector), 1.f);
@@ -45,47 +45,48 @@ vec3 SampleCubeMap(vec3 vEntity)
   // +-X
   if(absVec.x >= absVec.y && absVec.x >= absVec.z)
   {
-    if(vEntity.x < 0.f )
-    {
-      uv.x = vEntity.z;
-      side = XNEG;
-    }
-    else
+    vEntity *= 1 / absVec.x;
+    if(vEntity.x < 0.f)
     {
       uv.x = -vEntity.z;
       side = XPOS;
     }
+    else
+    {
+      uv.x = vEntity.z;
+      side = XNEG;
+    }
     uv.y = vEntity.y;
   }
-
   // +-Y
-  if(absVec.y >= absVec.x && absVec.y >= absVec.z)
+  else if(absVec.y >= absVec.x && absVec.y >= absVec.z)
   {
+    vEntity *= 1 / absVec.y;
     if(vEntity.y < 0.f )
     {
-      uv.x = vEntity.x;
+      uv.y = vEntity.z;
       side = YNEG;
     }
     else
     {
-      uv.x = -vEntity.x;
+      uv.y = -vEntity.z;
       side = YPOS;
     }
-    uv.y = vEntity.z;
+    uv.x = -vEntity.x;
   }
-
   // +-Z
-  if(absVec.z >= absVec.x && absVec.z >= absVec.y)
+  else
   {
+    vEntity *= 1 / absVec.z;
     if(vEntity.z < 0.f )
     {
       uv.x = vEntity.x;
-      side = ZNEG;
+      side = ZPOS;
     }
     else
     {
       uv.x = -vEntity.x;
-      side = ZPOS;
+      side = ZNEG;
     }
     uv.y = vEntity.y;
   }
