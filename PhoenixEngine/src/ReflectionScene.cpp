@@ -42,6 +42,7 @@ void ReflectionScene::OnInit() noexcept
 
   m_GameObjectArray[0].SetPosition(vec3(0.f));
   m_GameObjectArray[0].ScaleBy(1.f);
+  //m_GameObjectArray[0].SetMaterial(Material::Type::GLOBAL);
   m_GameObjectArray[0].SetMaterial(Material::Type::REFLECTIVE);
   m_MainCamera.SetTarget(&m_GameObjectArray[0].GetTransform());
 
@@ -129,6 +130,15 @@ void ReflectionScene::OnUpdate(float dt) noexcept
     }
     ImGui::LightingDataArray[i].Position = vec4(m_GameObjectArray[i].GetPosition(), 1.f);
     ImGui::LightingDataArray[i].Direction = vec4(vec3(0.f, -0.3f, 0.f) - m_GameObjectArray[i].GetPosition(), 1.f);
+  }
+
+  if (ImGui::GraphicsSelectedShader == 4)
+  {
+    m_GameObjectArray[0].SetMaterial(Material::Type::REFLECTIVE);
+  }
+  else
+  {
+    m_GameObjectArray[0].SetMaterial(Material::Type::GLOBAL);
   }
 }
 

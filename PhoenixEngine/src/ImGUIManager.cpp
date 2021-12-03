@@ -66,12 +66,14 @@ namespace
     "starwars1.obj"
   };
 
-  static const char* SHADERNAMES[4] =
+  static const char* SHADERNAMES[6] =
   {
     "Phong Lighting",
     "Phong Shading",
     "Blinn-Phong",
-    "Phong Texture"
+    "Phong Texture",
+    "Reflection",
+    "Refraction"
   };
 }
 
@@ -301,10 +303,10 @@ void ImGuiManager::graphicsUpdateStats() noexcept
   IMGUISPACE;
 
   ImGui::TextColored(IMGREEN, "Shader: "); ImGui::SameLine();
-  static const char* ShaderString = SHADERNAMES[1];
+  static const char* ShaderString = SHADERNAMES[4];
   if (ImGui::BeginCombo("##Selected Shader", ShaderString))
   {
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < 6; ++i)
     {
       ImGui::PushID((void*)SHADERNAMES[i]);
       if (ImGui::Selectable(SHADERNAMES[i], ImGui::GraphicsSelectedShader == i))
