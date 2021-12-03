@@ -392,29 +392,29 @@ void ImGuiManager::graphicsUpdateObjects() noexcept
     ImGui::EndCombo();
   }
 
-  /*ImGui::TextColored(IMGREEN, "Enable Orbiting: "); ImGui::SameLine();
+  ImGui::TextColored(IMGREEN, "Enable Orbiting: "); ImGui::SameLine();
   ImGui::Checkbox("##Enable Orbiting", &ImGui::SceneOrbitObjects);
 
-  if (ImGui::Button("Scenario 1", { 140, 40 }))
-  {
-    ImGui::SceneScenario = 1;
-    m_dOnSceneChange(SceneManager::Scene::Scene2);
-  }
-  ImGui::SameLine();
-  if (ImGui::Button("Scenario 2", { 140, 40 }))
-  {
-    ImGui::SceneScenario = 2;
-    m_dOnSceneChange(SceneManager::Scene::Scene2);
-  }
-  ImGui::SameLine();
-  if (ImGui::Button("Scenario 3", { 140, 40 }))
-  {
-    ImGui::SceneScenario = 3;
-    m_dOnSceneChange(SceneManager::Scene::Scene2);
-    ImGui::GraphicsSelectedShader = 3;
-    ImGui::DemoObjectMain = DEMOOBJECTS[4];
-    ImGui::DemoObjectFile = DEMOOBJECTFILENAMES[4];
-  }*/
+  //if (ImGui::Button("Scenario 1", { 140, 40 }))
+  //{
+  //  ImGui::SceneScenario = 1;
+  //  m_dOnSceneChange(SceneManager::Scene::Scene2);
+  //}
+  //ImGui::SameLine();
+  //if (ImGui::Button("Scenario 2", { 140, 40 }))
+  //{
+  //  ImGui::SceneScenario = 2;
+  //  m_dOnSceneChange(SceneManager::Scene::Scene2);
+  //}
+  //ImGui::SameLine();
+  //if (ImGui::Button("Scenario 3", { 140, 40 }))
+  //{
+  //  ImGui::SceneScenario = 3;
+  //  m_dOnSceneChange(SceneManager::Scene::Scene2);
+  //  ImGui::GraphicsSelectedShader = 3;
+  //  ImGui::DemoObjectMain = DEMOOBJECTS[4];
+  //  ImGui::DemoObjectFile = DEMOOBJECTFILENAMES[4];
+  //}
 }
 
 void ImGuiManager::graphicsUpdateLighting() noexcept
