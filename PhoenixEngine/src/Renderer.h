@@ -184,6 +184,11 @@ private:
   /// </summary>
   void LoadReflectionContext() noexcept;
 
+  /// <summary>
+  /// Loads the "Blinn Phong" rendering context
+  /// </summary>
+  void LoadBlinnPhongRefractContext() noexcept;
+
   ShaderManager m_ShaderManager;    // Handles shader related functionality
   ContextManager m_ContextManager;  // Handles and maintains the context information
   MeshManager m_MeshManager;        // Handles and maintains the Mesh data
@@ -200,6 +205,7 @@ private:
   GLint m_hPhongTexture;           // The ID of the "PhongTexture" context
   GLint m_hReflection;             // The ID of the "Reflection" context
   GLint m_hDebugContext;           // The ID of the "Debug" context
+  GLint m_hBlinnPhongRefract;      // The ID of the "BlinnPhongRefract" context
 
   //TODO: Below for testing only
   unsigned SkyboxMeshID;

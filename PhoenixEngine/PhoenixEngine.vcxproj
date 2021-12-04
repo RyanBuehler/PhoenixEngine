@@ -119,6 +119,8 @@
   <ItemGroup>
     <None Include="res\shaders\BlinnPhong.frag" />
     <None Include="res\shaders\BlinnPhong.vert" />
+    <None Include="res\shaders\BlinnPhongRefract.frag" />
+    <None Include="res\shaders\BlinnPhongRefract.vert" />
     <None Include="res\shaders\Diffuse.frag" />
     <None Include="res\shaders\Debug.frag" />
     <None Include="res\shaders\Diffuse.vert" />
@@ -211,8 +213,7 @@
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>robocopy $(ProjectDir)res $(OutDir)res /e /it</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -247,8 +248,7 @@
       <LinkTimeCodeGeneration>UseFastLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>robocopy $(ProjectDir)res $(OutDir)res /e /it</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Deploy|x64'">
@@ -282,8 +282,7 @@
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>robocopy $(ProjectDir)res $(OutDir)res /e /it</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

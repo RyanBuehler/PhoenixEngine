@@ -99,6 +99,12 @@ void Renderer::OnEndFrame() noexcept
         "BlinnPhong.vert", "BlinnPhong.frag");
 
       m_ShaderManager.RelinkShader(
+        m_ContextManager.GetProgram(m_hBlinnPhongRefract),
+        m_ShaderManager.GetVertexShaderID(Shader::Vertex::BLINNPHONGREFRACT),
+        m_ShaderManager.GetFragmentShaderID(Shader::Fragment::BLINNPHONGREFRACT),
+        "BlinnPhongRefract.vert", "BlinnPhongRefract.frag");
+
+      m_ShaderManager.RelinkShader(
         m_ContextManager.GetProgram(m_hPhongTexture),
         m_ShaderManager.GetVertexShaderID(Shader::Vertex::PHONGTEXTURE),
         m_ShaderManager.GetFragmentShaderID(Shader::Fragment::PHONGTEXTURE),
@@ -240,8 +246,8 @@ void Renderer::RenderFirstPass(vector<GameObject>& gameObjects)
       switch (ImGui::GraphicsSelectedShader)
       {
         // Reflection
-      case 4:
-        if (go.GetMaterial().GetType() == Material::Type::REFLECTIVE)
+      case 3:
+        if (go.GetMaterial().GetType() == Material::Type::REFLECTREFRACT)
         {
           continue;
         }
@@ -251,20 +257,20 @@ void Renderer::RenderFirstPass(vector<GameObject>& gameObjects)
         }
         break;
         //Texture
-      case 3:
-        if (go.GetMaterial().GetType() == Material::Type::TEXTURE)
-        {
-          m_ContextManager.SetContext(m_hPhongTexture);
-          glActiveTexture(GL_TEXTURE0);
-          glBindTexture(GL_TEXTURE_2D, diffTex.GetTextureID());
-          glActiveTexture(GL_TEXTURE1);
-          glBindTexture(GL_TEXTURE_2D, specTex.GetTextureID());
-        }
-        else
-        {
-          m_ContextManager.SetContext(m_hPhongShading);
-        }
-        break;
+      //case 3:
+      //  if (go.GetMaterial().GetType() == Material::Type::TEXTURE)
+      //  {
+      //    m_ContextManager.SetContext(m_hPhongTexture);
+      //    glActiveTexture(GL_TEXTURE0);
+      //    glBindTexture(GL_TEXTURE_2D, diffTex.GetTextureID());
+      //    glActiveTexture(GL_TEXTURE1);
+      //    glBindTexture(GL_TEXTURE_2D, specTex.GetTextureID());
+      //  }
+      //  else
+      //  {
+      //    m_ContextManager.SetContext(m_hPhongShading);
+      //  }
+      //  break;
         //Lighting
       case 0:
         m_ContextManager.SetContext(m_hPhongLighting);
@@ -332,11 +338,18 @@ void Renderer::RenderSecondPass(vector<GameObject>& gameObjects, Camera& activeC
     switch (ImGui::GraphicsSelectedShader)
     {
       // Reflection
-    case 4:
-      if (go.GetMaterial().GetType() == Material::Type::REFLECTIVE)
+    case 3:
+      if (go.GetMaterial().GetType() == Material::Type::REFLECTREFRACT)
       {
-        m_ContextManager.SetContext(m_hReflection);
+        m_ContextManager.SetContext(m_hBlinnPhongRefract);
         envMap.EnableTextures();
+        const vector<ContextManager::UniformAttribute>& uniforms = m_ContextManager.GetCurrentUniformAttributes();
+        glUniform1f(uniforms[16].ID, ImGui::GraphicsRefractSlider);
+        glUniform1f(uniforms[17].ID, ImGui::GraphicsRedIOR);
+        glUniform1f(uniforms[18].ID, ImGui::GraphicsGreenIOR);
+        glUniform1f(uniforms[19].ID, ImGui::GraphicsBlueIOR);
+        glUniform1f(uniforms[20].ID, ImGui::GraphicsRefractEnabled);
+        glUniform1f(uniforms[21].ID, ImGui::GraphicsReflectEnabled);
       }
       else
       {
@@ -344,20 +357,20 @@ void Renderer::RenderSecondPass(vector<GameObject>& gameObjects, Camera& activeC
       }
       break;
       //Texture
-    case 3:
-      if (go.GetMaterial().GetType() == Material::Type::TEXTURE)
-      {
-        m_ContextManager.SetContext(m_hPhongTexture);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, diffTex.GetTextureID());
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, specTex.GetTextureID());
-      }
-      else
-      {
-        m_ContextManager.SetContext(m_hPhongShading);
-      }
-      break;
+    //case 3:
+    //  if (go.GetMaterial().GetType() == Material::Type::TEXTURE)
+    //  {
+    //    m_ContextManager.SetContext(m_hPhongTexture);
+    //    glActiveTexture(GL_TEXTURE0);
+    //    glBindTexture(GL_TEXTURE_2D, diffTex.GetTextureID());
+    //    glActiveTexture(GL_TEXTURE1);
+    //    glBindTexture(GL_TEXTURE_2D, specTex.GetTextureID());
+    //  }
+    //  else
+    //  {
+    //    m_ContextManager.SetContext(m_hPhongShading);
+    //  }
+    //  break;
       //Lighting
     case 0:
       m_ContextManager.SetContext(m_hPhongLighting);
@@ -462,7 +475,8 @@ void Renderer::RenderGameObject(GameObject& gameObject)
   glUniformMatrix4fv(uniforms[10].ID, 1, false, &gameObject.GetMatrix()[0][0]);
 
   //TODO: Material faked temporarily for simplicity
-  if (gameObject.GetMaterial().GetType() != Material::Type::GLOBAL)
+  if (gameObject.GetMaterial().GetType() != Material::Type::GLOBAL &&
+    gameObject.GetMaterial().GetType() != Material::Type::REFLECTREFRACT)
   {
     const Material& mat = gameObject.GetMaterial();
     glUniform3fv(uniforms[11].ID, 1, &mat.GetEmissive()[0]);
@@ -550,6 +564,8 @@ void Renderer::LoadContexts() noexcept
   LoadSkyboxContext();
 
   LoadReflectionContext();
+
+  LoadBlinnPhongRefractContext();
 
   //TODO: Look into this
   GLuint program = m_ContextManager.GetProgram(m_hPhongLighting);
@@ -715,7 +731,7 @@ void Renderer::LoadBlinnPhongContext() noexcept
   m_ContextManager.AddNewVertexAttribute(m_hBlinnPhong, vaNormal);
   m_ContextManager.AddNewVertexAttribute(m_hBlinnPhong, vaTexcoords);
 
-  Log::Trace("Phong Shading Context loaded.");
+  Log::Trace("Blinn-Phong Shading Context loaded.");
 }
 
 void Renderer::LoadPhongTextureContext() noexcept
@@ -842,6 +858,56 @@ void Renderer::LoadReflectionContext() noexcept
   m_ContextManager.AddNewVertexAttribute(m_hReflection, vaNormal);
 
   Log::Trace("Reflection Context loaded.");
+}
+
+void Renderer::LoadBlinnPhongRefractContext() noexcept
+{
+  // Load Phong lighting context
+  unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::BLINNPHONGREFRACT);
+  unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::BLINNPHONGREFRACT);
+  m_hBlinnPhongRefract = m_ContextManager.CreateNewContext("Blinn Phong Reflect/Refract", vID, fID);
+
+  m_ContextManager.SetContext(m_hBlinnPhongRefract);
+
+  // TODO: Convert this to a uniform block
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "pers_matrix");
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "view_matrix");
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "cam_position");
+
+  // TODO: Convert this to a uniform block
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "global_amb");
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "global_fog");
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "global_fog_near");
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "global_fog_far");
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "global_att1");
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "global_att2");
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "global_att3");
+
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "model_matrix");
+
+  //TODO: Uniform block
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "mat_emit");
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "mat_amb");
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "mat_dif");
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "mat_spc");
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "mat_spc_exp");
+
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "refract_slider");
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "IOR_R");
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "IOR_G");
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "IOR_B");
+
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "RefractEnabled");
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "ReflectEnabled");
+
+  ContextManager::VertexAttribute vaPosition("position", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), 0);
+  ContextManager::VertexAttribute vaNormal("normal", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), sizeof(vec3));
+  ContextManager::VertexAttribute vaTexcoords("texcoord", 2, GL_FLOAT, GL_FALSE, sizeof(vec2), sizeof(vec3) * 2);
+  m_ContextManager.AddNewVertexAttribute(m_hBlinnPhongRefract, vaPosition);
+  m_ContextManager.AddNewVertexAttribute(m_hBlinnPhongRefract, vaNormal);
+  m_ContextManager.AddNewVertexAttribute(m_hBlinnPhongRefract, vaTexcoords);
+
+  Log::Trace("Blinn Phong Refraction Context loaded.");
 }
 
 void Renderer::EnableDepthBuffer() noexcept

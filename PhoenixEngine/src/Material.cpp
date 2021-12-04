@@ -110,6 +110,9 @@ void Material::setByType(Type type) noexcept
   //TODO: Eventually this could be loaded by material files
   switch (type)
   {
+  case Material::Type::REFLECTREFRACT:
+  case Material::Type::REFRACTIVE:
+    break;
   case Material::Type::BASIC:
     m_Emissive = { 0.f, 0.f, 0.f };
     m_AmbientFactor = 0.3f;

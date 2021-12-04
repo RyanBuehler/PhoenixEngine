@@ -379,5 +379,11 @@
     <None Include="res\shaders\Reflection.vert">
       <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
     </None>
+    <None Include="res\shaders\BlinnPhongRefract.frag">
+      <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
+    </None>
+    <None Include="res\shaders\BlinnPhongRefract.vert">
+      <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
+    </None>
   </ItemGroup>
 </Project>

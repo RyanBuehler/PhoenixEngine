@@ -146,6 +146,11 @@ void ShaderManager::LoadShaders() noexcept
   m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::BLINNPHONG)] =
     CreateAndLoadShader("BlinnPhong.frag", GL_FRAGMENT_SHADER);
 
+  m_VertexShaders[static_cast<unsigned>(Shader::Vertex::BLINNPHONGREFRACT)] =
+    CreateAndLoadShader("BlinnPhongRefract.vert", GL_VERTEX_SHADER);
+  m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::BLINNPHONGREFRACT)] =
+    CreateAndLoadShader("BlinnPhongRefract.frag", GL_FRAGMENT_SHADER);
+
   m_VertexShaders[static_cast<unsigned>(Shader::Vertex::PHONGTEXTURE)] =
     CreateAndLoadShader("PhongTexture.vert", GL_VERTEX_SHADER);
   m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::PHONGTEXTURE)] =

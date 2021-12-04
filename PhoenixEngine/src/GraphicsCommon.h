@@ -57,6 +57,7 @@ namespace Shader
     PHONGLIGHT,
     PHONGSHADE,
     BLINNPHONG,
+    BLINNPHONGREFRACT,
     PHONGTEXTURE,
     DEBUG,
     COUNT
@@ -71,6 +72,7 @@ namespace Shader
     PHONGLIGHT,
     PHONGSHADE,
     BLINNPHONG,
+    BLINNPHONGREFRACT,
     PHONGTEXTURE,
     DEBUG,
     COUNT

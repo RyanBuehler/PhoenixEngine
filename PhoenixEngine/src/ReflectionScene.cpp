@@ -38,21 +38,21 @@ void ReflectionScene::OnInit() noexcept
   Log::Trace("Reflection Scene Initialized.");
   m_GameObjectArray.emplace_back(ImGui::DemoObjectFile);
 
-  m_MainCamera.SetPosition({ 1.f, 1.f, 3.f });
+  m_MainCamera.SetPosition({ 2.f, 2.f, 10.f });
 
   m_GameObjectArray[0].SetPosition(vec3(0.f));
-  m_GameObjectArray[0].ScaleBy(1.f);
+  m_GameObjectArray[0].ScaleBy(2.f);
   //m_GameObjectArray[0].SetMaterial(Material::Type::GLOBAL);
-  m_GameObjectArray[0].SetMaterial(Material::Type::REFLECTIVE);
+  m_GameObjectArray[0].SetMaterial(Material::Type::REFLECTREFRACT);
   m_MainCamera.SetTarget(&m_GameObjectArray[0].GetTransform());
 
   for (int i = 1; i < 9; ++i)
   {
     m_GameObjectArray.emplace_back("sphere");
     // Lights
-    m_GameObjectArray[i].SetPosition(vec3(2.0f, 0.f, 0.f));
+    m_GameObjectArray[i].SetPosition(vec3(3.0f, 0.f, 0.f));
     m_GameObjectArray[i].RotateAround(360.f / 8.f * i, vec3(0.f, 1.f, 0.f));
-    m_GameObjectArray[i].ScaleBy(0.5f);
+    m_GameObjectArray[i].ScaleBy(0.2f);
     m_GameObjectArray[i].SetMaterial(Material::Type::LIGHT);
     m_GameObjectArray[i].SetIsActive(false);
     ImGui::LightingDataArray[i].Type = Light::POINT_LIGHT;
@@ -132,9 +132,9 @@ void ReflectionScene::OnUpdate(float dt) noexcept
     ImGui::LightingDataArray[i].Direction = vec4(vec3(0.f, -0.3f, 0.f) - m_GameObjectArray[i].GetPosition(), 1.f);
   }
 
-  if (ImGui::GraphicsSelectedShader == 4)
+  if (ImGui::GraphicsSelectedShader == 3)
   {
-    m_GameObjectArray[0].SetMaterial(Material::Type::REFLECTIVE);
+    m_GameObjectArray[0].SetMaterial(Material::Type::REFLECTREFRACT);
   }
   else
   {
@@ -158,7 +158,10 @@ void ReflectionScene::OnPollInput(GLFWwindow* window, float dt) noexcept
   static float move_speed = 10.f;
   if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
   {
-    m_MainCamera.MoveForward(move_speed * dt);
+    if (glm::length(glm::abs(m_MainCamera.GetPosition())) > 1.f)
+    {
+      m_MainCamera.MoveForward(move_speed * dt);
+    }
   }
   if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
   {
@@ -182,7 +185,7 @@ void ReflectionScene::OnPollInput(GLFWwindow* window, float dt) noexcept
   }
   if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
   {
-    m_MainCamera.SetPosition({ 0.f, 0.f, 2.f });
+    m_MainCamera.SetPosition({ 0.f, 0.f, 4.f });
   }
 
 }
