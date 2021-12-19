@@ -126,6 +126,11 @@ void ShaderManager::LoadShaders() noexcept
   m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::SKYBOX)] =
     CreateAndLoadShader("Skybox.frag", GL_FRAGMENT_SHADER);
 
+  m_VertexShaders[static_cast<unsigned>(Shader::Vertex::REFLECTION)] =
+    CreateAndLoadShader("Reflection.vert", GL_VERTEX_SHADER);
+  m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::REFLECTION)] =
+    CreateAndLoadShader("Reflection.frag", GL_FRAGMENT_SHADER);
+
   m_VertexShaders[static_cast<unsigned>(Shader::Vertex::PHONGLIGHT)] =
     CreateAndLoadShader("PhongLighting.vert", GL_VERTEX_SHADER);
   m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::PHONGLIGHT)] =
@@ -140,6 +145,11 @@ void ShaderManager::LoadShaders() noexcept
     CreateAndLoadShader("BlinnPhong.vert", GL_VERTEX_SHADER);
   m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::BLINNPHONG)] =
     CreateAndLoadShader("BlinnPhong.frag", GL_FRAGMENT_SHADER);
+
+  m_VertexShaders[static_cast<unsigned>(Shader::Vertex::BLINNPHONGREFRACT)] =
+    CreateAndLoadShader("BlinnPhongRefract.vert", GL_VERTEX_SHADER);
+  m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::BLINNPHONGREFRACT)] =
+    CreateAndLoadShader("BlinnPhongRefract.frag", GL_FRAGMENT_SHADER);
 
   m_VertexShaders[static_cast<unsigned>(Shader::Vertex::PHONGTEXTURE)] =
     CreateAndLoadShader("PhongTexture.vert", GL_VERTEX_SHADER);

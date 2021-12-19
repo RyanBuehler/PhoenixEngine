@@ -20,11 +20,12 @@ public:
     None,
     Scene1, // Spheres orbiting a centerpiece
     Scene2, // Phong Lighting scene
+    ReflectionScene, // Reflection Scene
     SceneSingleObject, // Single object for testing
     SceneCount
   };
 private:
-  static constexpr Scene DEFAULTSCENE = Scene::Scene2;
+  static constexpr Scene DEFAULTSCENE = Scene::ReflectionScene;
 
 public:
   /// <summary>

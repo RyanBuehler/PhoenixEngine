@@ -23,6 +23,13 @@ namespace ImGui
   extern bool GraphicsRebuildMeshes;
   extern int GraphicsSelectedShader;
   extern UV::Generation GraphicsSelectedProjection;
+  extern GLuint GraphicsDisplayTexture[6];
+  extern float GraphicsRefractSlider;
+  extern float GraphicsRedIOR;
+  extern float GraphicsGreenIOR;
+  extern float GraphicsBlueIOR;
+  extern bool GraphicsRefractEnabled;
+  extern bool GraphicsReflectEnabled;
 
   extern int SceneScenario;
   extern bool SceneDrawOrbit;
@@ -38,7 +45,7 @@ namespace ImGui
   {
     Bunny,
     BunnyHighPoly,
-    Cube,
+    //Cube,
     Cube2,
     Cup,
     Lucy,
@@ -89,6 +96,7 @@ private:
   void graphicsUpdateRendering() noexcept;
   void graphicsUpdateControls() noexcept;
   void graphicsUpdateLighting() noexcept;
+  void graphicsUpdateTexture() noexcept;
 
   bool m_bRenderAxes;
   float m_DebugLineWidth;

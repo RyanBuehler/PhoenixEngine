@@ -13,7 +13,8 @@
 #include "MeshManager.h"
 #include "LightingSystem.h"
 #include "Texture.h"
-#include "Cubemap.h"
+#include "Cubemap.h"        //TODO: Include this?
+#include "EnvironmentMap.h" //TODO: Include this?
 
 class Renderer
 {
@@ -60,7 +61,11 @@ public:
   /// <param name="gameObjects">A vector reference of game objects</param>
   /// TODO: Is there any way to make this constant?
   /// <param name="activeCamera">A reference to the active camera</param>
-  void RenderGameObjects(vector<GameObject>& gameObjects, Camera& activeCamera);
+  void RenderScene(vector<GameObject>& gameObjects, Camera& activeCamera);
+
+  void RenderFirstPass(vector<GameObject>& gameObjects);
+
+  void RenderSecondPass(vector<GameObject>& gameObjects, Camera& activeCamera);
 
   /// <summary>
   /// Renders the skybox
@@ -174,6 +179,16 @@ private:
   /// </summary>
   void LoadSkyboxContext() noexcept;
 
+  /// <summary>
+  /// Loads the "Reflection" rendering context
+  /// </summary>
+  void LoadReflectionContext() noexcept;
+
+  /// <summary>
+  /// Loads the "Blinn Phong" rendering context
+  /// </summary>
+  void LoadBlinnPhongRefractContext() noexcept;
+
   ShaderManager m_ShaderManager;    // Handles shader related functionality
   ContextManager m_ContextManager;  // Handles and maintains the context information
   MeshManager m_MeshManager;        // Handles and maintains the Mesh data
@@ -182,16 +197,20 @@ private:
 
   Cubemap m_Skybox;                 // The 6-sided cubemap skybox
 
-  GLint m_SkyboxContextID;          // The ID of the "Skybox" context
-  GLint m_DiffuseContextID;         // The ID of the "Diffuse" context
-  GLint m_PhongLightingID;          // The ID of the "PhongLighting" context
-  GLint m_PhongShadingID;           // The ID of the "PhongShading" context
-  GLint m_BlinnPhongID;             // The ID of the "BlinnPhong" context
-  GLint m_PhongTextureID;           // The ID of the "PhongTexture" context
-  GLint m_DebugContextID;           // The ID of the "Debug" context
+  GLint m_hSkyboxContext;          // The ID of the "Skybox" context
+  GLint m_hDiffuseContext;         // The ID of the "Diffuse" context
+  GLint m_hPhongLighting;          // The ID of the "PhongLighting" context
+  GLint m_hPhongShading;           // The ID of the "PhongShading" context
+  GLint m_hBlinnPhong;             // The ID of the "BlinnPhong" context
+  GLint m_hPhongTexture;           // The ID of the "PhongTexture" context
+  GLint m_hReflection;             // The ID of the "Reflection" context
+  GLint m_hDebugContext;           // The ID of the "Debug" context
+  GLint m_hBlinnPhongRefract;      // The ID of the "BlinnPhongRefract" context
 
-  //TODO: For testing only
+  //TODO: Below for testing only
   unsigned SkyboxMeshID;
+
+  EnvironmentMap envMap;
 
   GLint uboSize;
   GLuint uboIndex;

@@ -147,7 +147,7 @@ void Window::OnUpdate() noexcept
 #pragma endregion
 
   // Update the Renderer
-  m_RendererPtr->RenderGameObjects(
+  m_RendererPtr->RenderScene(
     m_SceneManagerPtr->GetCurrentSceneGameObjects(),
     m_SceneManagerPtr->GetCurrentSceneActiveCamera());
 

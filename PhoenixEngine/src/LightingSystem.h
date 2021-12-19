@@ -24,8 +24,8 @@ public:
       FogNear(1.f),
       FogFar(50.f),
       AttConstant(0.4f),
-      AttLinear(0.5f),
-      AttQuadratic(0.5f)
+      AttLinear(0.333f),
+      AttQuadratic(0.f)
     {}
 
     vec3 AmbientIntensity;        // Global Ambient intensity

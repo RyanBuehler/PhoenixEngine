@@ -53,9 +53,11 @@ namespace Shader
     UNKNOWN = 0u,
     DIFFUSE,
     SKYBOX,
+    REFLECTION,
     PHONGLIGHT,
     PHONGSHADE,
     BLINNPHONG,
+    BLINNPHONGREFRACT,
     PHONGTEXTURE,
     DEBUG,
     COUNT
@@ -66,9 +68,11 @@ namespace Shader
     UNKNOWN = 0u,
     DIFFUSE,
     SKYBOX,
+    REFLECTION,
     PHONGLIGHT,
     PHONGSHADE,
     BLINNPHONG,
+    BLINNPHONGREFRACT,
     PHONGTEXTURE,
     DEBUG,
     COUNT
@@ -95,4 +99,10 @@ namespace UV
     CYLINDRICAL,
     PLANAR
   };
+}
+
+namespace Error
+{
+  constexpr GLuint INVALID_HANDLE = numeric_limits<GLuint>::max();
+  constexpr unsigned INVALID_INDEX = numeric_limits<unsigned>::max();
 }

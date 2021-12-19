@@ -217,7 +217,13 @@
       <Filter>Header Files\Graphics\Textures</Filter>
     </ClInclude>
     <ClInclude Include="src\PNGReader.h">
+      <Filter>Header Files\Graphics\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EnvironmentMap.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ReflectionScene.h">
+      <Filter>Header Files\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -315,7 +321,13 @@
       <Filter>Source Files\Graphics\Textures</Filter>
     </ClCompile>
     <ClCompile Include="src\PNGReader.cpp">
+      <Filter>Source Files\Graphics\Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EnvironmentMap.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ReflectionScene.cpp">
+      <Filter>Source Files\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -359,6 +371,18 @@
       <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
     </None>
     <None Include="res\shaders\Skybox.vert">
+      <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
+    </None>
+    <None Include="res\shaders\Reflection.frag">
+      <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
+    </None>
+    <None Include="res\shaders\Reflection.vert">
+      <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
+    </None>
+    <None Include="res\shaders\BlinnPhongRefract.frag">
+      <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
+    </None>
+    <None Include="res\shaders\BlinnPhongRefract.vert">
       <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
     </None>
   </ItemGroup>

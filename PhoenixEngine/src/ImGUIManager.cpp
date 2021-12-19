@@ -31,7 +31,7 @@ namespace
   {
     ImGui::DemoObject::Bunny,
     ImGui::DemoObject::BunnyHighPoly,
-    ImGui::DemoObject::Cube,
+    //ImGui::DemoObject::Cube,
     ImGui::DemoObject::Cube2,
     ImGui::DemoObject::Cup,
     ImGui::DemoObject::Lucy,
@@ -44,7 +44,7 @@ namespace
   {
     "Bunny",
     "BunnyHighPoly",
-    "Cube",
+    //"Cube",
     "Cube2",
     "Cup",
     "Lucy",
@@ -57,7 +57,7 @@ namespace
   {
     "bunny.obj",
     "bunny_high_poly.obj",
-    "cube.obj",
+    //"cube.obj",
     "cube2.obj",
     "cup.obj",
     "lucy_princeton.obj",
@@ -71,7 +71,7 @@ namespace
     "Phong Lighting",
     "Phong Shading",
     "Blinn-Phong",
-    "Phong Texture"
+    "Reflect/Refract"
   };
 }
 
@@ -87,8 +87,23 @@ namespace ImGui
   float GraphicsDebugNormalLength = 0.05f;
   bool GraphicsRebuildShaders = false;
   bool GraphicsRebuildMeshes = false;
-  int GraphicsSelectedShader = 1;
+  int GraphicsSelectedShader = 3;
   UV::Generation GraphicsSelectedProjection = UV::Generation::PLANAR;
+  GLuint GraphicsDisplayTexture[6] =
+  {
+    numeric_limits<GLuint>::max(),
+    numeric_limits<GLuint>::max(),
+    numeric_limits<GLuint>::max(),
+    numeric_limits<GLuint>::max(),
+    numeric_limits<GLuint>::max(),
+    numeric_limits<GLuint>::max()
+  };
+  float GraphicsRefractSlider = 1.f;
+  float GraphicsRedIOR = 2.413f;
+  float GraphicsGreenIOR = 2.420f;
+  float GraphicsBlueIOR = 2.427f;
+  bool GraphicsRefractEnabled = true;
+  bool GraphicsReflectEnabled = true;
 
   int SceneScenario = 1;
   bool SceneDrawOrbit = false;
@@ -100,8 +115,8 @@ namespace ImGui
   int LightingActiveLights = 8;
   Material LightingGlobalMaterial;
 
-  DemoObject DemoObjectMain = DemoObject::Lucy;
-  const char* DemoObjectFile = DEMOOBJECTFILENAMES[(size_t)ImGui::DemoObject::Lucy];
+  DemoObject DemoObjectMain = DemoObject::Sphere;
+  const char* DemoObjectFile = DEMOOBJECTFILENAMES[(size_t)ImGui::DemoObject::Sphere];
 }
 
 
@@ -198,6 +213,12 @@ void ImGuiManager::OnImGuiGraphicsUpdate() noexcept
 
   graphicsUpdateControls();
 
+  IMGUISPACE;
+  ImGui::Separator();
+  IMGUISPACE;
+
+  graphicsUpdateTexture();
+
   ImGui::End();
 }
 
@@ -249,6 +270,10 @@ void ImGuiManager::ShowMainMenu_File() noexcept
   {
     m_dOnSceneChange(SceneManager::Scene::Scene2);
   }
+  if (ImGui::MenuItem("Reflection Scene", ""))
+  {
+    m_dOnSceneChange(SceneManager::Scene::ReflectionScene);
+  }
   if (ImGui::MenuItem("Scene Single Object", ""))
   {
     m_dOnSceneChange(SceneManager::Scene::SceneSingleObject);
@@ -286,7 +311,7 @@ void ImGuiManager::graphicsUpdateStats() noexcept
   IMGUISPACE;
 
   ImGui::TextColored(IMGREEN, "Shader: "); ImGui::SameLine();
-  static const char* ShaderString = SHADERNAMES[1];
+  static const char* ShaderString = SHADERNAMES[3];
   if (ImGui::BeginCombo("##Selected Shader", ShaderString))
   {
     for (int i = 0; i < 4; ++i)
@@ -305,44 +330,174 @@ void ImGuiManager::graphicsUpdateStats() noexcept
 
   IMGUISPACE;
 
-  ImGui::TextColored(IMGREEN, "Projection: "); ImGui::SameLine();
-  static const char* ProjectString = "Planar";
-  if (ImGui::BeginCombo("##Projection", ProjectString))
+  ImGui::TextColored(IMGREEN, "Refraction Enabled: "); ImGui::SameLine();
+  ImGui::Checkbox("##Refraction Enabled", &ImGui::GraphicsRefractEnabled);
+
+  ImGui::TextColored(IMGREEN, "Reflection Enabled: "); ImGui::SameLine();
+  ImGui::Checkbox("##Reflection Enabled", &ImGui::GraphicsReflectEnabled);
+
+  IMGUISPACE;
+
+  ImGui::TextColored(IMGREEN, "Reflective Slider: "); ImGui::SameLine();
+  ImGui::SliderFloat("##Reflective Slider", &ImGui::GraphicsRefractSlider, 0.f, 1.f);
+
+  IMGUISPACE;
+
+
+#pragma region IOR Presets
+
+  ImGui::TextColored(IMGREEN, "IOR [PRESETS]: "); ImGui::SameLine();
+  static const char* PresetIORs = "Diamond";
+  static const float RF = 0.996f;
+  static const float BF = 1.004f;
+  if (ImGui::BeginCombo("##IOR [PRESETS]: ", PresetIORs))
   {
-    ImGui::PushID((void*)"Planar");
-    if (ImGui::Selectable("Planar", ImGui::GraphicsSelectedProjection == UV::Generation::PLANAR))
+    ImGui::PushID((void*)"Air");
+    if (ImGui::Selectable("Air", PresetIORs == "Air"))
     {
-      ProjectString = "Planar";
-      ImGui::GraphicsSelectedProjection = UV::Generation::PLANAR;
-      ImGui::GraphicsRebuildMeshes = true;
-      m_dOnSceneChange(SceneManager::Scene::Scene2);
+      PresetIORs = "Air";
+      ImGui::GraphicsRedIOR = 1.000293f * RF;
+      ImGui::GraphicsGreenIOR = 1.000293f;
+      ImGui::GraphicsBlueIOR = 1.000293f * BF;
     }
     ImGui::PopID();
 
-    ImGui::PushID((void*)"Spherical");
-    if (ImGui::Selectable("Spherical", ImGui::GraphicsSelectedProjection == UV::Generation::SPHERICAL))
+    ImGui::PushID((void*)"Hydrogen");
+    if (ImGui::Selectable("Hydrogen", PresetIORs == "Hydrogen"))
     {
-      ProjectString = "Spherical";
-      ImGui::GraphicsSelectedProjection = UV::Generation::SPHERICAL;
-      ImGui::GraphicsRebuildMeshes = true;
-      m_dOnSceneChange(SceneManager::Scene::Scene2);
+      PresetIORs = "Hydrogen";
+      ImGui::GraphicsRedIOR = 1.000132f * RF;
+      ImGui::GraphicsGreenIOR = 1.000132f;
+      ImGui::GraphicsBlueIOR = 1.000132f * BF;
     }
     ImGui::PopID();
 
-    ImGui::PushID((void*)"Cylindrical");
-    if (ImGui::Selectable("Cylindrical", ImGui::GraphicsSelectedProjection == UV::Generation::CYLINDRICAL))
+    ImGui::PushID((void*)"Water");
+    if (ImGui::Selectable("Water", PresetIORs == "Water"))
     {
-      ProjectString = "Cylindrical";
-      ImGui::GraphicsSelectedProjection = UV::Generation::CYLINDRICAL;
-      ImGui::GraphicsRebuildMeshes = true;
-      m_dOnSceneChange(SceneManager::Scene::Scene2);
+      PresetIORs = "Water";
+      ImGui::GraphicsRedIOR = 1.333f * RF;
+      ImGui::GraphicsGreenIOR = 1.333f;
+      ImGui::GraphicsBlueIOR = 1.333f * BF;
+    }
+    ImGui::PopID();
+
+    ImGui::PushID((void*)"Olive Oil");
+    if (ImGui::Selectable("Olive Oil", PresetIORs == "Olive Oil"))
+    {
+      PresetIORs = "Olive Oil";
+      ImGui::GraphicsRedIOR = 1.47f * RF;
+      ImGui::GraphicsGreenIOR = 1.47f;
+      ImGui::GraphicsBlueIOR = 1.47f * BF;
+    }
+    ImGui::PopID();
+
+    ImGui::PushID((void*)"Ice");
+    if (ImGui::Selectable("Ice", PresetIORs == "Ice"))
+    {
+      PresetIORs = "Ice";
+      ImGui::GraphicsRedIOR = 1.31f * RF;
+      ImGui::GraphicsGreenIOR = 1.31f;
+      ImGui::GraphicsBlueIOR = 1.31f * BF;
+    }
+    ImGui::PopID();
+
+    ImGui::PushID((void*)"Quartz");
+    if (ImGui::Selectable("Quartz", PresetIORs == "Quartz"))
+    {
+      PresetIORs = "Quartz";
+      ImGui::GraphicsRedIOR = 1.46f * RF;
+      ImGui::GraphicsGreenIOR = 1.46f;
+      ImGui::GraphicsBlueIOR = 1.46f * BF;
+    }
+    ImGui::PopID();
+
+    ImGui::PushID((void*)"Diamond");
+    if (ImGui::Selectable("Diamond", PresetIORs == "Diamond"))
+    {
+      PresetIORs = "Diamond";
+      ImGui::GraphicsRedIOR = 2.42f * RF;
+      ImGui::GraphicsGreenIOR = 2.42f;
+      ImGui::GraphicsBlueIOR = 2.42f * BF;
+    }
+    ImGui::PopID();
+
+    ImGui::PushID((void*)"Acrylic");
+    if (ImGui::Selectable("Acrylic", PresetIORs == "Acrylic"))
+    {
+      PresetIORs = "Acrylic";
+      ImGui::GraphicsRedIOR = 1.49f * RF;
+      ImGui::GraphicsGreenIOR = 1.49f;
+      ImGui::GraphicsBlueIOR = 1.49f * BF;
     }
     ImGui::PopID();
 
     ImGui::EndCombo();
   }
 
+  ImGui::NewLine();
+#pragma endregion
+
+  ImGui::TextColored(IMGREEN, "IOR [MASTER]: "); ImGui::SameLine();
+  static float IORmaster = 1.f;
+  
+  if (ImGui::DragFloat("##IOR [MASTER]", &IORmaster, 0.01f, 1.f, 100.f))
+  {
+    ImGui::GraphicsRedIOR = IORmaster * 0.998f;
+    ImGui::GraphicsGreenIOR = IORmaster * 1.f;
+    ImGui::GraphicsBlueIOR = IORmaster * 1.002f;
+  }
+
   IMGUISPACE;
+
+
+  ImGui::TextColored(IMGREEN, "IOR [Red]: "); ImGui::SameLine();
+  ImGui::SliderFloat("##IOR [Red]", &ImGui::GraphicsRedIOR, 1.f, 100.f);
+
+  ImGui::TextColored(IMGREEN, "IOR [Green]: "); ImGui::SameLine();
+  ImGui::SliderFloat("##IOR [Green]", &ImGui::GraphicsGreenIOR, 1.f, 100.f);
+
+  ImGui::TextColored(IMGREEN, "IOR [Blue]: "); ImGui::SameLine();
+  ImGui::SliderFloat("##IOR [Blue]", &ImGui::GraphicsBlueIOR, 1.f, 100.f);
+
+  //ImGui::TextColored(IMGREEN, "Projection: "); ImGui::SameLine();
+  //static const char* ProjectString = "Planar";
+  //if (ImGui::BeginCombo("##Projection", ProjectString))
+  //{
+  //  ImGui::PushID((void*)"Planar");
+  //  if (ImGui::Selectable("Planar", ImGui::GraphicsSelectedProjection == UV::Generation::PLANAR))
+  //  {
+  //    ProjectString = "Planar";
+  //    ImGui::GraphicsSelectedProjection = UV::Generation::PLANAR;
+  //    ImGui::GraphicsRebuildMeshes = true;
+  //    m_dOnSceneChange(SceneManager::Scene::Scene2);
+  //  }
+  //  ImGui::PopID();
+
+  //  ImGui::PushID((void*)"Spherical");
+  //  if (ImGui::Selectable("Spherical", ImGui::GraphicsSelectedProjection == UV::Generation::SPHERICAL))
+  //  {
+  //    ProjectString = "Spherical";
+  //    ImGui::GraphicsSelectedProjection = UV::Generation::SPHERICAL;
+  //    ImGui::GraphicsRebuildMeshes = true;
+  //    m_dOnSceneChange(SceneManager::Scene::Scene2);
+  //  }
+  //  ImGui::PopID();
+
+  //  ImGui::PushID((void*)"Cylindrical");
+  //  if (ImGui::Selectable("Cylindrical", ImGui::GraphicsSelectedProjection == UV::Generation::CYLINDRICAL))
+  //  {
+  //    ProjectString = "Cylindrical";
+  //    ImGui::GraphicsSelectedProjection = UV::Generation::CYLINDRICAL;
+  //    ImGui::GraphicsRebuildMeshes = true;
+  //    m_dOnSceneChange(SceneManager::Scene::Scene2);
+  //  }
+  //  ImGui::PopID();
+
+  //  ImGui::EndCombo();
+  //}
+
+  //IMGUISPACE;
 
   if (ImGui::Button("Rebuild Shaders", { 120, 32 }))
   {
@@ -358,7 +513,7 @@ void ImGuiManager::graphicsUpdateObjects() noexcept
   IMGUISPACE;
 
   ImGui::TextColored(IMGREEN, "Demo Object: "); ImGui::SameLine();
-  static const char* DemoObjectString = DEMOOBJECTNAMES[(size_t)ImGui::DemoObject::Lucy];
+  static const char* DemoObjectString = DEMOOBJECTNAMES[(size_t)ImGui::DemoObject::Sphere];
   if (ImGui::BeginCombo("##Demo Object", DemoObjectString))
   {
     for (int i = 0; i < (size_t)ImGui::DemoObject::COUNT; ++i)
@@ -380,26 +535,26 @@ void ImGuiManager::graphicsUpdateObjects() noexcept
   ImGui::TextColored(IMGREEN, "Enable Orbiting: "); ImGui::SameLine();
   ImGui::Checkbox("##Enable Orbiting", &ImGui::SceneOrbitObjects);
 
-  if (ImGui::Button("Scenario 1", { 140, 40 }))
-  {
-    ImGui::SceneScenario = 1;
-    m_dOnSceneChange(SceneManager::Scene::Scene2);
-  }
-  ImGui::SameLine();
-  if (ImGui::Button("Scenario 2", { 140, 40 }))
-  {
-    ImGui::SceneScenario = 2;
-    m_dOnSceneChange(SceneManager::Scene::Scene2);
-  }
-  ImGui::SameLine();
-  if (ImGui::Button("Scenario 3", { 140, 40 }))
-  {
-    ImGui::SceneScenario = 3;
-    m_dOnSceneChange(SceneManager::Scene::Scene2);
-    ImGui::GraphicsSelectedShader = 3;
-    ImGui::DemoObjectMain = DEMOOBJECTS[4];
-    ImGui::DemoObjectFile = DEMOOBJECTFILENAMES[4];
-  }
+  //if (ImGui::Button("Scenario 1", { 140, 40 }))
+  //{
+  //  ImGui::SceneScenario = 1;
+  //  m_dOnSceneChange(SceneManager::Scene::Scene2);
+  //}
+  //ImGui::SameLine();
+  //if (ImGui::Button("Scenario 2", { 140, 40 }))
+  //{
+  //  ImGui::SceneScenario = 2;
+  //  m_dOnSceneChange(SceneManager::Scene::Scene2);
+  //}
+  //ImGui::SameLine();
+  //if (ImGui::Button("Scenario 3", { 140, 40 }))
+  //{
+  //  ImGui::SceneScenario = 3;
+  //  m_dOnSceneChange(SceneManager::Scene::Scene2);
+  //  ImGui::GraphicsSelectedShader = 3;
+  //  ImGui::DemoObjectMain = DEMOOBJECTS[4];
+  //  ImGui::DemoObjectFile = DEMOOBJECTFILENAMES[4];
+  //}
 }
 
 void ImGuiManager::graphicsUpdateLighting() noexcept
@@ -597,7 +752,23 @@ void ImGuiManager::graphicsUpdateControls() noexcept
   ImGui::Text("Camera Controls:");
   ImGui::Text("WASD: Move Around");
   ImGui::Text("Q/E: Move Up and Down");
+  ImGui::Text("F: Focus on the Demo Object");
   ImGui::Text("Note: Camera currently focuses on the center object.");
+}
+
+void ImGuiManager::graphicsUpdateTexture() noexcept
+{
+  for (int i = 0; i < 6; ++i)
+  {
+    if (ImGui::GraphicsDisplayTexture[i] != numeric_limits<GLuint>::max())
+    {
+      if ((i + 3) % 3 != 0)
+      {
+        ImGui::SameLine();
+      }
+      ImGui::Image((void*)(intptr_t)ImGui::GraphicsDisplayTexture[i], ImVec2(128, 128));
+    }
+  }
 }
 
 #undef IMGUISPACE

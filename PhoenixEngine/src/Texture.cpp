@@ -18,14 +18,14 @@ Texture::Texture(const string& name) noexcept :
   Log::Trace("Texture Created: " + name);
 }
 
-GLuint Texture::LoadTextureFromFile(const string& file) noexcept
+bool Texture::LoadTextureFromFile(const string& filename) noexcept
 {
   PNGReader reader;
 
-  if (!reader.LoadPNG(file))
+  if (!reader.LoadPNG(filename))
   {
-    Log::Error("[Texture.cpp] Couldn't load texture: " + file);
-    return Texture::TEXTURE_ERROR;
+    Log::Error("[Texture.cpp] Couldn't load texture: " + filename);
+    return false;
   }
 
   PNGReader::ImageData image = reader.GetImageData();
@@ -49,7 +49,7 @@ GLuint Texture::LoadTextureFromFile(const string& file) noexcept
   // Disable Texture state
   glBindTexture(GL_TEXTURE_2D, 0u);
 
-  return m_TextureID;
+  return true;
 }
 
 GLuint Texture::GetTextureID() const noexcept

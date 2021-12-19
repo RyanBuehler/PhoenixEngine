@@ -26,7 +26,7 @@ public:
   Texture(Texture&&) = delete;
   Texture& operator=(Texture&&) = delete;
 
-  GLuint LoadTextureFromFile(const string& file) noexcept;
+  bool LoadTextureFromFile(const string& filename) noexcept;
 
   GLuint GetTextureID() const noexcept;
 
