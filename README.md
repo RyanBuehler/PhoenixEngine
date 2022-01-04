@@ -2,6 +2,10 @@
 
 The Phoenix Engine is a humble rendering engine and wrapper utilized by Ryan Buehler as a professional development project to explore, learn, experiment and present as code example to interested parties. It is a Work In Progress and will be continuously evolving.
 
+OpenGL accessed through [GLEW](http://glew.sourceforge.net/) and [GLFW](https://www.glfw.org/) <br>
+UI Windows built with [DearImGui](https://github.com/ocornut/imgui) <br>
+Logging built with [spdlog](https://github.com/gabime/spdlog) <br>
+
 ## Currently Implemented Features
 - [X] Texture Loading/Mapping
 - [X] Phong/Blinn-Phong lighting with custom materials
