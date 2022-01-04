@@ -7,6 +7,11 @@ UI Windows built with [DearImGui](https://github.com/ocornut/imgui) <br>
 Logging built with [spdlog](https://github.com/gabime/spdlog) <br>
 
 ## Currently Implemented Features
+- [x] Reflection
+- [x] Refraction
+- [x] Fresnel Effect (Reflect/Refract)
+- [x] Cube Map Environmental Mapping
+- [x] Cube Map UV Projection
 - [X] Texture Loading/Mapping
 - [X] Phong/Blinn-Phong lighting with custom materials
 - [x] Context Manager allows for easy switching of a single render style
@@ -18,9 +23,6 @@ Logging built with [spdlog](https://github.com/gabime/spdlog) <br>
 
 ## Short Term Roadmap
 * Refactor of MVP code
-* Cube Map and Cube Map UV Projection
-* Reflection
-* Refraction
 * Deferred Rendering
 * SSAO
 * Environment Mapping
