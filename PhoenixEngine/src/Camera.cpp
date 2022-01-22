@@ -23,7 +23,7 @@ Camera::Camera(const string& name) noexcept :
   m_PersMatrix(1.f),
   m_ViewMatrix(1.f),
   m_IsEnabled(false),
-  m_ProjectionIsDirty(true),
+  m_PerspectiveIsDirty(true),
   m_ViewIsDirty(true),
   m_Target(nullptr),
   m_Name(name)
@@ -39,7 +39,7 @@ Camera::~Camera()
 const mat4& Camera::GetPersMatrix() noexcept
 {
   // Only update the matrix if dirty
-  if (m_ProjectionIsDirty)
+  if (m_PerspectiveIsDirty)
   {
     m_PersMatrix =
       glm::perspective(
@@ -47,7 +47,7 @@ const mat4& Camera::GetPersMatrix() noexcept
         m_ViewData.Aspect,
         m_ViewData.NearCull,
         m_ViewData.FarCull);
-    m_ProjectionIsDirty = false;
+    m_PerspectiveIsDirty = false;
   }
   return m_PersMatrix;
 }
@@ -68,6 +68,16 @@ const mat4& Camera::GetViewMatrix() noexcept
     m_ViewIsDirty = false;
   }
   return m_ViewMatrix;
+}
+
+const glm::mat4& Camera::GetVPMatrix() noexcept
+{
+  if (m_PerspectiveIsDirty || m_ViewIsDirty)
+  {
+    m_VPMatrix = GetPersMatrix() * GetViewMatrix();
+  }
+
+  return m_VPMatrix;
 }
 
 void Camera::SetTarget(const Transform* target) noexcept

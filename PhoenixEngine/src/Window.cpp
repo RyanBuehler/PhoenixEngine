@@ -178,6 +178,7 @@ void Window::OnClose() noexcept
 
   // Shut down the scenes
   m_SceneManagerPtr->Shutdown();
+
   // Close the window
   glfwTerminate();
 }

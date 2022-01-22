@@ -60,7 +60,7 @@ void Renderer::OnBeginFrame() const noexcept
   // Clear the back buffer and depth buffer
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  //TODO: For testing purposes only
+  //TODO: Uniform Block example
   glBindBuffer(GL_UNIFORM_BUFFER, uboBuffer);
   glBufferData(GL_UNIFORM_BUFFER, sizeof(Light::Data) * 16, &ImGui::LightingDataArray[0], GL_DYNAMIC_DRAW);
   glBindBuffer(GL_UNIFORM_BUFFER, 0);
@@ -256,21 +256,6 @@ void Renderer::RenderFirstPass(vector<GameObject>& gameObjects)
           m_ContextManager.SetContext(m_hPhongShading);
         }
         break;
-        //Texture
-      //case 3:
-      //  if (go.GetMaterial().GetType() == Material::Type::TEXTURE)
-      //  {
-      //    m_ContextManager.SetContext(m_hPhongTexture);
-      //    glActiveTexture(GL_TEXTURE0);
-      //    glBindTexture(GL_TEXTURE_2D, diffTex.GetTextureID());
-      //    glActiveTexture(GL_TEXTURE1);
-      //    glBindTexture(GL_TEXTURE_2D, specTex.GetTextureID());
-      //  }
-      //  else
-      //  {
-      //    m_ContextManager.SetContext(m_hPhongShading);
-      //  }
-      //  break;
         //Lighting
       case 0:
         m_ContextManager.SetContext(m_hPhongLighting);
@@ -356,21 +341,6 @@ void Renderer::RenderSecondPass(vector<GameObject>& gameObjects, Camera& activeC
         m_ContextManager.SetContext(m_hPhongShading);
       }
       break;
-      //Texture
-    //case 3:
-    //  if (go.GetMaterial().GetType() == Material::Type::TEXTURE)
-    //  {
-    //    m_ContextManager.SetContext(m_hPhongTexture);
-    //    glActiveTexture(GL_TEXTURE0);
-    //    glBindTexture(GL_TEXTURE_2D, diffTex.GetTextureID());
-    //    glActiveTexture(GL_TEXTURE1);
-    //    glBindTexture(GL_TEXTURE_2D, specTex.GetTextureID());
-    //  }
-    //  else
-    //  {
-    //    m_ContextManager.SetContext(m_hPhongShading);
-    //  }
-    //  break;
       //Lighting
     case 0:
       m_ContextManager.SetContext(m_hPhongLighting);
@@ -570,7 +540,7 @@ void Renderer::LoadContexts() noexcept
   //TODO: Look into this
   GLuint program = m_ContextManager.GetProgram(m_hPhongLighting);
 
-  //TODO: For testing only
+  //TODO: Uniform Block Example
   uboIndex = glGetUniformBlockIndex(program, "LightArray");
   // Now get the size
   glGetActiveUniformBlockiv(program, uboIndex, GL_UNIFORM_BLOCK_DATA_SIZE, &uboSize);

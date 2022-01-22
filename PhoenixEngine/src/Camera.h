@@ -50,6 +50,12 @@ public:
   const glm::mat4& GetViewMatrix() noexcept;
 
   /// <summary>
+  /// Gets the combined View Perspective Transform Matrix
+  /// </summary>
+  /// <returns>4x4 Matrix of the View Perspective Transform Matrix</returns>
+  const glm::mat4& GetVPMatrix() noexcept;
+
+  /// <summary>
   /// Sets the "LookAt" target for the camera
   /// </summary>
   /// <param name="target">The transform ptr of the target to watch.</param>
@@ -181,9 +187,10 @@ private:
   // Matrices
   mat4 m_PersMatrix;
   mat4 m_ViewMatrix;
+  mat4 m_VPMatrix;
 
   bool m_IsEnabled;
-  bool m_ProjectionIsDirty;
+  bool m_PerspectiveIsDirty;
   bool m_ViewIsDirty;
 
   // Camera Target

@@ -73,6 +73,7 @@
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\TextureManager.cpp" />
     <ClCompile Include="src\Transform.cpp" />
+    <ClCompile Include="src\UniformBlock.cpp" />
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -113,6 +114,7 @@
     <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\TextureManager.h" />
     <ClInclude Include="src\Transform.h" />
+    <ClInclude Include="src\UniformBlock.h" />
     <ClInclude Include="src\Utility.h" />
     <ClInclude Include="src\Window.h" />
   </ItemGroup>

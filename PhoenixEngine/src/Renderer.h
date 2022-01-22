@@ -28,6 +28,7 @@ public:
     Wireframe,
     COUNT
   };
+  
 public:
   /// <summary>
   /// Renderer Constructor
@@ -35,9 +36,8 @@ public:
   /// <param name="depthBufferEnabled">Should the depth buffer be enabled?</param>
   /// <param name="backFaceCullEnabled">Should the back faces be culled?</param>
   Renderer(bool depthBufferEnabled = true, bool backFaceCullEnabled = false) noexcept;
-  ~Renderer(); // Destructor
+  ~Renderer();
 
-  // Rule of 5
   Renderer(const Renderer&) = delete;
   Renderer& operator=(const Renderer&) = delete;
   Renderer(Renderer&&) = delete;
