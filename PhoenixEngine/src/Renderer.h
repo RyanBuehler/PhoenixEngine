@@ -7,6 +7,7 @@
 #pragma once
 #include "ContextManager.h"
 #include "ShaderManager.h"
+#include "UniformBlockManager.h"
 #include "DebugRenderer.h"
 #include "GameObject.h"
 #include "Camera.h"
@@ -189,9 +190,10 @@ private:
   /// </summary>
   void LoadBlinnPhongRefractContext() noexcept;
 
-  ShaderManager m_ShaderManager;    // Handles shader related functionality
-  ContextManager m_ContextManager;  // Handles and maintains the context information
-  MeshManager m_MeshManager;        // Handles and maintains the Mesh data
+  ShaderManager m_ShaderManager;              // Handles shader related functionality
+  ContextManager m_ContextManager;            // Handles and maintains the context information
+  MeshManager m_MeshManager;                  // Handles and maintains the Mesh data
+  UniformBlockManager m_UniformBlockManager;  // Handles and maintains the Uniform GPU Data
 
   LightingSystem m_Lighting;        // All lighting functionality
 
@@ -208,15 +210,12 @@ private:
   //GLint m_hBlinnPhongRefract;      // The ID of the "BlinnPhongRefract" context
 
   //TODO: Below for testing only
+  unsigned LightingBlockPrintID;
+  unsigned LightingBlockID;
   unsigned SkyboxMeshID;
 
   EnvironmentMap envMap;
 
-  GLint uboSize;
-  GLuint uboIndex;
-  GLuint uboBuffer;
-  GLuint indices[5];
-  GLint offsets[5];
 
   //Texture diffTex;
   //Texture specTex;

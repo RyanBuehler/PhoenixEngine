@@ -28,6 +28,7 @@ Renderer::Renderer(bool depthBufferEnabled, bool backFaceCullEnabled) noexcept :
   m_ShaderManager(),
   m_ContextManager(),
   m_MeshManager(),
+  m_UniformBlockManager(),
   m_Lighting(),
   //m_hDiffuseContext(ContextManager::Error::Context::INVALID_CONTEXT),
   m_Skybox(tempcubemap),
@@ -61,10 +62,7 @@ void Renderer::OnBeginFrame() const noexcept
   // Clear the back buffer and depth buffer
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  //TODO: Uniform Block example
-  glBindBuffer(GL_UNIFORM_BUFFER, uboBuffer);
-  glBufferData(GL_UNIFORM_BUFFER, sizeof(Light::Data) * 16, &ImGui::LightingDataArray[0], GL_DYNAMIC_DRAW);
-  glBindBuffer(GL_UNIFORM_BUFFER, 0);
+  m_UniformBlockManager.SendData(LightingBlockID);
 }
 
 void Renderer::OnEndFrame() noexcept
@@ -441,33 +439,21 @@ void Renderer::RenderGameObject(GameObject& gameObject)
   glUniformMatrix4fv(uniforms[10].ID, 1, false, &gameObject.GetMatrix()[0][0]);
 
   //TODO: Material faked temporarily for simplicity
-  //if (gameObject.GetMaterial().GetType() != Material::Type::GLOBAL &&
-  //  gameObject.GetMaterial().GetType() != Material::Type::REFLECTREFRACT)
-  //{
-  //  const Material& mat = gameObject.GetMaterial();
-  //  glUniform3fv(uniforms[11].ID, 1, &mat.GetEmissive()[0]);
-  //  // Mat ambient
-  //  glUniform1f(uniforms[12].ID, mat.GetAmbient());
-  //  // Mat diffuse
-  //  glUniform1f(uniforms[13].ID, mat.GetDiffuse());
-  //  // Mat spec
-  //  glUniform1f(uniforms[14].ID, mat.GetSpecular());
-  //  // Mat spec exp
-  //  glUniform1f(uniforms[15].ID, mat.GetSpecularExp());
-  //}
-  //else
-  //{
-    const Material& mat = ImGui::LightingGlobalMaterial;
-    glUniform3fv(uniforms[11].ID, 1, &mat.GetEmissive()[0]);
-    // Mat ambient
-    glUniform1f(uniforms[12].ID, mat.GetAmbient());
-    // Mat diffuse
-    glUniform1f(uniforms[13].ID, mat.GetDiffuse());
-    // Mat spec
-    glUniform1f(uniforms[14].ID, mat.GetSpecular());
-    // Mat spec exp
-    glUniform1f(uniforms[15].ID, mat.GetSpecularExp());
-  //}
+    const Material& mat =
+      gameObject.GetMaterial().GetType() != Material::Type::GLOBAL ?
+      gameObject.GetMaterial() :
+      ImGui::LightingGlobalMaterial;
+
+  // Mat emissive
+  glUniform3fv(uniforms[11].ID, 1, &mat.GetEmissive()[0]);
+  // Mat ambient
+  glUniform1f(uniforms[12].ID, mat.GetAmbient());
+  // Mat diffuse
+  glUniform1f(uniforms[13].ID, mat.GetDiffuse());
+  // Mat spec
+  glUniform1f(uniforms[14].ID, mat.GetSpecular());
+  // Mat spec exp
+  glUniform1f(uniforms[15].ID, mat.GetSpecularExp());
 
   m_MeshManager.RenderMesh(gameObject.m_MeshID);
 }
@@ -536,19 +522,13 @@ void Renderer::LoadContexts() noexcept
   //TODO: Look into this
   GLuint program = m_ContextManager.GetProgram(m_hBlinnPhong);
 
-  //TODO: Uniform Block Example
-  uboIndex = glGetUniformBlockIndex(program, "LightArray");
-  // Now get the size
-  glGetActiveUniformBlockiv(program, uboIndex, GL_UNIFORM_BLOCK_DATA_SIZE, &uboSize);
+  //TODO: Temporarily hardcoded
+  UniformBlockManager::UniformBlockPrint LightArrayPrint;
+  LightArrayPrint.BlockName = "LightArray";
+  LightArrayPrint.DataSize = sizeof(Light::Data) * 16;
 
-  const GLchar* names[] = { "Light.Position", "Light.Ambience", "Light.Diffuse", "Light.Specular" };
-  glGetUniformIndices(program, 2, names, indices);
-  glGetActiveUniformsiv(program, 2, indices, GL_UNIFORM_OFFSET, offsets);
-
-  glGenBuffers(1, &uboBuffer);
-  glBindBuffer(GL_UNIFORM_BUFFER, uboBuffer);
-  glBufferData(GL_UNIFORM_BUFFER, uboSize, NULL, GL_DYNAMIC_DRAW);
-  glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboBuffer, 0, uboSize);
+  unsigned LightingBlockPrintID = m_UniformBlockManager.CreateNewBlockPrint(LightArrayPrint);
+  unsigned LightingBlockID = m_UniformBlockManager.CreateNewBlock(LightingBlockPrintID, program, &ImGui::LightingDataArray[0]);
 }
 
 //void Renderer::LoadDiffuseContext() noexcept

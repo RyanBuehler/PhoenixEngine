@@ -98,14 +98,14 @@ namespace ImGui
     numeric_limits<GLuint>::max(),
     numeric_limits<GLuint>::max()
   };
-  float GraphicsRefractSlider = 1.f;
-  float GraphicsRedIOR = 2.413f;
-  float GraphicsGreenIOR = 2.420f;
-  float GraphicsBlueIOR = 2.427f;
-  bool GraphicsRefractEnabled = true;
-  bool GraphicsReflectEnabled = true;
+  //float GraphicsRefractSlider = 1.f;
+  //float GraphicsRedIOR = 2.413f;
+  //float GraphicsGreenIOR = 2.420f;
+  //float GraphicsBlueIOR = 2.427f;
+  //bool GraphicsRefractEnabled = true;
+  //bool GraphicsReflectEnabled = true;
 
-  int SceneScenario = 1;
+  int SceneScenario = 2;
   bool SceneDrawOrbit = false;
   bool SceneOrbitObjects = true;
 
@@ -527,17 +527,17 @@ void ImGuiManager::graphicsUpdateObjects() noexcept
   ImGui::TextColored(IMGREEN, "Enable Orbiting: "); ImGui::SameLine();
   ImGui::Checkbox("##Enable Orbiting", &ImGui::SceneOrbitObjects);
 
-  //if (ImGui::Button("Scenario 1", { 140, 40 }))
-  //{
-  //  ImGui::SceneScenario = 1;
-  //  m_dOnSceneChange(SceneManager::Scene::SceneDemo);
-  //}
-  //ImGui::SameLine();
-  //if (ImGui::Button("Scenario 2", { 140, 40 }))
-  //{
-  //  ImGui::SceneScenario = 2;
-  //  m_dOnSceneChange(SceneManager::Scene::SceneDemo);
-  //}
+  if (ImGui::Button("Scenario 1", { 140, 40 }))
+  {
+    ImGui::SceneScenario = 1;
+    m_dOnSceneChange(SceneManager::Scene::SceneDemo);
+  }
+  ImGui::SameLine();
+  if (ImGui::Button("Scenario 2", { 140, 40 }))
+  {
+    ImGui::SceneScenario = 2;
+    m_dOnSceneChange(SceneManager::Scene::SceneDemo);
+  }
   //ImGui::SameLine();
   //if (ImGui::Button("Scenario 3", { 140, 40 }))
   //{

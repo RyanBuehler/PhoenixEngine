@@ -106,6 +106,12 @@
     <Filter Include="Header Files\Graphics\Shaders">
       <UniqueIdentifier>{90bd1cf7-5ab2-4dd4-a7c0-bce2a9b08886}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Graphics\Data">
+      <UniqueIdentifier>{1f127310-f982-4f1b-8d03-b321496df5ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\Data">
+      <UniqueIdentifier>{c94ff29c-90fc-4471-ab1f-a9c45d0ab8ea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h">
@@ -210,9 +216,6 @@
     <ClInclude Include="src\EnvironmentMap.h">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\UniformBlock.h">
-      <Filter>Header Files\Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="src\Scenes\SceneSingleObject.h">
       <Filter>Header Files\Scenes</Filter>
     </ClInclude>
@@ -221,6 +224,9 @@
     </ClInclude>
     <ClInclude Include="src\Scenes\SceneDemo.h">
       <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UniformBlockManager.h">
+      <Filter>Header Files\Graphics\Data</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -314,14 +320,14 @@
     <ClCompile Include="src\EnvironmentMap.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\UniformBlock.cpp">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="src\Scenes\SceneSingleObject.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="src\Scenes\SceneDemo.cpp">
       <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UniformBlockManager.cpp">
+      <Filter>Source Files\Graphics\Data</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

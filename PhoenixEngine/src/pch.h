@@ -30,6 +30,7 @@
 #include <list>
 #include <forward_list>
 #include <set>
+#include <map>
 
 // Functional
 #include <functional>
@@ -60,6 +61,7 @@ using std::array;
 using std::list;
 using std::forward_list;
 using std::set;
+using std::map;
 
 // Functional
 using std::function;
