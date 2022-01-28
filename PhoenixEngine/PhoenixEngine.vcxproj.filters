@@ -129,9 +129,6 @@
     <ClInclude Include="src\Transform.h">
       <Filter>Header Files\Object</Filter>
     </ClInclude>
-    <ClInclude Include="src\IScene.h">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
     <ClInclude Include="src\SceneManager.h">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
@@ -168,20 +165,11 @@
     <ClInclude Include="src\DebugRenderer.h">
       <Filter>Header Files\Debug</Filter>
     </ClInclude>
-    <ClInclude Include="src\Scene1.h">
-      <Filter>Header Files\Scenes</Filter>
-    </ClInclude>
     <ClInclude Include="src\LightingSystem.h">
       <Filter>Header Files\Graphics\Lighting</Filter>
     </ClInclude>
     <ClInclude Include="src\Light.h">
       <Filter>Header Files\Graphics\Lighting</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Scene2.h">
-      <Filter>Header Files\Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SceneSingleObject.h">
-      <Filter>Source Files\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="src\Camera.h">
       <Filter>Header Files\Graphics\Camera</Filter>
@@ -219,14 +207,26 @@
     <ClInclude Include="src\PNGReader.h">
       <Filter>Header Files\Graphics\Assets</Filter>
     </ClInclude>
-    <ClInclude Include="src\ReflectionScene.h">
-      <Filter>Header Files\Scenes</Filter>
-    </ClInclude>
     <ClInclude Include="src\EnvironmentMap.h">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="src\UniformBlock.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scenes\ReflectionScene.h">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scenes\Scene1.h">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scenes\Scene2.h">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scenes\SceneSingleObject.h">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IScene.h">
+      <Filter>Header Files\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -275,20 +275,11 @@
     <ClCompile Include="src\DebugRenderer.cpp">
       <Filter>Source Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scene1.cpp">
-      <Filter>Source Files\Scenes</Filter>
-    </ClCompile>
     <ClCompile Include="src\LightingSystem.cpp">
       <Filter>Source Files\Graphics\Lighting</Filter>
     </ClCompile>
     <ClCompile Include="src\Light.cpp">
       <Filter>Source Files\Graphics\Lighting</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Scene2.cpp">
-      <Filter>Source Files\Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SceneSingleObject.cpp">
-      <Filter>Source Files\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="src\Camera.cpp">
       <Filter>Source Files\Graphics\Camera</Filter>
@@ -326,14 +317,23 @@
     <ClCompile Include="src\PNGReader.cpp">
       <Filter>Source Files\Graphics\Assets</Filter>
     </ClCompile>
-    <ClCompile Include="src\ReflectionScene.cpp">
-      <Filter>Source Files\Scenes</Filter>
-    </ClCompile>
     <ClCompile Include="src\EnvironmentMap.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="src\UniformBlock.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scenes\ReflectionScene.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scenes\Scene1.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scenes\Scene2.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scenes\SceneSingleObject.cpp">
+      <Filter>Source Files\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
