@@ -51,14 +51,14 @@ namespace Shader
   enum class Vertex : unsigned
   {
     UNKNOWN = 0u,
-    DIFFUSE,
+    //DIFFUSE,
     SKYBOX,
-    REFLECTION,
-    PHONGLIGHT,
-    PHONGSHADE,
+    //REFLECTION,
+    //PHONGLIGHT,
+    //PHONGSHADE,
     BLINNPHONG,
-    BLINNPHONGREFRACT,
-    PHONGTEXTURE,
+    //BLINNPHONGREFRACT,
+    //PHONGTEXTURE,
     DEBUG,
     COUNT
   };
@@ -66,14 +66,14 @@ namespace Shader
   enum class Fragment : unsigned
   {
     UNKNOWN = 0u,
-    DIFFUSE,
+    //DIFFUSE,
     SKYBOX,
-    REFLECTION,
-    PHONGLIGHT,
-    PHONGSHADE,
+    //REFLECTION,
+    //PHONGLIGHT,
+    //PHONGSHADE,
     BLINNPHONG,
-    BLINNPHONGREFRACT,
-    PHONGTEXTURE,
+    //BLINNPHONGREFRACT,
+    //PHONGTEXTURE,
     DEBUG,
     COUNT
   };

@@ -115,8 +115,8 @@ namespace ImGui
   int LightingActiveLights = 8;
   Material LightingGlobalMaterial;
 
-  DemoObject DemoObjectMain = DemoObject::Sphere;
-  const char* DemoObjectFile = DEMOOBJECTFILENAMES[(size_t)ImGui::DemoObject::Sphere];
+  DemoObject DemoObjectMain = DemoObject::Lucy;
+  const char* DemoObjectFile = DEMOOBJECTFILENAMES[(size_t)DemoObject::Lucy];
 }
 
 
@@ -320,137 +320,137 @@ void ImGuiManager::graphicsUpdateStats() noexcept
     ImGui::EndCombo();
   }
 
-  IMGUISPACE;
-
-  ImGui::TextColored(IMGREEN, "Refraction Enabled: "); ImGui::SameLine();
-  ImGui::Checkbox("##Refraction Enabled", &ImGui::GraphicsRefractEnabled);
-
-  ImGui::TextColored(IMGREEN, "Reflection Enabled: "); ImGui::SameLine();
-  ImGui::Checkbox("##Reflection Enabled", &ImGui::GraphicsReflectEnabled);
-
-  IMGUISPACE;
-
-  ImGui::TextColored(IMGREEN, "Reflective Slider: "); ImGui::SameLine();
-  ImGui::SliderFloat("##Reflective Slider", &ImGui::GraphicsRefractSlider, 0.f, 1.f);
-
-  IMGUISPACE;
-
-
-#pragma region IOR Presets
-
-  ImGui::TextColored(IMGREEN, "IOR [PRESETS]: "); ImGui::SameLine();
-  static const char* PresetIORs = "Diamond";
-  static const float RF = 0.996f;
-  static const float BF = 1.004f;
-  if (ImGui::BeginCombo("##IOR [PRESETS]: ", PresetIORs))
-  {
-    ImGui::PushID((void*)"Air");
-    if (ImGui::Selectable("Air", PresetIORs == "Air"))
-    {
-      PresetIORs = "Air";
-      ImGui::GraphicsRedIOR = 1.000293f * RF;
-      ImGui::GraphicsGreenIOR = 1.000293f;
-      ImGui::GraphicsBlueIOR = 1.000293f * BF;
-    }
-    ImGui::PopID();
-
-    ImGui::PushID((void*)"Hydrogen");
-    if (ImGui::Selectable("Hydrogen", PresetIORs == "Hydrogen"))
-    {
-      PresetIORs = "Hydrogen";
-      ImGui::GraphicsRedIOR = 1.000132f * RF;
-      ImGui::GraphicsGreenIOR = 1.000132f;
-      ImGui::GraphicsBlueIOR = 1.000132f * BF;
-    }
-    ImGui::PopID();
-
-    ImGui::PushID((void*)"Water");
-    if (ImGui::Selectable("Water", PresetIORs == "Water"))
-    {
-      PresetIORs = "Water";
-      ImGui::GraphicsRedIOR = 1.333f * RF;
-      ImGui::GraphicsGreenIOR = 1.333f;
-      ImGui::GraphicsBlueIOR = 1.333f * BF;
-    }
-    ImGui::PopID();
-
-    ImGui::PushID((void*)"Olive Oil");
-    if (ImGui::Selectable("Olive Oil", PresetIORs == "Olive Oil"))
-    {
-      PresetIORs = "Olive Oil";
-      ImGui::GraphicsRedIOR = 1.47f * RF;
-      ImGui::GraphicsGreenIOR = 1.47f;
-      ImGui::GraphicsBlueIOR = 1.47f * BF;
-    }
-    ImGui::PopID();
-
-    ImGui::PushID((void*)"Ice");
-    if (ImGui::Selectable("Ice", PresetIORs == "Ice"))
-    {
-      PresetIORs = "Ice";
-      ImGui::GraphicsRedIOR = 1.31f * RF;
-      ImGui::GraphicsGreenIOR = 1.31f;
-      ImGui::GraphicsBlueIOR = 1.31f * BF;
-    }
-    ImGui::PopID();
-
-    ImGui::PushID((void*)"Quartz");
-    if (ImGui::Selectable("Quartz", PresetIORs == "Quartz"))
-    {
-      PresetIORs = "Quartz";
-      ImGui::GraphicsRedIOR = 1.46f * RF;
-      ImGui::GraphicsGreenIOR = 1.46f;
-      ImGui::GraphicsBlueIOR = 1.46f * BF;
-    }
-    ImGui::PopID();
-
-    ImGui::PushID((void*)"Diamond");
-    if (ImGui::Selectable("Diamond", PresetIORs == "Diamond"))
-    {
-      PresetIORs = "Diamond";
-      ImGui::GraphicsRedIOR = 2.42f * RF;
-      ImGui::GraphicsGreenIOR = 2.42f;
-      ImGui::GraphicsBlueIOR = 2.42f * BF;
-    }
-    ImGui::PopID();
-
-    ImGui::PushID((void*)"Acrylic");
-    if (ImGui::Selectable("Acrylic", PresetIORs == "Acrylic"))
-    {
-      PresetIORs = "Acrylic";
-      ImGui::GraphicsRedIOR = 1.49f * RF;
-      ImGui::GraphicsGreenIOR = 1.49f;
-      ImGui::GraphicsBlueIOR = 1.49f * BF;
-    }
-    ImGui::PopID();
-
-    ImGui::EndCombo();
-  }
-
-  ImGui::NewLine();
-#pragma endregion
-
-  ImGui::TextColored(IMGREEN, "IOR [MASTER]: "); ImGui::SameLine();
-  static float IORmaster = 1.f;
-  
-  if (ImGui::DragFloat("##IOR [MASTER]", &IORmaster, 0.01f, 1.f, 100.f))
-  {
-    ImGui::GraphicsRedIOR = IORmaster * 0.998f;
-    ImGui::GraphicsGreenIOR = IORmaster * 1.f;
-    ImGui::GraphicsBlueIOR = IORmaster * 1.002f;
-  }
-
-  IMGUISPACE;
-
-
-  ImGui::TextColored(IMGREEN, "IOR [Red]: "); ImGui::SameLine();
-  ImGui::SliderFloat("##IOR [Red]", &ImGui::GraphicsRedIOR, 1.f, 100.f);
-
-  ImGui::TextColored(IMGREEN, "IOR [Green]: "); ImGui::SameLine();
-  ImGui::SliderFloat("##IOR [Green]", &ImGui::GraphicsGreenIOR, 1.f, 100.f);
-
-  ImGui::TextColored(IMGREEN, "IOR [Blue]: "); ImGui::SameLine();
-  ImGui::SliderFloat("##IOR [Blue]", &ImGui::GraphicsBlueIOR, 1.f, 100.f);
+//  IMGUISPACE;
+//
+//  ImGui::TextColored(IMGREEN, "Refraction Enabled: "); ImGui::SameLine();
+//  ImGui::Checkbox("##Refraction Enabled", &ImGui::GraphicsRefractEnabled);
+//
+//  ImGui::TextColored(IMGREEN, "Reflection Enabled: "); ImGui::SameLine();
+//  ImGui::Checkbox("##Reflection Enabled", &ImGui::GraphicsReflectEnabled);
+//
+//  IMGUISPACE;
+//
+//  ImGui::TextColored(IMGREEN, "Reflective Slider: "); ImGui::SameLine();
+//  ImGui::SliderFloat("##Reflective Slider", &ImGui::GraphicsRefractSlider, 0.f, 1.f);
+//
+//  IMGUISPACE;
+//
+//
+//#pragma region IOR Presets
+//
+//  ImGui::TextColored(IMGREEN, "IOR [PRESETS]: "); ImGui::SameLine();
+//  static const char* PresetIORs = "Diamond";
+//  static const float RF = 0.996f;
+//  static const float BF = 1.004f;
+//  if (ImGui::BeginCombo("##IOR [PRESETS]: ", PresetIORs))
+//  {
+//    ImGui::PushID((void*)"Air");
+//    if (ImGui::Selectable("Air", PresetIORs == "Air"))
+//    {
+//      PresetIORs = "Air";
+//      ImGui::GraphicsRedIOR = 1.000293f * RF;
+//      ImGui::GraphicsGreenIOR = 1.000293f;
+//      ImGui::GraphicsBlueIOR = 1.000293f * BF;
+//    }
+//    ImGui::PopID();
+//
+//    ImGui::PushID((void*)"Hydrogen");
+//    if (ImGui::Selectable("Hydrogen", PresetIORs == "Hydrogen"))
+//    {
+//      PresetIORs = "Hydrogen";
+//      ImGui::GraphicsRedIOR = 1.000132f * RF;
+//      ImGui::GraphicsGreenIOR = 1.000132f;
+//      ImGui::GraphicsBlueIOR = 1.000132f * BF;
+//    }
+//    ImGui::PopID();
+//
+//    ImGui::PushID((void*)"Water");
+//    if (ImGui::Selectable("Water", PresetIORs == "Water"))
+//    {
+//      PresetIORs = "Water";
+//      ImGui::GraphicsRedIOR = 1.333f * RF;
+//      ImGui::GraphicsGreenIOR = 1.333f;
+//      ImGui::GraphicsBlueIOR = 1.333f * BF;
+//    }
+//    ImGui::PopID();
+//
+//    ImGui::PushID((void*)"Olive Oil");
+//    if (ImGui::Selectable("Olive Oil", PresetIORs == "Olive Oil"))
+//    {
+//      PresetIORs = "Olive Oil";
+//      ImGui::GraphicsRedIOR = 1.47f * RF;
+//      ImGui::GraphicsGreenIOR = 1.47f;
+//      ImGui::GraphicsBlueIOR = 1.47f * BF;
+//    }
+//    ImGui::PopID();
+//
+//    ImGui::PushID((void*)"Ice");
+//    if (ImGui::Selectable("Ice", PresetIORs == "Ice"))
+//    {
+//      PresetIORs = "Ice";
+//      ImGui::GraphicsRedIOR = 1.31f * RF;
+//      ImGui::GraphicsGreenIOR = 1.31f;
+//      ImGui::GraphicsBlueIOR = 1.31f * BF;
+//    }
+//    ImGui::PopID();
+//
+//    ImGui::PushID((void*)"Quartz");
+//    if (ImGui::Selectable("Quartz", PresetIORs == "Quartz"))
+//    {
+//      PresetIORs = "Quartz";
+//      ImGui::GraphicsRedIOR = 1.46f * RF;
+//      ImGui::GraphicsGreenIOR = 1.46f;
+//      ImGui::GraphicsBlueIOR = 1.46f * BF;
+//    }
+//    ImGui::PopID();
+//
+//    ImGui::PushID((void*)"Diamond");
+//    if (ImGui::Selectable("Diamond", PresetIORs == "Diamond"))
+//    {
+//      PresetIORs = "Diamond";
+//      ImGui::GraphicsRedIOR = 2.42f * RF;
+//      ImGui::GraphicsGreenIOR = 2.42f;
+//      ImGui::GraphicsBlueIOR = 2.42f * BF;
+//    }
+//    ImGui::PopID();
+//
+//    ImGui::PushID((void*)"Acrylic");
+//    if (ImGui::Selectable("Acrylic", PresetIORs == "Acrylic"))
+//    {
+//      PresetIORs = "Acrylic";
+//      ImGui::GraphicsRedIOR = 1.49f * RF;
+//      ImGui::GraphicsGreenIOR = 1.49f;
+//      ImGui::GraphicsBlueIOR = 1.49f * BF;
+//    }
+//    ImGui::PopID();
+//
+//    ImGui::EndCombo();
+//  }
+//
+//  ImGui::NewLine();
+//#pragma endregion
+//
+//  ImGui::TextColored(IMGREEN, "IOR [MASTER]: "); ImGui::SameLine();
+//  static float IORmaster = 1.f;
+//  
+//  if (ImGui::DragFloat("##IOR [MASTER]", &IORmaster, 0.01f, 1.f, 100.f))
+//  {
+//    ImGui::GraphicsRedIOR = IORmaster * 0.998f;
+//    ImGui::GraphicsGreenIOR = IORmaster * 1.f;
+//    ImGui::GraphicsBlueIOR = IORmaster * 1.002f;
+//  }
+//
+//  IMGUISPACE;
+//
+//
+//  ImGui::TextColored(IMGREEN, "IOR [Red]: "); ImGui::SameLine();
+//  ImGui::SliderFloat("##IOR [Red]", &ImGui::GraphicsRedIOR, 1.f, 100.f);
+//
+//  ImGui::TextColored(IMGREEN, "IOR [Green]: "); ImGui::SameLine();
+//  ImGui::SliderFloat("##IOR [Green]", &ImGui::GraphicsGreenIOR, 1.f, 100.f);
+//
+//  ImGui::TextColored(IMGREEN, "IOR [Blue]: "); ImGui::SameLine();
+//  ImGui::SliderFloat("##IOR [Blue]", &ImGui::GraphicsBlueIOR, 1.f, 100.f);
 
   //ImGui::TextColored(IMGREEN, "Projection: "); ImGui::SameLine();
   //static const char* ProjectString = "Planar";
@@ -505,7 +505,7 @@ void ImGuiManager::graphicsUpdateObjects() noexcept
   IMGUISPACE;
 
   ImGui::TextColored(IMGREEN, "Demo Object: "); ImGui::SameLine();
-  static const char* DemoObjectString = DEMOOBJECTNAMES[(size_t)ImGui::DemoObject::Sphere];
+  static const char* DemoObjectString = DEMOOBJECTNAMES[(size_t)ImGui::DemoObjectMain];
   if (ImGui::BeginCombo("##Demo Object", DemoObjectString))
   {
     for (int i = 0; i < (size_t)ImGui::DemoObject::COUNT; ++i)

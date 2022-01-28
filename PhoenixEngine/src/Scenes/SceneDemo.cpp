@@ -187,7 +187,7 @@ void SceneDemo::Scenario1() noexcept
   m_GameObjectArray[16].SetScale({ 5.f, 5.f, 1.f });
   m_GameObjectArray[16].SetPosition({ 0.f, -0.5f, 0.f });
   m_GameObjectArray[16].RotateX(-90.f);
-  m_GameObjectArray[16].SetMaterial(Material::Type::GLOBAL);
+  m_GameObjectArray[16].SetMaterial(Material::Type::BASIC);
 
   // Main object
   m_GameObjectArray[17].SetPosition(vec3(0.f));

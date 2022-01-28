@@ -316,6 +316,7 @@ void Renderer::RenderSecondPass(vector<GameObject>& gameObjects, Camera& activeC
   glEnable(GL_DEPTH_TEST);
   glViewport(0, 0, 1920, 1080);
 
+  m_ContextManager.SetContext(m_hBlinnPhong);
   // Render our list of game objects
   for (GameObject& go : gameObjects)
   {
@@ -357,7 +358,6 @@ void Renderer::RenderSecondPass(vector<GameObject>& gameObjects, Camera& activeC
     //  m_ContextManager.SetContext(m_hBlinnPhong);
     //  break;
     //}
-    m_ContextManager.SetContext(m_hBlinnPhong);
 
     const vector<ContextManager::UniformAttribute>& uniforms = m_ContextManager.GetCurrentUniformAttributes();
     //TODO: Combine these for efficiency
@@ -381,13 +381,6 @@ void Renderer::RenderSecondPass(vector<GameObject>& gameObjects, Camera& activeC
     // Skip disabled game objects
     RenderGameObject(go);
   }
-
-  const vector<ContextManager::UniformAttribute>& uniforms = m_ContextManager.GetCurrentUniformAttributes();
-  //TODO: Combine these for efficiency
-  // Set Perspective Matrix
-  glUniformMatrix4fv(uniforms[0].ID, 1, GL_FALSE, &activeCamera.GetPersMatrix()[0][0]);
-  // Set View Matrix
-  glUniformMatrix4fv(uniforms[1].ID, 1, GL_FALSE, &activeCamera.GetViewMatrix()[0][0]);
 
   //TODO: Don't render this first, and don't render it here
   //RenderSkybox(activeCamera);
