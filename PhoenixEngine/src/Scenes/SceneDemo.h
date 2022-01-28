@@ -1,5 +1,5 @@
 // ------------------------------------------------------------------------------
-// File:    Scene1.h
+// File:    SceneDemo.h
 // Author:  Ryan Buehler
 // Created: 09/27/21
 // Desc:    A test scene for expirementation
@@ -9,16 +9,16 @@
 #include "GameObject.h"
 #include "Camera.h"
 
-class Scene1 : public IScene
+class SceneDemo : public IScene
 {
 public:
 
-  Scene1() noexcept;
-  ~Scene1() = default;
-  Scene1(const Scene1&) = delete;
-  Scene1& operator=(const Scene1&) = delete;
-  Scene1(Scene1&&) = delete;
-  Scene1& operator=(Scene1&&) = delete;
+  SceneDemo() noexcept;
+  ~SceneDemo() = default;
+  SceneDemo(const SceneDemo&) = delete;
+  SceneDemo& operator=(const SceneDemo&) = delete;
+  SceneDemo(SceneDemo&&) = delete;
+  SceneDemo& operator=(SceneDemo&&) = delete;
 
   void OnLoad() noexcept;
   void OnInit() noexcept;
@@ -31,8 +31,16 @@ public:
 
   Camera& GetCurrentCamera() noexcept;
 
+  void ChangeScenario(int which) noexcept;
+
+private:
+  void Scenario1() noexcept;
+  void Scenario2() noexcept;
+  void Scenario3() noexcept;
+
 private:
   Camera& m_MainCamera;
 
   float m_Time;
+
   };

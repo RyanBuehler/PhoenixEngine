@@ -6,10 +6,10 @@
 //------------------------------------------------------------------------------
 #include "pch.h"
 #include "SceneSingleObject.h"
-#include "Transform.h"
+#include "../Transform.h"
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
-#include "ImGUIManager.h"
+#include "../ImGUIManager.h"
 
 SceneSingleObject::SceneSingleObject() noexcept :
   IScene("Scene Single Object"),
@@ -37,6 +37,7 @@ void SceneSingleObject::OnInit() noexcept
 
   m_GameObjectArray[0].SetPosition(vec3(0.f));
   m_GameObjectArray[0].ScaleBy(1.f);
+  m_GameObjectArray[0].SetMaterial(Material(Material::Type::GLOBAL));
   m_MainCamera.SetTarget(&m_GameObjectArray[0].GetTransform());
 }
 

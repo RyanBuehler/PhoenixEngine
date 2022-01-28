@@ -65,9 +65,7 @@
     <ClCompile Include="src\PNGReader.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\SceneManager.cpp" />
-    <ClCompile Include="src\Scenes\ReflectionScene.cpp" />
-    <ClCompile Include="src\Scenes\Scene1.cpp" />
-    <ClCompile Include="src\Scenes\Scene2.cpp" />
+    <ClCompile Include="src\Scenes\SceneDemo.cpp" />
     <ClCompile Include="src\Scenes\SceneSingleObject.cpp" />
     <ClCompile Include="src\ShaderManager.cpp" />
     <ClCompile Include="src\Texture.cpp" />
@@ -88,13 +86,13 @@
     <ClInclude Include="src\EnvironmentMap.h" />
     <ClInclude Include="src\GameObject.h" />
     <ClInclude Include="src\ImGuiManager.h" />
-    <ClInclude Include="src\IScene.h" />
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\CameraManager.h" />
     <ClInclude Include="src\ContextManager.h" />
     <ClInclude Include="src\GraphicsCommon.h" />
     <ClInclude Include="src\DebugRenderer.h" />
+    <ClInclude Include="src\IScene.h" />
     <ClInclude Include="src\Light.h" />
     <ClInclude Include="src\LightingSystem.h" />
     <ClInclude Include="src\Material.h" />
@@ -106,9 +104,7 @@
     <ClInclude Include="src\PNGReader.h" />
     <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\SceneManager.h" />
-    <ClInclude Include="src\Scenes\ReflectionScene.h" />
-    <ClInclude Include="src\Scenes\Scene1.h" />
-    <ClInclude Include="src\Scenes\Scene2.h" />
+    <ClInclude Include="src\Scenes\SceneDemo.h" />
     <ClInclude Include="src\Scenes\SceneSingleObject.h" />
     <ClInclude Include="src\ShaderManager.h" />
     <ClInclude Include="src\Texture.h" />
@@ -191,7 +187,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_IMGUI;GLEW_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src;$(SolutionDir)dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <TreatWarningAsError>true</TreatWarningAsError>
@@ -226,7 +222,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_IMGUI;PE_BUILD_WINDOWS;GLEW_STATIC;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src;$(SolutionDir)dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <TreatWarningAsError>true</TreatWarningAsError>
@@ -261,7 +257,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>PE_BUILD_WINDOWS;GLEW_STATIC;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)src;$(SolutionDir)dep;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <TreatWarningAsError>true</TreatWarningAsError>

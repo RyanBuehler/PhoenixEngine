@@ -1,11 +1,11 @@
 //------------------------------------------------------------------------------
-// File:    Scene2.cpp
+// File:    SceneDemo.cpp
 // Author:  Ryan Buehler
 // Created: 09/27/21
 // Desc:    A test scene for expirementation
 //------------------------------------------------------------------------------
 #include "pch.h"
-#include "Scene2.h"
+#include "SceneDemo.h"
 #include "Transform.h"
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -17,22 +17,22 @@
 #define DIFFFACTOR 0.9f
 #define SPECFACTOR 1.0f
 
-Scene2::Scene2() noexcept :
-  IScene("Scene 2"),
+SceneDemo::SceneDemo() noexcept :
+  IScene("Demo Scene"),
   m_MainCamera(m_CameraManager.GetDefaultCamera()),
   m_Time(0.f)
 {
-  m_MainCamera.SetName("Scene 2 Camera");
-  Log::Trace("Scene 2 Created.");
-  ImGui::Manager->SetOnDemoObjectHandler(std::bind(&Scene2::OnDemoObjectChangeEvent, this));
+  m_MainCamera.SetName("Demo Scene Camera");
+  Log::Trace("Demo Scene Created.");
+  ImGui::Manager->SetOnDemoObjectHandler(std::bind(&SceneDemo::OnDemoObjectChangeEvent, this));
 }
 
-void Scene2::OnLoad() noexcept
+void SceneDemo::OnLoad() noexcept
 {
-  Log::Trace("Scene 2 Loaded.");
+  Log::Trace("Demo Scene Loaded.");
 }
 
-void Scene2::OnInit() noexcept
+void SceneDemo::OnInit() noexcept
 {
   m_Time = 0;
   switch (ImGui::SceneScenario)
@@ -47,10 +47,10 @@ void Scene2::OnInit() noexcept
     Scenario1();
     break;
   }
-  Log::Trace("Scene 2 Initialized.");
+  Log::Trace("Demo Scene Initialized.");
 }
 
-void Scene2::OnUpdate(float dt) noexcept
+void SceneDemo::OnUpdate(float dt) noexcept
 {
   m_Time += dt;
 
@@ -75,18 +75,18 @@ void Scene2::OnUpdate(float dt) noexcept
   }
 }
 
-void Scene2::OnShutdown() noexcept
+void SceneDemo::OnShutdown() noexcept
 {
   m_GameObjectArray.clear();
-  Log::Trace("Scene 2 Shutdown.");
+  Log::Trace("Demo Scene Shutdown.");
 }
 
-void Scene2::OnUnload() noexcept
+void SceneDemo::OnUnload() noexcept
 {
-  Log::Trace("Scene 2 Unloaded.");
+  Log::Trace("Demo Scene Unloaded.");
 }
 
-void Scene2::OnPollInput(GLFWwindow* window, float dt) noexcept
+void SceneDemo::OnPollInput(GLFWwindow* window, float dt) noexcept
 {
   static float move_speed = 10.f;
   if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
@@ -115,21 +115,21 @@ void Scene2::OnPollInput(GLFWwindow* window, float dt) noexcept
   }
 }
 
-void Scene2::OnDemoObjectChangeEvent()
+void SceneDemo::OnDemoObjectChangeEvent()
 {
   m_GameObjectArray[17].SetMeshFileName(ImGui::DemoObjectFile);
 }
 
-Camera& Scene2::GetCurrentCamera() noexcept
+Camera& SceneDemo::GetCurrentCamera() noexcept
 {
   return m_MainCamera;
 }
 
-void Scene2::ChangeScenario(int which) noexcept
+void SceneDemo::ChangeScenario(int which) noexcept
 {
 }
 
-void Scene2::Scenario1() noexcept
+void SceneDemo::Scenario1() noexcept
 {
   for (int i = 0; i < 16; ++i)
   {
@@ -197,7 +197,7 @@ void Scene2::Scenario1() noexcept
   m_MainCamera.SetTarget(&m_GameObjectArray[17].GetTransform());
 }
 
-void Scene2::Scenario2() noexcept
+void SceneDemo::Scenario2() noexcept
 {
   for (int i = 0; i < 16; ++i)
   {
@@ -301,7 +301,7 @@ void Scene2::Scenario2() noexcept
   m_MainCamera.SetTarget(&m_GameObjectArray[17].GetTransform());
 }
 
-void Scene2::Scenario3() noexcept
+void SceneDemo::Scenario3() noexcept
 {
   for (int i = 0; i < 16; ++i)
   {

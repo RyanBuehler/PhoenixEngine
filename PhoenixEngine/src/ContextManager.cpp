@@ -6,7 +6,7 @@
 
 ContextManager::ContextManager() noexcept :
   m_Contexts(),
-  m_CurrentContextIndex(CONTEXT_ERROR)
+  m_CurrentContextIndex(Error::Context::INVALID_CONTEXT)
 {
 }
 
@@ -49,7 +49,7 @@ void ContextManager::SetContext(unsigned contextIndex) noexcept
 {
   if (contextIndex != m_CurrentContextIndex)
   {
-    if (m_CurrentContextIndex != CONTEXT_ERROR)
+    if (m_CurrentContextIndex != Error::Context::INVALID_CONTEXT)
     {
       for (size_t i = 0; i < m_Contexts[m_CurrentContextIndex].VertexAttributes.size(); ++i)
       {

@@ -110,25 +110,25 @@ void Material::setByType(Type type) noexcept
   //TODO: Eventually this could be loaded by material files
   switch (type)
   {
-  case Material::Type::REFLECTREFRACT:
-  case Material::Type::REFRACTIVE:
-    break;
-  case Material::Type::BASIC:
-    m_Emissive = { 0.f, 0.f, 0.f };
-    m_AmbientFactor = 0.3f;
-    m_DiffuseFactor = 0.9f;
-    m_SpecularFactor = 1.f;
-    m_SpecularExp = 300.f;
-    m_Type = Type::BASIC;
-    break;
-  case Material::Type::LIGHT:
-    m_Emissive = { 1.f, 1.f, 1.f };
-    m_AmbientFactor = 0.0f;
-    m_DiffuseFactor = 0.0f;
-    m_SpecularFactor = 0.0f;
-    m_SpecularExp = 0.01f;
-    m_Type = Type::LIGHT;
-    break;
+  //case Material::Type::REFLECTREFRACT:
+  //case Material::Type::REFRACTIVE:
+  //  break;
+  //case Material::Type::BASIC:
+  //  m_Emissive = { 0.f, 0.f, 0.f };
+  //  m_AmbientFactor = 0.3f;
+  //  m_DiffuseFactor = 0.9f;
+  //  m_SpecularFactor = 1.f;
+  //  m_SpecularExp = 300.f;
+  //  m_Type = Type::BASIC;
+  //  break;
+  //case Material::Type::LIGHT:
+  //  m_Emissive = { 1.f, 1.f, 1.f };
+  //  m_AmbientFactor = 0.0f;
+  //  m_DiffuseFactor = 0.0f;
+  //  m_SpecularFactor = 0.0f;
+  //  m_SpecularExp = 0.01f;
+  //  m_Type = Type::LIGHT;
+  //  break;
   case Material::Type::GLOBAL:
     m_Type = Type::GLOBAL;
     break;

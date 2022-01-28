@@ -6,10 +6,8 @@
 //------------------------------------------------------------------------------
 #include "pch.h"
 #include "SceneManager.h"
-#include "Scene1.h"
-#include "Scene2.h"
-#include "ReflectionScene.h"
-#include "SceneSingleObject.h"
+#include "Scenes/SceneDemo.h"
+#include "Scenes/SceneSingleObject.h"
 
 SceneManager::SceneManager() noexcept :
   m_ReloadEnabled(false),
@@ -99,17 +97,9 @@ void SceneManager::transitionScene() noexcept
   switch (m_NextScene)
   {
   case SceneManager::Scene::None:
-  case SceneManager::Scene::Scene1:
+  case SceneManager::Scene::SceneDemo:
     m_CurrentScenePtr.release();
-    m_CurrentScenePtr = make_unique<Scene1>();
-    break;
-  case SceneManager::Scene::Scene2:
-    m_CurrentScenePtr.release();
-    m_CurrentScenePtr = make_unique<Scene2>();
-    break;
-  case SceneManager::Scene::ReflectionScene:
-    m_CurrentScenePtr.release();
-    m_CurrentScenePtr = make_unique<ReflectionScene>();
+    m_CurrentScenePtr = make_unique<SceneDemo>();
     break;
   case SceneManager::Scene::SceneSingleObject:
     m_CurrentScenePtr.release();

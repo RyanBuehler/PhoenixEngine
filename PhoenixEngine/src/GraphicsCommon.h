@@ -103,6 +103,13 @@ namespace UV
 
 namespace Error
 {
-  constexpr GLuint INVALID_HANDLE = numeric_limits<GLuint>::max();
   constexpr unsigned INVALID_INDEX = numeric_limits<unsigned>::max();
+  namespace Handle
+  {
+    constexpr GLuint INVALID_HANDLE = numeric_limits<GLuint>::max();
+  }
+  namespace Context
+  {
+    constexpr unsigned INVALID_CONTEXT = numeric_limits<unsigned>::max();
+  }
 }

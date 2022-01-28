@@ -29,11 +29,12 @@ Renderer::Renderer(bool depthBufferEnabled, bool backFaceCullEnabled) noexcept :
   m_ContextManager(),
   m_MeshManager(),
   m_Lighting(),
-  m_hDiffuseContext(ContextManager::CONTEXT_ERROR),
-  m_hDebugContext(ContextManager::CONTEXT_ERROR),
-  diffTex("Debug Diff Texture"),
-  specTex("Debug Spec Texture"),
+  //m_hDiffuseContext(ContextManager::Error::Context::INVALID_CONTEXT),
   m_Skybox(tempcubemap),
+  m_hSkyboxContext(Error::Context::INVALID_CONTEXT),
+  m_hDebugContext(Error::Context::INVALID_CONTEXT),
+  //diffTex("Debug Diff Texture"),
+  //specTex("Debug Spec Texture"),
   envMap()
 {
   depthBufferEnabled ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
@@ -46,8 +47,8 @@ Renderer::Renderer(bool depthBufferEnabled, bool backFaceCullEnabled) noexcept :
   Log::Trace("Renderer initialized.");
 
   //TODO: make these boolean results and move them elsewhere
-  diffTex.LoadTextureFromFile("res/textures/metal_roof_diff_512x512.png");
-  specTex.LoadTextureFromFile("res/textures/metal_roof_spec_512x512.png");
+  //diffTex.LoadTextureFromFile("res/textures/metal_roof_diff_512x512.png");
+  //specTex.LoadTextureFromFile("res/textures/metal_roof_spec_512x512.png");
 }
 
 Renderer::~Renderer()
@@ -80,17 +81,17 @@ void Renderer::OnEndFrame() noexcept
     {
       ImGui::GraphicsRebuildShaders = false;
 
-      m_ShaderManager.RelinkShader(
-        m_ContextManager.GetProgram(m_hPhongLighting),
-        m_ShaderManager.GetVertexShaderID(Shader::Vertex::PHONGLIGHT),
-        m_ShaderManager.GetFragmentShaderID(Shader::Fragment::PHONGLIGHT),
-        "PhongLighting.vert", "PhongLighting.frag");
+      //m_ShaderManager.RelinkShader(
+      //  m_ContextManager.GetProgram(m_hPhongLighting),
+      //  m_ShaderManager.GetVertexShaderID(Shader::Vertex::PHONGLIGHT),
+      //  m_ShaderManager.GetFragmentShaderID(Shader::Fragment::PHONGLIGHT),
+      //  "PhongLighting.vert", "PhongLighting.frag");
 
-      m_ShaderManager.RelinkShader(
-        m_ContextManager.GetProgram(m_hPhongShading),
-        m_ShaderManager.GetVertexShaderID(Shader::Vertex::PHONGSHADE),
-        m_ShaderManager.GetFragmentShaderID(Shader::Fragment::PHONGSHADE),
-        "PhongShading.vert", "PhongShading.frag");
+      //m_ShaderManager.RelinkShader(
+      //  m_ContextManager.GetProgram(m_hPhongShading),
+      //  m_ShaderManager.GetVertexShaderID(Shader::Vertex::PHONGSHADE),
+      //  m_ShaderManager.GetFragmentShaderID(Shader::Fragment::PHONGSHADE),
+      //  "PhongShading.vert", "PhongShading.frag");
 
       m_ShaderManager.RelinkShader(
         m_ContextManager.GetProgram(m_hBlinnPhong),
@@ -98,23 +99,23 @@ void Renderer::OnEndFrame() noexcept
         m_ShaderManager.GetFragmentShaderID(Shader::Fragment::BLINNPHONG),
         "BlinnPhong.vert", "BlinnPhong.frag");
 
-      m_ShaderManager.RelinkShader(
-        m_ContextManager.GetProgram(m_hBlinnPhongRefract),
-        m_ShaderManager.GetVertexShaderID(Shader::Vertex::BLINNPHONGREFRACT),
-        m_ShaderManager.GetFragmentShaderID(Shader::Fragment::BLINNPHONGREFRACT),
-        "BlinnPhongRefract.vert", "BlinnPhongRefract.frag");
+      //m_ShaderManager.RelinkShader(
+      //  m_ContextManager.GetProgram(m_hBlinnPhongRefract),
+      //  m_ShaderManager.GetVertexShaderID(Shader::Vertex::BLINNPHONGREFRACT),
+      //  m_ShaderManager.GetFragmentShaderID(Shader::Fragment::BLINNPHONGREFRACT),
+      //  "BlinnPhongRefract.vert", "BlinnPhongRefract.frag");
 
-      m_ShaderManager.RelinkShader(
-        m_ContextManager.GetProgram(m_hPhongTexture),
-        m_ShaderManager.GetVertexShaderID(Shader::Vertex::PHONGTEXTURE),
-        m_ShaderManager.GetFragmentShaderID(Shader::Fragment::PHONGTEXTURE),
-        "PhongTexture.vert", "PhongTexture.frag");
+      //m_ShaderManager.RelinkShader(
+      //  m_ContextManager.GetProgram(m_hPhongTexture),
+      //  m_ShaderManager.GetVertexShaderID(Shader::Vertex::PHONGTEXTURE),
+      //  m_ShaderManager.GetFragmentShaderID(Shader::Fragment::PHONGTEXTURE),
+      //  "PhongTexture.vert", "PhongTexture.frag");
 
-      m_ShaderManager.RelinkShader(
-        m_ContextManager.GetProgram(m_hReflection),
-        m_ShaderManager.GetVertexShaderID(Shader::Vertex::REFLECTION),
-        m_ShaderManager.GetFragmentShaderID(Shader::Fragment::REFLECTION),
-        "Reflection.vert", "Reflection.frag");
+      //m_ShaderManager.RelinkShader(
+      //  m_ContextManager.GetProgram(m_hReflection),
+      //  m_ShaderManager.GetVertexShaderID(Shader::Vertex::REFLECTION),
+      //  m_ShaderManager.GetFragmentShaderID(Shader::Fragment::REFLECTION),
+      //  "Reflection.vert", "Reflection.frag");
     }
 
     if (ImGui::GraphicsRebuildMeshes)
@@ -139,7 +140,7 @@ void Renderer::OnEndFrame() noexcept
 
 void Renderer::RenderScene(vector<GameObject>& gameObjects, Camera& activeCamera)
 {
-  RenderFirstPass(gameObjects);
+  //RenderFirstPass(gameObjects);
 
   RenderSecondPass(gameObjects, activeCamera);
 
@@ -243,33 +244,34 @@ void Renderer::RenderFirstPass(vector<GameObject>& gameObjects)
       if (!go.IsActive())
         continue;
 
-      switch (ImGui::GraphicsSelectedShader)
-      {
-        // Reflection
-      case 3:
-        if (go.GetMaterial().GetType() == Material::Type::REFLECTREFRACT)
-        {
-          continue;
-        }
-        else
-        {
-          m_ContextManager.SetContext(m_hPhongShading);
-        }
-        break;
-        //Lighting
-      case 0:
-        m_ContextManager.SetContext(m_hPhongLighting);
-        break;
-        //Shading
-      case 1:
-        m_ContextManager.SetContext(m_hPhongShading);
-        break;
-        //Blinn
-      case 2:
-      default:
-        m_ContextManager.SetContext(m_hBlinnPhong);
-        break;
-      }
+      //switch (ImGui::GraphicsSelectedShader)
+      //{
+      //  // Reflection
+      //case 3:
+      //  if (go.GetMaterial().GetType() == Material::Type::REFLECTREFRACT)
+      //  {
+      //    continue;
+      //  }
+      //  else
+      //  {
+      //    m_ContextManager.SetContext(m_hPhongShading);
+      //  }
+      //  break;
+      //  //Lighting
+      //case 0:
+      //  m_ContextManager.SetContext(m_hPhongLighting);
+      //  break;
+      //  //Shading
+      //case 1:
+      //  m_ContextManager.SetContext(m_hPhongShading);
+      //  break;
+      //  //Blinn
+      //case 2:
+      //default:
+      //  m_ContextManager.SetContext(m_hBlinnPhong);
+      //  break;
+      //}
+      m_ContextManager.SetContext(m_hBlinnPhong);
 
       const vector<ContextManager::UniformAttribute>& uniforms = m_ContextManager.GetCurrentUniformAttributes();
       //TODO: Combine these for efficiency
@@ -320,41 +322,42 @@ void Renderer::RenderSecondPass(vector<GameObject>& gameObjects, Camera& activeC
     if (!go.IsActive())
       continue;
 
-    switch (ImGui::GraphicsSelectedShader)
-    {
-      // Reflection
-    case 3:
-      if (go.GetMaterial().GetType() == Material::Type::REFLECTREFRACT)
-      {
-        m_ContextManager.SetContext(m_hBlinnPhongRefract);
-        envMap.EnableTextures();
-        const vector<ContextManager::UniformAttribute>& uniforms = m_ContextManager.GetCurrentUniformAttributes();
-        glUniform1f(uniforms[16].ID, ImGui::GraphicsRefractSlider);
-        glUniform1f(uniforms[17].ID, ImGui::GraphicsRedIOR);
-        glUniform1f(uniforms[18].ID, ImGui::GraphicsGreenIOR);
-        glUniform1f(uniforms[19].ID, ImGui::GraphicsBlueIOR);
-        glUniform1f(uniforms[20].ID, ImGui::GraphicsRefractEnabled);
-        glUniform1f(uniforms[21].ID, ImGui::GraphicsReflectEnabled);
-      }
-      else
-      {
-        m_ContextManager.SetContext(m_hPhongShading);
-      }
-      break;
-      //Lighting
-    case 0:
-      m_ContextManager.SetContext(m_hPhongLighting);
-      break;
-      //Shading
-    case 1:
-      m_ContextManager.SetContext(m_hPhongShading);
-      break;
-      //Blinn
-    case 2:
-    default:
-      m_ContextManager.SetContext(m_hBlinnPhong);
-      break;
-    }
+    //switch (ImGui::GraphicsSelectedShader)
+    //{
+    //  // Reflection
+    //case 3:
+    //  if (go.GetMaterial().GetType() == Material::Type::REFLECTREFRACT)
+    //  {
+    //    m_ContextManager.SetContext(m_hBlinnPhongRefract);
+    //    envMap.EnableTextures();
+    //    const vector<ContextManager::UniformAttribute>& uniforms = m_ContextManager.GetCurrentUniformAttributes();
+    //    glUniform1f(uniforms[16].ID, ImGui::GraphicsRefractSlider);
+    //    glUniform1f(uniforms[17].ID, ImGui::GraphicsRedIOR);
+    //    glUniform1f(uniforms[18].ID, ImGui::GraphicsGreenIOR);
+    //    glUniform1f(uniforms[19].ID, ImGui::GraphicsBlueIOR);
+    //    glUniform1f(uniforms[20].ID, ImGui::GraphicsRefractEnabled);
+    //    glUniform1f(uniforms[21].ID, ImGui::GraphicsReflectEnabled);
+    //  }
+    //  else
+    //  {
+    //    m_ContextManager.SetContext(m_hPhongShading);
+    //  }
+    //  break;
+    //  //Lighting
+    //case 0:
+    //  m_ContextManager.SetContext(m_hPhongLighting);
+    //  break;
+    //  //Shading
+    //case 1:
+    //  m_ContextManager.SetContext(m_hPhongShading);
+    //  break;
+    //  //Blinn
+    //case 2:
+    //default:
+    //  m_ContextManager.SetContext(m_hBlinnPhong);
+    //  break;
+    //}
+    m_ContextManager.SetContext(m_hBlinnPhong);
 
     const vector<ContextManager::UniformAttribute>& uniforms = m_ContextManager.GetCurrentUniformAttributes();
     //TODO: Combine these for efficiency
@@ -387,7 +390,7 @@ void Renderer::RenderSecondPass(vector<GameObject>& gameObjects, Camera& activeC
   glUniformMatrix4fv(uniforms[1].ID, 1, GL_FALSE, &activeCamera.GetViewMatrix()[0][0]);
 
   //TODO: Don't render this first, and don't render it here
-  RenderSkybox(activeCamera);
+  //RenderSkybox(activeCamera);
 
   glUseProgram(0u);
 }
@@ -433,10 +436,10 @@ void Renderer::RenderGameObject(GameObject& gameObject)
     }
   }
 
-  if (gameObject.GetMaterial().GetType() == Material::Type::TEXTURE)
-  {
-    m_ContextManager.SetContext(m_hPhongTexture);
-  }
+  //if (gameObject.GetMaterial().GetType() == Material::Type::TEXTURE)
+  //{
+  //  m_ContextManager.SetContext(m_hPhongTexture);
+  //}
 
   const vector<ContextManager::UniformAttribute>& uniforms = m_ContextManager.GetCurrentUniformAttributes();
 
@@ -445,22 +448,22 @@ void Renderer::RenderGameObject(GameObject& gameObject)
   glUniformMatrix4fv(uniforms[10].ID, 1, false, &gameObject.GetMatrix()[0][0]);
 
   //TODO: Material faked temporarily for simplicity
-  if (gameObject.GetMaterial().GetType() != Material::Type::GLOBAL &&
-    gameObject.GetMaterial().GetType() != Material::Type::REFLECTREFRACT)
-  {
-    const Material& mat = gameObject.GetMaterial();
-    glUniform3fv(uniforms[11].ID, 1, &mat.GetEmissive()[0]);
-    // Mat ambient
-    glUniform1f(uniforms[12].ID, mat.GetAmbient());
-    // Mat diffuse
-    glUniform1f(uniforms[13].ID, mat.GetDiffuse());
-    // Mat spec
-    glUniform1f(uniforms[14].ID, mat.GetSpecular());
-    // Mat spec exp
-    glUniform1f(uniforms[15].ID, mat.GetSpecularExp());
-  }
-  else
-  {
+  //if (gameObject.GetMaterial().GetType() != Material::Type::GLOBAL &&
+  //  gameObject.GetMaterial().GetType() != Material::Type::REFLECTREFRACT)
+  //{
+  //  const Material& mat = gameObject.GetMaterial();
+  //  glUniform3fv(uniforms[11].ID, 1, &mat.GetEmissive()[0]);
+  //  // Mat ambient
+  //  glUniform1f(uniforms[12].ID, mat.GetAmbient());
+  //  // Mat diffuse
+  //  glUniform1f(uniforms[13].ID, mat.GetDiffuse());
+  //  // Mat spec
+  //  glUniform1f(uniforms[14].ID, mat.GetSpecular());
+  //  // Mat spec exp
+  //  glUniform1f(uniforms[15].ID, mat.GetSpecularExp());
+  //}
+  //else
+  //{
     const Material& mat = ImGui::LightingGlobalMaterial;
     glUniform3fv(uniforms[11].ID, 1, &mat.GetEmissive()[0]);
     // Mat ambient
@@ -471,7 +474,7 @@ void Renderer::RenderGameObject(GameObject& gameObject)
     glUniform1f(uniforms[14].ID, mat.GetSpecular());
     // Mat spec exp
     glUniform1f(uniforms[15].ID, mat.GetSpecularExp());
-  }
+  //}
 
   m_MeshManager.RenderMesh(gameObject.m_MeshID);
 }
@@ -521,24 +524,24 @@ void Renderer::RenderNormals(GameObject& gameObject, float length, Normals::Type
 
 void Renderer::LoadContexts() noexcept
 {
-  LoadPhongLightingContext();
+  //LoadPhongLightingContext();
 
-  LoadPhongShadingContext();
+  //LoadPhongShadingContext();
 
   LoadBlinnPhongContext();
 
-  LoadPhongTextureContext();
+  //LoadPhongTextureContext();
 
   LoadDebugContext();
 
   LoadSkyboxContext();
 
-  LoadReflectionContext();
+  //LoadReflectionContext();
 
-  LoadBlinnPhongRefractContext();
+  //LoadBlinnPhongRefractContext();
 
   //TODO: Look into this
-  GLuint program = m_ContextManager.GetProgram(m_hPhongLighting);
+  GLuint program = m_ContextManager.GetProgram(m_hBlinnPhong);
 
   //TODO: Uniform Block Example
   uboIndex = glGetUniformBlockIndex(program, "LightArray");
@@ -555,112 +558,112 @@ void Renderer::LoadContexts() noexcept
   glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboBuffer, 0, uboSize);
 }
 
-void Renderer::LoadDiffuseContext() noexcept
-{
-  // Load a default context
-  unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::DIFFUSE);
-  unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::DIFFUSE);
-  m_hDiffuseContext = m_ContextManager.CreateNewContext("Diffuse", vID, fID);
-  m_ContextManager.SetContext(m_hDiffuseContext);
-
-  // TODO: Convert this to a Uniform Block
-  m_ContextManager.AddNewUniformAttribute(m_hDiffuseContext, "pers_matrix");
-  m_ContextManager.AddNewUniformAttribute(m_hDiffuseContext, "view_matrix");
-  m_ContextManager.AddNewUniformAttribute(m_hDiffuseContext, "model_matrix");
-  m_ContextManager.AddNewUniformAttribute(m_hDiffuseContext, "diffuse_light");
-  m_ContextManager.AddNewUniformAttribute(m_hDiffuseContext, "ambient_light");
-
-  ContextManager::VertexAttribute vaPosition("position", 4, GL_FLOAT, GL_FALSE, sizeof(vec3), 0u);
-  ContextManager::VertexAttribute vaNormal("normal", 4, GL_FLOAT, GL_FALSE, sizeof(vec3), sizeof(vec3));
-  m_ContextManager.AddNewVertexAttribute(m_hDiffuseContext, vaPosition);
-  m_ContextManager.AddNewVertexAttribute(m_hDiffuseContext, vaNormal);
-
-  Log::Trace("Diffuse Context loaded.");
-}
-
-void Renderer::LoadPhongLightingContext() noexcept
-{
-  // Load Phong lighting context
-  unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::PHONGLIGHT);
-  unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::PHONGLIGHT);
-  m_hPhongLighting = m_ContextManager.CreateNewContext("Phong Lighting", vID, fID);
-
-  m_ContextManager.SetContext(m_hPhongLighting);
-
-  // TODO: Convert this to a uniform block
-  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "pers_matrix");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "view_matrix");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "cam_position");
-
-  // TODO: Convert this to a uniform block
-  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "global_amb");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "global_fog");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "global_fog_near");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "global_fog_far");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "global_att1");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "global_att2");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "global_att3");
-
-  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "model_matrix");
-
-  //TODO: Uniform block
-  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "mat_emit");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "mat_amb");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "mat_dif");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "mat_spc");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "mat_spc_exp");
-
-  ContextManager::VertexAttribute vaPosition("position", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), 0);
-  ContextManager::VertexAttribute vaNormal("normal", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), sizeof(vec3));
-  ContextManager::VertexAttribute vaTexcoords("texcoord", 2, GL_FLOAT, GL_FALSE, sizeof(vec2), sizeof(vec3) * 2);
-  m_ContextManager.AddNewVertexAttribute(m_hPhongLighting, vaPosition);
-  m_ContextManager.AddNewVertexAttribute(m_hPhongLighting, vaNormal);
-  m_ContextManager.AddNewVertexAttribute(m_hPhongLighting, vaTexcoords);
-
-  Log::Trace("Phong Lighting Context loaded.");
-}
-
-void Renderer::LoadPhongShadingContext() noexcept
-{
-  // Load Phong shading context
-  unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::PHONGSHADE);
-  unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::PHONGSHADE);
-  m_hPhongShading = m_ContextManager.CreateNewContext("Phong Shading", vID, fID);
-
-  m_ContextManager.SetContext(m_hPhongShading);
-
-  // TODO: Convert this to a uniform block
-  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "pers_matrix");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "view_matrix");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "cam_position");
-
-  // TODO: Convert this to a uniform block
-  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "global_amb");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "global_fog");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "global_fog_near");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "global_fog_far");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "global_att1");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "global_att2");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "global_att3");
-
-  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "model_matrix");
-
-  //TODO: Uniform block
-  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "mat_emit");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "mat_amb");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "mat_dif");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "mat_spc");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "mat_spc_exp");
-
-  ContextManager::VertexAttribute vaPosition("position", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), 0);
-  ContextManager::VertexAttribute vaNormal("normal", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), sizeof(vec3));
-  ContextManager::VertexAttribute vaTexcoords("texcoord", 2, GL_FLOAT, GL_FALSE, sizeof(vec2), sizeof(vec3) * 2);
-  m_ContextManager.AddNewVertexAttribute(m_hPhongShading, vaPosition);
-  m_ContextManager.AddNewVertexAttribute(m_hPhongShading, vaNormal);
-  m_ContextManager.AddNewVertexAttribute(m_hPhongShading, vaTexcoords);
-
-  Log::Trace("Phong Shading Context loaded.");
-}
+//void Renderer::LoadDiffuseContext() noexcept
+//{
+//  // Load a default context
+//  unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::DIFFUSE);
+//  unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::DIFFUSE);
+//  m_hDiffuseContext = m_ContextManager.CreateNewContext("Diffuse", vID, fID);
+//  m_ContextManager.SetContext(m_hDiffuseContext);
+//
+//  // TODO: Convert this to a Uniform Block
+//  m_ContextManager.AddNewUniformAttribute(m_hDiffuseContext, "pers_matrix");
+//  m_ContextManager.AddNewUniformAttribute(m_hDiffuseContext, "view_matrix");
+//  m_ContextManager.AddNewUniformAttribute(m_hDiffuseContext, "model_matrix");
+//  m_ContextManager.AddNewUniformAttribute(m_hDiffuseContext, "diffuse_light");
+//  m_ContextManager.AddNewUniformAttribute(m_hDiffuseContext, "ambient_light");
+//
+//  ContextManager::VertexAttribute vaPosition("position", 4, GL_FLOAT, GL_FALSE, sizeof(vec3), 0u);
+//  ContextManager::VertexAttribute vaNormal("normal", 4, GL_FLOAT, GL_FALSE, sizeof(vec3), sizeof(vec3));
+//  m_ContextManager.AddNewVertexAttribute(m_hDiffuseContext, vaPosition);
+//  m_ContextManager.AddNewVertexAttribute(m_hDiffuseContext, vaNormal);
+//
+//  Log::Trace("Diffuse Context loaded.");
+//}
+//
+//void Renderer::LoadPhongLightingContext() noexcept
+//{
+//  // Load Phong lighting context
+//  unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::PHONGLIGHT);
+//  unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::PHONGLIGHT);
+//  m_hPhongLighting = m_ContextManager.CreateNewContext("Phong Lighting", vID, fID);
+//
+//  m_ContextManager.SetContext(m_hPhongLighting);
+//
+//  // TODO: Convert this to a uniform block
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "pers_matrix");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "view_matrix");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "cam_position");
+//
+//  // TODO: Convert this to a uniform block
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "global_amb");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "global_fog");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "global_fog_near");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "global_fog_far");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "global_att1");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "global_att2");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "global_att3");
+//
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "model_matrix");
+//
+//  //TODO: Uniform block
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "mat_emit");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "mat_amb");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "mat_dif");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "mat_spc");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongLighting, "mat_spc_exp");
+//
+//  ContextManager::VertexAttribute vaPosition("position", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), 0);
+//  ContextManager::VertexAttribute vaNormal("normal", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), sizeof(vec3));
+//  ContextManager::VertexAttribute vaTexcoords("texcoord", 2, GL_FLOAT, GL_FALSE, sizeof(vec2), sizeof(vec3) * 2);
+//  m_ContextManager.AddNewVertexAttribute(m_hPhongLighting, vaPosition);
+//  m_ContextManager.AddNewVertexAttribute(m_hPhongLighting, vaNormal);
+//  m_ContextManager.AddNewVertexAttribute(m_hPhongLighting, vaTexcoords);
+//
+//  Log::Trace("Phong Lighting Context loaded.");
+//}
+//
+//void Renderer::LoadPhongShadingContext() noexcept
+//{
+//  // Load Phong shading context
+//  unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::PHONGSHADE);
+//  unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::PHONGSHADE);
+//  m_hPhongShading = m_ContextManager.CreateNewContext("Phong Shading", vID, fID);
+//
+//  m_ContextManager.SetContext(m_hPhongShading);
+//
+//  // TODO: Convert this to a uniform block
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "pers_matrix");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "view_matrix");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "cam_position");
+//
+//  // TODO: Convert this to a uniform block
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "global_amb");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "global_fog");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "global_fog_near");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "global_fog_far");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "global_att1");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "global_att2");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "global_att3");
+//
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "model_matrix");
+//
+//  //TODO: Uniform block
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "mat_emit");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "mat_amb");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "mat_dif");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "mat_spc");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongShading, "mat_spc_exp");
+//
+//  ContextManager::VertexAttribute vaPosition("position", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), 0);
+//  ContextManager::VertexAttribute vaNormal("normal", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), sizeof(vec3));
+//  ContextManager::VertexAttribute vaTexcoords("texcoord", 2, GL_FLOAT, GL_FALSE, sizeof(vec2), sizeof(vec3) * 2);
+//  m_ContextManager.AddNewVertexAttribute(m_hPhongShading, vaPosition);
+//  m_ContextManager.AddNewVertexAttribute(m_hPhongShading, vaNormal);
+//  m_ContextManager.AddNewVertexAttribute(m_hPhongShading, vaTexcoords);
+//
+//  Log::Trace("Phong Shading Context loaded.");
+//}
 
 void Renderer::LoadBlinnPhongContext() noexcept
 {
@@ -704,50 +707,50 @@ void Renderer::LoadBlinnPhongContext() noexcept
   Log::Trace("Blinn-Phong Shading Context loaded.");
 }
 
-void Renderer::LoadPhongTextureContext() noexcept
-{
-  // Load Phong lighting context
-  unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::PHONGTEXTURE);
-  unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::PHONGTEXTURE);
-  m_hPhongTexture = m_ContextManager.CreateNewContext("Phong Texturing", vID, fID);
-
-  m_ContextManager.SetContext(m_hPhongTexture);
-
-  // TODO: Convert this to a uniform block
-  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "pers_matrix");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "view_matrix");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "cam_position");
-
-  // TODO: Convert this to a uniform block
-  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "global_amb");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "global_fog");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "global_fog_near");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "global_fog_far");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "global_att1");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "global_att2");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "global_att3");
-
-  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "model_matrix");
-
-  //TODO: Uniform block
-  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "mat_emit");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "mat_amb");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "mat_dif");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "mat_spc");
-  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "mat_spc_exp");
-
-  //ContextManager::VertexAttribute vaPosition("position", 3, GL_FLOAT, GL_FALSE, sizeof(vec3), 0u);
-  //ContextManager::VertexAttribute vaNormal("normal", 3, GL_FLOAT, GL_FALSE, sizeof(vec3), sizeof(vec3));
-  //ContextManager::VertexAttribute vaTexcoords("texcoord", 2, GL_FLOAT, GL_FALSE, sizeof(vec2), 2 * sizeof(vec3));
-  ContextManager::VertexAttribute vaPosition("position", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), 0);
-  ContextManager::VertexAttribute vaNormal("normal", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), sizeof(vec3));
-  ContextManager::VertexAttribute vaTexcoords("texcoord", 2, GL_FLOAT, GL_FALSE, sizeof(vec2), sizeof(vec3) * 2);
-  m_ContextManager.AddNewVertexAttribute(m_hPhongTexture, vaPosition);
-  m_ContextManager.AddNewVertexAttribute(m_hPhongTexture, vaNormal);
-  m_ContextManager.AddNewVertexAttribute(m_hPhongTexture, vaTexcoords);
-
-  Log::Trace("Phong Texture Context loaded.");
-}
+//void Renderer::LoadPhongTextureContext() noexcept
+//{
+//  // Load Phong lighting context
+//  unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::PHONGTEXTURE);
+//  unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::PHONGTEXTURE);
+//  m_hPhongTexture = m_ContextManager.CreateNewContext("Phong Texturing", vID, fID);
+//
+//  m_ContextManager.SetContext(m_hPhongTexture);
+//
+//  // TODO: Convert this to a uniform block
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "pers_matrix");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "view_matrix");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "cam_position");
+//
+//  // TODO: Convert this to a uniform block
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "global_amb");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "global_fog");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "global_fog_near");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "global_fog_far");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "global_att1");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "global_att2");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "global_att3");
+//
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "model_matrix");
+//
+//  //TODO: Uniform block
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "mat_emit");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "mat_amb");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "mat_dif");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "mat_spc");
+//  m_ContextManager.AddNewUniformAttribute(m_hPhongTexture, "mat_spc_exp");
+//
+//  //ContextManager::VertexAttribute vaPosition("position", 3, GL_FLOAT, GL_FALSE, sizeof(vec3), 0u);
+//  //ContextManager::VertexAttribute vaNormal("normal", 3, GL_FLOAT, GL_FALSE, sizeof(vec3), sizeof(vec3));
+//  //ContextManager::VertexAttribute vaTexcoords("texcoord", 2, GL_FLOAT, GL_FALSE, sizeof(vec2), 2 * sizeof(vec3));
+//  ContextManager::VertexAttribute vaPosition("position", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), 0);
+//  ContextManager::VertexAttribute vaNormal("normal", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), sizeof(vec3));
+//  ContextManager::VertexAttribute vaTexcoords("texcoord", 2, GL_FLOAT, GL_FALSE, sizeof(vec2), sizeof(vec3) * 2);
+//  m_ContextManager.AddNewVertexAttribute(m_hPhongTexture, vaPosition);
+//  m_ContextManager.AddNewVertexAttribute(m_hPhongTexture, vaNormal);
+//  m_ContextManager.AddNewVertexAttribute(m_hPhongTexture, vaTexcoords);
+//
+//  Log::Trace("Phong Texture Context loaded.");
+//}
 
 void Renderer::LoadDebugContext() noexcept
 {
@@ -790,95 +793,95 @@ void Renderer::LoadSkyboxContext() noexcept
   Log::Trace("Skybox Context loaded.");
 }
 
-void Renderer::LoadReflectionContext() noexcept
-{
-  // Load reflection context
-  unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::REFLECTION);
-  unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::REFLECTION);
-  m_hReflection = m_ContextManager.CreateNewContext("Reflection", vID, fID);
-
-  m_ContextManager.SetContext(m_hReflection);
-
-  m_ContextManager.AddNewUniformAttribute(m_hReflection, "pers_matrix");
-  m_ContextManager.AddNewUniformAttribute(m_hReflection, "view_matrix");
-
-  m_ContextManager.AddNewUniformAttribute(m_hReflection, "cam_position");
-
-  // TODO: get rid of this
-  m_ContextManager.AddNewUniformAttribute(m_hReflection, "global_amb");
-  m_ContextManager.AddNewUniformAttribute(m_hReflection, "global_fog");
-  m_ContextManager.AddNewUniformAttribute(m_hReflection, "global_fog_near");
-  m_ContextManager.AddNewUniformAttribute(m_hReflection, "global_fog_far");
-  m_ContextManager.AddNewUniformAttribute(m_hReflection, "global_att1");
-  m_ContextManager.AddNewUniformAttribute(m_hReflection, "global_att2");
-  m_ContextManager.AddNewUniformAttribute(m_hReflection, "global_att3");
-
-  m_ContextManager.AddNewUniformAttribute(m_hReflection, "model_matrix");
-
-  //TODO: get rid of this
-  m_ContextManager.AddNewUniformAttribute(m_hReflection, "mat_emit");
-  m_ContextManager.AddNewUniformAttribute(m_hReflection, "mat_amb");
-  m_ContextManager.AddNewUniformAttribute(m_hReflection, "mat_dif");
-  m_ContextManager.AddNewUniformAttribute(m_hReflection, "mat_spc");
-  m_ContextManager.AddNewUniformAttribute(m_hReflection, "mat_spc_exp");
-
-  ContextManager::VertexAttribute vaPosition("position", 4, GL_FLOAT, GL_FALSE, sizeof(vec3), 0u);
-  ContextManager::VertexAttribute vaNormal("normal", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), sizeof(vec3));
-  m_ContextManager.AddNewVertexAttribute(m_hReflection, vaPosition);
-  m_ContextManager.AddNewVertexAttribute(m_hReflection, vaNormal);
-
-  Log::Trace("Reflection Context loaded.");
-}
-
-void Renderer::LoadBlinnPhongRefractContext() noexcept
-{
-  // Load Phong lighting context
-  unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::BLINNPHONGREFRACT);
-  unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::BLINNPHONGREFRACT);
-  m_hBlinnPhongRefract = m_ContextManager.CreateNewContext("Blinn Phong Reflect/Refract", vID, fID);
-
-  m_ContextManager.SetContext(m_hBlinnPhongRefract);
-
-  // TODO: Convert this to a uniform block
-  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "pers_matrix");
-  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "view_matrix");
-  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "cam_position");
-
-  // TODO: Convert this to a uniform block
-  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "global_amb");
-  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "global_fog");
-  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "global_fog_near");
-  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "global_fog_far");
-  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "global_att1");
-  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "global_att2");
-  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "global_att3");
-
-  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "model_matrix");
-
-  //TODO: Uniform block
-  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "mat_emit");
-  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "mat_amb");
-  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "mat_dif");
-  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "mat_spc");
-  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "mat_spc_exp");
-
-  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "refract_slider");
-  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "IOR_R");
-  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "IOR_G");
-  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "IOR_B");
-
-  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "RefractEnabled");
-  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "ReflectEnabled");
-
-  ContextManager::VertexAttribute vaPosition("position", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), 0);
-  ContextManager::VertexAttribute vaNormal("normal", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), sizeof(vec3));
-  ContextManager::VertexAttribute vaTexcoords("texcoord", 2, GL_FLOAT, GL_FALSE, sizeof(vec2), sizeof(vec3) * 2);
-  m_ContextManager.AddNewVertexAttribute(m_hBlinnPhongRefract, vaPosition);
-  m_ContextManager.AddNewVertexAttribute(m_hBlinnPhongRefract, vaNormal);
-  m_ContextManager.AddNewVertexAttribute(m_hBlinnPhongRefract, vaTexcoords);
-
-  Log::Trace("Blinn Phong Refraction Context loaded.");
-}
+//void Renderer::LoadReflectionContext() noexcept
+//{
+//  // Load reflection context
+//  unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::REFLECTION);
+//  unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::REFLECTION);
+//  m_hReflection = m_ContextManager.CreateNewContext("Reflection", vID, fID);
+//
+//  m_ContextManager.SetContext(m_hReflection);
+//
+//  m_ContextManager.AddNewUniformAttribute(m_hReflection, "pers_matrix");
+//  m_ContextManager.AddNewUniformAttribute(m_hReflection, "view_matrix");
+//
+//  m_ContextManager.AddNewUniformAttribute(m_hReflection, "cam_position");
+//
+//  // TODO: get rid of this
+//  m_ContextManager.AddNewUniformAttribute(m_hReflection, "global_amb");
+//  m_ContextManager.AddNewUniformAttribute(m_hReflection, "global_fog");
+//  m_ContextManager.AddNewUniformAttribute(m_hReflection, "global_fog_near");
+//  m_ContextManager.AddNewUniformAttribute(m_hReflection, "global_fog_far");
+//  m_ContextManager.AddNewUniformAttribute(m_hReflection, "global_att1");
+//  m_ContextManager.AddNewUniformAttribute(m_hReflection, "global_att2");
+//  m_ContextManager.AddNewUniformAttribute(m_hReflection, "global_att3");
+//
+//  m_ContextManager.AddNewUniformAttribute(m_hReflection, "model_matrix");
+//
+//  //TODO: get rid of this
+//  m_ContextManager.AddNewUniformAttribute(m_hReflection, "mat_emit");
+//  m_ContextManager.AddNewUniformAttribute(m_hReflection, "mat_amb");
+//  m_ContextManager.AddNewUniformAttribute(m_hReflection, "mat_dif");
+//  m_ContextManager.AddNewUniformAttribute(m_hReflection, "mat_spc");
+//  m_ContextManager.AddNewUniformAttribute(m_hReflection, "mat_spc_exp");
+//
+//  ContextManager::VertexAttribute vaPosition("position", 4, GL_FLOAT, GL_FALSE, sizeof(vec3), 0u);
+//  ContextManager::VertexAttribute vaNormal("normal", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), sizeof(vec3));
+//  m_ContextManager.AddNewVertexAttribute(m_hReflection, vaPosition);
+//  m_ContextManager.AddNewVertexAttribute(m_hReflection, vaNormal);
+//
+//  Log::Trace("Reflection Context loaded.");
+//}
+//
+//void Renderer::LoadBlinnPhongRefractContext() noexcept
+//{
+//  // Load Phong lighting context
+//  unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::BLINNPHONGREFRACT);
+//  unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::BLINNPHONGREFRACT);
+//  m_hBlinnPhongRefract = m_ContextManager.CreateNewContext("Blinn Phong Reflect/Refract", vID, fID);
+//
+//  m_ContextManager.SetContext(m_hBlinnPhongRefract);
+//
+//  // TODO: Convert this to a uniform block
+//  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "pers_matrix");
+//  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "view_matrix");
+//  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "cam_position");
+//
+//  // TODO: Convert this to a uniform block
+//  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "global_amb");
+//  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "global_fog");
+//  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "global_fog_near");
+//  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "global_fog_far");
+//  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "global_att1");
+//  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "global_att2");
+//  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "global_att3");
+//
+//  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "model_matrix");
+//
+//  //TODO: Uniform block
+//  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "mat_emit");
+//  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "mat_amb");
+//  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "mat_dif");
+//  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "mat_spc");
+//  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "mat_spc_exp");
+//
+//  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "refract_slider");
+//  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "IOR_R");
+//  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "IOR_G");
+//  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "IOR_B");
+//
+//  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "RefractEnabled");
+//  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhongRefract, "ReflectEnabled");
+//
+//  ContextManager::VertexAttribute vaPosition("position", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), 0);
+//  ContextManager::VertexAttribute vaNormal("normal", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), sizeof(vec3));
+//  ContextManager::VertexAttribute vaTexcoords("texcoord", 2, GL_FLOAT, GL_FALSE, sizeof(vec2), sizeof(vec3) * 2);
+//  m_ContextManager.AddNewVertexAttribute(m_hBlinnPhongRefract, vaPosition);
+//  m_ContextManager.AddNewVertexAttribute(m_hBlinnPhongRefract, vaNormal);
+//  m_ContextManager.AddNewVertexAttribute(m_hBlinnPhongRefract, vaTexcoords);
+//
+//  Log::Trace("Blinn Phong Refraction Context loaded.");
+//}
 
 void Renderer::EnableDepthBuffer() noexcept
 {

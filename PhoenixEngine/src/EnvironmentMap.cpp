@@ -18,8 +18,8 @@ EnvironmentMap::EnvironmentMap() noexcept :
     glGenFramebuffers(1, &m_hFBO[i]);
     glBindFramebuffer(GL_FRAMEBUFFER, m_hFBO[i]);
 
-    m_hTexture[i] = Error::INVALID_HANDLE;
-    m_hRBO[i] = Error::INVALID_HANDLE;
+    m_hTexture[i] = Error::Handle::INVALID_HANDLE;
+    m_hRBO[i] = Error::Handle::INVALID_HANDLE;
 
     glGenTextures(1, &m_hTexture[i]);
     glBindTexture(GL_TEXTURE_2D, m_hTexture[i]);

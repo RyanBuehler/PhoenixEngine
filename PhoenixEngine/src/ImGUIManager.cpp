@@ -66,12 +66,12 @@ namespace
     "starwars1.obj"
   };
 
-  static const char* SHADERNAMES[4] =
+  static const char* SHADERNAMES[1] =
   {
-    "Phong Lighting",
-    "Phong Shading",
+    //"Phong Lighting",
+    //"Phong Shading",
     "Blinn-Phong",
-    "Reflect/Refract"
+    //"Reflect/Refract"
   };
 }
 
@@ -264,15 +264,7 @@ void ImGuiManager::ShowMainMenu_File() noexcept
 {
   if (ImGui::MenuItem("Scene 1", ""))
   {
-    m_dOnSceneChange(SceneManager::Scene::Scene1);
-  }
-  if (ImGui::MenuItem("Scene 2", ""))
-  {
-    m_dOnSceneChange(SceneManager::Scene::Scene2);
-  }
-  if (ImGui::MenuItem("Reflection Scene", ""))
-  {
-    m_dOnSceneChange(SceneManager::Scene::ReflectionScene);
+    m_dOnSceneChange(SceneManager::Scene::SceneDemo);
   }
   if (ImGui::MenuItem("Scene Single Object", ""))
   {
@@ -311,10 +303,10 @@ void ImGuiManager::graphicsUpdateStats() noexcept
   IMGUISPACE;
 
   ImGui::TextColored(IMGREEN, "Shader: "); ImGui::SameLine();
-  static const char* ShaderString = SHADERNAMES[3];
+  static const char* ShaderString = SHADERNAMES[0];
   if (ImGui::BeginCombo("##Selected Shader", ShaderString))
   {
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < sizeof(SHADERNAMES)/sizeof(SHADERNAMES[0]); ++i)
     {
       ImGui::PushID((void*)SHADERNAMES[i]);
       if (ImGui::Selectable(SHADERNAMES[i], ImGui::GraphicsSelectedShader == i))
@@ -470,7 +462,7 @@ void ImGuiManager::graphicsUpdateStats() noexcept
   //    ProjectString = "Planar";
   //    ImGui::GraphicsSelectedProjection = UV::Generation::PLANAR;
   //    ImGui::GraphicsRebuildMeshes = true;
-  //    m_dOnSceneChange(SceneManager::Scene::Scene2);
+  //    m_dOnSceneChange(SceneManager::Scene::SceneDemo);
   //  }
   //  ImGui::PopID();
 
@@ -480,7 +472,7 @@ void ImGuiManager::graphicsUpdateStats() noexcept
   //    ProjectString = "Spherical";
   //    ImGui::GraphicsSelectedProjection = UV::Generation::SPHERICAL;
   //    ImGui::GraphicsRebuildMeshes = true;
-  //    m_dOnSceneChange(SceneManager::Scene::Scene2);
+  //    m_dOnSceneChange(SceneManager::Scene::SceneDemo);
   //  }
   //  ImGui::PopID();
 
@@ -490,7 +482,7 @@ void ImGuiManager::graphicsUpdateStats() noexcept
   //    ProjectString = "Cylindrical";
   //    ImGui::GraphicsSelectedProjection = UV::Generation::CYLINDRICAL;
   //    ImGui::GraphicsRebuildMeshes = true;
-  //    m_dOnSceneChange(SceneManager::Scene::Scene2);
+  //    m_dOnSceneChange(SceneManager::Scene::SceneDemo);
   //  }
   //  ImGui::PopID();
 
@@ -538,19 +530,19 @@ void ImGuiManager::graphicsUpdateObjects() noexcept
   //if (ImGui::Button("Scenario 1", { 140, 40 }))
   //{
   //  ImGui::SceneScenario = 1;
-  //  m_dOnSceneChange(SceneManager::Scene::Scene2);
+  //  m_dOnSceneChange(SceneManager::Scene::SceneDemo);
   //}
   //ImGui::SameLine();
   //if (ImGui::Button("Scenario 2", { 140, 40 }))
   //{
   //  ImGui::SceneScenario = 2;
-  //  m_dOnSceneChange(SceneManager::Scene::Scene2);
+  //  m_dOnSceneChange(SceneManager::Scene::SceneDemo);
   //}
   //ImGui::SameLine();
   //if (ImGui::Button("Scenario 3", { 140, 40 }))
   //{
   //  ImGui::SceneScenario = 3;
-  //  m_dOnSceneChange(SceneManager::Scene::Scene2);
+  //  m_dOnSceneChange(SceneManager::Scene::SceneDemo);
   //  ImGui::GraphicsSelectedShader = 3;
   //  ImGui::DemoObjectMain = DEMOOBJECTS[4];
   //  ImGui::DemoObjectFile = DEMOOBJECTFILENAMES[4];

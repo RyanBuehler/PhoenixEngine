@@ -4,8 +4,6 @@
 class ContextManager
 {
 public:
-  constexpr static unsigned CONTEXT_ERROR = numeric_limits<unsigned>::max();
-
   struct UniformAttribute
   {
     string Name;
@@ -23,7 +21,7 @@ public:
       size_t offset
     ) :
       Name(name),
-      ID(CONTEXT_ERROR),
+      ID(Error::Context::INVALID_CONTEXT),
       ElementCount(elementCount),
       ElementType(elementType),
       bIsNormalized(isNormalized),

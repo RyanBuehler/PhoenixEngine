@@ -14,8 +14,8 @@ public:
   {
     CUSTOM,
     TEXTURE,
-    REFLECTREFRACT,
-    REFRACTIVE,
+    //REFLECTREFRACT,
+    //REFRACTIVE,
     BASIC,
     LIGHT,
     GLOBAL,

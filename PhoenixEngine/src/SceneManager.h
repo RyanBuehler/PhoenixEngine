@@ -18,14 +18,12 @@ public:
   enum class Scene
   {
     None,
-    Scene1, // Spheres orbiting a centerpiece
-    Scene2, // Phong Lighting scene
-    ReflectionScene, // Reflection Scene
+    SceneDemo, // Spheres orbiting a centerpiece
     SceneSingleObject, // Single object for testing
     SceneCount
   };
 private:
-  static constexpr Scene DEFAULTSCENE = Scene::ReflectionScene;
+  static constexpr Scene DEFAULTSCENE = Scene::SceneDemo;
 
 public:
   /// <summary>

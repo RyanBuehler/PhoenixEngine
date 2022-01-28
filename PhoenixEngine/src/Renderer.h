@@ -198,14 +198,14 @@ private:
   Cubemap m_Skybox;                 // The 6-sided cubemap skybox
 
   GLint m_hSkyboxContext;          // The ID of the "Skybox" context
-  GLint m_hDiffuseContext;         // The ID of the "Diffuse" context
-  GLint m_hPhongLighting;          // The ID of the "PhongLighting" context
-  GLint m_hPhongShading;           // The ID of the "PhongShading" context
+  //GLint m_hDiffuseContext;         // The ID of the "Diffuse" context
+  //GLint m_hPhongLighting;          // The ID of the "PhongLighting" context
+  //GLint m_hPhongShading;           // The ID of the "PhongShading" context
   GLint m_hBlinnPhong;             // The ID of the "BlinnPhong" context
-  GLint m_hPhongTexture;           // The ID of the "PhongTexture" context
-  GLint m_hReflection;             // The ID of the "Reflection" context
+  //GLint m_hPhongTexture;           // The ID of the "PhongTexture" context
+  //GLint m_hReflection;             // The ID of the "Reflection" context
   GLint m_hDebugContext;           // The ID of the "Debug" context
-  GLint m_hBlinnPhongRefract;      // The ID of the "BlinnPhongRefract" context
+  //GLint m_hBlinnPhongRefract;      // The ID of the "BlinnPhongRefract" context
 
   //TODO: Below for testing only
   unsigned SkyboxMeshID;
@@ -218,7 +218,7 @@ private:
   GLuint indices[5];
   GLint offsets[5];
 
-  Texture diffTex;
-  Texture specTex;
+  //Texture diffTex;
+  //Texture specTex;
 };
 
