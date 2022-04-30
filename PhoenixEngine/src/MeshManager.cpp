@@ -25,6 +25,7 @@ MeshManager::MeshManager() noexcept :
   m_OBJReader()
 {
   //TODO: This can probably be circumvented
+  // Probably remove this after AssImp
   m_OBJReader.initData();
 }
 

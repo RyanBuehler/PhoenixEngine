@@ -22,6 +22,7 @@ Camera::Camera(const string& name) noexcept :
   m_Yaw(0.f),
   m_PersMatrix(1.f),
   m_ViewMatrix(1.f),
+  m_VPMatrix(1.f),
   m_IsEnabled(false),
   m_PerspectiveIsDirty(true),
   m_ViewIsDirty(true),

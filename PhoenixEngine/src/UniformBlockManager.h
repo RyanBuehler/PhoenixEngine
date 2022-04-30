@@ -12,8 +12,8 @@ class UniformBlockManager
 public:
   struct UniformBlockPrint
   {
-    string BlockName;
-    size_t DataSize;
+    string BlockName = "InvalidBlockName";
+    size_t DataSize = 0u;
   };
 
 public:

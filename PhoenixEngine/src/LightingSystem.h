@@ -13,7 +13,6 @@ class Light;
 class LightingSystem
 {
 public:
-  const static unsigned LIGHT_ERROR = numeric_limits<unsigned>::max();
   const static unsigned MAX_DYNAMIC_LIGHTS = 16;
 
   struct GlobalLightingData

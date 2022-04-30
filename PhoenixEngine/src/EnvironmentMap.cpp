@@ -8,7 +8,6 @@
 #include "EnvironmentMap.h"
 
 EnvironmentMap::EnvironmentMap() noexcept :
-  //TODO: Change all numeric_limits to this new error constexpr
   m_hFBO(),
   m_hTexture(),
   m_Camera("Environment Map Camera")

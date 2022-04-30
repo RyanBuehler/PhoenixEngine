@@ -41,7 +41,7 @@ public:
 private:
   struct Context
   {
-    Context(const string& name, GLint programID = numeric_limits<int>::max()) :
+    Context(const string& name, GLint programID = Error::INVALID_INDEX) :
       Name(name),
       ProgramID(programID),
       UniformAttributes(),

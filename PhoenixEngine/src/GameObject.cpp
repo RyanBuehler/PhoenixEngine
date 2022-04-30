@@ -3,7 +3,7 @@
 
 GameObject::GameObject(const string& meshFileName) noexcept :
   m_Transform(),
-  m_MeshID(numeric_limits<unsigned>::max()),
+  m_MeshID(Error::INVALID_INDEX),
   m_MeshFileName(meshFileName),
   m_Material(Material::Type::BASIC),
   m_bIsActive(true),
@@ -65,5 +65,5 @@ const Transform& GameObject::GetTransform() const noexcept
 void GameObject::SetMeshFileName(const string& fileName) noexcept
 {
   m_MeshFileName = fileName;
-  m_MeshID = numeric_limits<unsigned>::max();
+  m_MeshID = Error::INVALID_INDEX;
 }

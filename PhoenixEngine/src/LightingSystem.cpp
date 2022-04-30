@@ -41,7 +41,7 @@ bool LightingSystem::RegisterLight(Light* lightPtr) noexcept
   }
 
   // Set the index 
-  unsigned index = LIGHT_ERROR;
+  unsigned index = Error::INVALID_INDEX;
   for (unsigned i = 0; i < MAX_DYNAMIC_LIGHTS; ++i)
   {
     if (m_RegisteredLights[i] == nullptr)
@@ -51,7 +51,7 @@ bool LightingSystem::RegisterLight(Light* lightPtr) noexcept
   }
 
   // Since the count was checked earlier, one light should exist
-  if (index == LIGHT_ERROR)
+  if (index == Error::INVALID_INDEX)
   {
     Log::Error("No free light slot exists, when one should");
     return false;
@@ -64,7 +64,7 @@ bool LightingSystem::RegisterLight(Light* lightPtr) noexcept
 
 bool LightingSystem::DerigesterLight(Light* lightPtr) noexcept
 {
-  unsigned index = LIGHT_ERROR;
+  unsigned index = Error::INVALID_INDEX;
   for (unsigned i = 0; i < MAX_DYNAMIC_LIGHTS; ++i)
   {
     if (m_RegisteredLights[i] == lightPtr)
@@ -73,7 +73,7 @@ bool LightingSystem::DerigesterLight(Light* lightPtr) noexcept
     }
   }
 
-  if (index == LIGHT_ERROR)
+  if (index == Error::INVALID_INDEX)
   {
     Log::Warn("Attempting to deregister light. Light not found");
     return false;

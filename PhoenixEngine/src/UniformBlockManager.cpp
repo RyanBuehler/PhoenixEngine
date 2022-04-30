@@ -51,7 +51,7 @@ unsigned UniformBlockManager::CreateNewBlock(unsigned BlockPrintID, GLuint Progr
     DataPtr
     }));
 
-  GLuint& uboIndex = m_UniformBlocks[index].UBO_ID;
+    GLuint& uboIndex = m_UniformBlocks[index].UBO_ID;
   uboIndex = glGetUniformBlockIndex(ProgramID, "LightArray");
   uboIndex = glGetUniformBlockIndex(ProgramID, m_UniformBlockPrints[BlockPrintID].BlockName.c_str());
 

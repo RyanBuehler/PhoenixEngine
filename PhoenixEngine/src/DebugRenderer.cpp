@@ -11,9 +11,9 @@
 DebugRenderer::DebugRenderer() noexcept :
   m_LineArray(),
   m_DefaultLineColor(Colors::PURPLE),
-  m_VertexArrayID(numeric_limits<unsigned>::max()),
-  m_VertexBufferObject(numeric_limits<unsigned>::max()),
-  m_PositionAttributeID(numeric_limits<unsigned>::max())
+  m_VertexArrayID(Error::INVALID_INDEX),
+  m_VertexBufferObject(Error::INVALID_INDEX),
+  m_PositionAttributeID(Error::INVALID_INDEX)
 {
   glGenVertexArrays(1, &m_VertexArrayID);
   glBindVertexArray(m_VertexArrayID);

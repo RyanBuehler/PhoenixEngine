@@ -413,6 +413,5 @@ void Mesh::calculateCylinderUVs() noexcept
 
 void Mesh::calculateCubeMapUVs() noexcept
 {
-  //TODO: Implement Cube Map Projection here
   Log::Error("Mesh::calculateCubeMapUVs not implemented.");
 }

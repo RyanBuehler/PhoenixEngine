@@ -8,8 +8,9 @@
 #include "Cubemap.h"
 #include "PNGReader.h"
 
-Cubemap::Cubemap(const char* filenames[6]) noexcept :
-  m_CubemapID(numeric_limits<GLuint>::max())
+Cubemap::Cubemap(const char* filenames[6], const string& CubemapName) noexcept :
+  m_CubemapID(Error::INVALID_INDEX),
+  m_CubemapName(CubemapName)
 {
   glGenTextures(1, &m_CubemapID);
   glBindTexture(GL_TEXTURE_CUBE_MAP, m_CubemapID);
@@ -51,11 +52,15 @@ Cubemap::Cubemap(const char* filenames[6]) noexcept :
 
   glBindTexture(GL_TEXTURE_CUBE_MAP, 0u);
 
-  //TODO: Add a name to the cubemap
-  Log::Trace("Cubemap loaded.");
+  Log::Trace("Cubemap '" + m_CubemapName + "' loaded.");
 }
 
 GLuint Cubemap::GetID()
 {
   return m_CubemapID;
+}
+
+const string& Cubemap::GetName()
+{
+  return m_CubemapName;
 }

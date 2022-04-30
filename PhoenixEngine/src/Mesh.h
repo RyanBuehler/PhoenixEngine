@@ -28,8 +28,8 @@
     struct Edge
     {
       Edge(
-        unsigned index1 = numeric_limits<unsigned>::max(),
-        unsigned index2 = numeric_limits<unsigned>::max()
+        unsigned index1 = Error::INVALID_INDEX,
+        unsigned index2 = Error::INVALID_INDEX
       ) : Index1(index1), Index2(index2) {}
 
       unsigned Index1, Index2; // Indices of the vertices comprosing the edge
@@ -41,9 +41,9 @@
     struct Triangle
     {
       Triangle(
-        unsigned index1 = numeric_limits<unsigned>::max(),
-        unsigned index2 = numeric_limits<unsigned>::max(),
-        unsigned index3 = numeric_limits<unsigned>::max()
+        unsigned index1 = Error::INVALID_INDEX,
+        unsigned index2 = Error::INVALID_INDEX,
+        unsigned index3 = Error::INVALID_INDEX
       ) : Index1(index1), Index2(index2), Index3(index3) {}
 
       unsigned Index1, Index2, Index3; // Indices of the vertices comprosing the triangle

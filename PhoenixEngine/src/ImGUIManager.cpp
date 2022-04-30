@@ -91,12 +91,12 @@ namespace ImGui
   UV::Generation GraphicsSelectedProjection = UV::Generation::PLANAR;
   GLuint GraphicsDisplayTexture[6] =
   {
-    numeric_limits<GLuint>::max(),
-    numeric_limits<GLuint>::max(),
-    numeric_limits<GLuint>::max(),
-    numeric_limits<GLuint>::max(),
-    numeric_limits<GLuint>::max(),
-    numeric_limits<GLuint>::max()
+    Error::INVALID_INDEX,
+    Error::INVALID_INDEX,
+    Error::INVALID_INDEX,
+    Error::INVALID_INDEX,
+    Error::INVALID_INDEX,
+    Error::INVALID_INDEX
   };
   //float GraphicsRefractSlider = 1.f;
   //float GraphicsRedIOR = 2.413f;
@@ -306,7 +306,7 @@ void ImGuiManager::graphicsUpdateStats() noexcept
   static const char* ShaderString = SHADERNAMES[0];
   if (ImGui::BeginCombo("##Selected Shader", ShaderString))
   {
-    for (int i = 0; i < sizeof(SHADERNAMES)/sizeof(SHADERNAMES[0]); ++i)
+    for (int i = 0; i < sizeof(SHADERNAMES) / sizeof(SHADERNAMES[0]); ++i)
     {
       ImGui::PushID((void*)SHADERNAMES[i]);
       if (ImGui::Selectable(SHADERNAMES[i], ImGui::GraphicsSelectedShader == i))
@@ -320,176 +320,176 @@ void ImGuiManager::graphicsUpdateStats() noexcept
     ImGui::EndCombo();
   }
 
-//  IMGUISPACE;
-//
-//  ImGui::TextColored(IMGREEN, "Refraction Enabled: "); ImGui::SameLine();
-//  ImGui::Checkbox("##Refraction Enabled", &ImGui::GraphicsRefractEnabled);
-//
-//  ImGui::TextColored(IMGREEN, "Reflection Enabled: "); ImGui::SameLine();
-//  ImGui::Checkbox("##Reflection Enabled", &ImGui::GraphicsReflectEnabled);
-//
-//  IMGUISPACE;
-//
-//  ImGui::TextColored(IMGREEN, "Reflective Slider: "); ImGui::SameLine();
-//  ImGui::SliderFloat("##Reflective Slider", &ImGui::GraphicsRefractSlider, 0.f, 1.f);
-//
-//  IMGUISPACE;
-//
-//
-//#pragma region IOR Presets
-//
-//  ImGui::TextColored(IMGREEN, "IOR [PRESETS]: "); ImGui::SameLine();
-//  static const char* PresetIORs = "Diamond";
-//  static const float RF = 0.996f;
-//  static const float BF = 1.004f;
-//  if (ImGui::BeginCombo("##IOR [PRESETS]: ", PresetIORs))
-//  {
-//    ImGui::PushID((void*)"Air");
-//    if (ImGui::Selectable("Air", PresetIORs == "Air"))
-//    {
-//      PresetIORs = "Air";
-//      ImGui::GraphicsRedIOR = 1.000293f * RF;
-//      ImGui::GraphicsGreenIOR = 1.000293f;
-//      ImGui::GraphicsBlueIOR = 1.000293f * BF;
-//    }
-//    ImGui::PopID();
-//
-//    ImGui::PushID((void*)"Hydrogen");
-//    if (ImGui::Selectable("Hydrogen", PresetIORs == "Hydrogen"))
-//    {
-//      PresetIORs = "Hydrogen";
-//      ImGui::GraphicsRedIOR = 1.000132f * RF;
-//      ImGui::GraphicsGreenIOR = 1.000132f;
-//      ImGui::GraphicsBlueIOR = 1.000132f * BF;
-//    }
-//    ImGui::PopID();
-//
-//    ImGui::PushID((void*)"Water");
-//    if (ImGui::Selectable("Water", PresetIORs == "Water"))
-//    {
-//      PresetIORs = "Water";
-//      ImGui::GraphicsRedIOR = 1.333f * RF;
-//      ImGui::GraphicsGreenIOR = 1.333f;
-//      ImGui::GraphicsBlueIOR = 1.333f * BF;
-//    }
-//    ImGui::PopID();
-//
-//    ImGui::PushID((void*)"Olive Oil");
-//    if (ImGui::Selectable("Olive Oil", PresetIORs == "Olive Oil"))
-//    {
-//      PresetIORs = "Olive Oil";
-//      ImGui::GraphicsRedIOR = 1.47f * RF;
-//      ImGui::GraphicsGreenIOR = 1.47f;
-//      ImGui::GraphicsBlueIOR = 1.47f * BF;
-//    }
-//    ImGui::PopID();
-//
-//    ImGui::PushID((void*)"Ice");
-//    if (ImGui::Selectable("Ice", PresetIORs == "Ice"))
-//    {
-//      PresetIORs = "Ice";
-//      ImGui::GraphicsRedIOR = 1.31f * RF;
-//      ImGui::GraphicsGreenIOR = 1.31f;
-//      ImGui::GraphicsBlueIOR = 1.31f * BF;
-//    }
-//    ImGui::PopID();
-//
-//    ImGui::PushID((void*)"Quartz");
-//    if (ImGui::Selectable("Quartz", PresetIORs == "Quartz"))
-//    {
-//      PresetIORs = "Quartz";
-//      ImGui::GraphicsRedIOR = 1.46f * RF;
-//      ImGui::GraphicsGreenIOR = 1.46f;
-//      ImGui::GraphicsBlueIOR = 1.46f * BF;
-//    }
-//    ImGui::PopID();
-//
-//    ImGui::PushID((void*)"Diamond");
-//    if (ImGui::Selectable("Diamond", PresetIORs == "Diamond"))
-//    {
-//      PresetIORs = "Diamond";
-//      ImGui::GraphicsRedIOR = 2.42f * RF;
-//      ImGui::GraphicsGreenIOR = 2.42f;
-//      ImGui::GraphicsBlueIOR = 2.42f * BF;
-//    }
-//    ImGui::PopID();
-//
-//    ImGui::PushID((void*)"Acrylic");
-//    if (ImGui::Selectable("Acrylic", PresetIORs == "Acrylic"))
-//    {
-//      PresetIORs = "Acrylic";
-//      ImGui::GraphicsRedIOR = 1.49f * RF;
-//      ImGui::GraphicsGreenIOR = 1.49f;
-//      ImGui::GraphicsBlueIOR = 1.49f * BF;
-//    }
-//    ImGui::PopID();
-//
-//    ImGui::EndCombo();
-//  }
-//
-//  ImGui::NewLine();
-//#pragma endregion
-//
-//  ImGui::TextColored(IMGREEN, "IOR [MASTER]: "); ImGui::SameLine();
-//  static float IORmaster = 1.f;
-//  
-//  if (ImGui::DragFloat("##IOR [MASTER]", &IORmaster, 0.01f, 1.f, 100.f))
-//  {
-//    ImGui::GraphicsRedIOR = IORmaster * 0.998f;
-//    ImGui::GraphicsGreenIOR = IORmaster * 1.f;
-//    ImGui::GraphicsBlueIOR = IORmaster * 1.002f;
-//  }
-//
-//  IMGUISPACE;
-//
-//
-//  ImGui::TextColored(IMGREEN, "IOR [Red]: "); ImGui::SameLine();
-//  ImGui::SliderFloat("##IOR [Red]", &ImGui::GraphicsRedIOR, 1.f, 100.f);
-//
-//  ImGui::TextColored(IMGREEN, "IOR [Green]: "); ImGui::SameLine();
-//  ImGui::SliderFloat("##IOR [Green]", &ImGui::GraphicsGreenIOR, 1.f, 100.f);
-//
-//  ImGui::TextColored(IMGREEN, "IOR [Blue]: "); ImGui::SameLine();
-//  ImGui::SliderFloat("##IOR [Blue]", &ImGui::GraphicsBlueIOR, 1.f, 100.f);
-
-  //ImGui::TextColored(IMGREEN, "Projection: "); ImGui::SameLine();
-  //static const char* ProjectString = "Planar";
-  //if (ImGui::BeginCombo("##Projection", ProjectString))
-  //{
-  //  ImGui::PushID((void*)"Planar");
-  //  if (ImGui::Selectable("Planar", ImGui::GraphicsSelectedProjection == UV::Generation::PLANAR))
+  //  IMGUISPACE;
+  //
+  //  ImGui::TextColored(IMGREEN, "Refraction Enabled: "); ImGui::SameLine();
+  //  ImGui::Checkbox("##Refraction Enabled", &ImGui::GraphicsRefractEnabled);
+  //
+  //  ImGui::TextColored(IMGREEN, "Reflection Enabled: "); ImGui::SameLine();
+  //  ImGui::Checkbox("##Reflection Enabled", &ImGui::GraphicsReflectEnabled);
+  //
+  //  IMGUISPACE;
+  //
+  //  ImGui::TextColored(IMGREEN, "Reflective Slider: "); ImGui::SameLine();
+  //  ImGui::SliderFloat("##Reflective Slider", &ImGui::GraphicsRefractSlider, 0.f, 1.f);
+  //
+  //  IMGUISPACE;
+  //
+  //
+  //#pragma region IOR Presets
+  //
+  //  ImGui::TextColored(IMGREEN, "IOR [PRESETS]: "); ImGui::SameLine();
+  //  static const char* PresetIORs = "Diamond";
+  //  static const float RF = 0.996f;
+  //  static const float BF = 1.004f;
+  //  if (ImGui::BeginCombo("##IOR [PRESETS]: ", PresetIORs))
   //  {
-  //    ProjectString = "Planar";
-  //    ImGui::GraphicsSelectedProjection = UV::Generation::PLANAR;
-  //    ImGui::GraphicsRebuildMeshes = true;
-  //    m_dOnSceneChange(SceneManager::Scene::SceneDemo);
+  //    ImGui::PushID((void*)"Air");
+  //    if (ImGui::Selectable("Air", PresetIORs == "Air"))
+  //    {
+  //      PresetIORs = "Air";
+  //      ImGui::GraphicsRedIOR = 1.000293f * RF;
+  //      ImGui::GraphicsGreenIOR = 1.000293f;
+  //      ImGui::GraphicsBlueIOR = 1.000293f * BF;
+  //    }
+  //    ImGui::PopID();
+  //
+  //    ImGui::PushID((void*)"Hydrogen");
+  //    if (ImGui::Selectable("Hydrogen", PresetIORs == "Hydrogen"))
+  //    {
+  //      PresetIORs = "Hydrogen";
+  //      ImGui::GraphicsRedIOR = 1.000132f * RF;
+  //      ImGui::GraphicsGreenIOR = 1.000132f;
+  //      ImGui::GraphicsBlueIOR = 1.000132f * BF;
+  //    }
+  //    ImGui::PopID();
+  //
+  //    ImGui::PushID((void*)"Water");
+  //    if (ImGui::Selectable("Water", PresetIORs == "Water"))
+  //    {
+  //      PresetIORs = "Water";
+  //      ImGui::GraphicsRedIOR = 1.333f * RF;
+  //      ImGui::GraphicsGreenIOR = 1.333f;
+  //      ImGui::GraphicsBlueIOR = 1.333f * BF;
+  //    }
+  //    ImGui::PopID();
+  //
+  //    ImGui::PushID((void*)"Olive Oil");
+  //    if (ImGui::Selectable("Olive Oil", PresetIORs == "Olive Oil"))
+  //    {
+  //      PresetIORs = "Olive Oil";
+  //      ImGui::GraphicsRedIOR = 1.47f * RF;
+  //      ImGui::GraphicsGreenIOR = 1.47f;
+  //      ImGui::GraphicsBlueIOR = 1.47f * BF;
+  //    }
+  //    ImGui::PopID();
+  //
+  //    ImGui::PushID((void*)"Ice");
+  //    if (ImGui::Selectable("Ice", PresetIORs == "Ice"))
+  //    {
+  //      PresetIORs = "Ice";
+  //      ImGui::GraphicsRedIOR = 1.31f * RF;
+  //      ImGui::GraphicsGreenIOR = 1.31f;
+  //      ImGui::GraphicsBlueIOR = 1.31f * BF;
+  //    }
+  //    ImGui::PopID();
+  //
+  //    ImGui::PushID((void*)"Quartz");
+  //    if (ImGui::Selectable("Quartz", PresetIORs == "Quartz"))
+  //    {
+  //      PresetIORs = "Quartz";
+  //      ImGui::GraphicsRedIOR = 1.46f * RF;
+  //      ImGui::GraphicsGreenIOR = 1.46f;
+  //      ImGui::GraphicsBlueIOR = 1.46f * BF;
+  //    }
+  //    ImGui::PopID();
+  //
+  //    ImGui::PushID((void*)"Diamond");
+  //    if (ImGui::Selectable("Diamond", PresetIORs == "Diamond"))
+  //    {
+  //      PresetIORs = "Diamond";
+  //      ImGui::GraphicsRedIOR = 2.42f * RF;
+  //      ImGui::GraphicsGreenIOR = 2.42f;
+  //      ImGui::GraphicsBlueIOR = 2.42f * BF;
+  //    }
+  //    ImGui::PopID();
+  //
+  //    ImGui::PushID((void*)"Acrylic");
+  //    if (ImGui::Selectable("Acrylic", PresetIORs == "Acrylic"))
+  //    {
+  //      PresetIORs = "Acrylic";
+  //      ImGui::GraphicsRedIOR = 1.49f * RF;
+  //      ImGui::GraphicsGreenIOR = 1.49f;
+  //      ImGui::GraphicsBlueIOR = 1.49f * BF;
+  //    }
+  //    ImGui::PopID();
+  //
+  //    ImGui::EndCombo();
   //  }
-  //  ImGui::PopID();
-
-  //  ImGui::PushID((void*)"Spherical");
-  //  if (ImGui::Selectable("Spherical", ImGui::GraphicsSelectedProjection == UV::Generation::SPHERICAL))
+  //
+  //  ImGui::NewLine();
+  //#pragma endregion
+  //
+  //  ImGui::TextColored(IMGREEN, "IOR [MASTER]: "); ImGui::SameLine();
+  //  static float IORmaster = 1.f;
+  //  
+  //  if (ImGui::DragFloat("##IOR [MASTER]", &IORmaster, 0.01f, 1.f, 100.f))
   //  {
-  //    ProjectString = "Spherical";
-  //    ImGui::GraphicsSelectedProjection = UV::Generation::SPHERICAL;
-  //    ImGui::GraphicsRebuildMeshes = true;
-  //    m_dOnSceneChange(SceneManager::Scene::SceneDemo);
+  //    ImGui::GraphicsRedIOR = IORmaster * 0.998f;
+  //    ImGui::GraphicsGreenIOR = IORmaster * 1.f;
+  //    ImGui::GraphicsBlueIOR = IORmaster * 1.002f;
   //  }
-  //  ImGui::PopID();
+  //
+  //  IMGUISPACE;
+  //
+  //
+  //  ImGui::TextColored(IMGREEN, "IOR [Red]: "); ImGui::SameLine();
+  //  ImGui::SliderFloat("##IOR [Red]", &ImGui::GraphicsRedIOR, 1.f, 100.f);
+  //
+  //  ImGui::TextColored(IMGREEN, "IOR [Green]: "); ImGui::SameLine();
+  //  ImGui::SliderFloat("##IOR [Green]", &ImGui::GraphicsGreenIOR, 1.f, 100.f);
+  //
+  //  ImGui::TextColored(IMGREEN, "IOR [Blue]: "); ImGui::SameLine();
+  //  ImGui::SliderFloat("##IOR [Blue]", &ImGui::GraphicsBlueIOR, 1.f, 100.f);
 
-  //  ImGui::PushID((void*)"Cylindrical");
-  //  if (ImGui::Selectable("Cylindrical", ImGui::GraphicsSelectedProjection == UV::Generation::CYLINDRICAL))
-  //  {
-  //    ProjectString = "Cylindrical";
-  //    ImGui::GraphicsSelectedProjection = UV::Generation::CYLINDRICAL;
-  //    ImGui::GraphicsRebuildMeshes = true;
-  //    m_dOnSceneChange(SceneManager::Scene::SceneDemo);
-  //  }
-  //  ImGui::PopID();
+    //ImGui::TextColored(IMGREEN, "Projection: "); ImGui::SameLine();
+    //static const char* ProjectString = "Planar";
+    //if (ImGui::BeginCombo("##Projection", ProjectString))
+    //{
+    //  ImGui::PushID((void*)"Planar");
+    //  if (ImGui::Selectable("Planar", ImGui::GraphicsSelectedProjection == UV::Generation::PLANAR))
+    //  {
+    //    ProjectString = "Planar";
+    //    ImGui::GraphicsSelectedProjection = UV::Generation::PLANAR;
+    //    ImGui::GraphicsRebuildMeshes = true;
+    //    m_dOnSceneChange(SceneManager::Scene::SceneDemo);
+    //  }
+    //  ImGui::PopID();
 
-  //  ImGui::EndCombo();
-  //}
+    //  ImGui::PushID((void*)"Spherical");
+    //  if (ImGui::Selectable("Spherical", ImGui::GraphicsSelectedProjection == UV::Generation::SPHERICAL))
+    //  {
+    //    ProjectString = "Spherical";
+    //    ImGui::GraphicsSelectedProjection = UV::Generation::SPHERICAL;
+    //    ImGui::GraphicsRebuildMeshes = true;
+    //    m_dOnSceneChange(SceneManager::Scene::SceneDemo);
+    //  }
+    //  ImGui::PopID();
 
-  //IMGUISPACE;
+    //  ImGui::PushID((void*)"Cylindrical");
+    //  if (ImGui::Selectable("Cylindrical", ImGui::GraphicsSelectedProjection == UV::Generation::CYLINDRICAL))
+    //  {
+    //    ProjectString = "Cylindrical";
+    //    ImGui::GraphicsSelectedProjection = UV::Generation::CYLINDRICAL;
+    //    ImGui::GraphicsRebuildMeshes = true;
+    //    m_dOnSceneChange(SceneManager::Scene::SceneDemo);
+    //  }
+    //  ImGui::PopID();
+
+    //  ImGui::EndCombo();
+    //}
+
+    //IMGUISPACE;
 
   if (ImGui::Button("Rebuild Shaders", { 120, 32 }))
   {
@@ -752,7 +752,7 @@ void ImGuiManager::graphicsUpdateTexture() noexcept
 {
   for (int i = 0; i < 6; ++i)
   {
-    if (ImGui::GraphicsDisplayTexture[i] != numeric_limits<GLuint>::max())
+    if (ImGui::GraphicsDisplayTexture[i] != Error::INVALID_INDEX)
     {
       if ((i + 3) % 3 != 0)
       {
