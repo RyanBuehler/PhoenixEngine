@@ -112,6 +112,18 @@
     <Filter Include="Header Files\Graphics\Data">
       <UniqueIdentifier>{c94ff29c-90fc-4471-ab1f-a9c45d0ab8ea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Object\Components">
+      <UniqueIdentifier>{67f4a61f-2748-4dfd-a867-83c8ef4ebe32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Object\Components">
+      <UniqueIdentifier>{30758d85-ec41-4cf5-a900-a4702e6facb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Graphics\Statistics">
+      <UniqueIdentifier>{b68f99fe-8588-4d1f-a8f8-03ca46db78f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\Statistics">
+      <UniqueIdentifier>{6108300e-275d-4cdb-91dd-37cff6c6427f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h">
@@ -232,6 +244,9 @@
       <Filter>Header Files\Object</Filter>
     </ClInclude>
     <ClInclude Include="src\MeshComponent.h">
+      <Filter>Header Files\Object\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RenderStats.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -336,6 +351,9 @@
       <Filter>Source Files\Graphics\Data</Filter>
     </ClCompile>
     <ClCompile Include="src\MeshComponent.cpp">
+      <Filter>Source Files\Object\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RenderStats.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

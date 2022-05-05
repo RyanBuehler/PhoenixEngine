@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "LightingSystem.h"
 #include "Material.h"
+#include "MeshComponent.h"
 
 #pragma region ImGui
 
@@ -25,6 +26,7 @@ const char* tempcubemap[6] = {
 };
 
 Renderer::Renderer(bool depthBufferEnabled, bool backFaceCullEnabled) noexcept :
+  m_RenderStats(),
   m_ShaderManager(),
   m_ContextManager(),
   m_MeshManager(),
@@ -134,6 +136,15 @@ void Renderer::OnEndFrame() noexcept
 
   glBindVertexArray(0u);
   glUseProgram(0u);
+
+  if (m_RenderStats.IsActive())
+  {
+    m_RenderStats.OnEndFrame();
+    if (m_RenderStats.GetFrameCount() % 60 == 0)
+    {
+      ImGui::GraphicsFPS = m_RenderStats.GetFPS();
+    }
+  }
 }
 
 void Renderer::RenderScene(vector<GameObject>& gameObjects, Camera& activeCamera)
@@ -314,9 +325,10 @@ void Renderer::RenderSecondPass(vector<GameObject>& gameObjects, Camera& activeC
   glEnable(GL_DEPTH_TEST);
   const Camera::Viewport& vp = activeCamera.GetViewport();
   glViewport(vp.X, vp.Y, vp.W, vp.H);
-  /*glViewport(0, 0, 1920, 1080);*/
 
   m_ContextManager.SetContext(m_hBlinnPhong);
+
+  //TODO: Render all Mesh Components
   // Render our list of game objects
   for (GameObject& go : gameObjects)
   {
@@ -379,24 +391,27 @@ void Renderer::RenderSkybox(Camera& activeCamera)
 
 void Renderer::RenderGameObject(GameObject& gameObject)
 {
+  auto meshComp = gameObject.GetFirstComponentByType(Component::Type::MESH);
+  if (!meshComp.has_value())
+    return;
+  shared_ptr<MeshComponent> meshCompPtr = dynamic_pointer_cast<MeshComponent>(meshComp.value());
+  unsigned MeshID = meshCompPtr->GetMeshID();
+
   if (gameObject.m_bIsDirty)
   {
     // Unknown Mesh ID, check for new id with file name
-    if (gameObject.m_MeshID == Error::INVALID_INDEX)
+    if (meshCompPtr->GetMeshID() == Error::INVALID_INDEX)
     {
-      gameObject.m_MeshID = m_MeshManager.LoadMesh(gameObject.GetMeshFileName(), true, true, ImGui::GraphicsSelectedProjection);
-      if (gameObject.m_MeshID == Error::INVALID_INDEX)
+      const string& meshfile = meshCompPtr->GetMeshFileName();
+      meshCompPtr->SetMeshID(m_MeshManager.LoadMesh(meshfile, true, true, ImGui::GraphicsSelectedProjection));
+      if (meshCompPtr->GetMeshID() == Error::INVALID_INDEX)
       {
-        Log::Error("Could not load mesh: " + gameObject.GetMeshFileName());
+        Log::Error("Could not load mesh: " + meshfile);
         return;
       }
+      MeshID = meshCompPtr->GetMeshID();
     }
   }
-
-  //if (gameObject.GetMaterial().GetType() == Material::Type::TEXTURE)
-  //{
-  //  m_ContextManager.SetContext(m_hPhongTexture);
-  //}
 
   const vector<ContextManager::UniformAttribute>& uniforms = m_ContextManager.GetCurrentUniformAttributes();
 
@@ -405,9 +420,10 @@ void Renderer::RenderGameObject(GameObject& gameObject)
   glUniformMatrix4fv(uniforms[10].ID, 1, false, &gameObject.GetMatrix()[0][0]);
 
   //TODO: Material faked temporarily for simplicity
+  
   const Material& mat =
-    gameObject.GetMaterial().GetType() != Material::Type::GLOBAL ?
-    gameObject.GetMaterial() :
+    meshCompPtr->GetMaterial().GetType() != Material::Type::GLOBAL ?
+    meshCompPtr->GetMaterial() :
     ImGui::LightingGlobalMaterial;
 
   // Mat emissive
@@ -421,7 +437,7 @@ void Renderer::RenderGameObject(GameObject& gameObject)
   // Mat spec exp
   glUniform1f(uniforms[15].ID, mat.GetSpecularExp());
 
-  m_MeshManager.RenderMesh(gameObject.m_MeshID);
+  m_MeshManager.RenderMesh(MeshID);
 }
 
 #pragma region ImGui

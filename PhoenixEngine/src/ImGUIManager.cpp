@@ -85,6 +85,7 @@ namespace ImGui
   bool GraphicsDebugRenderVertexNormals = false;
   bool GraphicsDebugRenderSurfaceNormals = false;
   float GraphicsDebugNormalLength = 0.05f;
+  float GraphicsFPS = 0.0f;
   bool GraphicsRebuildShaders = false;
   bool GraphicsRebuildMeshes = false;
   int GraphicsSelectedShader = 3;
@@ -118,7 +119,6 @@ namespace ImGui
   DemoObject DemoObjectMain = DemoObject::Lucy;
   const char* DemoObjectFile = DEMOOBJECTFILENAMES[(size_t)DemoObject::Lucy];
 }
-
 
 ImGuiManager::ImGuiManager(GLFWwindow* window) noexcept :
   m_bRenderAxes(false),
@@ -300,6 +300,11 @@ void ImGuiManager::graphicsUpdateStats() noexcept
   ImGui::TextColored(IMGREEN, "Frame Stats: "); ImGui::SameLine();
   ImGui::Text("Frame: [%05d] Time: %lf", ImGui::GetFrameCount(), ImGui::GetTime());
 
+  IMGUISPACE;
+  
+  ImGui::TextColored(IMGREEN, "FPS: "); ImGui::SameLine();
+  ImGui::Text("[%.2f]", ImGui::GraphicsFPS);
+  
   IMGUISPACE;
 
   ImGui::TextColored(IMGREEN, "Shader: "); ImGui::SameLine();

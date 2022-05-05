@@ -63,6 +63,7 @@ using std::list;
 using std::forward_list;
 using std::set;
 using std::map;
+using std::dynamic_pointer_cast;
 
 // Functional
 using std::function;

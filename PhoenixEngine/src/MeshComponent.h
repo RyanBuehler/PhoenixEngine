@@ -25,6 +25,9 @@ class MeshComponent : public Component
   inline const string& GetMeshFileName() const noexcept { return m_MeshFileName; }
 
   inline void SetMaterial(const Material& material) noexcept { m_Material = material; }
+  inline const Material& GetMaterial() noexcept { return m_Material; }
+  inline unsigned GetMeshID() const noexcept { return m_MeshID; }
+  inline void SetMeshID(unsigned MeshID) noexcept { m_MeshID = MeshID; }
 
   private:
   unsigned m_MeshID;

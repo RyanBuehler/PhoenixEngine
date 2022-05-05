@@ -145,7 +145,7 @@ void MeshManager::RenderMesh(unsigned id) const noexcept
 {
   if (id == Error::INVALID_INDEX)
   {
-    Log::Error("RenderMesh: Mesh not loaded!");
+    Log::Error("[RenderMesh] Mesh not loaded!");
     return;
   }
 
@@ -160,7 +160,7 @@ void MeshManager::RenderSurfaceNormals(unsigned id, float length) const noexcept
 {
   if (id == Error::INVALID_INDEX)
   {
-    Log::Error("RenderMesh: Mesh not loaded!");
+    Log::Error("[RenderSurfaceNormals] Mesh not loaded!");
     return;
   }
 
@@ -178,7 +178,7 @@ void MeshManager::RenderVertexNormals(unsigned id, float length) const noexcept
 {
   if (id == Error::INVALID_INDEX)
   {
-    Log::Error("RenderMesh: Mesh not loaded!");
+    Log::Error("[RenderVertexNormals] Mesh not loaded!");
     return;
   }
 

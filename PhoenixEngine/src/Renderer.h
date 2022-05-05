@@ -5,6 +5,7 @@
 // Desc:    Handles all Renderering of the Phoenix Engine
 //------------------------------------------------------------------------------
 #pragma once
+#include "RenderStats.h"
 #include "ContextManager.h"
 #include "ShaderManager.h"
 #include "UniformBlockManager.h"
@@ -190,6 +191,8 @@ private:
   /// </summary>
   void LoadBlinnPhongRefractContext() noexcept;
 
+  RenderStats m_RenderStats;
+
   ShaderManager m_ShaderManager;              // Handles shader related functionality
   ContextManager m_ContextManager;            // Handles and maintains the context information
   MeshManager m_MeshManager;                  // Handles and maintains the Mesh data
@@ -215,7 +218,6 @@ private:
   unsigned SkyboxMeshID;
 
   EnvironmentMap envMap;
-
 
   //Texture diffTex;
   //Texture specTex;

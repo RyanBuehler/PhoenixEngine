@@ -5,54 +5,53 @@
 using Utility::ID;
 using CType = Component::Type;
 
-GameObject::GameObject(const string& meshFileName) noexcept :
+GameObject::GameObject(/*const string& meshFileName*/) noexcept :
   m_Transform(),
-  m_MeshID(Error::INVALID_INDEX),
-  m_MeshFileName(meshFileName),
-  m_Material(Material::Type::BASIC),
+  //m_MeshID(Error::INVALID_INDEX),
+  //m_MeshFileName(meshFileName),
   m_bIsActive(true),
   m_bIsDirty(true)
 {}
 
 GameObject::GameObject(const GameObject& other) noexcept :
   m_Transform(other.m_Transform),
-  m_MeshID(other.m_MeshID),
-  m_MeshFileName(other.m_MeshFileName),
-  m_Material(Material::Type::BASIC),
+  //m_MeshID(other.m_MeshID),
+  //m_MeshFileName(other.m_MeshFileName),
   m_bIsActive(other.m_bIsActive),
-  m_bIsDirty(other.m_bIsDirty)
+  m_bIsDirty(true),
+  m_Components(other.m_Components)
 {
 }
 
 GameObject& GameObject::operator=(const GameObject& other) noexcept
 {
   m_Transform = other.m_Transform;
-  m_MeshID = other.m_MeshID;
-  m_MeshFileName = other.m_MeshFileName;
-  m_Material = other.m_Material;
+  //m_MeshID = other.m_MeshID;
+  //m_MeshFileName = other.m_MeshFileName;
   m_bIsActive = other.m_bIsActive;
-  m_bIsDirty = other.m_bIsDirty;
+  m_bIsDirty = true;
+  m_Components = other.m_Components;
   return *this;
 }
 
 GameObject::GameObject(GameObject&& other) noexcept :
   m_Transform(other.m_Transform),
-  m_MeshID(other.m_MeshID),
-  m_MeshFileName(other.m_MeshFileName),
-  m_Material(other.m_Material),
+  //m_MeshID(other.m_MeshID),
+  //m_MeshFileName(other.m_MeshFileName),
   m_bIsActive(other.m_bIsActive),
-  m_bIsDirty(other.m_bIsDirty)
+  m_bIsDirty(other.m_bIsDirty),
+  m_Components(std::move(other.m_Components))
 {
 }
 
 GameObject& GameObject::operator=(GameObject&& other) noexcept
 {
   m_Transform = other.m_Transform;
-  m_MeshID = other.m_MeshID;
-  m_MeshFileName = other.m_MeshFileName;
-  m_Material = other.m_Material;
+  //m_MeshID = other.m_MeshID;
+  //m_MeshFileName = other.m_MeshFileName;
   m_bIsActive = other.m_bIsActive;
   m_bIsDirty = other.m_bIsDirty;
+  m_Components = std::move(other.m_Components);
   return *this;
 }
 
@@ -66,12 +65,25 @@ const Transform& GameObject::GetTransform() const noexcept
   return m_Transform;
 }
 
+void GameObject::SetMaterial(const Material& material) noexcept
+{
+  auto meshcomp = GetFirstComponentByType(Component::Type::MESH);
+  if (!meshcomp.has_value())
+  {
+    Log::Warn("[GameObject.cpp] Tried to set material with no Mesh Component.");
+    return;
+  }
+
+  auto ptr = dynamic_pointer_cast<MeshComponent>(meshcomp.value());
+  ptr->SetMaterial(material);
+}
+
 shared_ptr<Component> GameObject::AddComponent(Component::Type type) noexcept
 {
   switch (type)
   {
     case CType::MESH:
-      m_Components[ID(CType::MESH)].emplace_back(make_shared<MeshComponent>(*this));
+      return m_Components[ID(CType::MESH)].emplace_back(make_shared<MeshComponent>(*this));
     case CType::COUNT:
     default:
       Log::Error("[GameObject.cpp] Attempting to add component of invalid type.");
@@ -85,7 +97,7 @@ shared_ptr<Component> GameObject::AddComponent(Component& component) noexcept
   switch (component.GetType())
   {
     case CType::MESH:
-      m_Components[ID(CType::MESH)].emplace_back(make_shared<MeshComponent>(*this));
+      return m_Components[ID(CType::MESH)].emplace_back(make_shared<MeshComponent>(*this));
     case CType::COUNT:
     default:
       Log::Error("[GameObject.cpp] Attempting to add component of invalid type.");
@@ -111,11 +123,11 @@ optional<shared_ptr<Component>> GameObject::GetLastComponentByType(Component::Ty
 
 optional<shared_ptr<Component>> GameObject::GetAnyComponentByType(Component::Type type) noexcept
 {
-  return {};
+  return GetFirstComponentByType(type);
 }
 
-void GameObject::SetMeshFileName(const string& fileName) noexcept
-{
-  m_MeshFileName = fileName;
-  m_MeshID = Error::INVALID_INDEX;
-}
+//void GameObject::SetMeshFileName(const string& fileName) noexcept
+//{
+//  m_MeshFileName = fileName;
+//  m_MeshID = Error::INVALID_INDEX;
+//}

@@ -119,7 +119,8 @@ void SceneDemo::OnPollInput(GLFWwindow* window, float dt) noexcept
 void SceneDemo::OnDemoObjectChangeEvent()
 {
   auto MC = m_GameObjectArray[17].GetFirstComponentByType(Component::Type::MESH);
-  m_GameObjectArray[17].SetMeshFileName(ImGui::DemoObjectFile);
+  auto MCP = dynamic_pointer_cast<MeshComponent>(MC.value());
+  MCP->SetMeshFileName(ImGui::DemoObjectFile);
 }
 
 Camera& SceneDemo::GetCurrentCamera() noexcept
@@ -135,17 +136,21 @@ void SceneDemo::Scenario1() noexcept
 {
   for (int i = 0; i < 16; ++i)
   {
-    m_GameObjectArray.emplace_back("sphere");
+    m_GameObjectArray.emplace_back(GameObject());
   }
 
-  m_GameObjectArray.emplace_back("quad.obj");
-  m_GameObjectArray.emplace_back(ImGui::DemoObjectFile);
+  m_GameObjectArray.emplace_back(GameObject());
+  m_GameObjectArray.emplace_back(GameObject());
 
   m_MainCamera.SetPosition({ 2.f, 2.f, 10.f });
 
   // Lights
   for (int i = 0; i < 8; ++i)
   {
+    auto comp = dynamic_pointer_cast<MeshComponent>(m_GameObjectArray[i].AddComponent(Component::Type::MESH));
+    comp->SetMeshFileName("sphere");
+    comp->SetMaterial(Material::Type::LIGHT);
+    comp->SetIsActive(false);
     m_GameObjectArray[i].SetPosition(vec3(2.0f, 0.f, 0.f));
     m_GameObjectArray[i].RotateAround(360.f / 8.f * i, vec3(0.f, 1.f, 0.f));
     m_GameObjectArray[i].ScaleBy(0.1f);
@@ -154,6 +159,10 @@ void SceneDemo::Scenario1() noexcept
   }
   for (int i = 8; i < 16; ++i)
   {
+    auto comp = dynamic_pointer_cast<MeshComponent>(m_GameObjectArray[i].AddComponent(Component::Type::MESH));
+    comp->SetMeshFileName("sphere");
+    comp->SetMaterial(Material::Type::LIGHT);
+    comp->SetIsActive(false);
     m_GameObjectArray[i].SetPosition(vec3(2.0f, 0.f, 0.f));
     m_GameObjectArray[i].RotateAround(22.5f + 360.f / 8.f * i, vec3(0.f, 1.f, 0.f));
     m_GameObjectArray[i].ScaleBy(0.12f);
@@ -174,7 +183,7 @@ void SceneDemo::Scenario1() noexcept
   }
 
   // Lines
-  GameObject temp("sphere.obj");
+  GameObject temp;
   temp.SetPosition(vec3(2.0f, 0.f, 0.f));
   for (int i = 2; i <= 360; i += 2)
   {
@@ -186,22 +195,26 @@ void SceneDemo::Scenario1() noexcept
   temp.SetIsActive(false);
 
   // Plane
-  auto planeMeshComp = std::dynamic_pointer_cast<MeshComponent>(m_GameObjectArray[16].AddComponent(Component::Type::MESH));
+  auto planeMeshComp = dynamic_pointer_cast<MeshComponent>(m_GameObjectArray[16].AddComponent(Component::Type::MESH));
+  planeMeshComp->SetMeshFileName("quad.obj");
+  planeMeshComp->SetMaterial(Material::Type::BASIC);
+  planeMeshComp->SetIsActive(true);
   m_GameObjectArray[16].SetScale({ 5.f, 5.f, 1.f });
   m_GameObjectArray[16].SetPosition({ 0.f, -0.5f, 0.f });
   m_GameObjectArray[16].RotateX(-90.f);
-  planeMeshComp->SetMaterial(Material::Type::BASIC);
-  planeMeshComp->SetIsActive(true);
   m_GameObjectArray[16].SetMaterial(Material::Type::BASIC);
 
   // Main object
-  auto mainMeshComp = std::dynamic_pointer_cast<MeshComponent>(m_GameObjectArray[17].AddComponent(Component::Type::MESH));
-  m_GameObjectArray[17].SetPosition(vec3(0.f));
-  m_GameObjectArray[17].ScaleBy(1.f);
+  auto mainMeshComp = dynamic_pointer_cast<MeshComponent>(m_GameObjectArray[17].AddComponent(Component::Type::MESH));
+  mainMeshComp->SetMeshFileName(ImGui::DemoObjectFile);
   mainMeshComp->SetMaterial(Material::Type::BASIC);
   mainMeshComp->SetIsActive(true);
+  m_GameObjectArray[17].SetPosition(vec3(0.f));
+  m_GameObjectArray[17].ScaleBy(1.f);
   m_GameObjectArray[17].SetMaterial(Material::Type::GLOBAL);
   m_GameObjectArray[17].SetIsActive(false);
+
+  // Target the camera
   m_MainCamera.SetTarget(&m_GameObjectArray[17].GetTransform());
 }
 
@@ -209,16 +222,20 @@ void SceneDemo::Scenario2() noexcept
 {
   for (int i = 0; i < 16; ++i)
   {
-    m_GameObjectArray.emplace_back("sphere");
+    m_GameObjectArray.emplace_back(GameObject());
   }
-  m_GameObjectArray.emplace_back("cube2.obj");
-  m_GameObjectArray.emplace_back(ImGui::DemoObjectFile);
+  m_GameObjectArray.emplace_back(GameObject());
+  m_GameObjectArray.emplace_back(GameObject());
 
   m_MainCamera.SetPosition({ 2.f, 2.f, 10.f });
 
   // Lights
   for (int i = 0; i < 8; ++i)
   {
+    auto comp = dynamic_pointer_cast<MeshComponent>(m_GameObjectArray[i].AddComponent(Component::Type::MESH));
+    comp->SetMeshFileName("sphere");
+    comp->SetMaterial(Material::Type::LIGHT);
+    comp->SetIsActive(false);
     m_GameObjectArray[i].SetPosition(vec3(2.0f, 0.f, 0.f));
     m_GameObjectArray[i].RotateAround(360.f / 8.f * i, vec3(0.f, 1.f, 0.f));
     m_GameObjectArray[i].ScaleBy(0.1f);
@@ -228,6 +245,10 @@ void SceneDemo::Scenario2() noexcept
   }
   for (int i = 8; i < 16; ++i)
   {
+    auto comp = dynamic_pointer_cast<MeshComponent>(m_GameObjectArray[i].AddComponent(Component::Type::MESH));
+    comp->SetMeshFileName("sphere");
+    comp->SetMaterial(Material::Type::LIGHT);
+    comp->SetIsActive(false);
     m_GameObjectArray[i].SetPosition(vec3(2.0f, 0.f, 0.f));
     m_GameObjectArray[i].RotateAround(22.5f + 360.f / 8.f * i, vec3(0.f, 1.f, 0.f));
     m_GameObjectArray[i].ScaleBy(0.12f);
@@ -240,6 +261,7 @@ void SceneDemo::Scenario2() noexcept
   ImGui::LightingDataArray[0].AmbientIntensity = AMBFACTOR * Colors::RED;
   ImGui::LightingDataArray[0].SpecularIntensity = Colors::RED;
   mat.SetEmissive(Colors::RED);
+
   m_GameObjectArray[0].SetMaterial(mat);
 
   ImGui::LightingDataArray[1].DiffuseIntensity = DIFFFACTOR * Colors::YELLOW;
@@ -285,7 +307,7 @@ void SceneDemo::Scenario2() noexcept
   m_GameObjectArray[7].SetMaterial(mat);
 
   // Lines
-  GameObject temp("sphere.obj");
+  GameObject temp;
   temp.SetPosition(vec3(2.0f, 0.f, 0.f));
   for (int i = 2; i <= 360; i += 2)
   {
@@ -297,14 +319,21 @@ void SceneDemo::Scenario2() noexcept
   temp.SetIsActive(false);
 
   // Plane
-  m_GameObjectArray[16].SetScale({ 5.f, 0.01f, 5.f });
+  auto planeMeshComp = dynamic_pointer_cast<MeshComponent>(m_GameObjectArray[16].AddComponent(Component::Type::MESH));
+  planeMeshComp->SetMeshFileName("quad.obj");
+  planeMeshComp->SetMaterial(Material::Type::BASIC);
+  planeMeshComp->SetIsActive(true);
+  m_GameObjectArray[16].SetScale({ 5.f, 5.f, 1.f });
   m_GameObjectArray[16].SetPosition({ 0.f, -0.5f, 0.f });
-  m_GameObjectArray[16].RotateX(0.f);
-  m_GameObjectArray[16].SetMaterial(Material::Type::GLOBAL);
+  m_GameObjectArray[16].RotateX(-90.f);
 
+  // Main object
+  auto mainMeshComp = dynamic_pointer_cast<MeshComponent>(m_GameObjectArray[17].AddComponent(Component::Type::MESH));
+  mainMeshComp->SetMeshFileName(ImGui::DemoObjectFile);
+  mainMeshComp->SetMaterial(Material::Type::GLOBAL);
+  mainMeshComp->SetIsActive(true);
   m_GameObjectArray[17].SetPosition(vec3(0.f));
   m_GameObjectArray[17].ScaleBy(1.f);
-  m_GameObjectArray[17].SetMaterial(Material::Type::GLOBAL);
 
   m_MainCamera.SetTarget(&m_GameObjectArray[17].GetTransform());
 }
@@ -313,10 +342,10 @@ void SceneDemo::Scenario3() noexcept
 {
   for (int i = 0; i < 16; ++i)
   {
-    m_GameObjectArray.emplace_back("sphere");
+    m_GameObjectArray.emplace_back(GameObject());
   }
-  m_GameObjectArray.emplace_back("cube2.obj");
-  m_GameObjectArray.emplace_back(ImGui::DemoObjectFile);
+  m_GameObjectArray.emplace_back(GameObject());
+  m_GameObjectArray.emplace_back(GameObject());
 
   m_MainCamera.SetPosition({ 2.f, 2.f, 10.f });
 
@@ -404,7 +433,7 @@ void SceneDemo::Scenario3() noexcept
   m_GameObjectArray[7].SetMaterial(mat);
 
   // Lines
-  GameObject temp("sphere.obj");
+  GameObject temp;
   temp.SetPosition(vec3(2.0f, 0.f, 0.f));
   for (int i = 2; i <= 360; i += 2)
   {

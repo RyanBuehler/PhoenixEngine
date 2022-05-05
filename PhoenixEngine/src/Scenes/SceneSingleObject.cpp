@@ -10,6 +10,7 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "../ImGUIManager.h"
+#include "MeshComponent.h"
 
 SceneSingleObject::SceneSingleObject() noexcept :
   IScene("Scene Single Object"),
@@ -31,7 +32,7 @@ void SceneSingleObject::OnInit() noexcept
   m_Time = 0;
 
   Log::Trace("Scene Single Object Initialized.");
-  m_GameObjectArray.emplace_back(ImGui::DemoObjectFile);
+  m_GameObjectArray.emplace_back();
 
   m_MainCamera.SetPosition({ 1.f, 1.f, 10.f });
 
@@ -88,7 +89,9 @@ void SceneSingleObject::OnPollInput(GLFWwindow* window, float dt) noexcept
 
 void SceneSingleObject::OnDemoObjectChangeEvent()
 {
-  m_GameObjectArray[0].SetMeshFileName(ImGui::DemoObjectFile);
+  auto MC = m_GameObjectArray[0].GetFirstComponentByType(Component::Type::MESH);
+  auto MCP = dynamic_pointer_cast<MeshComponent>(MC.value());
+  MCP->SetMeshFileName(ImGui::DemoObjectFile);
 }
 
 Camera& SceneSingleObject::GetCurrentCamera() noexcept
