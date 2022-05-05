@@ -60,6 +60,7 @@
     <ClCompile Include="src\LightingSystem.cpp" />
     <ClCompile Include="src\Material.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
+    <ClCompile Include="src\MeshComponent.cpp" />
     <ClCompile Include="src\MeshManager.cpp" />
     <ClCompile Include="src\OBJReader.cpp" />
     <ClCompile Include="src\PNGReader.cpp" />
@@ -82,6 +83,7 @@
     <ClInclude Include="dep\imgui\imgui_impl_opengl3_loader.h" />
     <ClInclude Include="dep\imgui\imgui_internal.h" />
     <ClInclude Include="src\Colors.h" />
+    <ClInclude Include="src\Component.h" />
     <ClInclude Include="src\Cubemap.h" />
     <ClInclude Include="src\EnvironmentMap.h" />
     <ClInclude Include="src\GameObject.h" />
@@ -97,6 +99,7 @@
     <ClInclude Include="src\LightingSystem.h" />
     <ClInclude Include="src\Material.h" />
     <ClInclude Include="src\Mesh.h" />
+    <ClInclude Include="src\MeshComponent.h" />
     <ClInclude Include="src\MeshManager.h" />
     <ClInclude Include="src\Logger.h" />
     <ClInclude Include="src\OBJReader.h" />
@@ -200,6 +203,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <OmitFramePointers>false</OmitFramePointers>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

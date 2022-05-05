@@ -12,7 +12,7 @@
 #include <glm/ext/scalar_constants.hpp>   // glm::pi
 #include "Transform.h"
 
-Camera::Camera(const string& name) noexcept :
+Camera::Camera(const string& name, const Viewport& viewport) noexcept :
   m_ViewData(),
   m_Position({ 0.f, 0.f, 30.f }),
   m_Forward({ 0.f, 0.f, -1.f }),
@@ -27,7 +27,8 @@ Camera::Camera(const string& name) noexcept :
   m_PerspectiveIsDirty(true),
   m_ViewIsDirty(true),
   m_Target(nullptr),
-  m_Name(name)
+  m_Name(name),
+  m_Viewport(viewport)
 {
   Log::Trace("Camera '" + m_Name + "' created.");
 }
@@ -191,6 +192,24 @@ void Camera::SetName(const string& name) noexcept
 const string& Camera::GetName() const noexcept
 {
   return m_Name;
+}
+
+const Camera::Viewport& Camera::GetViewport() const noexcept
+{
+  return m_Viewport;
+}
+
+void Camera::SetViewport(const Camera::Viewport& other) noexcept
+{
+  m_Viewport = other;
+}
+
+void Camera::SetViewport(GLint X, GLint Y, GLint W, GLint H)
+{
+  m_Viewport.X = X;
+  m_Viewport.Y = Y;
+  m_Viewport.W = W;
+  m_Viewport.H = H;
 }
 
 void Camera::updateOrientation() noexcept

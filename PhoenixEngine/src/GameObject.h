@@ -7,10 +7,11 @@
 #pragma once
 #include "Transform.h"
 #include "Material.h"
+#include "Component.h"
 
 class GameObject
 {
-public:
+  public:
 
   GameObject(const string& meshFileName = "cube.obj") noexcept;
   ~GameObject() = default;
@@ -37,7 +38,9 @@ public:
   inline void RotateY(float degrees) { m_Transform.RotateY(degrees); }
   inline void RotateZ(float degrees) { m_Transform.RotateZ(degrees); }
   inline void RotateAround(float degrees, const vec3& axis)
-    { m_Transform.RotateAround(degrees, axis); }
+  {
+    m_Transform.RotateAround(degrees, axis);
+  }
   inline void ScaleBy(float factor) { m_Transform.ScaleBy(factor); }
 
   inline void SetPosition(const vec3& pos) noexcept { m_Transform.SetPosition(pos); }
@@ -54,7 +57,23 @@ public:
 
 #pragma endregion
 
-private:
+#pragma region Component
+
+  /// <summary>
+  /// Adds a component to a game object
+  /// </summary>
+  /// <param name="type">The type of component</param>
+  shared_ptr<Component> AddComponent(Component::Type type) noexcept;
+  shared_ptr<Component> AddComponent(Component& component) noexcept;
+
+  optional<shared_ptr<Component>> GetFirstComponentByType(Component::Type type) noexcept;
+  optional<shared_ptr<Component>> GetLastComponentByType(Component::Type type) noexcept;
+  optional<shared_ptr<Component>> GetAnyComponentByType(Component::Type type) noexcept;
+
+#pragma endregion
+
+
+  private:
   friend class Renderer;
 
   Transform m_Transform;
@@ -65,7 +84,9 @@ private:
   //TODO: Move this into a "RenderableComponent"
   Material m_Material;
 
-
   bool m_bIsActive;
   bool m_bIsDirty;
+
+  array<vector<shared_ptr<Component>>, Utility::ID(Component::Type::COUNT)> m_Components;
+  //vector<unique_ptr<Component>> m_Components;
 };

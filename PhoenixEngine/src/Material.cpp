@@ -107,7 +107,6 @@ Material::Type Material::GetType() const noexcept
 
 void Material::setByType(Type type) noexcept
 {
-  //TODO: Eventually this could be loaded by material files
   switch (type)
   {
   //case Material::Type::REFLECTREFRACT:

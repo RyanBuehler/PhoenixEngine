@@ -33,10 +33,10 @@ Renderer::Renderer(bool depthBufferEnabled, bool backFaceCullEnabled) noexcept :
   //m_hDiffuseContext(ContextManager::Error::Context::INVALID_CONTEXT),
   m_Skybox(tempcubemap),
   m_hSkyboxContext(Error::Context::INVALID_CONTEXT),
-  m_hDebugContext(Error::Context::INVALID_CONTEXT),
+  m_hDebugContext(Error::Context::INVALID_CONTEXT)//,
   //diffTex("Debug Diff Texture"),
   //specTex("Debug Spec Texture"),
-  envMap()
+  //envMap()
 {
   depthBufferEnabled ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
   backFaceCullEnabled ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
@@ -173,7 +173,7 @@ void Renderer::RenderScene(vector<GameObject>& gameObjects, Camera& activeCamera
       // Skip disabled game objects
       if (go.IsActive())
       {
-        RenderNormals(go, ImGui::GraphicsDebugNormalLength, Normals::Type::SURFACE);
+        //RenderNormals(go, ImGui::GraphicsDebugNormalLength, Normals::Type::SURFACE);
       }
     }
     glUseProgram(0u);
@@ -188,7 +188,7 @@ void Renderer::RenderScene(vector<GameObject>& gameObjects, Camera& activeCamera
       // Skip disabled game objects
       if (go.IsActive())
       {
-        RenderNormals(go, ImGui::GraphicsDebugNormalLength, Normals::Type::VERTEX);
+        //RenderNormals(go, ImGui::GraphicsDebugNormalLength, Normals::Type::VERTEX);
       }
     }
     glUseProgram(0u);
@@ -213,26 +213,26 @@ void Renderer::RenderFirstPass(vector<GameObject>& gameObjects)
     envMap.Bind(i);
     switch (i)
     {
-    case 0:
-      activeCamera.LookAt({ 1.f, 0.f, 0.f }, { 0.f, 1.f, 0.f });
-      break;
-    case 1:
-      activeCamera.LookAt({ -1.f, 0.f, 0.f }, { 0.f, 1.f, 0.f });
-      break;
-    case 2:
-      activeCamera.LookAt({ 0.f, -1.f, 0.f }, { 0.f, 0.f, 1.f });
-      break;
-    case 3:
-      activeCamera.LookAt({ 0.f, 1.f, 0.f }, { 0.f, 0.f, -1.f });
-      break;
-    case 4:
-      activeCamera.LookAt({ 0.f, 0.f, 1.f }, { 0.f, 1.f, 0.f });
-      break;
-    case 5:
-      activeCamera.LookAt({ 0.f, 0.f, -1.f }, { 0.f, 1.f, 0.f });
-      break;
-    default:
-      return;
+      case 0:
+        activeCamera.LookAt({ 1.f, 0.f, 0.f }, { 0.f, 1.f, 0.f });
+        break;
+      case 1:
+        activeCamera.LookAt({ -1.f, 0.f, 0.f }, { 0.f, 1.f, 0.f });
+        break;
+      case 2:
+        activeCamera.LookAt({ 0.f, -1.f, 0.f }, { 0.f, 0.f, 1.f });
+        break;
+      case 3:
+        activeCamera.LookAt({ 0.f, 1.f, 0.f }, { 0.f, 0.f, -1.f });
+        break;
+      case 4:
+        activeCamera.LookAt({ 0.f, 0.f, 1.f }, { 0.f, 1.f, 0.f });
+        break;
+      case 5:
+        activeCamera.LookAt({ 0.f, 0.f, -1.f }, { 0.f, 1.f, 0.f });
+        break;
+      default:
+        return;
     }
 
     // Render our list of game objects
@@ -312,50 +312,17 @@ void Renderer::RenderSecondPass(vector<GameObject>& gameObjects, Camera& activeC
   glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glEnable(GL_DEPTH_TEST);
-  glViewport(0, 0, 1920, 1080);
+  const Camera::Viewport& vp = activeCamera.GetViewport();
+  glViewport(vp.X, vp.Y, vp.W, vp.H);
+  /*glViewport(0, 0, 1920, 1080);*/
 
   m_ContextManager.SetContext(m_hBlinnPhong);
   // Render our list of game objects
   for (GameObject& go : gameObjects)
   {
+    // Skip disabled game objects
     if (!go.IsActive())
       continue;
-
-    //switch (ImGui::GraphicsSelectedShader)
-    //{
-    //  // Reflection
-    //case 3:
-    //  if (go.GetMaterial().GetType() == Material::Type::REFLECTREFRACT)
-    //  {
-    //    m_ContextManager.SetContext(m_hBlinnPhongRefract);
-    //    envMap.EnableTextures();
-    //    const vector<ContextManager::UniformAttribute>& uniforms = m_ContextManager.GetCurrentUniformAttributes();
-    //    glUniform1f(uniforms[16].ID, ImGui::GraphicsRefractSlider);
-    //    glUniform1f(uniforms[17].ID, ImGui::GraphicsRedIOR);
-    //    glUniform1f(uniforms[18].ID, ImGui::GraphicsGreenIOR);
-    //    glUniform1f(uniforms[19].ID, ImGui::GraphicsBlueIOR);
-    //    glUniform1f(uniforms[20].ID, ImGui::GraphicsRefractEnabled);
-    //    glUniform1f(uniforms[21].ID, ImGui::GraphicsReflectEnabled);
-    //  }
-    //  else
-    //  {
-    //    m_ContextManager.SetContext(m_hPhongShading);
-    //  }
-    //  break;
-    //  //Lighting
-    //case 0:
-    //  m_ContextManager.SetContext(m_hPhongLighting);
-    //  break;
-    //  //Shading
-    //case 1:
-    //  m_ContextManager.SetContext(m_hPhongShading);
-    //  break;
-    //  //Blinn
-    //case 2:
-    //default:
-    //  m_ContextManager.SetContext(m_hBlinnPhong);
-    //  break;
-    //}
 
     const vector<ContextManager::UniformAttribute>& uniforms = m_ContextManager.GetCurrentUniformAttributes();
     //TODO: Combine these for efficiency
@@ -376,7 +343,6 @@ void Renderer::RenderSecondPass(vector<GameObject>& gameObjects, Camera& activeC
     glUniform1f(uniforms[8].ID, globalLighting.AttLinear);
     glUniform1f(uniforms[9].ID, globalLighting.AttQuadratic);
 
-    // Skip disabled game objects
     RenderGameObject(go);
   }
 
@@ -439,10 +405,10 @@ void Renderer::RenderGameObject(GameObject& gameObject)
   glUniformMatrix4fv(uniforms[10].ID, 1, false, &gameObject.GetMatrix()[0][0]);
 
   //TODO: Material faked temporarily for simplicity
-    const Material& mat =
-      gameObject.GetMaterial().GetType() != Material::Type::GLOBAL ?
-      gameObject.GetMaterial() :
-      ImGui::LightingGlobalMaterial;
+  const Material& mat =
+    gameObject.GetMaterial().GetType() != Material::Type::GLOBAL ?
+    gameObject.GetMaterial() :
+    ImGui::LightingGlobalMaterial;
 
   // Mat emissive
   glUniform3fv(uniforms[11].ID, 1, &mat.GetEmissive()[0]);
@@ -462,40 +428,40 @@ void Renderer::RenderGameObject(GameObject& gameObject)
 
 #ifdef _IMGUI
 
-void Renderer::RenderNormals(GameObject& gameObject, float length, Normals::Type normalType) noexcept
-{
-  if (gameObject.m_bIsDirty)
-  {
-    // Unknown Mesh ID, check for new id with file name
-    if (gameObject.m_MeshID == Error::INVALID_INDEX)
-    {
-      gameObject.m_MeshID = m_MeshManager.LoadMesh(gameObject.GetMeshFileName(), true, true);
-      if (gameObject.m_MeshID == Error::INVALID_INDEX)
-      {
-        Log::Error("Could not load mesh: " + gameObject.GetMeshFileName());
-        return;
-      }
-    }
-  }
-  // Bind the model transform matrix
-  glUniformMatrix4fv(m_ContextManager.GetCurrentUniformAttributes()[2].ID, 1, false, &gameObject.GetMatrix()[0][0]);
-
-  switch (normalType)
-  {
-  case Normals::Type::VERTEX:
-    m_MeshManager.RenderVertexNormals(gameObject.m_MeshID, length);
-    break;
-  case Normals::Type::TRIANGLE:
-    m_MeshManager.RenderSurfaceNormals(gameObject.m_MeshID, length);
-    break;
-  case Normals::Type::SURFACE:
-    m_MeshManager.RenderSurfaceNormals(gameObject.m_MeshID, length);
-    break;
-  case Normals::Type::COUNT:
-  default:
-    break;
-  }
-}
+//void Renderer::RenderNormals(GameObject& gameObject, float length, Normals::Type normalType) noexcept
+//{
+//  if (gameObject.m_bIsDirty)
+//  {
+//    // Unknown Mesh ID, check for new id with file name
+//    if (gameObject.m_MeshID == Error::INVALID_INDEX)
+//    {
+//      gameObject.m_MeshID = m_MeshManager.LoadMesh(gameObject.GetMeshFileName(), true, true);
+//      if (gameObject.m_MeshID == Error::INVALID_INDEX)
+//      {
+//        Log::Error("Could not load mesh: " + gameObject.GetMeshFileName());
+//        return;
+//      }
+//    }
+//  }
+//  // Bind the model transform matrix
+//  glUniformMatrix4fv(m_ContextManager.GetCurrentUniformAttributes()[2].ID, 1, false, &gameObject.GetMatrix()[0][0]);
+//
+//  switch (normalType)
+//  {
+//    case Normals::Type::VERTEX:
+//      m_MeshManager.RenderVertexNormals(gameObject.m_MeshID, length);
+//      break;
+//    case Normals::Type::TRIANGLE:
+//      m_MeshManager.RenderSurfaceNormals(gameObject.m_MeshID, length);
+//      break;
+//    case Normals::Type::SURFACE:
+//      m_MeshManager.RenderSurfaceNormals(gameObject.m_MeshID, length);
+//      break;
+//    case Normals::Type::COUNT:
+//    default:
+//      break;
+//  }
+//}
 
 #endif
 

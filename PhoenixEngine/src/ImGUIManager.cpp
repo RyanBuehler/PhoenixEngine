@@ -262,15 +262,15 @@ void ImGuiManager::ShowMainMenu() noexcept
 
 void ImGuiManager::ShowMainMenu_File() noexcept
 {
-  if (ImGui::MenuItem("Scene 1", ""))
+  if (ImGui::MenuItem("Demo Scene", ""))
   {
     m_dOnSceneChange(SceneManager::Scene::SceneDemo);
   }
-  if (ImGui::MenuItem("Scene Single Object", ""))
+  if (ImGui::MenuItem("Single Object", ""))
   {
     m_dOnSceneChange(SceneManager::Scene::SceneSingleObject);
   }
-  if (ImGui::MenuItem("Exit", "Close the Engine"))
+  if (ImGui::MenuItem("Close", "Close the Engine"))
   {
     m_dOnClose();
   }

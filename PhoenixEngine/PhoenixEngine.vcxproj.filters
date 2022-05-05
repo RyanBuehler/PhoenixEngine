@@ -228,6 +228,12 @@
     <ClInclude Include="src\UniformBlockManager.h">
       <Filter>Header Files\Graphics\Data</Filter>
     </ClInclude>
+    <ClInclude Include="src\Component.h">
+      <Filter>Header Files\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MeshComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp">
@@ -328,6 +334,9 @@
     </ClCompile>
     <ClCompile Include="src\UniformBlockManager.cpp">
       <Filter>Source Files\Graphics\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MeshComponent.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

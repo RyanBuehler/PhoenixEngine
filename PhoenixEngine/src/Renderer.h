@@ -25,8 +25,8 @@ public:
   /// </summary>
   enum class RenderMode
   {
-    Fill,
-    Wireframe,
+    FILL,
+    WIREFRAME,
     COUNT
   };
   
@@ -133,7 +133,7 @@ private:
   /// <param name="gameObject">The game object to which we want to render its mesh's normals</param>
   /// <param name="length">Length to draw the normals in world space</param>
   /// <param name="normalType">Vertex or face normals</param>
-  void RenderNormals(GameObject& gameObject, float length, Normals::Type normalType) noexcept;
+  //void RenderNormals(GameObject& gameObject, float length, Normals::Type normalType) noexcept;
 
 #endif
 

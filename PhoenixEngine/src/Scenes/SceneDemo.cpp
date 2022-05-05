@@ -12,6 +12,7 @@
 #include "DebugRenderer.h"
 #include "ImGUIManager.h"
 #include "Colors.h"
+#include "MeshComponent.h"
 
 #define AMBFACTOR 0.05f
 #define DIFFFACTOR 0.9f
@@ -23,7 +24,7 @@ SceneDemo::SceneDemo() noexcept :
   m_Time(0.f)
 {
   m_MainCamera.SetName("Demo Scene Camera");
-  Log::Trace("Demo Scene Created.");
+  Log::Trace("'Demo' Scene Created.");
   ImGui::Manager->SetOnDemoObjectHandler(std::bind(&SceneDemo::OnDemoObjectChangeEvent, this));
 }
 
@@ -117,6 +118,7 @@ void SceneDemo::OnPollInput(GLFWwindow* window, float dt) noexcept
 
 void SceneDemo::OnDemoObjectChangeEvent()
 {
+  auto MC = m_GameObjectArray[17].GetFirstComponentByType(Component::Type::MESH);
   m_GameObjectArray[17].SetMeshFileName(ImGui::DemoObjectFile);
 }
 
@@ -184,14 +186,20 @@ void SceneDemo::Scenario1() noexcept
   temp.SetIsActive(false);
 
   // Plane
+  auto planeMeshComp = std::dynamic_pointer_cast<MeshComponent>(m_GameObjectArray[16].AddComponent(Component::Type::MESH));
   m_GameObjectArray[16].SetScale({ 5.f, 5.f, 1.f });
   m_GameObjectArray[16].SetPosition({ 0.f, -0.5f, 0.f });
   m_GameObjectArray[16].RotateX(-90.f);
+  planeMeshComp->SetMaterial(Material::Type::BASIC);
+  planeMeshComp->SetIsActive(true);
   m_GameObjectArray[16].SetMaterial(Material::Type::BASIC);
 
   // Main object
+  auto mainMeshComp = std::dynamic_pointer_cast<MeshComponent>(m_GameObjectArray[17].AddComponent(Component::Type::MESH));
   m_GameObjectArray[17].SetPosition(vec3(0.f));
   m_GameObjectArray[17].ScaleBy(1.f);
+  mainMeshComp->SetMaterial(Material::Type::BASIC);
+  mainMeshComp->SetIsActive(true);
   m_GameObjectArray[17].SetMaterial(Material::Type::GLOBAL);
   m_GameObjectArray[17].SetIsActive(false);
   m_MainCamera.SetTarget(&m_GameObjectArray[17].GetTransform());
