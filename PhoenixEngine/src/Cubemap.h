@@ -27,6 +27,6 @@ public:
   // Top    = +Y
   // Bottom = -Y
 private:
-  GLuint m_CubemapID;
+  GLuint m_hCubemap;
   string m_CubemapName;
 };

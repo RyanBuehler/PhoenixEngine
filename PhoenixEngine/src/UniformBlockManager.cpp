@@ -12,7 +12,7 @@ UniformBlockManager::UniformBlockManager() noexcept
   Log::Trace("Uniform Block Manager initialized");
 }
 
-unsigned UniformBlockManager::CreateNewBlockPrint(const UniformBlockPrint& BlockPrint) noexcept
+unsigned UniformBlockManager::RegisterNewBlockPrint(const UniformBlockPrint& BlockPrint) noexcept
 {
   for (const UniformBlockPrint& print : m_UniformBlockPrints)
   {
@@ -51,7 +51,7 @@ unsigned UniformBlockManager::CreateNewBlock(unsigned BlockPrintID, GLuint Progr
     DataPtr
     }));
 
-    GLuint& uboIndex = m_UniformBlocks[index].UBO_ID;
+  GLuint& uboIndex = m_UniformBlocks[index].UBO_ID;
   uboIndex = glGetUniformBlockIndex(ProgramID, "LightArray");
   uboIndex = glGetUniformBlockIndex(ProgramID, m_UniformBlockPrints[BlockPrintID].BlockName.c_str());
 

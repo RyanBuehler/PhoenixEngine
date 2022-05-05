@@ -32,13 +32,9 @@ Renderer::Renderer(bool depthBufferEnabled, bool backFaceCullEnabled) noexcept :
   m_MeshManager(),
   m_UniformBlockManager(),
   m_Lighting(),
-  //m_hDiffuseContext(ContextManager::Error::Context::INVALID_CONTEXT),
   m_Skybox(tempcubemap),
   m_hSkyboxContext(Error::Context::INVALID_CONTEXT),
-  m_hDebugContext(Error::Context::INVALID_CONTEXT)//,
-  //diffTex("Debug Diff Texture"),
-  //specTex("Debug Spec Texture"),
-  //envMap()
+  m_hDebugContext(Error::Context::INVALID_CONTEXT)
 {
   depthBufferEnabled ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
   backFaceCullEnabled ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
@@ -48,10 +44,6 @@ Renderer::Renderer(bool depthBufferEnabled, bool backFaceCullEnabled) noexcept :
   LoadContexts();
 
   Log::Trace("Renderer initialized.");
-
-  //TODO: make these boolean results and move them elsewhere
-  //diffTex.LoadTextureFromFile("res/textures/metal_roof_diff_512x512.png");
-  //specTex.LoadTextureFromFile("res/textures/metal_roof_spec_512x512.png");
 }
 
 Renderer::~Renderer()
@@ -337,23 +329,22 @@ void Renderer::RenderSecondPass(vector<GameObject>& gameObjects, Camera& activeC
       continue;
 
     const vector<ContextManager::UniformAttribute>& uniforms = m_ContextManager.GetCurrentUniformAttributes();
-    //TODO: Combine these for efficiency
-    // Set Perspective Matrix
-    glUniformMatrix4fv(uniforms[0].ID, 1, GL_FALSE, &activeCamera.GetPersMatrix()[0][0]);
-    // Set View Matrix
-    glUniformMatrix4fv(uniforms[1].ID, 1, GL_FALSE, &activeCamera.GetViewMatrix()[0][0]);
+
+    int x = 0;
+    // Set View/Perspective Matrix
+    glUniformMatrix4fv(uniforms[x++].ID, 1, GL_FALSE, &activeCamera.GetVPMatrix()[0][0]);
 
     // Set Cam Position
-    glUniform3fv(uniforms[2].ID, 1, &activeCamera.GetPosition()[0]);
+    glUniform3fv(uniforms[x++].ID, 1, &activeCamera.GetPosition()[0]);
 
     const LightingSystem::GlobalLightingData& globalLighting = ImGui::LightingGlobalData;
-    glUniform3fv(uniforms[3].ID, 1, &globalLighting.AmbientIntensity[0]);
-    glUniform3fv(uniforms[4].ID, 1, &globalLighting.FogIntensity[0]);
-    glUniform1f(uniforms[5].ID, globalLighting.FogNear);
-    glUniform1f(uniforms[6].ID, globalLighting.FogFar);
-    glUniform1f(uniforms[7].ID, globalLighting.AttConstant);
-    glUniform1f(uniforms[8].ID, globalLighting.AttLinear);
-    glUniform1f(uniforms[9].ID, globalLighting.AttQuadratic);
+    glUniform3fv(uniforms[x++].ID, 1, &globalLighting.AmbientIntensity[0]);
+    glUniform3fv(uniforms[x++].ID, 1, &globalLighting.FogIntensity[0]);
+    glUniform1f(uniforms[x++].ID, globalLighting.FogNear);
+    glUniform1f(uniforms[x++].ID, globalLighting.FogFar);
+    glUniform1f(uniforms[x++].ID, globalLighting.AttConstant);
+    glUniform1f(uniforms[x++].ID, globalLighting.AttLinear);
+    glUniform1f(uniforms[x++].ID, globalLighting.AttQuadratic);
 
     RenderGameObject(go);
   }
@@ -415,27 +406,25 @@ void Renderer::RenderGameObject(GameObject& gameObject)
 
   const vector<ContextManager::UniformAttribute>& uniforms = m_ContextManager.GetCurrentUniformAttributes();
 
-  //TODO: batch rendering by mesh
+  int x = 9;
   // Bind the model transform matrix
-  glUniformMatrix4fv(uniforms[10].ID, 1, false, &gameObject.GetMatrix()[0][0]);
+  glUniformMatrix4fv(uniforms[x++].ID, 1, false, &gameObject.GetMatrix()[0][0]);
 
-  //TODO: Material faked temporarily for simplicity
-  
   const Material& mat =
     meshCompPtr->GetMaterial().GetType() != Material::Type::GLOBAL ?
     meshCompPtr->GetMaterial() :
     ImGui::LightingGlobalMaterial;
 
   // Mat emissive
-  glUniform3fv(uniforms[11].ID, 1, &mat.GetEmissive()[0]);
+  glUniform3fv(uniforms[x++].ID, 1, &mat.GetEmissive()[0]);
   // Mat ambient
-  glUniform1f(uniforms[12].ID, mat.GetAmbient());
+  glUniform1f(uniforms[x++].ID, mat.GetAmbient());
   // Mat diffuse
-  glUniform1f(uniforms[13].ID, mat.GetDiffuse());
+  glUniform1f(uniforms[x++].ID, mat.GetDiffuse());
   // Mat spec
-  glUniform1f(uniforms[14].ID, mat.GetSpecular());
+  glUniform1f(uniforms[x++].ID, mat.GetSpecular());
   // Mat spec exp
-  glUniform1f(uniforms[15].ID, mat.GetSpecularExp());
+  glUniform1f(uniforms[x++].ID, mat.GetSpecularExp());
 
   m_MeshManager.RenderMesh(MeshID);
 }
@@ -485,21 +474,11 @@ void Renderer::RenderGameObject(GameObject& gameObject)
 
 void Renderer::LoadContexts() noexcept
 {
-  //LoadPhongLightingContext();
-
-  //LoadPhongShadingContext();
-
   LoadBlinnPhongContext();
-
-  //LoadPhongTextureContext();
 
   LoadDebugContext();
 
   LoadSkyboxContext();
-
-  //LoadReflectionContext();
-
-  //LoadBlinnPhongRefractContext();
 
   //TODO: Look into this
   GLuint program = m_ContextManager.GetProgram(m_hBlinnPhong);
@@ -509,7 +488,7 @@ void Renderer::LoadContexts() noexcept
   LightArrayPrint.BlockName = "LightArray";
   LightArrayPrint.DataSize = sizeof(Light::Data) * 16;
 
-  unsigned LightingBlockPrintID = m_UniformBlockManager.CreateNewBlockPrint(LightArrayPrint);
+  unsigned LightingBlockPrintID = m_UniformBlockManager.RegisterNewBlockPrint(LightArrayPrint);
   unsigned LightingBlockID = m_UniformBlockManager.CreateNewBlock(LightingBlockPrintID, program, &ImGui::LightingDataArray[0]);
 }
 
@@ -629,9 +608,7 @@ void Renderer::LoadBlinnPhongContext() noexcept
 
   m_ContextManager.SetContext(m_hBlinnPhong);
 
-  // TODO: Convert this to a uniform block
-  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhong, "pers_matrix");
-  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhong, "view_matrix");
+  m_ContextManager.AddNewUniformAttribute(m_hBlinnPhong, "vp_matrix");
   m_ContextManager.AddNewUniformAttribute(m_hBlinnPhong, "cam_position");
 
   // TODO: Convert this to a uniform block

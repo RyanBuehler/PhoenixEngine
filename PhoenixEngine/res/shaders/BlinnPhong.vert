@@ -5,8 +5,9 @@ Author: Ryan Buehler
 #version 460 core
 
 // Per Scene
-uniform mat4 pers_matrix;
-uniform mat4 view_matrix;
+uniform mat4 vp_matrix;
+//uniform mat4 pers_matrix;
+//uniform mat4 view_matrix;
 
 // Per Object
 uniform mat4 model_matrix;
@@ -30,5 +31,5 @@ void main(void)
   // Pass the texture coordinates
   uv = texcoord;
 
-  gl_Position = pers_matrix * view_matrix * world_position;
+  gl_Position = vp_matrix * world_position;
 }

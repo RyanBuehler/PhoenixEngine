@@ -24,7 +24,7 @@ public:
   UniformBlockManager(UniformBlockManager&&) = delete;
   UniformBlockManager& operator=(UniformBlockManager&&) = delete;
 
-  unsigned CreateNewBlockPrint(const UniformBlockPrint& BlockPrint) noexcept;
+  unsigned RegisterNewBlockPrint(const UniformBlockPrint& BlockPrint) noexcept;
   unsigned CreateNewBlock(unsigned BlockPrintID, GLuint ProgramID, void* DataPtr);
 
   void SendData(unsigned BlockID) const noexcept;

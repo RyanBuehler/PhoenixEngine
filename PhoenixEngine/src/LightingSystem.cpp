@@ -7,8 +7,6 @@
 #include "pch.h"
 #include "LightingSystem.h"
 
-//TODO: set clamps on the scene data based on reasonable values
-
 LightingSystem::LightingSystem() noexcept :
   m_RegisteredLights(),
   m_LightingIsDirty(true),

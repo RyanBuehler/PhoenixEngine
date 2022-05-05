@@ -247,7 +247,7 @@
       <Filter>Header Files\Object\Components</Filter>
     </ClInclude>
     <ClInclude Include="src\RenderStats.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Graphics\Statistics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -354,7 +354,7 @@
       <Filter>Source Files\Object\Components</Filter>
     </ClCompile>
     <ClCompile Include="src\RenderStats.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Graphics\Statistics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

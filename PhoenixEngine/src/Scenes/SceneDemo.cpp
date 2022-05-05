@@ -134,13 +134,10 @@ void SceneDemo::ChangeScenario(int which) noexcept
 
 void SceneDemo::Scenario1() noexcept
 {
-  for (int i = 0; i < 16; ++i)
+  for (int i = 0; i < 18; ++i)
   {
-    m_GameObjectArray.emplace_back(GameObject());
+    m_GameObjectArray.emplace_back();
   }
-
-  m_GameObjectArray.emplace_back(GameObject());
-  m_GameObjectArray.emplace_back(GameObject());
 
   m_MainCamera.SetPosition({ 2.f, 2.f, 10.f });
 
@@ -220,12 +217,10 @@ void SceneDemo::Scenario1() noexcept
 
 void SceneDemo::Scenario2() noexcept
 {
-  for (int i = 0; i < 16; ++i)
+  for (int i = 0; i < 18; ++i)
   {
-    m_GameObjectArray.emplace_back(GameObject());
+    m_GameObjectArray.emplace_back();
   }
-  m_GameObjectArray.emplace_back(GameObject());
-  m_GameObjectArray.emplace_back(GameObject());
 
   m_MainCamera.SetPosition({ 2.f, 2.f, 10.f });
 
@@ -340,12 +335,10 @@ void SceneDemo::Scenario2() noexcept
 
 void SceneDemo::Scenario3() noexcept
 {
-  for (int i = 0; i < 16; ++i)
+  for (int i = 0; i < 18; ++i)
   {
-    m_GameObjectArray.emplace_back(GameObject());
+    m_GameObjectArray.emplace_back();
   }
-  m_GameObjectArray.emplace_back(GameObject());
-  m_GameObjectArray.emplace_back(GameObject());
 
   m_MainCamera.SetPosition({ 2.f, 2.f, 10.f });
 

@@ -74,7 +74,7 @@ public:
   void AddNewUniformAttribute(unsigned contextIndex, const string& name);
   void AddNewVertexAttribute(unsigned contextIndex, const VertexAttribute& vertexAttribute);
 
-  bool ReloadContext(GLuint programID, GLint vertexShaderID, GLint fragmentShaderID) noexcept;
+  /*bool ReloadContext(GLuint programID, GLint vertexShaderID, GLint fragmentShaderID) noexcept;*/
 
 private:
   vector<Context> m_Contexts;

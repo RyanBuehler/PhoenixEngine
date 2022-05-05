@@ -9,11 +9,11 @@
 #include "PNGReader.h"
 
 Cubemap::Cubemap(const char* filenames[6], const string& CubemapName) noexcept :
-  m_CubemapID(Error::INVALID_INDEX),
+  m_hCubemap(Error::INVALID_INDEX),
   m_CubemapName(CubemapName)
 {
-  glGenTextures(1, &m_CubemapID);
-  glBindTexture(GL_TEXTURE_CUBE_MAP, m_CubemapID);
+  glGenTextures(1, &m_hCubemap);
+  glBindTexture(GL_TEXTURE_CUBE_MAP, m_hCubemap);
 
   // Load the 6 faces
   for (unsigned i = 0; i < 6; ++i)
@@ -57,7 +57,7 @@ Cubemap::Cubemap(const char* filenames[6], const string& CubemapName) noexcept :
 
 GLuint Cubemap::GetID()
 {
-  return m_CubemapID;
+  return m_hCubemap;
 }
 
 const string& Cubemap::GetName()
