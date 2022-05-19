@@ -14,17 +14,17 @@
 class ImGuiManager;
 namespace ImGui
 {
-  extern unique_ptr<ImGuiManager> Manager;
-  extern bool GraphicsWindowEnabled;
-  extern bool GraphicsDebugRenderVertexNormals;
-  extern bool GraphicsDebugRenderSurfaceNormals;
-  extern float GraphicsDebugNormalLength;
-  extern float GraphicsFPS;
-  extern bool GraphicsRebuildShaders;
-  extern bool GraphicsRebuildMeshes;
-  extern int GraphicsSelectedShader;
-  extern UV::Generation GraphicsSelectedProjection;
-  extern GLuint GraphicsDisplayTexture[6];
+  extern unique_ptr<ImGuiManager> MANAGER;
+  extern bool GRAPHICS_WINDOW_ENABLED;
+  extern bool GRAPHICS_DEBUG_RENDER_VERTEX_NORMALS;
+  extern bool GRAPHICS_DEBUG_RENDER_SURFACE_NORMALS;
+  extern float GRAPHICS_DEBUG_NORMAL_LENGTH;
+  extern float GRAPHICS_FPS;
+  extern bool GRAPHICS_REBUILD_SHADERS;
+  extern bool GRAPHICS_REBUILD_MESHES;
+  extern int GRAPHICS_SELECTED_SHADER;
+  extern UV::Generation GRAPHICS_SELECTED_PROJECTION;
+  extern GLuint GRAPHICS_DISPLAY_TEXTURE[6];
   extern float GraphicsRefractSlider;
   extern float GraphicsRedIOR;
   extern float GraphicsGreenIOR;
@@ -32,15 +32,15 @@ namespace ImGui
   extern bool GraphicsRefractEnabled;
   extern bool GraphicsReflectEnabled;
 
-  extern int SceneScenario;
-  extern bool SceneDrawOrbit;
-  extern bool SceneOrbitObjects;
+  extern int SCENE_SCENARIO;
+  extern bool SCENE_DRAW_ORBIT;
+  extern bool SCENE_ORBIT_OBJECTS;
   
-  extern LightingSystem::GlobalLightingData LightingGlobalData;
-  extern Light::Data LightingDataArray[16];
-  extern int LightingCurrentLight;
-  extern int LightingActiveLights;
-  extern Material LightingGlobalMaterial;
+  extern LightingSystem::GlobalLightingData LIGHTING_GLOBAL_DATA;
+  extern Light::Data LIGHTING_DATA_ARRAY[16];
+  extern int LIGHTING_CURRENT_LIGHT;
+  extern int LIGHTING_ACTIVE_LIGHTS;
+  extern Material LIGHTING_GLOBAL_MATERIAL;
 
   enum class DemoObject
   {
@@ -56,8 +56,8 @@ namespace ImGui
     COUNT
   };
 
-  extern DemoObject DemoObjectMain;
-  extern const char* DemoObjectFile;
+  extern DemoObject DEMO_OBJECT_MAIN;
+  extern const char* DEMO_OBJECT_FILE;
 }
 
 struct GLFWwindow;
@@ -65,7 +65,7 @@ struct GLFWwindow;
 class ImGuiManager
 {
 public:
-  ImGuiManager(GLFWwindow* window) noexcept;
+  ImGuiManager(GLFWwindow* Window) noexcept;
   ~ImGuiManager() = default;
   ImGuiManager(const ImGuiManager&) = delete;
   ImGuiManager& operator=(const ImGuiManager&) = delete;
@@ -73,13 +73,13 @@ public:
   ImGuiManager& operator=(ImGuiManager&&) = delete;
 
   void OnImGuiUpdateStart() noexcept;
-  void OnImGuiUpdateEnd() noexcept;
-  void OnImGuiClose() noexcept;
+  static void OnImGuiUpdateEnd() noexcept;
+  static void OnImGuiClose() noexcept;
   void OnImGuiGraphicsUpdate() noexcept;
 
-  void SetOnCloseHandler(function<void()> callback);
-  void SetOnSceneChangeHandler(function<void(SceneManager::Scene)> callback);
-  void SetOnDemoObjectHandler(function<void()> callback);
+  void SetOnCloseHandler(function<void()> Callback);
+  void SetOnSceneChangeHandler(function<void(SceneManager::Scene)> Callback);
+  void SetOnDemoObjectHandler(function<void()> Callback);
 
 private:
   function<void()> m_dOnClose;
@@ -88,16 +88,16 @@ private:
   function<void()> m_dOnRebuildShaders;
 
   void ShowMainMenu() noexcept;
-  void ShowMainMenu_File() noexcept;
-  void ShowMainMenu_Edit() noexcept;
-  void ShowMainMenu_About() noexcept;
+  void ShowMainMenu_File() const noexcept;
+  void ShowMainMenu_Edit() const noexcept;
+  void ShowMainMenu_About() const noexcept;
 
-  void graphicsUpdateStats() noexcept;
-  void graphicsUpdateObjects() noexcept;
+  void graphicsUpdateStats() const noexcept;
+  void graphicsUpdateObjects() const noexcept;
   void graphicsUpdateRendering() noexcept;
-  void graphicsUpdateControls() noexcept;
-  void graphicsUpdateLighting() noexcept;
-  void graphicsUpdateTexture() noexcept;
+  static void graphicsUpdateControls() noexcept;
+  void graphicsUpdateLighting() const noexcept;
+  static void graphicsUpdateTexture() noexcept;
 
   bool m_bRenderAxes;
   float m_DebugLineWidth;

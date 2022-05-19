@@ -7,6 +7,8 @@
 #include "pch.h"
 #pragma warning( push, 0 )
 #include "ImGuiManager.h"
+
+#include <utility>
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
@@ -27,7 +29,7 @@ namespace
   static const ImVec4 IMGREEN(0.f, 1.f, 0.f, 1.f);
   static const ImVec4 IMCYAN(0.f, 1.f, 0.5f, 1.f);
 
-  static const ImGui::DemoObject DEMOOBJECTS[(size_t)ImGui::DemoObject::COUNT] =
+  static const ImGui::DemoObject DEMOOBJECTS[static_cast<size_t>(ImGui::DemoObject::COUNT)] =
   {
     ImGui::DemoObject::Bunny,
     ImGui::DemoObject::BunnyHighPoly,
@@ -40,7 +42,7 @@ namespace
     ImGui::DemoObject::StarWars
   };
 
-  static const char* DEMOOBJECTNAMES[(size_t)ImGui::DemoObject::COUNT] =
+  static const char* DEMOOBJECTNAMES[static_cast<size_t>(ImGui::DemoObject::COUNT)] =
   {
     "Bunny",
     "BunnyHighPoly",
@@ -53,7 +55,7 @@ namespace
     "StarWars"
   };
 
-  static const char* DEMOOBJECTFILENAMES[(size_t)ImGui::DemoObject::COUNT] =
+  static const char* DEMOOBJECTFILENAMES[static_cast<size_t>(ImGui::DemoObject::COUNT)] =
   {
     "bunny.obj",
     "bunny_high_poly.obj",
@@ -80,17 +82,17 @@ namespace
 // Instantiation
 namespace ImGui
 {
-  unique_ptr<ImGuiManager> Manager;
-  bool GraphicsWindowEnabled = true;
-  bool GraphicsDebugRenderVertexNormals = false;
-  bool GraphicsDebugRenderSurfaceNormals = false;
-  float GraphicsDebugNormalLength = 0.05f;
-  float GraphicsFPS = 0.0f;
-  bool GraphicsRebuildShaders = false;
-  bool GraphicsRebuildMeshes = false;
-  int GraphicsSelectedShader = 3;
-  UV::Generation GraphicsSelectedProjection = UV::Generation::PLANAR;
-  GLuint GraphicsDisplayTexture[6] =
+  unique_ptr<ImGuiManager> MANAGER;
+  bool GRAPHICS_WINDOW_ENABLED = true;
+  bool GRAPHICS_DEBUG_RENDER_VERTEX_NORMALS = false;
+  bool GRAPHICS_DEBUG_RENDER_SURFACE_NORMALS = false;
+  float GRAPHICS_DEBUG_NORMAL_LENGTH = 0.05f;
+  float GRAPHICS_FPS = 0.0f;
+  bool GRAPHICS_REBUILD_SHADERS = false;
+  bool GRAPHICS_REBUILD_MESHES = false;
+  int GRAPHICS_SELECTED_SHADER = 3;
+  UV::Generation GRAPHICS_SELECTED_PROJECTION = UV::Generation::PLANAR;
+  GLuint GRAPHICS_DISPLAY_TEXTURE[6] =
   {
     Error::INVALID_INDEX,
     Error::INVALID_INDEX,
@@ -106,21 +108,21 @@ namespace ImGui
   //bool GraphicsRefractEnabled = true;
   //bool GraphicsReflectEnabled = true;
 
-  int SceneScenario = 2;
-  bool SceneDrawOrbit = false;
-  bool SceneOrbitObjects = true;
+  int SCENE_SCENARIO = 2;
+  bool SCENE_DRAW_ORBIT = false;
+  bool SCENE_ORBIT_OBJECTS = true;
 
-  LightingSystem::GlobalLightingData LightingGlobalData;
-  Light::Data LightingDataArray[16];
-  int LightingCurrentLight = 0;
-  int LightingActiveLights = 8;
-  Material LightingGlobalMaterial;
+  LightingSystem::GlobalLightingData LIGHTING_GLOBAL_DATA;
+  Light::Data LIGHTING_DATA_ARRAY[16];
+  int LIGHTING_CURRENT_LIGHT = 0;
+  int LIGHTING_ACTIVE_LIGHTS = 8;
+  Material LIGHTING_GLOBAL_MATERIAL;
 
-  DemoObject DemoObjectMain = DemoObject::Lucy;
-  const char* DemoObjectFile = DEMOOBJECTFILENAMES[(size_t)DemoObject::Lucy];
+  DemoObject DEMO_OBJECT_MAIN = DemoObject::Lucy;
+  const char* DEMO_OBJECT_FILE = DEMOOBJECTFILENAMES[static_cast<size_t>(DemoObject::Lucy)];
 }
 
-ImGuiManager::ImGuiManager(GLFWwindow* window) noexcept :
+ImGuiManager::ImGuiManager(GLFWwindow* Window) noexcept :
   m_bRenderAxes(false),
   m_DebugLineWidth(1.f)
 {
@@ -133,7 +135,7 @@ ImGuiManager::ImGuiManager(GLFWwindow* window) noexcept :
   glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
 #else
     // GL 3.0 + GLSL 130
-  const char* glsl_version = "#version 130";
+  const char* glslVersion = "#version 130";
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 #endif
@@ -148,9 +150,9 @@ ImGuiManager::ImGuiManager(GLFWwindow* window) noexcept :
   // Setup Dear ImGui style
   ImGui::StyleColorsDark();
 
-  // Setup Platform/Renderer backends
-  ImGui_ImplGlfw_InitForOpenGL(window, true);
-  ImGui_ImplOpenGL3_Init(glsl_version);
+  // Setup Platform/Renderer backend
+  ImGui_ImplGlfw_InitForOpenGL(Window, true);
+  ImGui_ImplOpenGL3_Init(glslVersion);
 }
 
 void ImGuiManager::OnImGuiUpdateStart() noexcept
@@ -162,7 +164,7 @@ void ImGuiManager::OnImGuiUpdateStart() noexcept
 
   ShowMainMenu();
 
-  ImGui::DockSpaceOverViewport(NULL, ImGuiDockNodeFlags_NoDockingInCentralNode | ImGuiDockNodeFlags_PassthruCentralNode);
+  ImGui::DockSpaceOverViewport(nullptr, ImGuiDockNodeFlags_NoDockingInCentralNode | ImGuiDockNodeFlags_PassthruCentralNode);
 
   //static bool dopen = true;
   //ImGui::ShowDemoWindow(&dopen);
@@ -185,7 +187,7 @@ void ImGuiManager::OnImGuiClose() noexcept
 void ImGuiManager::OnImGuiGraphicsUpdate() noexcept
 {
   ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
-  ImGui::Begin("Graphics Settings", &ImGui::GraphicsWindowEnabled);
+  ImGui::Begin("Graphics Settings", &ImGui::GRAPHICS_WINDOW_ENABLED);
 
   graphicsUpdateStats();
 
@@ -222,19 +224,19 @@ void ImGuiManager::OnImGuiGraphicsUpdate() noexcept
   ImGui::End();
 }
 
-void ImGuiManager::SetOnCloseHandler(std::function<void()> callback)
+void ImGuiManager::SetOnCloseHandler(std::function<void()> Callback)
 {
-  m_dOnClose = callback;
+  m_dOnClose = std::move(Callback);
 }
 
-void ImGuiManager::SetOnSceneChangeHandler(function<void(SceneManager::Scene)> callback)
+void ImGuiManager::SetOnSceneChangeHandler(function<void(SceneManager::Scene)> Callback)
 {
-  m_dOnSceneChange = callback;
+  m_dOnSceneChange = std::move(Callback);
 }
 
-void ImGuiManager::SetOnDemoObjectHandler(function<void()> callback)
+void ImGuiManager::SetOnDemoObjectHandler(function<void()> Callback)
 {
-  m_dOnDemoObjectChange = callback;
+  m_dOnDemoObjectChange = std::move(Callback);
 }
 
 void ImGuiManager::ShowMainMenu() noexcept
@@ -260,7 +262,7 @@ void ImGuiManager::ShowMainMenu() noexcept
   }
 }
 
-void ImGuiManager::ShowMainMenu_File() noexcept
+void ImGuiManager::ShowMainMenu_File() const noexcept
 {
   if (ImGui::MenuItem("Demo Scene", ""))
   {
@@ -276,21 +278,21 @@ void ImGuiManager::ShowMainMenu_File() noexcept
   }
 }
 
-void ImGuiManager::ShowMainMenu_Edit() noexcept
+void ImGuiManager::ShowMainMenu_Edit() const noexcept
 {
-  if (ImGui::MenuItem("Graphics Window Enabled", "", ImGui::GraphicsWindowEnabled))
+  if (ImGui::MenuItem("Graphics Window Enabled", "", ImGui::GRAPHICS_WINDOW_ENABLED))
   {
-    ImGui::GraphicsWindowEnabled = !ImGui::GraphicsWindowEnabled;
+    ImGui::GRAPHICS_WINDOW_ENABLED = !ImGui::GRAPHICS_WINDOW_ENABLED;
   }
 }
 
-void ImGuiManager::ShowMainMenu_About() noexcept
+void ImGuiManager::ShowMainMenu_About() const noexcept
 {
   if (ImGui::MenuItem("Phoenix Engine", PE_VERSION, false, false)) {}  // Disabled item
   if (ImGui::MenuItem("Author", "Ryan Buehler", false, false)) {}      // Disabled item
 }
 
-void ImGuiManager::graphicsUpdateStats() noexcept
+void ImGuiManager::graphicsUpdateStats() const noexcept
 {
   ImGui::TextColored(IMCYAN, "Graphics Statistics");
   ImGui::TextColored(IMCYAN, "-------------------");
@@ -303,7 +305,7 @@ void ImGuiManager::graphicsUpdateStats() noexcept
   IMGUISPACE;
   
   ImGui::TextColored(IMGREEN, "FPS: "); ImGui::SameLine();
-  ImGui::Text("[%.2f]", ImGui::GraphicsFPS);
+  ImGui::Text("[%.2f]", ImGui::GRAPHICS_FPS);
   
   IMGUISPACE;
 
@@ -311,13 +313,13 @@ void ImGuiManager::graphicsUpdateStats() noexcept
   static const char* ShaderString = SHADERNAMES[0];
   if (ImGui::BeginCombo("##Selected Shader", ShaderString))
   {
-    for (int i = 0; i < sizeof(SHADERNAMES) / sizeof(SHADERNAMES[0]); ++i)
+    for (int i = 0; i < std::size(SHADERNAMES); ++i)
     {
       ImGui::PushID((void*)SHADERNAMES[i]);
-      if (ImGui::Selectable(SHADERNAMES[i], ImGui::GraphicsSelectedShader == i))
+      if (ImGui::Selectable(SHADERNAMES[i], ImGui::GRAPHICS_SELECTED_SHADER == i))
       {
         ShaderString = SHADERNAMES[i];
-        ImGui::GraphicsSelectedShader = i;
+        ImGui::GRAPHICS_SELECTED_SHADER = i;
       }
       ImGui::PopID();
     }
@@ -498,11 +500,11 @@ void ImGuiManager::graphicsUpdateStats() noexcept
 
   if (ImGui::Button("Rebuild Shaders", { 120, 32 }))
   {
-    ImGui::GraphicsRebuildShaders = true;
+    ImGui::GRAPHICS_REBUILD_SHADERS = true;
   }
 }
 
-void ImGuiManager::graphicsUpdateObjects() noexcept
+void ImGuiManager::graphicsUpdateObjects() const noexcept
 {
   ImGui::TextColored(IMCYAN, "Global Object Settings");
   ImGui::TextColored(IMCYAN, "----------------------");
@@ -510,16 +512,16 @@ void ImGuiManager::graphicsUpdateObjects() noexcept
   IMGUISPACE;
 
   ImGui::TextColored(IMGREEN, "Demo Object: "); ImGui::SameLine();
-  static const char* DemoObjectString = DEMOOBJECTNAMES[(size_t)ImGui::DemoObjectMain];
+  static const char* DemoObjectString = DEMOOBJECTNAMES[static_cast<size_t>(ImGui::DEMO_OBJECT_MAIN)];
   if (ImGui::BeginCombo("##Demo Object", DemoObjectString))
   {
-    for (int i = 0; i < (size_t)ImGui::DemoObject::COUNT; ++i)
+    for (int i = 0; i < static_cast<size_t>(ImGui::DemoObject::COUNT); ++i)
     {
       ImGui::PushID((void*)DEMOOBJECTNAMES[i]);
-      if (ImGui::Selectable(DEMOOBJECTNAMES[i], ImGui::DemoObjectMain == DEMOOBJECTS[i]))
+      if (ImGui::Selectable(DEMOOBJECTNAMES[i], ImGui::DEMO_OBJECT_MAIN == DEMOOBJECTS[i]))
       {
-        ImGui::DemoObjectMain = DEMOOBJECTS[i];
-        ImGui::DemoObjectFile = DEMOOBJECTFILENAMES[i];
+        ImGui::DEMO_OBJECT_MAIN = DEMOOBJECTS[i];
+        ImGui::DEMO_OBJECT_FILE = DEMOOBJECTFILENAMES[i];
         DemoObjectString = DEMOOBJECTNAMES[i];
         m_dOnDemoObjectChange();
       }
@@ -530,17 +532,17 @@ void ImGuiManager::graphicsUpdateObjects() noexcept
   }
 
   ImGui::TextColored(IMGREEN, "Enable Orbiting: "); ImGui::SameLine();
-  ImGui::Checkbox("##Enable Orbiting", &ImGui::SceneOrbitObjects);
+  ImGui::Checkbox("##Enable Orbiting", &ImGui::SCENE_ORBIT_OBJECTS);
 
   if (ImGui::Button("Scenario 1", { 140, 40 }))
   {
-    ImGui::SceneScenario = 1;
+    ImGui::SCENE_SCENARIO = 1;
     m_dOnSceneChange(SceneManager::Scene::SceneDemo);
   }
   ImGui::SameLine();
   if (ImGui::Button("Scenario 2", { 140, 40 }))
   {
-    ImGui::SceneScenario = 2;
+    ImGui::SCENE_SCENARIO = 2;
     m_dOnSceneChange(SceneManager::Scene::SceneDemo);
   }
   //ImGui::SameLine();
@@ -554,7 +556,7 @@ void ImGuiManager::graphicsUpdateObjects() noexcept
   //}
 }
 
-void ImGuiManager::graphicsUpdateLighting() noexcept
+void ImGuiManager::graphicsUpdateLighting() const noexcept
 {
   if (ImGui::CollapsingHeader("Lighting"))
   {
@@ -564,21 +566,21 @@ void ImGuiManager::graphicsUpdateLighting() noexcept
     IMGUISPACE;
 
     ImGui::TextColored(IMGREEN, "Global Ambience:   "); ImGui::SameLine();
-    ImGui::ColorEdit3("##Global Ambient Intensity", &ImGui::LightingGlobalData.AmbientIntensity[0]);
+    ImGui::ColorEdit3("##Global Ambient Intensity", &ImGui::LIGHTING_GLOBAL_DATA.AmbientIntensity[0]);
     ImGui::TextColored(IMGREEN, "Fog Intensity:     "); ImGui::SameLine();
-    ImGui::ColorEdit3("##Global Fog Intensity", &ImGui::LightingGlobalData.FogIntensity[0]);
+    ImGui::ColorEdit3("##Global Fog Intensity", &ImGui::LIGHTING_GLOBAL_DATA.FogIntensity[0]);
 
     ImGui::TextColored(IMGREEN, "Fog Near: "); ImGui::SameLine();
-    ImGui::SliderFloat("##Global Fog Near", &ImGui::LightingGlobalData.FogNear, 0.f, ImGui::LightingGlobalData.FogFar);
+    ImGui::SliderFloat("##Global Fog Near", &ImGui::LIGHTING_GLOBAL_DATA.FogNear, 0.f, ImGui::LIGHTING_GLOBAL_DATA.FogFar);
     ImGui::TextColored(IMGREEN, "Fog Far:  "); ImGui::SameLine();
-    ImGui::SliderFloat("##Global Fog Far", &ImGui::LightingGlobalData.FogFar, ImGui::LightingGlobalData.FogNear, 50.f);
+    ImGui::SliderFloat("##Global Fog Far", &ImGui::LIGHTING_GLOBAL_DATA.FogFar, ImGui::LIGHTING_GLOBAL_DATA.FogNear, 50.f);
 
     ImGui::TextColored(IMGREEN, "Light Attenuation (constant):  "); ImGui::SameLine();
-    ImGui::SliderFloat("##Light Attenuation (constant)", &ImGui::LightingGlobalData.AttConstant, 0.f, 1.f);
+    ImGui::SliderFloat("##Light Attenuation (constant)", &ImGui::LIGHTING_GLOBAL_DATA.AttConstant, 0.f, 1.f);
     ImGui::TextColored(IMGREEN, "Light Attenuation  (linear):   "); ImGui::SameLine();
-    ImGui::SliderFloat("##Light Attenuation (linear)", &ImGui::LightingGlobalData.AttLinear, 0.f, 1.f);
+    ImGui::SliderFloat("##Light Attenuation (linear)", &ImGui::LIGHTING_GLOBAL_DATA.AttLinear, 0.f, 1.f);
     ImGui::TextColored(IMGREEN, "Light Attenuation (quadratic): "); ImGui::SameLine();
-    ImGui::SliderFloat("##Light Attenuation (quadratic)", &ImGui::LightingGlobalData.AttQuadratic, 0.f, 1.f);
+    ImGui::SliderFloat("##Light Attenuation (quadratic)", &ImGui::LIGHTING_GLOBAL_DATA.AttQuadratic, 0.f, 1.f);
 
     IMGUISPACE;
     IMGUISPACE;
@@ -589,12 +591,12 @@ void ImGuiManager::graphicsUpdateLighting() noexcept
     IMGUISPACE;
 
     ImGui::TextColored(IMGREEN, "Active Lights:   "); ImGui::SameLine();
-    ImGui::SliderInt("##Active Lights", &ImGui::LightingActiveLights, 0, 16);
+    ImGui::SliderInt("##Active Lights", &ImGui::LIGHTING_ACTIVE_LIGHTS, 0, 16);
 
     ImGui::TextColored(IMGREEN, "Selected Light:  "); ImGui::SameLine();
-    ImGui::SliderInt("##Selected Light", &ImGui::LightingCurrentLight, 0, 15);
+    ImGui::SliderInt("##Selected Light", &ImGui::LIGHTING_CURRENT_LIGHT, 0, 15);
 
-    Light::Data& lightData = ImGui::LightingDataArray[ImGui::LightingCurrentLight];
+    Light::Data& lightData = ImGui::LIGHTING_DATA_ARRAY[ImGui::LIGHTING_CURRENT_LIGHT];
 
     static const char* LightTypeStr = "Point";
     ImGui::TextColored(IMGREEN, "Light Type:      "); ImGui::SameLine();
@@ -654,15 +656,15 @@ void ImGuiManager::graphicsUpdateLighting() noexcept
     IMGUISPACE;
 
     ImGui::TextColored(IMGREEN, "Material Emission:     ");
-    ImGui::ColorEdit3("##Material Emission", &ImGui::LightingGlobalMaterial.m_Emissive[0]);
+    ImGui::ColorEdit3("##Material Emission", &ImGui::LIGHTING_GLOBAL_MATERIAL.m_Emissive[0]);
     ImGui::TextColored(IMGREEN, "Material Ambient:      "); ImGui::SameLine();
-    ImGui::SliderFloat("##Material Ambient", &ImGui::LightingGlobalMaterial.m_AmbientFactor, 0.f, 1.f);
+    ImGui::SliderFloat("##Material Ambient", &ImGui::LIGHTING_GLOBAL_MATERIAL.m_AmbientFactor, 0.f, 1.f);
     ImGui::TextColored(IMGREEN, "Material Diffuse:      "); ImGui::SameLine();
-    ImGui::SliderFloat("##Material Diffuse", &ImGui::LightingGlobalMaterial.m_DiffuseFactor, 0.f, 1.f);
+    ImGui::SliderFloat("##Material Diffuse", &ImGui::LIGHTING_GLOBAL_MATERIAL.m_DiffuseFactor, 0.f, 1.f);
     ImGui::TextColored(IMGREEN, "Material Specular:     "); ImGui::SameLine();
-    ImGui::SliderFloat("##Material Specular", &ImGui::LightingGlobalMaterial.m_SpecularFactor, 0.f, 1.f);
+    ImGui::SliderFloat("##Material Specular", &ImGui::LIGHTING_GLOBAL_MATERIAL.m_SpecularFactor, 0.f, 1.f);
     ImGui::TextColored(IMGREEN, "Material Specular Exp: "); ImGui::SameLine();
-    ImGui::SliderFloat("##Material Specular Exp", &ImGui::LightingGlobalMaterial.m_SpecularExp, 1.f, 1000.f);
+    ImGui::SliderFloat("##Material Specular Exp", &ImGui::LIGHTING_GLOBAL_MATERIAL.m_SpecularExp, 1.f, 1000.f);
   }
 }
 
@@ -699,28 +701,28 @@ void ImGuiManager::graphicsUpdateRendering() noexcept
     static int imguiNormals = 2;
     if (ImGui::RadioButton("Per Vertex", &imguiNormals, 0))
     {
-      ImGui::GraphicsDebugRenderVertexNormals = true;
-      ImGui::GraphicsDebugRenderSurfaceNormals = false;
+      ImGui::GRAPHICS_DEBUG_RENDER_VERTEX_NORMALS = true;
+      ImGui::GRAPHICS_DEBUG_RENDER_SURFACE_NORMALS = false;
     }
 
     ImGui::SameLine();
     if (ImGui::RadioButton("Per Triangle", &imguiNormals, 1))
     {
-      ImGui::GraphicsDebugRenderVertexNormals = false;
-      ImGui::GraphicsDebugRenderSurfaceNormals = true;
+      ImGui::GRAPHICS_DEBUG_RENDER_VERTEX_NORMALS = false;
+      ImGui::GRAPHICS_DEBUG_RENDER_SURFACE_NORMALS = true;
     }
 
     ImGui::SameLine();
     if (ImGui::RadioButton("None", &imguiNormals, 2))
     {
-      ImGui::GraphicsDebugRenderVertexNormals = false;
-      ImGui::GraphicsDebugRenderSurfaceNormals = false;
+      ImGui::GRAPHICS_DEBUG_RENDER_VERTEX_NORMALS = false;
+      ImGui::GRAPHICS_DEBUG_RENDER_SURFACE_NORMALS = false;
     }
 
     IMGUISPACE;
 
     ImGui::TextColored(IMGREEN, "Normal Length: "); ImGui::SameLine();
-    ImGui::SliderFloat("##Normal Length", &ImGui::GraphicsDebugNormalLength, 0.001f, 0.5f);
+    ImGui::SliderFloat("##Normal Length", &ImGui::GRAPHICS_DEBUG_NORMAL_LENGTH, 0.001f, 0.5f);
 
     IMGUISPACE;
 
@@ -757,13 +759,14 @@ void ImGuiManager::graphicsUpdateTexture() noexcept
 {
   for (int i = 0; i < 6; ++i)
   {
-    if (ImGui::GraphicsDisplayTexture[i] != Error::INVALID_INDEX)
+    if (ImGui::GRAPHICS_DISPLAY_TEXTURE[i] != Error::INVALID_INDEX)
     {
       if ((i + 3) % 3 != 0)
       {
         ImGui::SameLine();
       }
-      ImGui::Image((void*)(intptr_t)ImGui::GraphicsDisplayTexture[i], ImVec2(128, 128));
+      ImGui::Image(reinterpret_cast<void*>(static_cast<intptr_t>(ImGui::GRAPHICS_DISPLAY_TEXTURE[i])),
+                   ImVec2(128, 128));
     }
   }
 }

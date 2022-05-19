@@ -81,14 +81,14 @@ Window::Window(const WindowProperties& properties) :
 #ifdef _IMGUI
 
   // Set up ImGui Close Window Event
-  ImGui::Manager = make_unique<ImGuiManager>(m_WindowPtr);
+  ImGui::MANAGER = make_unique<ImGuiManager>(m_WindowPtr);
   std::function<void()> cbClose = [=]() { OnImGuiCloseWindow(); };
-  ImGui::Manager->SetOnCloseHandler(cbClose);
+  ImGui::MANAGER->SetOnCloseHandler(cbClose);
 
   // Set up ImGui Change Scene Event
   std::function<void(SceneManager::Scene scene)> cbSceneChange =
     [=](SceneManager::Scene scene) { OnImGuiChangeScene(scene); };
-  ImGui::Manager->SetOnSceneChangeHandler(cbSceneChange);
+  ImGui::MANAGER->SetOnSceneChangeHandler(cbSceneChange);
 
 #endif // _IMGUI
 
@@ -138,7 +138,7 @@ void Window::OnUpdate() noexcept
 #pragma region ImGUI
 
 #ifdef _IMGUI
-  ImGui::Manager->OnImGuiUpdateStart();
+  ImGui::MANAGER->OnImGuiUpdateStart();
 #endif // _IMGUI
 
 #pragma endregion
@@ -153,7 +153,7 @@ void Window::OnUpdate() noexcept
 #pragma region ImGUI
 
 #ifdef _IMGUI
-  ImGui::Manager->OnImGuiUpdateEnd();
+  ImGui::MANAGER->OnImGuiUpdateEnd();
 #endif // _IMGUI
 
 #pragma endregion
@@ -168,7 +168,7 @@ void Window::OnClose() noexcept
 #pragma region ImGUI
 
 #ifdef _IMGUI
-  ImGui::Manager->OnImGuiClose();
+  ImGui::MANAGER->OnImGuiClose();
 #endif // _IMGUI
 
 #pragma endregion

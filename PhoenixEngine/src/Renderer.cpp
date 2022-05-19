@@ -58,14 +58,14 @@ void Renderer::OnEndFrame() noexcept
 #pragma region ImGUI
 #ifdef _IMGUI
 
-  if (ImGui::GraphicsWindowEnabled)
+  if (ImGui::GRAPHICS_WINDOW_ENABLED)
   {
-    ImGui::Manager->OnImGuiGraphicsUpdate();
+    ImGui::MANAGER->OnImGuiGraphicsUpdate();
 
     // TODO: Cool feature, but needs to be rebuilt and relocated
-    if (ImGui::GraphicsRebuildShaders)
+    if (ImGui::GRAPHICS_REBUILD_SHADERS)
     {
-      ImGui::GraphicsRebuildShaders = false;
+      ImGui::GRAPHICS_REBUILD_SHADERS = false;
 
       //m_ShaderManager.RelinkShader(
       //  m_ContextManager.GetProgram(m_hPhongLighting),
@@ -104,16 +104,16 @@ void Renderer::OnEndFrame() noexcept
       //  "Reflection.vert", "Reflection.frag");
     }
 
-    if (ImGui::GraphicsRebuildMeshes)
+    if (ImGui::GRAPHICS_REBUILD_MESHES)
     {
-      ImGui::GraphicsRebuildMeshes = false;
+      ImGui::GRAPHICS_REBUILD_MESHES = false;
 
       m_MeshManager.UnloadMeshes();
     }
 
     for (int i = 0; i < 6; ++i)
     {
-      ImGui::GraphicsDisplayTexture[i] = envMap.GetTextureHandle(i);
+      ImGui::GRAPHICS_DISPLAY_TEXTURE[i] = envMap.GetTextureHandle(i);
     }
   }
 
@@ -128,7 +128,7 @@ void Renderer::OnEndFrame() noexcept
     m_RenderStats.OnEndFrame();
     if (m_RenderStats.GetFrameCount() % 60 == 0)
     {
-      ImGui::GraphicsFPS = m_RenderStats.GetFPS();
+      ImGui::GRAPHICS_FPS = m_RenderStats.GetFPS();
     }
   }
 }
@@ -160,7 +160,7 @@ void Renderer::RenderScene(vector<GameObject>& gameObjects, Camera& activeCamera
   //DebugRenderer::I().RenderPermanentLines();
 
 
-  if (ImGui::GraphicsDebugRenderSurfaceNormals)
+  if (ImGui::GRAPHICS_DEBUG_RENDER_SURFACE_NORMALS)
   {
     // RenderNormals(id, ImGui::GraphicsDebugNormalLength);
     // Render our list of game objects
@@ -175,7 +175,7 @@ void Renderer::RenderScene(vector<GameObject>& gameObjects, Camera& activeCamera
     }
     glUseProgram(0u);
   }
-  else if (ImGui::GraphicsDebugRenderVertexNormals)
+  else if (ImGui::GRAPHICS_DEBUG_RENDER_VERTEX_NORMALS)
   {
     m_ContextManager.SetContext(m_hDebugContext);
 
@@ -278,7 +278,7 @@ void Renderer::RenderFirstPass(vector<GameObject>& gameObjects)
       // Set Cam Position
       glUniform3fv(uniforms[2].ID, 1, &activeCamera.GetPosition()[0]);
 
-      const LightingSystem::GlobalLightingData& globalLighting = ImGui::LightingGlobalData;
+      const LightingSystem::GlobalLightingData& globalLighting = ImGui::LIGHTING_GLOBAL_DATA;
       glUniform3fv(uniforms[3].ID, 1, &globalLighting.AmbientIntensity[0]);
       glUniform3fv(uniforms[4].ID, 1, &globalLighting.FogIntensity[0]);
       glUniform1f(uniforms[5].ID, globalLighting.FogNear);
@@ -331,7 +331,7 @@ void Renderer::RenderSecondPass(vector<GameObject>& gameObjects, Camera& activeC
     // Set Cam Position
     glUniform3fv(uniforms[x++].ID, 1, &activeCamera.GetPosition()[0]);
 
-    const LightingSystem::GlobalLightingData& globalLighting = ImGui::LightingGlobalData;
+    const LightingSystem::GlobalLightingData& globalLighting = ImGui::LIGHTING_GLOBAL_DATA;
     glUniform3fv(uniforms[x++].ID, 1, &globalLighting.AmbientIntensity[0]);
     glUniform3fv(uniforms[x++].ID, 1, &globalLighting.FogIntensity[0]);
     glUniform1f(uniforms[x++].ID, globalLighting.FogNear);
@@ -388,7 +388,7 @@ void Renderer::RenderGameObject(GameObject& gameObject)
     if (meshCompPtr->GetMeshID() == Error::INVALID_INDEX)
     {
       const string& meshFile = meshCompPtr->GetMeshFileName();
-      meshCompPtr->SetMeshID(m_MeshManager.LoadMesh(meshFile, true, true, ImGui::GraphicsSelectedProjection));
+      meshCompPtr->SetMeshID(m_MeshManager.LoadMesh(meshFile, true, true, ImGui::GRAPHICS_SELECTED_PROJECTION));
       if (meshCompPtr->GetMeshID() == Error::INVALID_INDEX)
       {
         Log::Error("Could not load mesh: " + meshFile);
@@ -407,7 +407,7 @@ void Renderer::RenderGameObject(GameObject& gameObject)
   const Material& mat =
     meshCompPtr->GetMaterial().GetType() != Material::Type::GLOBAL ?
     meshCompPtr->GetMaterial() :
-    ImGui::LightingGlobalMaterial;
+    ImGui::LIGHTING_GLOBAL_MATERIAL;
 
   // Mat emissive
   glUniform3fv(uniforms[x++].ID, 1, &mat.GetEmissive()[0]);
@@ -483,7 +483,7 @@ void Renderer::LoadContexts() noexcept
   LightArrayPrint.DataSize = sizeof(Light::Data) * 16;
 
   const unsigned lightingBlockPrintId = m_UniformBlockManager.RegisterNewBlockPrint(LightArrayPrint);
-  unsigned lightingBlockId = m_UniformBlockManager.CreateNewBlock(lightingBlockPrintId, program, &ImGui::LightingDataArray[0]);
+  unsigned lightingBlockId = m_UniformBlockManager.CreateNewBlock(lightingBlockPrintId, program, &ImGui::LIGHTING_DATA_ARRAY[0]);
 }
 
 //void Renderer::LoadDiffuseContext() noexcept

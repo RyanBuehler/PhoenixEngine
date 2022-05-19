@@ -19,7 +19,7 @@ SceneSingleObject::SceneSingleObject() noexcept :
 {
   m_MainCamera.SetName("Scene Single Object Camera");
   Log::Trace("Scene Single Object Created.");
-  ImGui::Manager->SetOnDemoObjectHandler(std::bind(&SceneSingleObject::OnDemoObjectChangeEvent, this));
+  ImGui::MANAGER->SetOnDemoObjectHandler(std::bind(&SceneSingleObject::OnDemoObjectChangeEvent, this));
 }
 
 void SceneSingleObject::OnLoad() noexcept
@@ -91,7 +91,7 @@ void SceneSingleObject::OnDemoObjectChangeEvent()
 {
   auto MC = m_GameObjectArray[0].GetFirstComponentByType(Component::Type::MESH);
   auto MCP = dynamic_pointer_cast<MeshComponent>(MC.value());
-  MCP->SetMeshFileName(ImGui::DemoObjectFile);
+  MCP->SetMeshFileName(ImGui::DEMO_OBJECT_FILE);
 }
 
 Camera& SceneSingleObject::GetCurrentCamera() noexcept

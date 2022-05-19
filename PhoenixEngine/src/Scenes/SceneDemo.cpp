@@ -25,7 +25,7 @@ SceneDemo::SceneDemo() noexcept :
 {
   m_MainCamera.SetName("Demo Scene Camera");
   Log::Trace("'Demo' Scene Created.");
-  ImGui::Manager->SetOnDemoObjectHandler([this] { OnDemoObjectChangeEvent(); });
+  ImGui::MANAGER->SetOnDemoObjectHandler([this] { OnDemoObjectChangeEvent(); });
   AssetLoader::LoadFBX(("res/models/suzanne.fbx"));
 
 }
@@ -38,7 +38,7 @@ void SceneDemo::OnLoad() noexcept
 void SceneDemo::OnInit() noexcept
 {
   m_Time = 0;
-  switch (ImGui::SceneScenario)
+  switch (ImGui::SCENE_SCENARIO)
   {
   case 2:
     Scenario2();
@@ -59,22 +59,22 @@ void SceneDemo::OnUpdate(const float Dt) noexcept
 
   for (int i = 0; i < 16; ++i)
   {
-    if (i + 1 <= ImGui::LightingActiveLights)
+    if (i + 1 <= ImGui::LIGHTING_ACTIVE_LIGHTS)
     {
       m_GameObjectArray[i].SetIsActive(true);
-      ImGui::LightingDataArray[i].IsActive = true;
+      ImGui::LIGHTING_DATA_ARRAY[i].IsActive = true;
     }
     else
     {
       m_GameObjectArray[i].SetIsActive(false);
-      ImGui::LightingDataArray[i].IsActive = false;
+      ImGui::LIGHTING_DATA_ARRAY[i].IsActive = false;
     }
-    if (ImGui::SceneOrbitObjects)
+    if (ImGui::SCENE_ORBIT_OBJECTS)
     {
       m_GameObjectArray[i].RotateAround(5.f * Dt, vec3(0.f, 1.f, 0.f));
     }
-    ImGui::LightingDataArray[i].Position = vec4(m_GameObjectArray[i].GetPosition(), 1.f);
-    ImGui::LightingDataArray[i].Direction = vec4(vec3(0.f, -0.3f, 0.f) - m_GameObjectArray[i].GetPosition(), 1.f);
+    ImGui::LIGHTING_DATA_ARRAY[i].Position = vec4(m_GameObjectArray[i].GetPosition(), 1.f);
+    ImGui::LIGHTING_DATA_ARRAY[i].Direction = vec4(vec3(0.f, -0.3f, 0.f) - m_GameObjectArray[i].GetPosition(), 1.f);
   }
 }
 
@@ -122,7 +122,7 @@ void SceneDemo::OnDemoObjectChangeEvent()
 {
   auto MC = m_GameObjectArray[17].GetFirstComponentByType(Component::Type::MESH);
   auto MCP = dynamic_pointer_cast<MeshComponent>(MC.value());
-  MCP->SetMeshFileName(ImGui::DemoObjectFile);
+  MCP->SetMeshFileName(ImGui::DEMO_OBJECT_FILE);
 }
 
 Camera& SceneDemo::GetCurrentCamera() noexcept
@@ -173,10 +173,10 @@ void SceneDemo::Scenario1() noexcept
 
   for (int i = 0; i < 8; ++i)
   {
-    ImGui::LightingDataArray[i].Type = Light::POINT_LIGHT;
-    ImGui::LightingDataArray[i].DiffuseIntensity = DIFFFACTOR * Colors::CYAN;
-    ImGui::LightingDataArray[i].AmbientIntensity = AMBFACTOR * Colors::CYAN;
-    ImGui::LightingDataArray[i].SpecularIntensity = SPECFACTOR * Colors::CYAN;
+    ImGui::LIGHTING_DATA_ARRAY[i].Type = Light::POINT_LIGHT;
+    ImGui::LIGHTING_DATA_ARRAY[i].DiffuseIntensity = DIFFFACTOR * Colors::CYAN;
+    ImGui::LIGHTING_DATA_ARRAY[i].AmbientIntensity = AMBFACTOR * Colors::CYAN;
+    ImGui::LIGHTING_DATA_ARRAY[i].SpecularIntensity = SPECFACTOR * Colors::CYAN;
     mat.SetEmissive(Colors::CYAN);
     m_GameObjectArray[i].SetMaterial(mat);
   }
@@ -205,7 +205,7 @@ void SceneDemo::Scenario1() noexcept
 
   // Main object
   auto mainMeshComp = dynamic_pointer_cast<MeshComponent>(m_GameObjectArray[17].AddComponent(Component::Type::MESH));
-  mainMeshComp->SetMeshFileName(ImGui::DemoObjectFile);
+  mainMeshComp->SetMeshFileName(ImGui::DEMO_OBJECT_FILE);
   mainMeshComp->SetMaterial(Material::Type::BASIC);
   mainMeshComp->SetIsActive(true);
   m_GameObjectArray[17].SetPosition(vec3(0.f));
@@ -238,7 +238,7 @@ void SceneDemo::Scenario2() noexcept
     m_GameObjectArray[i].ScaleBy(0.1f);
     m_GameObjectArray[i].SetMaterial(Material::Type::LIGHT);
     m_GameObjectArray[i].SetIsActive(false);
-    ImGui::LightingDataArray[i].Type = Light::SPOT_LIGHT;
+    ImGui::LIGHTING_DATA_ARRAY[i].Type = Light::SPOT_LIGHT;
   }
   for (int i = 8; i < 16; ++i)
   {
@@ -254,52 +254,52 @@ void SceneDemo::Scenario2() noexcept
   }
 
   Material mat = Material::Type::LIGHT;
-  ImGui::LightingDataArray[0].DiffuseIntensity = DIFFFACTOR * Colors::RED;
-  ImGui::LightingDataArray[0].AmbientIntensity = AMBFACTOR * Colors::RED;
-  ImGui::LightingDataArray[0].SpecularIntensity = Colors::RED;
+  ImGui::LIGHTING_DATA_ARRAY[0].DiffuseIntensity = DIFFFACTOR * Colors::RED;
+  ImGui::LIGHTING_DATA_ARRAY[0].AmbientIntensity = AMBFACTOR * Colors::RED;
+  ImGui::LIGHTING_DATA_ARRAY[0].SpecularIntensity = Colors::RED;
   mat.SetEmissive(Colors::RED);
 
   m_GameObjectArray[0].SetMaterial(mat);
 
-  ImGui::LightingDataArray[1].DiffuseIntensity = DIFFFACTOR * Colors::YELLOW;
-  ImGui::LightingDataArray[1].AmbientIntensity = AMBFACTOR * Colors::YELLOW;
-  ImGui::LightingDataArray[1].SpecularIntensity = SPECFACTOR * Colors::YELLOW;
+  ImGui::LIGHTING_DATA_ARRAY[1].DiffuseIntensity = DIFFFACTOR * Colors::YELLOW;
+  ImGui::LIGHTING_DATA_ARRAY[1].AmbientIntensity = AMBFACTOR * Colors::YELLOW;
+  ImGui::LIGHTING_DATA_ARRAY[1].SpecularIntensity = SPECFACTOR * Colors::YELLOW;
   mat.SetEmissive(Colors::YELLOW);
   m_GameObjectArray[1].SetMaterial(mat);
 
-  ImGui::LightingDataArray[2].DiffuseIntensity = DIFFFACTOR * Colors::BLUE;
-  ImGui::LightingDataArray[2].AmbientIntensity = AMBFACTOR * Colors::BLUE;
-  ImGui::LightingDataArray[2].SpecularIntensity = SPECFACTOR * Colors::BLUE;
+  ImGui::LIGHTING_DATA_ARRAY[2].DiffuseIntensity = DIFFFACTOR * Colors::BLUE;
+  ImGui::LIGHTING_DATA_ARRAY[2].AmbientIntensity = AMBFACTOR * Colors::BLUE;
+  ImGui::LIGHTING_DATA_ARRAY[2].SpecularIntensity = SPECFACTOR * Colors::BLUE;
   mat.SetEmissive(Colors::BLUE);
   m_GameObjectArray[2].SetMaterial(mat);
 
-  ImGui::LightingDataArray[3].DiffuseIntensity = DIFFFACTOR * Colors::ORANGE;
-  ImGui::LightingDataArray[3].AmbientIntensity = AMBFACTOR * Colors::ORANGE;
-  ImGui::LightingDataArray[3].SpecularIntensity = SPECFACTOR * Colors::ORANGE;
+  ImGui::LIGHTING_DATA_ARRAY[3].DiffuseIntensity = DIFFFACTOR * Colors::ORANGE;
+  ImGui::LIGHTING_DATA_ARRAY[3].AmbientIntensity = AMBFACTOR * Colors::ORANGE;
+  ImGui::LIGHTING_DATA_ARRAY[3].SpecularIntensity = SPECFACTOR * Colors::ORANGE;
   mat.SetEmissive(Colors::ORANGE);
   m_GameObjectArray[3].SetMaterial(mat);
 
-  ImGui::LightingDataArray[4].DiffuseIntensity = DIFFFACTOR * Colors::GREEN;
-  ImGui::LightingDataArray[4].AmbientIntensity = AMBFACTOR * Colors::GREEN;
-  ImGui::LightingDataArray[4].SpecularIntensity = SPECFACTOR * Colors::GREEN;
+  ImGui::LIGHTING_DATA_ARRAY[4].DiffuseIntensity = DIFFFACTOR * Colors::GREEN;
+  ImGui::LIGHTING_DATA_ARRAY[4].AmbientIntensity = AMBFACTOR * Colors::GREEN;
+  ImGui::LIGHTING_DATA_ARRAY[4].SpecularIntensity = SPECFACTOR * Colors::GREEN;
   mat.SetEmissive(Colors::GREEN);
   m_GameObjectArray[4].SetMaterial(mat);
 
-  ImGui::LightingDataArray[5].DiffuseIntensity = DIFFFACTOR * Colors::PURPLE;
-  ImGui::LightingDataArray[5].AmbientIntensity = AMBFACTOR * Colors::PURPLE;
-  ImGui::LightingDataArray[5].SpecularIntensity = SPECFACTOR * Colors::PURPLE;
+  ImGui::LIGHTING_DATA_ARRAY[5].DiffuseIntensity = DIFFFACTOR * Colors::PURPLE;
+  ImGui::LIGHTING_DATA_ARRAY[5].AmbientIntensity = AMBFACTOR * Colors::PURPLE;
+  ImGui::LIGHTING_DATA_ARRAY[5].SpecularIntensity = SPECFACTOR * Colors::PURPLE;
   mat.SetEmissive(Colors::PURPLE);
   m_GameObjectArray[5].SetMaterial(mat);
 
-  ImGui::LightingDataArray[6].DiffuseIntensity = DIFFFACTOR * Colors::CYAN;
-  ImGui::LightingDataArray[6].AmbientIntensity = AMBFACTOR * Colors::CYAN;
-  ImGui::LightingDataArray[6].SpecularIntensity = SPECFACTOR * Colors::CYAN;
+  ImGui::LIGHTING_DATA_ARRAY[6].DiffuseIntensity = DIFFFACTOR * Colors::CYAN;
+  ImGui::LIGHTING_DATA_ARRAY[6].AmbientIntensity = AMBFACTOR * Colors::CYAN;
+  ImGui::LIGHTING_DATA_ARRAY[6].SpecularIntensity = SPECFACTOR * Colors::CYAN;
   mat.SetEmissive(Colors::CYAN);
   m_GameObjectArray[6].SetMaterial(mat);
 
-  ImGui::LightingDataArray[7].DiffuseIntensity = DIFFFACTOR * Colors::PINK;
-  ImGui::LightingDataArray[7].AmbientIntensity = AMBFACTOR * Colors::PINK;
-  ImGui::LightingDataArray[7].SpecularIntensity = SPECFACTOR * Colors::PINK;
+  ImGui::LIGHTING_DATA_ARRAY[7].DiffuseIntensity = DIFFFACTOR * Colors::PINK;
+  ImGui::LIGHTING_DATA_ARRAY[7].AmbientIntensity = AMBFACTOR * Colors::PINK;
+  ImGui::LIGHTING_DATA_ARRAY[7].SpecularIntensity = SPECFACTOR * Colors::PINK;
   mat.SetEmissive(Colors::PINK);
   m_GameObjectArray[7].SetMaterial(mat);
 
@@ -326,7 +326,7 @@ void SceneDemo::Scenario2() noexcept
 
   // Main object
   auto mainMeshComp = dynamic_pointer_cast<MeshComponent>(m_GameObjectArray[17].AddComponent(Component::Type::MESH));
-  mainMeshComp->SetMeshFileName(ImGui::DemoObjectFile);
+  mainMeshComp->SetMeshFileName(ImGui::DEMO_OBJECT_FILE);
   mainMeshComp->SetMaterial(Material::Type::GLOBAL);
   mainMeshComp->SetIsActive(true);
   m_GameObjectArray[17].SetPosition(vec3(0.f));
@@ -354,11 +354,11 @@ void SceneDemo::Scenario3() noexcept
     m_GameObjectArray[i].SetIsActive(false);
     if (i % 2)
     {
-      ImGui::LightingDataArray[i].Type = Light::SPOT_LIGHT;
+      ImGui::LIGHTING_DATA_ARRAY[i].Type = Light::SPOT_LIGHT;
     }
     else
     {
-      ImGui::LightingDataArray[i].Type = Light::POINT_LIGHT;
+      ImGui::LIGHTING_DATA_ARRAY[i].Type = Light::POINT_LIGHT;
     }
   }
   for (int i = 8; i < 16; ++i)
@@ -370,60 +370,60 @@ void SceneDemo::Scenario3() noexcept
     m_GameObjectArray[i].SetIsActive(false);
     if (i % 2)
     {
-      ImGui::LightingDataArray[i].Type = Light::SPOT_LIGHT;
+      ImGui::LIGHTING_DATA_ARRAY[i].Type = Light::SPOT_LIGHT;
     }
     else
     {
-      ImGui::LightingDataArray[i].Type = Light::POINT_LIGHT;
+      ImGui::LIGHTING_DATA_ARRAY[i].Type = Light::POINT_LIGHT;
     }
   }
 
   Material mat = Material::Type::LIGHT;
-  ImGui::LightingDataArray[0].DiffuseIntensity = DIFFFACTOR * Colors::RED;
-  ImGui::LightingDataArray[0].AmbientIntensity = AMBFACTOR * Colors::RED;
-  ImGui::LightingDataArray[0].SpecularIntensity = SPECFACTOR * Colors::RED;
+  ImGui::LIGHTING_DATA_ARRAY[0].DiffuseIntensity = DIFFFACTOR * Colors::RED;
+  ImGui::LIGHTING_DATA_ARRAY[0].AmbientIntensity = AMBFACTOR * Colors::RED;
+  ImGui::LIGHTING_DATA_ARRAY[0].SpecularIntensity = SPECFACTOR * Colors::RED;
   mat.SetEmissive(Colors::RED);
   m_GameObjectArray[0].SetMaterial(mat);
 
-  ImGui::LightingDataArray[1].DiffuseIntensity = DIFFFACTOR * Colors::YELLOW;
-  ImGui::LightingDataArray[1].AmbientIntensity = AMBFACTOR * Colors::YELLOW;
-  ImGui::LightingDataArray[1].SpecularIntensity = SPECFACTOR * Colors::YELLOW;
+  ImGui::LIGHTING_DATA_ARRAY[1].DiffuseIntensity = DIFFFACTOR * Colors::YELLOW;
+  ImGui::LIGHTING_DATA_ARRAY[1].AmbientIntensity = AMBFACTOR * Colors::YELLOW;
+  ImGui::LIGHTING_DATA_ARRAY[1].SpecularIntensity = SPECFACTOR * Colors::YELLOW;
   mat.SetEmissive(Colors::YELLOW);
   m_GameObjectArray[1].SetMaterial(mat);
 
-  ImGui::LightingDataArray[2].DiffuseIntensity = DIFFFACTOR * Colors::BLUE;
-  ImGui::LightingDataArray[2].AmbientIntensity = AMBFACTOR * Colors::BLUE;
-  ImGui::LightingDataArray[2].SpecularIntensity = SPECFACTOR * Colors::BLUE;
+  ImGui::LIGHTING_DATA_ARRAY[2].DiffuseIntensity = DIFFFACTOR * Colors::BLUE;
+  ImGui::LIGHTING_DATA_ARRAY[2].AmbientIntensity = AMBFACTOR * Colors::BLUE;
+  ImGui::LIGHTING_DATA_ARRAY[2].SpecularIntensity = SPECFACTOR * Colors::BLUE;
   mat.SetEmissive(Colors::BLUE);
   m_GameObjectArray[2].SetMaterial(mat);
 
-  ImGui::LightingDataArray[3].DiffuseIntensity = DIFFFACTOR * Colors::ORANGE;
-  ImGui::LightingDataArray[3].AmbientIntensity = AMBFACTOR * Colors::ORANGE;
-  ImGui::LightingDataArray[3].SpecularIntensity = SPECFACTOR * Colors::ORANGE;
+  ImGui::LIGHTING_DATA_ARRAY[3].DiffuseIntensity = DIFFFACTOR * Colors::ORANGE;
+  ImGui::LIGHTING_DATA_ARRAY[3].AmbientIntensity = AMBFACTOR * Colors::ORANGE;
+  ImGui::LIGHTING_DATA_ARRAY[3].SpecularIntensity = SPECFACTOR * Colors::ORANGE;
   mat.SetEmissive(Colors::ORANGE);
   m_GameObjectArray[3].SetMaterial(mat);
 
-  ImGui::LightingDataArray[4].DiffuseIntensity = DIFFFACTOR * Colors::GREEN;
-  ImGui::LightingDataArray[4].AmbientIntensity = AMBFACTOR * Colors::GREEN;
-  ImGui::LightingDataArray[4].SpecularIntensity = SPECFACTOR * Colors::GREEN;
+  ImGui::LIGHTING_DATA_ARRAY[4].DiffuseIntensity = DIFFFACTOR * Colors::GREEN;
+  ImGui::LIGHTING_DATA_ARRAY[4].AmbientIntensity = AMBFACTOR * Colors::GREEN;
+  ImGui::LIGHTING_DATA_ARRAY[4].SpecularIntensity = SPECFACTOR * Colors::GREEN;
   mat.SetEmissive(Colors::GREEN);
   m_GameObjectArray[4].SetMaterial(mat);
 
-  ImGui::LightingDataArray[5].DiffuseIntensity = DIFFFACTOR * Colors::PURPLE;
-  ImGui::LightingDataArray[5].AmbientIntensity = AMBFACTOR * Colors::PURPLE;
-  ImGui::LightingDataArray[5].SpecularIntensity = SPECFACTOR * Colors::PURPLE;
+  ImGui::LIGHTING_DATA_ARRAY[5].DiffuseIntensity = DIFFFACTOR * Colors::PURPLE;
+  ImGui::LIGHTING_DATA_ARRAY[5].AmbientIntensity = AMBFACTOR * Colors::PURPLE;
+  ImGui::LIGHTING_DATA_ARRAY[5].SpecularIntensity = SPECFACTOR * Colors::PURPLE;
   mat.SetEmissive(Colors::PURPLE);
   m_GameObjectArray[5].SetMaterial(mat);
 
-  ImGui::LightingDataArray[6].DiffuseIntensity = DIFFFACTOR * Colors::CYAN;
-  ImGui::LightingDataArray[6].AmbientIntensity = AMBFACTOR * Colors::CYAN;
-  ImGui::LightingDataArray[6].SpecularIntensity = SPECFACTOR * Colors::CYAN;
+  ImGui::LIGHTING_DATA_ARRAY[6].DiffuseIntensity = DIFFFACTOR * Colors::CYAN;
+  ImGui::LIGHTING_DATA_ARRAY[6].AmbientIntensity = AMBFACTOR * Colors::CYAN;
+  ImGui::LIGHTING_DATA_ARRAY[6].SpecularIntensity = SPECFACTOR * Colors::CYAN;
   mat.SetEmissive(Colors::CYAN);
   m_GameObjectArray[6].SetMaterial(mat);
 
-  ImGui::LightingDataArray[7].DiffuseIntensity = DIFFFACTOR * Colors::PINK;
-  ImGui::LightingDataArray[7].AmbientIntensity = AMBFACTOR * Colors::PINK;
-  ImGui::LightingDataArray[7].SpecularIntensity = SPECFACTOR * Colors::PINK;
+  ImGui::LIGHTING_DATA_ARRAY[7].DiffuseIntensity = DIFFFACTOR * Colors::PINK;
+  ImGui::LIGHTING_DATA_ARRAY[7].AmbientIntensity = AMBFACTOR * Colors::PINK;
+  ImGui::LIGHTING_DATA_ARRAY[7].SpecularIntensity = SPECFACTOR * Colors::PINK;
   mat.SetEmissive(Colors::PINK);
   m_GameObjectArray[7].SetMaterial(mat);
 
