@@ -15,6 +15,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AssetLoader.cpp" />
     <ClCompile Include="dep\imgui\imgui.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
@@ -83,6 +84,7 @@
     <ClInclude Include="dep\imgui\imgui_impl_opengl3.h" />
     <ClInclude Include="dep\imgui\imgui_impl_opengl3_loader.h" />
     <ClInclude Include="dep\imgui\imgui_internal.h" />
+    <ClInclude Include="src\AssetLoader.h" />
     <ClInclude Include="src\Colors.h" />
     <ClInclude Include="src\Component.h" />
     <ClInclude Include="src\Cubemap.h" />
@@ -120,6 +122,7 @@
     <ClInclude Include="src\Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="dep\assimp\assimp-vc143-mt.dll" />
     <None Include="res\shaders\BlinnPhong.frag" />
     <None Include="res\shaders\BlinnPhong.vert" />
     <None Include="res\shaders\BlinnPhongRefract.frag" />
@@ -217,8 +220,12 @@
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
     <PostBuildEvent>
-      <Command>robocopy $(ProjectDir)res $(OutDir)res /e /it</Command>
+      <Command>robocopy $(ProjectDir)res $(OutDir)res /e /it &amp;&amp; robocopy $(ProjectDir)dep\assimp $(OutDir) assimp-vc143-mt.dll</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -252,8 +259,12 @@
       <LinkTimeCodeGeneration>UseFastLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
     <PostBuildEvent>
-      <Command>robocopy $(ProjectDir)res $(OutDir)res /e /it</Command>
+      <Command>robocopy $(ProjectDir)res $(OutDir)res /e /it &amp;&amp; robocopy $(ProjectDir)dep\assimp $(OutDir) assimp-vc143-mt.dll</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Deploy|x64'">
     <ClCompile>
@@ -286,8 +297,12 @@
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
     <PostBuildEvent>
-      <Command>robocopy $(ProjectDir)res $(OutDir)res /e /it</Command>
+      <Command>robocopy $(ProjectDir)res $(OutDir)res /e /it &amp;&amp; robocopy $(ProjectDir)dep\assimp $(OutDir) assimp-vc143-mt.dll</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

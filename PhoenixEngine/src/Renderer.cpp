@@ -9,7 +9,7 @@
 
 #ifdef _IMGUI
 
-#include "ImGuiManager.h"
+#include "ImGUIManager.h"
 
 #endif
 
@@ -26,12 +26,6 @@ const char* tempcubemap[6] = {
 };
 
 Renderer::Renderer(bool depthBufferEnabled, bool backFaceCullEnabled) noexcept :
-  m_RenderStats(),
-  m_ShaderManager(),
-  m_ContextManager(),
-  m_MeshManager(),
-  m_UniformBlockManager(),
-  m_Lighting(),
   m_Skybox(tempcubemap),
   m_hSkyboxContext(Error::Context::INVALID_CONTEXT),
   m_hDebugContext(Error::Context::INVALID_CONTEXT)
@@ -159,10 +153,10 @@ void Renderer::RenderScene(vector<GameObject>& gameObjects, Camera& activeCamera
     m_ContextManager.GetCurrentUniformAttributes()[1].ID,
     1, GL_FALSE, &activeCamera.GetViewMatrix()[0][0]);
 
-  static constexpr mat4 matIdentity(1.f);
+  static constexpr mat4 mat_identity(1.f);
 
   // Bind the identity for permanent line's model matrix
-  glUniformMatrix4fv(m_ContextManager.GetCurrentUniformAttributes()[2].ID, 1, false, &matIdentity[0][0]);
+  glUniformMatrix4fv(m_ContextManager.GetCurrentUniformAttributes()[2].ID, 1, false, &mat_identity[0][0]);
   //DebugRenderer::I().RenderPermanentLines();
 
 
@@ -382,10 +376,10 @@ void Renderer::RenderSkybox(Camera& activeCamera)
 
 void Renderer::RenderGameObject(GameObject& gameObject)
 {
-  auto meshComp = gameObject.GetFirstComponentByType(Component::Type::MESH);
+  const auto meshComp = gameObject.GetFirstComponentByType(Component::Type::MESH);
   if (!meshComp.has_value())
     return;
-  shared_ptr<MeshComponent> meshCompPtr = dynamic_pointer_cast<MeshComponent>(meshComp.value());
+  const shared_ptr<MeshComponent> meshCompPtr = dynamic_pointer_cast<MeshComponent>(meshComp.value());
   unsigned MeshID = meshCompPtr->GetMeshID();
 
   if (gameObject.m_bIsDirty)
@@ -393,11 +387,11 @@ void Renderer::RenderGameObject(GameObject& gameObject)
     // Unknown Mesh ID, check for new id with file name
     if (meshCompPtr->GetMeshID() == Error::INVALID_INDEX)
     {
-      const string& meshfile = meshCompPtr->GetMeshFileName();
-      meshCompPtr->SetMeshID(m_MeshManager.LoadMesh(meshfile, true, true, ImGui::GraphicsSelectedProjection));
+      const string& meshFile = meshCompPtr->GetMeshFileName();
+      meshCompPtr->SetMeshID(m_MeshManager.LoadMesh(meshFile, true, true, ImGui::GraphicsSelectedProjection));
       if (meshCompPtr->GetMeshID() == Error::INVALID_INDEX)
       {
-        Log::Error("Could not load mesh: " + meshfile);
+        Log::Error("Could not load mesh: " + meshFile);
         return;
       }
       MeshID = meshCompPtr->GetMeshID();
@@ -481,15 +475,15 @@ void Renderer::LoadContexts() noexcept
   LoadSkyboxContext();
 
   //TODO: Look into this
-  GLuint program = m_ContextManager.GetProgram(m_hBlinnPhong);
+  const GLuint program = m_ContextManager.GetProgram(m_hBlinnPhong);
 
   //TODO: Temporarily hardcoded
   UniformBlockManager::UniformBlockPrint LightArrayPrint;
   LightArrayPrint.BlockName = "LightArray";
   LightArrayPrint.DataSize = sizeof(Light::Data) * 16;
 
-  unsigned LightingBlockPrintID = m_UniformBlockManager.RegisterNewBlockPrint(LightArrayPrint);
-  unsigned LightingBlockID = m_UniformBlockManager.CreateNewBlock(LightingBlockPrintID, program, &ImGui::LightingDataArray[0]);
+  const unsigned lightingBlockPrintId = m_UniformBlockManager.RegisterNewBlockPrint(LightArrayPrint);
+  unsigned lightingBlockId = m_UniformBlockManager.CreateNewBlock(lightingBlockPrintId, program, &ImGui::LightingDataArray[0]);
 }
 
 //void Renderer::LoadDiffuseContext() noexcept
@@ -602,9 +596,9 @@ void Renderer::LoadContexts() noexcept
 void Renderer::LoadBlinnPhongContext() noexcept
 {
   // Load Phong lighting context
-  unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::BLINNPHONG);
-  unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::BLINNPHONG);
-  m_hBlinnPhong = m_ContextManager.CreateNewContext("Blinn Phong", vID, fID);
+  const unsigned vId = m_ShaderManager.GetVertexShaderID(Shader::Vertex::BLINNPHONG);
+  const unsigned fId = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::BLINNPHONG);
+  m_hBlinnPhong = m_ContextManager.CreateNewContext("Blinn Phong", vId, fId);
 
   m_ContextManager.SetContext(m_hBlinnPhong);
 
@@ -629,12 +623,12 @@ void Renderer::LoadBlinnPhongContext() noexcept
   m_ContextManager.AddNewUniformAttribute(m_hBlinnPhong, "mat_spc");
   m_ContextManager.AddNewUniformAttribute(m_hBlinnPhong, "mat_spc_exp");
 
-  ContextManager::VertexAttribute vaPosition("position", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), 0);
-  ContextManager::VertexAttribute vaNormal("normal", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), sizeof(vec3));
-  ContextManager::VertexAttribute vaTexcoords("texcoord", 2, GL_FLOAT, GL_FALSE, sizeof(vec2), sizeof(vec3) * 2);
+  const ContextManager::VertexAttribute vaPosition("position", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), 0);
+  const ContextManager::VertexAttribute vaNormal("normal", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), sizeof(vec3));
+  const ContextManager::VertexAttribute vaTexCoords("texcoord", 2, GL_FLOAT, GL_FALSE, sizeof(vec2), sizeof(vec3) * 2);
   m_ContextManager.AddNewVertexAttribute(m_hBlinnPhong, vaPosition);
   m_ContextManager.AddNewVertexAttribute(m_hBlinnPhong, vaNormal);
-  m_ContextManager.AddNewVertexAttribute(m_hBlinnPhong, vaTexcoords);
+  m_ContextManager.AddNewVertexAttribute(m_hBlinnPhong, vaTexCoords);
 
   Log::Trace("Blinn-Phong Shading Context loaded.");
 }
@@ -687,8 +681,8 @@ void Renderer::LoadBlinnPhongContext() noexcept
 void Renderer::LoadDebugContext() noexcept
 {
   // Load a Debug Drawing context
-  unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::DEBUG);
-  unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::DEBUG);
+  const unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::DEBUG);
+  const unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::DEBUG);
   m_hDebugContext = m_ContextManager.CreateNewContext("Debug", vID, fID);
   m_ContextManager.SetContext(m_hDebugContext);
 
@@ -696,9 +690,9 @@ void Renderer::LoadDebugContext() noexcept
   m_ContextManager.AddNewUniformAttribute(m_hDebugContext, "view_matrix");
   m_ContextManager.AddNewUniformAttribute(m_hDebugContext, "model_matrix");
 
-  ContextManager::VertexAttribute vaPosition =
+  const ContextManager::VertexAttribute vaPosition =
     ContextManager::VertexAttribute("position", 4, GL_FLOAT, GL_FALSE, 2 * sizeof(vec4), 0u);
-  ContextManager::VertexAttribute vaColor("color", 4, GL_FLOAT, GL_FALSE, 2 * sizeof(vec4), sizeof(vec4));
+  const ContextManager::VertexAttribute vaColor("color", 4, GL_FLOAT, GL_FALSE, 2 * sizeof(vec4), sizeof(vec4));
   m_ContextManager.AddNewVertexAttribute(m_hDebugContext, vaPosition);
   m_ContextManager.AddNewVertexAttribute(m_hDebugContext, vaColor);
 
@@ -708,16 +702,16 @@ void Renderer::LoadDebugContext() noexcept
 void Renderer::LoadSkyboxContext() noexcept
 {
   // Load skybox context
-  unsigned vID = m_ShaderManager.GetVertexShaderID(Shader::Vertex::SKYBOX);
-  unsigned fID = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::SKYBOX);
-  m_hSkyboxContext = m_ContextManager.CreateNewContext("Skybox", vID, fID);
+  const unsigned vId = m_ShaderManager.GetVertexShaderID(Shader::Vertex::SKYBOX);
+  const unsigned fId = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::SKYBOX);
+  m_hSkyboxContext = m_ContextManager.CreateNewContext("Skybox", vId, fId);
 
   m_ContextManager.SetContext(m_hSkyboxContext);
 
   m_ContextManager.AddNewUniformAttribute(m_hSkyboxContext, "pers_matrix");
   m_ContextManager.AddNewUniformAttribute(m_hSkyboxContext, "view_matrix");
 
-  ContextManager::VertexAttribute vaPosition("position", 4, GL_FLOAT, GL_FALSE, sizeof(vec3), 0u);
+  const ContextManager::VertexAttribute vaPosition("position", 4, GL_FLOAT, GL_FALSE, sizeof(vec3), 0u);
   m_ContextManager.AddNewVertexAttribute(m_hSkyboxContext, vaPosition);
 
   SkyboxMeshID = m_MeshManager.LoadMesh("cube2.obj");
@@ -815,7 +809,7 @@ void Renderer::LoadSkyboxContext() noexcept
 //  Log::Trace("Blinn Phong Refraction Context loaded.");
 //}
 
-void Renderer::EnableDepthBuffer() noexcept
+void Renderer::EnableDepthBuffer() const noexcept
 {
   if (DepthBufferIsEnabled())
   {
@@ -826,7 +820,7 @@ void Renderer::EnableDepthBuffer() noexcept
   glEnable(GL_DEPTH_TEST);
 }
 
-void Renderer::DisableDepthBuffer() noexcept
+void Renderer::DisableDepthBuffer() const noexcept
 {
   if (!DepthBufferIsEnabled())
   {
@@ -837,12 +831,12 @@ void Renderer::DisableDepthBuffer() noexcept
   glDisable(GL_DEPTH_TEST);
 }
 
-bool Renderer::DepthBufferIsEnabled() const noexcept
+bool Renderer::DepthBufferIsEnabled() noexcept
 {
   return glIsEnabled(GL_DEPTH_TEST);
 }
 
-void Renderer::EnableBackFaceCull() noexcept
+void Renderer::EnableBackFaceCull() const noexcept
 {
   if (BackFaceCullIsEnabled())
   {
@@ -853,7 +847,7 @@ void Renderer::EnableBackFaceCull() noexcept
   glEnable(GL_CULL_FACE);
 }
 
-void Renderer::DisableBackFaceCull() noexcept
+void Renderer::DisableBackFaceCull() const noexcept
 {
   if (!BackFaceCullIsEnabled())
   {
@@ -864,7 +858,7 @@ void Renderer::DisableBackFaceCull() noexcept
   glDisable(GL_CULL_FACE);
 }
 
-bool Renderer::BackFaceCullIsEnabled() const noexcept
+bool Renderer::BackFaceCullIsEnabled() noexcept
 {
   return glIsEnabled(GL_CULL_FACE);
 }

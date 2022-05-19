@@ -77,34 +77,34 @@ public:
   /// <summary>
   /// Enables the Depth Buffer
   /// </summary>
-  void EnableDepthBuffer() noexcept;
+  void EnableDepthBuffer() const noexcept;
   
   /// <summary>
   /// Disables the Depth buffer
   /// </summary>
-  void DisableDepthBuffer() noexcept;
+  void DisableDepthBuffer() const noexcept;
   
   /// <summary>
   /// Check if the Depth Buffer is enabled
   /// </summary>
   /// <returns>T/F if the depth buffer is enabled</returns>
-  inline bool DepthBufferIsEnabled() const noexcept;
+  static inline bool DepthBufferIsEnabled() noexcept;
 
   /// <summary>
   /// Enables back face culling
   /// </summary>
-  void EnableBackFaceCull() noexcept;
+  void EnableBackFaceCull() const noexcept;
 
   /// <summary>
   /// Disables back face culling
   /// </summary>
-  void DisableBackFaceCull() noexcept;
+  void DisableBackFaceCull() const noexcept;
 
   /// <summary>
   /// Check if the back face culling is enabled
   /// </summary>
   /// <returns>T/F if the back face culling is enabled</returns>
-  inline bool BackFaceCullIsEnabled() const noexcept;
+  static inline bool BackFaceCullIsEnabled() noexcept;
 
   /// <summary>
   /// Sets the render mode to Fill

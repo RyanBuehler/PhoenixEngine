@@ -2,17 +2,17 @@
 // File:    SceneDemo.cpp
 // Author:  Ryan Buehler
 // Created: 09/27/21
-// Desc:    A test scene for expirementation
+// Desc:    A test scene for experimentation
 //------------------------------------------------------------------------------
 #include "pch.h"
 #include "SceneDemo.h"
-#include "Transform.h"
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "DebugRenderer.h"
 #include "ImGUIManager.h"
 #include "Colors.h"
 #include "MeshComponent.h"
+#include "AssetLoader.h"
 
 #define AMBFACTOR 0.05f
 #define DIFFFACTOR 0.9f
@@ -25,7 +25,9 @@ SceneDemo::SceneDemo() noexcept :
 {
   m_MainCamera.SetName("Demo Scene Camera");
   Log::Trace("'Demo' Scene Created.");
-  ImGui::Manager->SetOnDemoObjectHandler(std::bind(&SceneDemo::OnDemoObjectChangeEvent, this));
+  ImGui::Manager->SetOnDemoObjectHandler([this] { OnDemoObjectChangeEvent(); });
+  AssetLoader::LoadFBX(("res/models/susanne.fbx"));
+
 }
 
 void SceneDemo::OnLoad() noexcept
@@ -51,9 +53,9 @@ void SceneDemo::OnInit() noexcept
   Log::Trace("Demo Scene Initialized.");
 }
 
-void SceneDemo::OnUpdate(float dt) noexcept
+void SceneDemo::OnUpdate(const float Dt) noexcept
 {
-  m_Time += dt;
+  m_Time += Dt;
 
   for (int i = 0; i < 16; ++i)
   {
@@ -69,7 +71,7 @@ void SceneDemo::OnUpdate(float dt) noexcept
     }
     if (ImGui::SceneOrbitObjects)
     {
-      m_GameObjectArray[i].RotateAround(5.f * dt, vec3(0.f, 1.f, 0.f));
+      m_GameObjectArray[i].RotateAround(5.f * Dt, vec3(0.f, 1.f, 0.f));
     }
     ImGui::LightingDataArray[i].Position = vec4(m_GameObjectArray[i].GetPosition(), 1.f);
     ImGui::LightingDataArray[i].Direction = vec4(vec3(0.f, -0.3f, 0.f) - m_GameObjectArray[i].GetPosition(), 1.f);

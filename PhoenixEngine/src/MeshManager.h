@@ -15,25 +15,25 @@ private:
   struct MeshData
   {
     MeshData(const string& fileName = "Unknown",
-      GLuint positionBufferID = Error::INVALID_INDEX,
-      GLuint normalBufferID = Error::INVALID_INDEX,
-      GLuint triangleBufferID = Error::INVALID_INDEX,
-      GLuint texcoordBufferID = Error::INVALID_INDEX,
-      GLuint vertexArrayID = Error::INVALID_INDEX) :
+             const GLuint PositionBufferId = Error::INVALID_INDEX,
+      const GLuint NormalBufferId = Error::INVALID_INDEX,
+      const GLuint TriangleBufferId = Error::INVALID_INDEX,
+      const GLuint TexcoordBufferId = Error::INVALID_INDEX,
+      const GLuint VertexArrayId = Error::INVALID_INDEX) :
       FileName(fileName),
-      PositionBufferID(positionBufferID),
-      NormalBufferID(normalBufferID),
-      TriangleBufferID(triangleBufferID),
-      TexcoordBufferID(texcoordBufferID),
-      VertexArrayID(vertexArrayID)
+      PositionBufferId(PositionBufferId),
+      TriangleBufferId(TriangleBufferId),
+      NormalBufferId(NormalBufferId),
+      TexcoordBufferId(TexcoordBufferId),
+      VertexArrayId(VertexArrayId)
     {}
 
     string FileName;
-    GLuint PositionBufferID;
-    GLuint TriangleBufferID;
-    GLuint NormalBufferID;
-    GLuint TexcoordBufferID;
-    GLuint VertexArrayID;
+    GLuint PositionBufferId;
+    GLuint TriangleBufferId;
+    GLuint NormalBufferId;
+    GLuint TexcoordBufferId;
+    GLuint VertexArrayId;
   };
 
 public:
@@ -45,26 +45,26 @@ public:
   MeshManager& operator=(MeshManager&&) = delete;
 
   unsigned LoadMesh(
-    const string& fileName,
-    bool scaleToUnitSize = false,
-    bool resetOrigin = false,
-    UV::Generation uvGeneration = UV::Generation::PLANAR) noexcept;
+    const string& FileName,
+    bool ScaleToUnitSize = false,
+    bool ResetOrigin = false,
+    UV::Generation UvGeneration = UV::Generation::PLANAR) noexcept;
 
   void UnloadMeshes() noexcept;
 
-  void RenderMesh(unsigned id) const noexcept;
+  void RenderMesh(unsigned Id) const noexcept;
 
-  void RenderSurfaceNormals(unsigned id, float length) const noexcept;
+  void RenderSurfaceNormals(unsigned Id, float Length) const noexcept;
 
-  void RenderVertexNormals(unsigned id, float length) const noexcept;
+  void RenderVertexNormals(unsigned Id, float Length) const noexcept;
 
-  const Mesh& GetMeshByID(unsigned id) const noexcept;
+  const Mesh& GetMeshByID(unsigned Id) const noexcept;
 
 private:
   vector<Mesh> m_MeshArray;
   vector<MeshData> m_MeshDataArray;
-  OBJReader m_OBJReader;
+  OBJReader m_ObjReader;
 
-  unsigned LoadMeshFromOBJ(const string& fileName) noexcept;
-  unsigned LoadSphere(float radius = 1.f, int numDivisions = 16) noexcept;
+  unsigned LoadMeshFromOBJ(const string& FileName) noexcept;
+  unsigned LoadSphere(float Radius = 1.f, int NumDivisions = 16) noexcept;
 };

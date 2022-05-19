@@ -124,6 +124,12 @@
     <Filter Include="Source Files\Graphics\Statistics">
       <UniqueIdentifier>{6108300e-275d-4cdb-91dd-37cff6c6427f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Assets">
+      <UniqueIdentifier>{89f77ce2-d23f-4f8d-8609-c20492442e8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Assets">
+      <UniqueIdentifier>{225d498b-1fed-47f1-b889-5d0ab101ba68}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h">
@@ -249,6 +255,9 @@
     <ClInclude Include="src\RenderStats.h">
       <Filter>Header Files\Graphics\Statistics</Filter>
     </ClInclude>
+    <ClInclude Include="src\AssetLoader.h">
+      <Filter>Header Files\Assets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Application.cpp">
@@ -356,6 +365,9 @@
     <ClCompile Include="src\RenderStats.cpp">
       <Filter>Source Files\Graphics\Statistics</Filter>
     </ClCompile>
+    <ClCompile Include="AssetLoader.cpp">
+      <Filter>Source Files\Assets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\Diffuse.vert">
@@ -412,5 +424,6 @@
     <None Include="res\shaders\BlinnPhongRefract.vert">
       <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
     </None>
+    <None Include="dep\assimp\assimp-vc143-mt.dll" />
   </ItemGroup>
 </Project>

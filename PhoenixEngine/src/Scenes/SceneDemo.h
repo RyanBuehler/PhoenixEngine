@@ -22,7 +22,7 @@ public:
 
   void OnLoad() noexcept;
   void OnInit() noexcept;
-  void OnUpdate(float dt) noexcept;
+  void OnUpdate(float Dt) noexcept;
   void OnShutdown() noexcept;
   void OnUnload() noexcept;
 
