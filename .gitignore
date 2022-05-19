@@ -1,6 +1,7 @@
 # Folders
 .vs/
 x64/
+bak/
 
 # Files
 *.user
@@ -30,7 +31,6 @@ x64/
 *.lai
 *.la
 *.a
-*.lib
 
 # Executables
 *.exe

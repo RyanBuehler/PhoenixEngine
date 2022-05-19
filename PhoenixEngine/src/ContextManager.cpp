@@ -1,12 +1,9 @@
 #include "pch.h"
 #include "ContextManager.h"
 
-//TODO:
-#define GL_PROGRAM_ERROR INT_MAX
-
 ContextManager::ContextManager() noexcept :
   m_Contexts(),
-  m_CurrentContextIndex(CONTEXT_ERROR)
+  m_CurrentContextIndex(Error::Context::INVALID_CONTEXT)
 {
 }
 
@@ -37,7 +34,7 @@ unsigned ContextManager::CreateNewContext(const string& name, GLint vertexShader
     string error;
     Graphics::RetrieveProgramLog(programID, error);
     Log::Error(error);
-    return GL_PROGRAM_ERROR;
+    return Error::OpenGL::PROGRAM_ERROR;
   }
 
   m_Contexts.push_back({ name, programID });
@@ -49,7 +46,7 @@ void ContextManager::SetContext(unsigned contextIndex) noexcept
 {
   if (contextIndex != m_CurrentContextIndex)
   {
-    if (m_CurrentContextIndex != CONTEXT_ERROR)
+    if (m_CurrentContextIndex != Error::Context::INVALID_CONTEXT)
     {
       for (size_t i = 0; i < m_Contexts[m_CurrentContextIndex].VertexAttributes.size(); ++i)
       {

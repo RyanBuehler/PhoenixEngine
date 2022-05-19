@@ -30,6 +30,7 @@
 #include <list>
 #include <forward_list>
 #include <set>
+#include <map>
 
 // Functional
 #include <functional>
@@ -53,6 +54,7 @@ using std::ifstream;
 // Data Structures & Pointers
 using std::shared_ptr;
 using std::unique_ptr;
+using std::weak_ptr;
 using std::make_shared;
 using std::make_unique;
 using std::vector;
@@ -60,9 +62,12 @@ using std::array;
 using std::list;
 using std::forward_list;
 using std::set;
+using std::map;
+using std::dynamic_pointer_cast;
 
 // Functional
 using std::function;
+using std::optional;
 
 // Type
 using std::is_same;

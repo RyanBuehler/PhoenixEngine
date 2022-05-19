@@ -12035,6 +12035,10 @@ static void ImGui::DestroyViewport(ImGuiViewportP* viewport)
         g.MouseLastHoveredViewport = NULL;
 
     // Destroy
+    if (!viewport)
+    {
+        return;
+    }
     IMGUI_DEBUG_LOG_VIEWPORT("Delete Viewport %08X (%s)\n", viewport->ID, viewport->Window ? viewport->Window->Name : "n/a");
     DestroyPlatformWindow(viewport); // In most circumstances the platform window will already be destroyed here.
     IM_ASSERT(g.PlatformIO.Viewports.contains(viewport) == false);
@@ -12128,6 +12132,11 @@ static void ImGui::WindowSelectViewport(ImGuiWindow* window)
         if (!UpdateTryMergeWindowIntoHostViewport(window, main_viewport))
             window->Viewport = AddUpdateViewport(window, window->ID, window->Pos, window->Size, ImGuiViewportFlags_None);
 
+    if (!window)
+    {
+        return;
+    }
+
     // Mark window as allowed to protrude outside of its viewport and into the current monitor
     if (!lock_viewport)
     {
@@ -12165,7 +12174,10 @@ static void ImGui::WindowSelectViewport(ImGuiWindow* window)
         {
             // Regular (non-child, non-popup) windows by default are also allowed to protrude
             // Child windows are kept contained within their parent.
-            window->ViewportAllowPlatformMonitorExtend = window->Viewport->PlatformMonitor;
+            if(window->Viewport)
+            {
+                window->ViewportAllowPlatformMonitorExtend = window->Viewport->PlatformMonitor;
+            }
         }
     }
 

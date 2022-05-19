@@ -11,15 +11,15 @@
 DebugRenderer::DebugRenderer() noexcept :
   m_LineArray(),
   m_DefaultLineColor(Colors::PURPLE),
-  m_VertexArrayID(numeric_limits<unsigned>::max()),
-  m_VertexBufferObject(numeric_limits<unsigned>::max()),
-  m_PositionAttributeID(numeric_limits<unsigned>::max())
+  m_hVertexArray(Error::INVALID_INDEX),
+  m_hVertexBufferObject(Error::INVALID_INDEX),
+  m_hPositionAttribute(Error::INVALID_INDEX)
 {
-  glGenVertexArrays(1, &m_VertexArrayID);
-  glBindVertexArray(m_VertexArrayID);
+  glGenVertexArrays(1, &m_hVertexArray);
+  glBindVertexArray(m_hVertexArray);
 
-  glGenBuffers(1, &m_VertexBufferObject);
-  glBindBuffer(GL_ARRAY_BUFFER, m_VertexBufferObject);
+  glGenBuffers(1, &m_hVertexBufferObject);
+  glBindBuffer(GL_ARRAY_BUFFER, m_hVertexBufferObject);
   glBufferData(GL_ARRAY_BUFFER, 2 * sizeof(vec4), m_LineArray.data(), GL_STATIC_DRAW);
 
   glBindVertexArray(0u);
@@ -27,15 +27,15 @@ DebugRenderer::DebugRenderer() noexcept :
 
 DebugRenderer::~DebugRenderer()
 {
-  glDeleteBuffers(1, &m_VertexBufferObject);
-  glDeleteVertexArrays(1, &m_VertexArrayID);
+  glDeleteBuffers(1, &m_hVertexBufferObject);
+  glDeleteVertexArrays(1, &m_hVertexArray);
 }
 
 void DebugRenderer::RenderLine(const vec3& point1, const vec4& color1, const vec3& point2, const vec4& color2)
 {
   VertexBufferObject line[2] = { {vec4(point1, 1.f), color1 }, {vec4(point2, 1.f), color2} };
 
-  glBindBuffer(GL_ARRAY_BUFFER, m_VertexBufferObject);
+  glBindBuffer(GL_ARRAY_BUFFER, m_hVertexBufferObject);
   glBufferData(GL_ARRAY_BUFFER, sizeof(line), &line, GL_STATIC_DRAW);
 
   glDrawArrays(GL_LINES, 0, 2);
@@ -44,7 +44,7 @@ void DebugRenderer::RenderLine(const vec3& point1, const vec4& color1, const vec
 void DebugRenderer::RenderLines() noexcept
 {
   //TODO: Move these into the context manager
-  glBindVertexArray(m_VertexArrayID);
+  glBindVertexArray(m_hVertexArray);
   glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBufferObject), 0);
   glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBufferObject), (GLvoid*)sizeof(vec4));
   glEnableVertexAttribArray(0);
@@ -64,7 +64,7 @@ void DebugRenderer::RenderLines() noexcept
 void DebugRenderer::RenderPermanentLines() noexcept
 {
   //TODO: Move these into the context manager
-  glBindVertexArray(m_VertexArrayID);
+  glBindVertexArray(m_hVertexArray);
   glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBufferObject), 0);
   glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBufferObject), (GLvoid*)sizeof(vec4));
   glEnableVertexAttribArray(0);

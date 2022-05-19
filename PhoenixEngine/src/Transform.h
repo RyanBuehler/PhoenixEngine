@@ -12,7 +12,6 @@ public:
   Transform(Transform&&) = delete;
   Transform& operator=(Transform&&) = delete;
 
-  //TODO: noexcept?
   void Translate(const vec3& translation);
   void RotateX(float degrees);
   void RotateY(float degrees);

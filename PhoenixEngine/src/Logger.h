@@ -7,6 +7,7 @@
 #pragma warning(disable : 26437)
 #pragma warning(disable : 26451)
 #pragma warning(disable : 26498)
+#pragma warning(disable : 26800)
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 #pragma warning(pop)

@@ -11,7 +11,6 @@
 class Light
 {
 public:
-  // TODO: Is there a less garbage way to do this?
   const static int POINT_LIGHT = 0;
   const static int DIRECTION_LIGHT = 1;
   const static int SPOT_LIGHT = 2;

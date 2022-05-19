@@ -4,8 +4,6 @@
 class ContextManager
 {
 public:
-  constexpr static unsigned CONTEXT_ERROR = numeric_limits<unsigned>::max();
-
   struct UniformAttribute
   {
     string Name;
@@ -23,7 +21,7 @@ public:
       size_t offset
     ) :
       Name(name),
-      ID(CONTEXT_ERROR),
+      ID(Error::Context::INVALID_CONTEXT),
       ElementCount(elementCount),
       ElementType(elementType),
       bIsNormalized(isNormalized),
@@ -43,7 +41,7 @@ public:
 private:
   struct Context
   {
-    Context(const string& name, GLint programID = numeric_limits<int>::max()) :
+    Context(const string& name, GLint programID = Error::INVALID_INDEX) :
       Name(name),
       ProgramID(programID),
       UniformAttributes(),
@@ -76,7 +74,7 @@ public:
   void AddNewUniformAttribute(unsigned contextIndex, const string& name);
   void AddNewVertexAttribute(unsigned contextIndex, const VertexAttribute& vertexAttribute);
 
-  bool ReloadContext(GLuint programID, GLint vertexShaderID, GLint fragmentShaderID) noexcept;
+  /*bool ReloadContext(GLuint programID, GLint vertexShaderID, GLint fragmentShaderID) noexcept;*/
 
 private:
   vector<Context> m_Contexts;

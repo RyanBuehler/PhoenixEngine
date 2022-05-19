@@ -59,8 +59,8 @@ private:
 
   vec4 m_DefaultLineColor;
 
-  GLuint m_VertexArrayID;
-  GLuint m_VertexBufferObject;
+  GLuint m_hVertexArray;
+  GLuint m_hVertexBufferObject;
 
-  GLuint m_PositionAttributeID;
+  GLuint m_hPositionAttribute;
 };

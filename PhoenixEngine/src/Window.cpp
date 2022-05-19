@@ -38,10 +38,8 @@ Window::Window(const WindowProperties& properties) :
     m_WindowProperties.Title.c_str(),
     NULL, NULL);
 
-  // TODO: What does this do?
   glfwMakeContextCurrent(m_WindowPtr);
 
-  // TODO: VSync?
   glfwSwapInterval(1);
 
   // Verify the Window's creation
@@ -120,7 +118,6 @@ void Window::OnUpdate() noexcept
   if (m_SceneManagerPtr->SceneIsTransitioning())
   {
     // Skip drawing this cycle if Scene is transitioning
-    //TODO: consider an OnSceneTransitioned for the Renderer
     return;
   }
 
@@ -178,6 +175,7 @@ void Window::OnClose() noexcept
 
   // Shut down the scenes
   m_SceneManagerPtr->Shutdown();
+
   // Close the window
   glfwTerminate();
 }

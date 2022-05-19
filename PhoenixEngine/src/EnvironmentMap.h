@@ -25,7 +25,6 @@ public:
   void EnableTextures() noexcept;
 
 private:
-  //TODO: Rename all OpenGL handles to hVariable
   GLuint m_hFBO[6];
   GLuint m_hTexture[6];
   GLuint m_hRBO[6];

@@ -12,7 +12,22 @@ class Transform;
 
 class Camera
 {
-public:
+  public:
+  struct Viewport
+  {
+    Viewport(
+      GLint x = 0,
+      GLint y = 0,
+      GLint w = 1920,
+      GLint h = 1080
+    ) : X(x), Y(y), W(w), H(h) {}
+
+    GLint X;
+    GLint Y;
+    GLint W;
+    GLint H;
+  };
+
   struct ViewData
   {
     ViewData(
@@ -21,16 +36,16 @@ public:
       float nearCull = 0.1f,
       float farCull = 1000.f
     ) :
-    FOV(fov), Aspect(aspect), NearCull(nearCull), FarCull(farCull) {}
+      FOV(fov), Aspect(aspect), NearCull(nearCull), FarCull(farCull) {}
 
     float FOV;
     float Aspect;
     float NearCull;
     float FarCull;
   };
-public:
+  public:
 
-  Camera(const string& name = "Unnamed Camera") noexcept;
+  Camera(const string& name = "Unnamed Camera", const Viewport& viewport = Viewport()) noexcept;
   ~Camera();
   Camera(const Camera&) = delete;
   Camera& operator=(const Camera&) = delete;
@@ -48,6 +63,12 @@ public:
   /// </summary>
   /// <returns>4x4 Matrix of the View Transform Matrix</returns>
   const glm::mat4& GetViewMatrix() noexcept;
+
+  /// <summary>
+  /// Gets the combined View Perspective Transform Matrix
+  /// </summary>
+  /// <returns>4x4 Matrix of the View Perspective Transform Matrix</returns>
+  const glm::mat4& GetVPMatrix() noexcept;
 
   /// <summary>
   /// Sets the "LookAt" target for the camera
@@ -162,7 +183,24 @@ public:
   /// <returns>The Camera's current name</returns>
   const string& GetName() const noexcept;
 
-private:
+  /// <summary>
+  /// Gets the viewport object
+  /// </summary>
+  /// <returns>The viewport object</returns>
+  const Viewport& GetViewport() const noexcept;
+
+  void SetViewport(const Camera::Viewport& other) noexcept;
+
+  /// <summary>
+  /// Set the viewport data directly
+  /// </summary>
+  /// <param name="X">The 'x' coordinate of the viewport</param>
+  /// <param name="Y">The 'y' coordinate of the viewport</param>
+  /// <param name="W">The width of the viewport</param>
+  /// <param name="H">The height of the viewport</param>
+  void SetViewport(GLint X, GLint Y, GLint W, GLint H);
+
+  private:
   void updateOrientation() noexcept;
 
   // Camera Viewing Data
@@ -181,9 +219,10 @@ private:
   // Matrices
   mat4 m_PersMatrix;
   mat4 m_ViewMatrix;
+  mat4 m_VPMatrix;
 
   bool m_IsEnabled;
-  bool m_ProjectionIsDirty;
+  bool m_PerspectiveIsDirty;
   bool m_ViewIsDirty;
 
   // Camera Target
@@ -191,4 +230,7 @@ private:
 
   // Camera Name
   string m_Name;
+
+  // Viewport data
+  Viewport m_Viewport;
 };

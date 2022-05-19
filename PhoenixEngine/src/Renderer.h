@@ -5,8 +5,10 @@
 // Desc:    Handles all Renderering of the Phoenix Engine
 //------------------------------------------------------------------------------
 #pragma once
+#include "RenderStats.h"
 #include "ContextManager.h"
 #include "ShaderManager.h"
+#include "UniformBlockManager.h"
 #include "DebugRenderer.h"
 #include "GameObject.h"
 #include "Camera.h"
@@ -24,10 +26,11 @@ public:
   /// </summary>
   enum class RenderMode
   {
-    Fill,
-    Wireframe,
+    FILL,
+    WIREFRAME,
     COUNT
   };
+  
 public:
   /// <summary>
   /// Renderer Constructor
@@ -35,9 +38,8 @@ public:
   /// <param name="depthBufferEnabled">Should the depth buffer be enabled?</param>
   /// <param name="backFaceCullEnabled">Should the back faces be culled?</param>
   Renderer(bool depthBufferEnabled = true, bool backFaceCullEnabled = false) noexcept;
-  ~Renderer(); // Destructor
+  ~Renderer();
 
-  // Rule of 5
   Renderer(const Renderer&) = delete;
   Renderer& operator=(const Renderer&) = delete;
   Renderer(Renderer&&) = delete;
@@ -75,34 +77,34 @@ public:
   /// <summary>
   /// Enables the Depth Buffer
   /// </summary>
-  void EnableDepthBuffer() noexcept;
+  void EnableDepthBuffer() const noexcept;
   
   /// <summary>
   /// Disables the Depth buffer
   /// </summary>
-  void DisableDepthBuffer() noexcept;
+  void DisableDepthBuffer() const noexcept;
   
   /// <summary>
   /// Check if the Depth Buffer is enabled
   /// </summary>
   /// <returns>T/F if the depth buffer is enabled</returns>
-  inline bool DepthBufferIsEnabled() const noexcept;
+  static inline bool DepthBufferIsEnabled() noexcept;
 
   /// <summary>
   /// Enables back face culling
   /// </summary>
-  void EnableBackFaceCull() noexcept;
+  void EnableBackFaceCull() const noexcept;
 
   /// <summary>
   /// Disables back face culling
   /// </summary>
-  void DisableBackFaceCull() noexcept;
+  void DisableBackFaceCull() const noexcept;
 
   /// <summary>
   /// Check if the back face culling is enabled
   /// </summary>
   /// <returns>T/F if the back face culling is enabled</returns>
-  inline bool BackFaceCullIsEnabled() const noexcept;
+  static inline bool BackFaceCullIsEnabled() noexcept;
 
   /// <summary>
   /// Sets the render mode to Fill
@@ -132,7 +134,7 @@ private:
   /// <param name="gameObject">The game object to which we want to render its mesh's normals</param>
   /// <param name="length">Length to draw the normals in world space</param>
   /// <param name="normalType">Vertex or face normals</param>
-  void RenderNormals(GameObject& gameObject, float length, Normals::Type normalType) noexcept;
+  //void RenderNormals(GameObject& gameObject, float length, Normals::Type normalType) noexcept;
 
 #endif
 
@@ -189,36 +191,35 @@ private:
   /// </summary>
   void LoadBlinnPhongRefractContext() noexcept;
 
-  ShaderManager m_ShaderManager;    // Handles shader related functionality
-  ContextManager m_ContextManager;  // Handles and maintains the context information
-  MeshManager m_MeshManager;        // Handles and maintains the Mesh data
+  RenderStats m_RenderStats;
+
+  ShaderManager m_ShaderManager;              // Handles shader related functionality
+  ContextManager m_ContextManager;            // Handles and maintains the context information
+  MeshManager m_MeshManager;                  // Handles and maintains the Mesh data
+  UniformBlockManager m_UniformBlockManager;  // Handles and maintains the Uniform GPU Data
 
   LightingSystem m_Lighting;        // All lighting functionality
 
   Cubemap m_Skybox;                 // The 6-sided cubemap skybox
 
   GLint m_hSkyboxContext;          // The ID of the "Skybox" context
-  GLint m_hDiffuseContext;         // The ID of the "Diffuse" context
-  GLint m_hPhongLighting;          // The ID of the "PhongLighting" context
-  GLint m_hPhongShading;           // The ID of the "PhongShading" context
+  //GLint m_hDiffuseContext;         // The ID of the "Diffuse" context
+  //GLint m_hPhongLighting;          // The ID of the "PhongLighting" context
+  //GLint m_hPhongShading;           // The ID of the "PhongShading" context
   GLint m_hBlinnPhong;             // The ID of the "BlinnPhong" context
-  GLint m_hPhongTexture;           // The ID of the "PhongTexture" context
-  GLint m_hReflection;             // The ID of the "Reflection" context
+  //GLint m_hPhongTexture;           // The ID of the "PhongTexture" context
+  //GLint m_hReflection;             // The ID of the "Reflection" context
   GLint m_hDebugContext;           // The ID of the "Debug" context
-  GLint m_hBlinnPhongRefract;      // The ID of the "BlinnPhongRefract" context
+  //GLint m_hBlinnPhongRefract;      // The ID of the "BlinnPhongRefract" context
 
   //TODO: Below for testing only
+  unsigned LightingBlockPrintID;
+  unsigned LightingBlockID;
   unsigned SkyboxMeshID;
 
   EnvironmentMap envMap;
 
-  GLint uboSize;
-  GLuint uboIndex;
-  GLuint uboBuffer;
-  GLuint indices[5];
-  GLint offsets[5];
-
-  Texture diffTex;
-  Texture specTex;
+  //Texture diffTex;
+  //Texture specTex;
 };
 

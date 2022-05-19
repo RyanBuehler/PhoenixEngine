@@ -12,7 +12,7 @@
 #include <glm/ext/scalar_constants.hpp>   // glm::pi
 #include "Transform.h"
 
-Camera::Camera(const string& name) noexcept :
+Camera::Camera(const string& name, const Viewport& viewport) noexcept :
   m_ViewData(),
   m_Position({ 0.f, 0.f, 30.f }),
   m_Forward({ 0.f, 0.f, -1.f }),
@@ -22,11 +22,13 @@ Camera::Camera(const string& name) noexcept :
   m_Yaw(0.f),
   m_PersMatrix(1.f),
   m_ViewMatrix(1.f),
+  m_VPMatrix(1.f),
   m_IsEnabled(false),
-  m_ProjectionIsDirty(true),
+  m_PerspectiveIsDirty(true),
   m_ViewIsDirty(true),
   m_Target(nullptr),
-  m_Name(name)
+  m_Name(name),
+  m_Viewport(viewport)
 {
   Log::Trace("Camera '" + m_Name + "' created.");
 }
@@ -39,7 +41,7 @@ Camera::~Camera()
 const mat4& Camera::GetPersMatrix() noexcept
 {
   // Only update the matrix if dirty
-  if (m_ProjectionIsDirty)
+  if (m_PerspectiveIsDirty)
   {
     m_PersMatrix =
       glm::perspective(
@@ -47,7 +49,7 @@ const mat4& Camera::GetPersMatrix() noexcept
         m_ViewData.Aspect,
         m_ViewData.NearCull,
         m_ViewData.FarCull);
-    m_ProjectionIsDirty = false;
+    m_PerspectiveIsDirty = false;
   }
   return m_PersMatrix;
 }
@@ -68,6 +70,16 @@ const mat4& Camera::GetViewMatrix() noexcept
     m_ViewIsDirty = false;
   }
   return m_ViewMatrix;
+}
+
+const glm::mat4& Camera::GetVPMatrix() noexcept
+{
+  if (m_PerspectiveIsDirty || m_ViewIsDirty)
+  {
+    m_VPMatrix = GetPersMatrix() * GetViewMatrix();
+  }
+
+  return m_VPMatrix;
 }
 
 void Camera::SetTarget(const Transform* target) noexcept
@@ -180,6 +192,24 @@ void Camera::SetName(const string& name) noexcept
 const string& Camera::GetName() const noexcept
 {
   return m_Name;
+}
+
+const Camera::Viewport& Camera::GetViewport() const noexcept
+{
+  return m_Viewport;
+}
+
+void Camera::SetViewport(const Camera::Viewport& other) noexcept
+{
+  m_Viewport = other;
+}
+
+void Camera::SetViewport(GLint X, GLint Y, GLint W, GLint H)
+{
+  m_Viewport.X = X;
+  m_Viewport.Y = Y;
+  m_Viewport.W = W;
+  m_Viewport.H = H;
 }
 
 void Camera::updateOrientation() noexcept

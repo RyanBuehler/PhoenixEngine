@@ -1,0 +1,8 @@
+
+[*]
+
+# ReSharper inspection severities
+resharper_cpp_enforce_do_statement_braces_highlighting = suggestion
+resharper_cpp_enforce_for_statement_braces_highlighting = suggestion
+resharper_cpp_enforce_if_statement_braces_highlighting = suggestion
+resharper_cpp_enforce_while_statement_braces_highlighting = suggestion
