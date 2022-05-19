@@ -13,20 +13,20 @@ public:
   struct VertexAttribute
   {
     VertexAttribute(
-      string name,
-      GLint elementCount,
-      GLenum elementType,
-      GLboolean isNormalized,
-      GLsizei stride,
-      size_t offset
+      string Name,
+      const GLint ElementCount,
+      const GLenum ElementType,
+      const GLboolean IsNormalized,
+      const GLsizei Stride,
+      const size_t Offset
     ) :
-      Name(name),
+      Name(std::move(Name)),
       ID(Error::Context::INVALID_CONTEXT),
-      ElementCount(elementCount),
-      ElementType(elementType),
-      bIsNormalized(isNormalized),
-      Stride(stride),
-      Offset(offset)
+      ElementCount(ElementCount),
+      ElementType(ElementType),
+      bIsNormalized(IsNormalized),
+      Stride(Stride),
+      Offset(Offset)
     {};
 
     string Name;
@@ -41,11 +41,11 @@ public:
 private:
   struct Context
   {
-    Context(const string& name, GLint programID = Error::INVALID_INDEX) :
-      Name(name),
-      ProgramID(programID),
-      UniformAttributes(),
-      VertexAttributes()
+    explicit Context(string Name,
+                     const GLuint ProgramID = Error::INVALID_INDEX
+    ) :
+      Name(std::move(Name)),
+      ProgramID(ProgramID)
     {}
 
     string Name;
@@ -62,17 +62,17 @@ public:
   ContextManager(ContextManager&&) = delete;
   ContextManager& operator=(ContextManager&&) = delete;
 
-  unsigned CreateNewContext(const string& name, GLint vertexShaderID, GLint fragmentShaderID);
+  unsigned CreateNewContext(const string& Name, GLint VertexShaderID, GLint FragmentShaderID);
 
-  void SetContext(unsigned contextID) noexcept;
+  void SetContext(unsigned ContextID) noexcept;
 
-  GLuint& GetProgram(unsigned contextID) noexcept;
-  GLuint GetCurrentProgram() const noexcept;
-  const vector<UniformAttribute>& GetCurrentUniformAttributes() const noexcept;
-  const vector<VertexAttribute>& GetCurrentVertexAttributes() const noexcept;
+  GLuint& GetProgram(unsigned ContextID) noexcept;
+  [[nodiscard]] GLuint GetCurrentProgram() const noexcept;
+  [[nodiscard]] const vector<UniformAttribute>& GetCurrentUniformAttributes() const noexcept;
+  [[nodiscard]] const vector<VertexAttribute>& GetCurrentVertexAttributes() const noexcept;
 
-  void AddNewUniformAttribute(unsigned contextIndex, const string& name);
-  void AddNewVertexAttribute(unsigned contextIndex, const VertexAttribute& vertexAttribute);
+  void AddNewUniformAttribute(unsigned ContextID, const string& Name);
+  void AddNewVertexAttribute(unsigned ContextIndex, const VertexAttribute& Attribute);
 
   /*bool ReloadContext(GLuint programID, GLint vertexShaderID, GLint fragmentShaderID) noexcept;*/
 

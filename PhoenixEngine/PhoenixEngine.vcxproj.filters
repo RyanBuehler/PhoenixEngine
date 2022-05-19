@@ -124,12 +124,6 @@
     <Filter Include="Source Files\Graphics\Statistics">
       <UniqueIdentifier>{6108300e-275d-4cdb-91dd-37cff6c6427f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Assets">
-      <UniqueIdentifier>{89f77ce2-d23f-4f8d-8609-c20492442e8d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Assets">
-      <UniqueIdentifier>{225d498b-1fed-47f1-b889-5d0ab101ba68}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Application.h">
@@ -256,7 +250,7 @@
       <Filter>Header Files\Graphics\Statistics</Filter>
     </ClInclude>
     <ClInclude Include="src\AssetLoader.h">
-      <Filter>Header Files\Assets</Filter>
+      <Filter>Header Files\Graphics\Assets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -366,7 +360,7 @@
       <Filter>Source Files\Graphics\Statistics</Filter>
     </ClCompile>
     <ClCompile Include="AssetLoader.cpp">
-      <Filter>Source Files\Assets</Filter>
+      <Filter>Source Files\Graphics\Assets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

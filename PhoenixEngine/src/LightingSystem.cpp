@@ -20,7 +20,7 @@ LightingSystem::~LightingSystem()
   Log::Trace("Lighting system destructed");
 }
 
-bool LightingSystem::RegisterLight(Light* lightPtr) noexcept
+bool LightingSystem::RegisterLight(Light* LightPtr) noexcept
 {
   if (getFreeLightCount() < 1)
   {
@@ -31,7 +31,7 @@ bool LightingSystem::RegisterLight(Light* lightPtr) noexcept
   // Check for light redundancies
   for (Light* ptr : m_RegisteredLights)
   {
-    if (ptr == lightPtr)
+    if (ptr == LightPtr)
     {
       Log::Warn("Attempting to register an already registered light");
       return false;
@@ -55,7 +55,7 @@ bool LightingSystem::RegisterLight(Light* lightPtr) noexcept
     return false;
   }
 
-  m_RegisteredLights[index] = lightPtr;
+  m_RegisteredLights[index] = LightPtr;
   Log::Trace("Light registered in slot: " + index);
   return true;
 }

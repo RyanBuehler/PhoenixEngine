@@ -91,19 +91,19 @@ unsigned MeshManager::LoadMesh(
   mesh.AssembleVertexData();
 
   // The Vertex buffer
-  glGenBuffers(1, &m_MeshDataArray[index].PositionBufferId);
-  glBindBuffer(GL_ARRAY_BUFFER, m_MeshDataArray[index].PositionBufferId);
+  glGenBuffers(1, &m_MeshDataArray[index].PositionBufferID);
+  glBindBuffer(GL_ARRAY_BUFFER, m_MeshDataArray[index].PositionBufferID);
   glBufferData(GL_ARRAY_BUFFER, mesh.GetVertexCount() * sizeof(Mesh::VertexData),
     mesh.m_VertexData.data(), GL_STATIC_DRAW);
 
   // The Triangle buffer
-  glGenBuffers(1, &m_MeshDataArray[index].TriangleBufferId);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_MeshDataArray[index].TriangleBufferId);
+  glGenBuffers(1, &m_MeshDataArray[index].TriangleBufferID);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_MeshDataArray[index].TriangleBufferID);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.GetTriangleCount() * sizeof(Mesh::Triangle),
     mesh.m_TriangleArray.data(), GL_STATIC_DRAW);
 
-  glGenVertexArrays(1, &m_MeshDataArray[index].VertexArrayId);
-  glBindVertexArray(m_MeshDataArray[index].VertexArrayId);
+  glGenVertexArrays(1, &m_MeshDataArray[index].VertexArrayID);
+  glBindVertexArray(m_MeshDataArray[index].VertexArrayID);
 
   // Position
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), 0);
@@ -126,12 +126,12 @@ void MeshManager::UnloadMeshes() noexcept
 {
   for (auto& i : m_MeshDataArray)
   {
-    glDeleteVertexArrays(1, &i.VertexArrayId);
+    glDeleteVertexArrays(1, &i.VertexArrayID);
 
-    glDeleteBuffers(1, &i.PositionBufferId);
+    glDeleteBuffers(1, &i.PositionBufferID);
     //glDeleteBuffers(1, &m_MeshDataArray[i].NormalBufferID);
     //glDeleteBuffers(1, &m_MeshDataArray[i].TexcoordBufferID);
-    glDeleteBuffers(1, &i.TriangleBufferId);
+    glDeleteBuffers(1, &i.TriangleBufferID);
 
     Log::Trace("Mesh '" + i.FileName + "' destroyed.");
   }
@@ -139,52 +139,52 @@ void MeshManager::UnloadMeshes() noexcept
   m_MeshDataArray.clear();
 }
 
-void MeshManager::RenderMesh(const unsigned Id) const noexcept
+void MeshManager::RenderMesh(const unsigned ID) const noexcept
 {
-  if (Id == Error::INVALID_INDEX)
+  if (ID == Error::INVALID_INDEX)
   {
     Log::Error("[RenderMesh] Mesh not loaded!");
     return;
   }
 
-  glBindVertexArray(m_MeshDataArray[Id].VertexArrayId);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_MeshDataArray[Id].TriangleBufferId);
+  glBindVertexArray(m_MeshDataArray[ID].VertexArrayID);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_MeshDataArray[ID].TriangleBufferID);
 
-  glDrawElements(GL_TRIANGLES, 3u * m_MeshArray[Id].GetTriangleCount(), GL_UNSIGNED_INT, nullptr);
+  glDrawElements(GL_TRIANGLES, 3u * m_MeshArray[ID].GetTriangleCount(), GL_UNSIGNED_INT, nullptr);
   glBindVertexArray(0u);
 }
 
-void MeshManager::RenderSurfaceNormals(const unsigned Id, const float Length) const noexcept
+void MeshManager::RenderSurfaceNormals(const unsigned ID, const float Length) const noexcept
 {
-  if (Id == Error::INVALID_INDEX)
+  if (ID == Error::INVALID_INDEX)
   {
     Log::Error("[RenderSurfaceNormals] Mesh not loaded!");
     return;
   }
 
-  for (size_t i = 0; i < m_MeshArray[Id].m_SurfaceNormalArray.size(); ++i)
+  for (size_t i = 0; i < m_MeshArray[ID].m_SurfaceNormalArray.size(); ++i)
   {
     DebugRenderer::I().AddLine(
-      m_MeshArray[Id].m_SurfaceNormalPositionArray[i],
-      m_MeshArray[Id].m_SurfaceNormalPositionArray[i] + m_MeshArray[Id].m_SurfaceNormalArray[i] * Length);
+      m_MeshArray[ID].m_SurfaceNormalPositionArray[i],
+      m_MeshArray[ID].m_SurfaceNormalPositionArray[i] + m_MeshArray[ID].m_SurfaceNormalArray[i] * Length);
   }
 
   DebugRenderer::I().RenderLines();
 }
 
-void MeshManager::RenderVertexNormals(const unsigned Id, const float Length) const noexcept
+void MeshManager::RenderVertexNormals(const unsigned ID, const float Length) const noexcept
 {
-  if (Id == Error::INVALID_INDEX)
+  if (ID == Error::INVALID_INDEX)
   {
     Log::Error("[RenderVertexNormals] Mesh not loaded!");
     return;
   }
 
-  for (size_t i = 0; i < m_MeshArray[Id].m_VertexNormalArray.size(); ++i)
+  for (size_t i = 0; i < m_MeshArray[ID].m_VertexNormalArray.size(); ++i)
   {
     DebugRenderer::I().AddLine(
-      m_MeshArray[Id].m_PositionArray[i],
-      m_MeshArray[Id].m_PositionArray[i] + m_MeshArray[Id].m_VertexNormalArray[i] * Length);
+      m_MeshArray[ID].m_PositionArray[i],
+      m_MeshArray[ID].m_PositionArray[i] + m_MeshArray[ID].m_VertexNormalArray[i] * Length);
   }
 
   DebugRenderer::I().RenderLines();
@@ -201,9 +201,9 @@ unsigned MeshManager::LoadMeshFromOBJ(const string& FileName) noexcept
   return i;
 }
 
-const Mesh& MeshManager::GetMeshByID(unsigned Id) const noexcept
+const Mesh& MeshManager::GetMeshByID(unsigned ID) const noexcept
 {
-  return m_MeshArray[Id];
+  return m_MeshArray[ID];
 }
 
 unsigned MeshManager::LoadSphere(const float Radius, const int NumDivisions) noexcept

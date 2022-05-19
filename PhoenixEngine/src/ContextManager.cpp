@@ -2,27 +2,26 @@
 #include "ContextManager.h"
 
 ContextManager::ContextManager() noexcept :
-  m_Contexts(),
   m_CurrentContextIndex(Error::Context::INVALID_CONTEXT)
 {
 }
 
 ContextManager::~ContextManager()
 {
-  for (Context c : m_Contexts)
+  for (const Context context : m_Contexts)
   {
-    glDeleteProgram(c.ProgramID);
+    glDeleteProgram(context.ProgramID);
   }
 }
 
-unsigned ContextManager::CreateNewContext(const string& name, GLint vertexShaderID, GLint fragmentShaderID)
+unsigned ContextManager::CreateNewContext(const string& Name, const GLint VertexShaderID, const GLint FragmentShaderID)
 {
-  unsigned i = static_cast<unsigned>(m_Contexts.size());
+  auto i = static_cast<unsigned>(m_Contexts.size());
 
   GLint programID = glCreateProgram();
 
-  glAttachShader(programID, vertexShaderID);
-  glAttachShader(programID, fragmentShaderID);
+  glAttachShader(programID, VertexShaderID);
+  glAttachShader(programID, FragmentShaderID);
 
   glLinkProgram(programID);
 
@@ -32,35 +31,35 @@ unsigned ContextManager::CreateNewContext(const string& name, GLint vertexShader
   {
     Log::Error("Error linking OpenGL program.");
     string error;
-    Graphics::RetrieveProgramLog(programID, error);
+    Graphics::retrieve_program_log(programID, error);
     Log::Error(error);
     return Error::OpenGL::PROGRAM_ERROR;
   }
 
-  m_Contexts.push_back({ name, programID });
+  m_Contexts.emplace_back(Name, programID);
 
   return i;
 }
 
-void ContextManager::SetContext(unsigned contextIndex) noexcept
+void ContextManager::SetContext(const unsigned ContextID) noexcept
 {
-  if (contextIndex != m_CurrentContextIndex)
+  if (ContextID != m_CurrentContextIndex)
   {
     if (m_CurrentContextIndex != Error::Context::INVALID_CONTEXT)
     {
-      for (size_t i = 0; i < m_Contexts[m_CurrentContextIndex].VertexAttributes.size(); ++i)
+      for (const auto& vertexAttribute : m_Contexts[m_CurrentContextIndex].VertexAttributes)
       {
-        glDisableVertexAttribArray(m_Contexts[m_CurrentContextIndex].VertexAttributes[i].ID);
+        glDisableVertexAttribArray(vertexAttribute.ID);
       }
     }
-    m_CurrentContextIndex = contextIndex;
+    m_CurrentContextIndex = ContextID;
   }
 
   glUseProgram(m_Contexts[m_CurrentContextIndex].ProgramID);
 
-  //TODO: Must bind vertex array before attrib pointers will have any effect
+  //TODO: Must bind vertex array before attribute pointers will have any effect
 
-  for (size_t i = 0; i < m_Contexts[m_CurrentContextIndex].VertexAttributes.size(); ++i)
+  for (const auto& vertexAttribute : m_Contexts[m_CurrentContextIndex].VertexAttributes)
   {
     //glVertexAttribPointer(
     //  m_Contexts[m_CurrentContextIndex].VertexAttributes[i].ID,
@@ -69,16 +68,16 @@ void ContextManager::SetContext(unsigned contextIndex) noexcept
     //  m_Contexts[m_CurrentContextIndex].VertexAttributes[i].bIsNormalized,
     //  m_Contexts[m_CurrentContextIndex].VertexAttributes[i].Stride,
     //  reinterpret_cast<GLvoid*>(m_Contexts[m_CurrentContextIndex].VertexAttributes[i].Offset));
-    glEnableVertexAttribArray(m_Contexts[m_CurrentContextIndex].VertexAttributes[i].ID);
+    glEnableVertexAttribArray(vertexAttribute.ID);
   }
 
   //TODO: Do I want to return the current program or do I want
   // instead to have the context manager handle uniforms?
 }
 
-GLuint& ContextManager::GetProgram(unsigned contextID) noexcept
+GLuint& ContextManager::GetProgram(const unsigned ContextID) noexcept
 {
-  return m_Contexts[contextID].ProgramID;
+  return m_Contexts[ContextID].ProgramID;
 }
 
 GLuint ContextManager::GetCurrentProgram() const noexcept
@@ -96,22 +95,22 @@ const vector<ContextManager::VertexAttribute>& ContextManager::GetCurrentVertexA
   return m_Contexts[m_CurrentContextIndex].VertexAttributes;
 }
 
-void ContextManager::AddNewUniformAttribute(unsigned contextIndex, const string& name)
+void ContextManager::AddNewUniformAttribute(const unsigned ContextID, const string& Name)
 {
-  assert(contextIndex < m_Contexts.size());
-  glUseProgram(m_Contexts[contextIndex].ProgramID);
-  GLint id = glGetUniformLocation(m_Contexts[contextIndex].ProgramID, name.c_str());
-  UniformAttribute attribute = { name, id };
-  m_Contexts[contextIndex].UniformAttributes.push_back(attribute);
-  Log::Trace("New Uniform Attribute \"" + name + "\" added to Context: " + m_Contexts[contextIndex].Name);
+  assert(ContextID < m_Contexts.size());
+  glUseProgram(m_Contexts[ContextID].ProgramID);
+  const GLint id = glGetUniformLocation(m_Contexts[ContextID].ProgramID, Name.c_str());
+  const UniformAttribute attribute = { Name, id };
+  m_Contexts[ContextID].UniformAttributes.push_back(attribute);
+  Log::Trace("New Uniform Attribute \"" + Name + "\" added to Context: " + m_Contexts[ContextID].Name);
   glUseProgram(0u);
 }
 
-void ContextManager::AddNewVertexAttribute(unsigned contextIndex, const VertexAttribute& vertexAttribute)
+void ContextManager::AddNewVertexAttribute(const unsigned ContextIndex, const VertexAttribute& Attribute)
 {
-  assert(contextIndex < m_Contexts.size());
-  VertexAttribute va = vertexAttribute;
-  va.ID = glGetAttribLocation(m_Contexts[contextIndex].ProgramID, va.Name.c_str());
-  m_Contexts[contextIndex].VertexAttributes.push_back(va);
-  Log::Trace("New Vertex Attribute \"" + va.Name + "\" added to Context: " + m_Contexts[contextIndex].Name);
+  assert(ContextIndex < m_Contexts.size());
+  VertexAttribute va = Attribute;
+  va.ID = glGetAttribLocation(m_Contexts[ContextIndex].ProgramID, va.Name.c_str());
+  m_Contexts[ContextIndex].VertexAttributes.push_back(va);
+  Log::Trace("New Vertex Attribute \"" + va.Name + "\" added to Context: " + m_Contexts[ContextIndex].Name);
 }

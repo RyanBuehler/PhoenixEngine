@@ -4,6 +4,7 @@
 #include "LightingSystem.h"
 #include "Material.h"
 #include "MeshComponent.h"
+#include "DebugRenderer.h"
 
 #pragma region ImGui
 
@@ -25,13 +26,17 @@ const char* tempcubemap[6] = {
     "res/textures/skybox/negz.jpg"
 };
 
-Renderer::Renderer(bool depthBufferEnabled, bool backFaceCullEnabled) noexcept :
+Renderer::Renderer(const bool DepthBufferEnabled, const bool BackFaceCullEnabled) noexcept :
   m_Skybox(tempcubemap),
   m_hSkyboxContext(Error::Context::INVALID_CONTEXT),
-  m_hDebugContext(Error::Context::INVALID_CONTEXT)
+  m_hBlinnPhong(Error::INVALID_INDEX),
+  m_hDebugContext(Error::Context::INVALID_CONTEXT),
+  m_LightingBlockPrintId(Error::INVALID_INDEX),
+  m_LightingBlockID(Error::INVALID_INDEX),
+  m_DepthBufferEnabled(DepthBufferEnabled)
 {
-  depthBufferEnabled ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
-  backFaceCullEnabled ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
+  DepthBufferEnabled ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
+  BackFaceCullEnabled ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
   glClearColor(0.f, 0.f, 0.f, 1.f);
   glClearDepth(1.0);
 
@@ -50,7 +55,7 @@ void Renderer::OnBeginFrame() const noexcept
   // Clear the back buffer and depth buffer
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  m_UniformBlockManager.SendData(LightingBlockID);
+  m_UniformBlockManager.SendData(m_LightingBlockID);
 }
 
 void Renderer::OnEndFrame() noexcept
@@ -81,8 +86,8 @@ void Renderer::OnEndFrame() noexcept
 
       m_ShaderManager.RelinkShader(
         m_ContextManager.GetProgram(m_hBlinnPhong),
-        m_ShaderManager.GetVertexShaderID(Shader::Vertex::BLINNPHONG),
-        m_ShaderManager.GetFragmentShaderID(Shader::Fragment::BLINNPHONG),
+        m_ShaderManager.GetVertexShaderID(Shader::Vertex::BLINN_PHONG),
+        m_ShaderManager.GetFragmentShaderID(Shader::Fragment::BLINN_PHONG),
         "BlinnPhong.vert", "BlinnPhong.frag");
 
       //m_ShaderManager.RelinkShader(
@@ -133,11 +138,11 @@ void Renderer::OnEndFrame() noexcept
   }
 }
 
-void Renderer::RenderScene(vector<GameObject>& gameObjects, Camera& activeCamera)
+void Renderer::RenderScene(vector<GameObject>& GameObjects, Camera& ActiveCamera)
 {
   //RenderFirstPass(gameObjects);
 
-  RenderSecondPass(gameObjects, activeCamera);
+  RenderSecondPass(GameObjects, ActiveCamera);
 
 #pragma region ImGui
 
@@ -147,11 +152,11 @@ void Renderer::RenderScene(vector<GameObject>& gameObjects, Camera& activeCamera
   // Set Perspective Matrix
   glUniformMatrix4fv(
     m_ContextManager.GetCurrentUniformAttributes()[0].ID,
-    1, GL_FALSE, &activeCamera.GetPersMatrix()[0][0]);
+    1, GL_FALSE, &ActiveCamera.GetPersMatrix()[0][0]);
   // Set View Matrix
   glUniformMatrix4fv(
     m_ContextManager.GetCurrentUniformAttributes()[1].ID,
-    1, GL_FALSE, &activeCamera.GetViewMatrix()[0][0]);
+    1, GL_FALSE, &ActiveCamera.GetViewMatrix()[0][0]);
 
   static constexpr mat4 mat_identity(1.f);
 
@@ -165,7 +170,7 @@ void Renderer::RenderScene(vector<GameObject>& gameObjects, Camera& activeCamera
     // RenderNormals(id, ImGui::GraphicsDebugNormalLength);
     // Render our list of game objects
     m_ContextManager.SetContext(m_hDebugContext);
-    for (GameObject& go : gameObjects)
+    for (GameObject& go : GameObjects)
     {
       // Skip disabled game objects
       if (go.IsActive())
@@ -180,7 +185,7 @@ void Renderer::RenderScene(vector<GameObject>& gameObjects, Camera& activeCamera
     m_ContextManager.SetContext(m_hDebugContext);
 
     // Render our list of game objects
-    for (GameObject& go : gameObjects)
+    for (GameObject& go : GameObjects)
     {
       // Skip disabled game objects
       if (go.IsActive())
@@ -200,7 +205,7 @@ void Renderer::RenderScene(vector<GameObject>& gameObjects, Camera& activeCamera
 #pragma endregion
 }
 
-void Renderer::RenderFirstPass(vector<GameObject>& gameObjects)
+void Renderer::RenderFirstPass(vector<GameObject>& GameObjects)
 {
   Camera& activeCamera = envMap.GetCamera();
   glViewport(0, 0, 1024, 1024);
@@ -210,30 +215,30 @@ void Renderer::RenderFirstPass(vector<GameObject>& gameObjects)
     envMap.Bind(i);
     switch (i)
     {
-      case 0:
-        activeCamera.LookAt({ 1.f, 0.f, 0.f }, { 0.f, 1.f, 0.f });
-        break;
-      case 1:
-        activeCamera.LookAt({ -1.f, 0.f, 0.f }, { 0.f, 1.f, 0.f });
-        break;
-      case 2:
-        activeCamera.LookAt({ 0.f, -1.f, 0.f }, { 0.f, 0.f, 1.f });
-        break;
-      case 3:
-        activeCamera.LookAt({ 0.f, 1.f, 0.f }, { 0.f, 0.f, -1.f });
-        break;
-      case 4:
-        activeCamera.LookAt({ 0.f, 0.f, 1.f }, { 0.f, 1.f, 0.f });
-        break;
-      case 5:
-        activeCamera.LookAt({ 0.f, 0.f, -1.f }, { 0.f, 1.f, 0.f });
-        break;
-      default:
-        return;
+    case 0:
+      activeCamera.LookAt({ 1.f, 0.f, 0.f }, { 0.f, 1.f, 0.f });
+      break;
+    case 1:
+      activeCamera.LookAt({ -1.f, 0.f, 0.f }, { 0.f, 1.f, 0.f });
+      break;
+    case 2:
+      activeCamera.LookAt({ 0.f, -1.f, 0.f }, { 0.f, 0.f, 1.f });
+      break;
+    case 3:
+      activeCamera.LookAt({ 0.f, 1.f, 0.f }, { 0.f, 0.f, -1.f });
+      break;
+    case 4:
+      activeCamera.LookAt({ 0.f, 0.f, 1.f }, { 0.f, 1.f, 0.f });
+      break;
+    case 5:
+      activeCamera.LookAt({ 0.f, 0.f, -1.f }, { 0.f, 1.f, 0.f });
+      break;
+    default:
+      return;
     }
 
     // Render our list of game objects
-    for (GameObject& go : gameObjects)
+    for (GameObject& go : GameObjects)
     {
       // Skip disabled game objects
       if (!go.IsActive())
@@ -302,21 +307,21 @@ void Renderer::RenderFirstPass(vector<GameObject>& gameObjects)
   glUseProgram(0u);
 }
 
-void Renderer::RenderSecondPass(vector<GameObject>& gameObjects, Camera& activeCamera)
+void Renderer::RenderSecondPass(vector<GameObject>& GameObjects, Camera& ActiveCamera)
 {
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
   glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glEnable(GL_DEPTH_TEST);
-  const Camera::Viewport& vp = activeCamera.GetViewport();
+  const Camera::Viewport& vp = ActiveCamera.GetViewport();
   glViewport(vp.X, vp.Y, vp.W, vp.H);
 
   m_ContextManager.SetContext(m_hBlinnPhong);
 
   //TODO: Render all Mesh Components
   // Render our list of game objects
-  for (GameObject& go : gameObjects)
+  for (GameObject& go : GameObjects)
   {
     // Skip disabled game objects
     if (!go.IsActive())
@@ -326,10 +331,10 @@ void Renderer::RenderSecondPass(vector<GameObject>& gameObjects, Camera& activeC
 
     int x = 0;
     // Set View/Perspective Matrix
-    glUniformMatrix4fv(uniforms[x++].ID, 1, GL_FALSE, &activeCamera.GetVPMatrix()[0][0]);
+    glUniformMatrix4fv(uniforms[x++].ID, 1, GL_FALSE, &ActiveCamera.GetVPMatrix()[0][0]);
 
     // Set Cam Position
-    glUniform3fv(uniforms[x++].ID, 1, &activeCamera.GetPosition()[0]);
+    glUniform3fv(uniforms[x++].ID, 1, &ActiveCamera.GetPosition()[0]);
 
     const LightingSystem::GlobalLightingData& globalLighting = ImGui::LIGHTING_GLOBAL_DATA;
     glUniform3fv(uniforms[x++].ID, 1, &globalLighting.AmbientIntensity[0]);
@@ -349,7 +354,7 @@ void Renderer::RenderSecondPass(vector<GameObject>& gameObjects, Camera& activeC
   glUseProgram(0u);
 }
 
-void Renderer::RenderSkybox(Camera& activeCamera)
+void Renderer::RenderSkybox(Camera& ActiveCamera)
 {
   m_ContextManager.SetContext(m_hSkyboxContext);
 
@@ -361,28 +366,28 @@ void Renderer::RenderSkybox(Camera& activeCamera)
 
   const vector<ContextManager::UniformAttribute>& uniforms = m_ContextManager.GetCurrentUniformAttributes();
 
-  glm::mat4 view = glm::mat4(glm::mat3(activeCamera.GetViewMatrix()));
+  glm::mat4 view = glm::mat4(glm::mat3(ActiveCamera.GetViewMatrix()));
 
   // Set Perspective Matrix
-  glUniformMatrix4fv(uniforms[0].ID, 1, GL_FALSE, &activeCamera.GetPersMatrix()[0][0]);
+  glUniformMatrix4fv(uniforms[0].ID, 1, GL_FALSE, &ActiveCamera.GetPersMatrix()[0][0]);
   // Set View Matrix
   glUniformMatrix4fv(uniforms[1].ID, 1, GL_FALSE, &view[0][0]);
 
-  m_MeshManager.RenderMesh(SkyboxMeshID);
+  m_MeshManager.RenderMesh(m_SkyboxMeshId);
 
   glDepthFunc(GL_LESS);
   //glDepthMask(GL_TRUE);
 }
 
-void Renderer::RenderGameObject(GameObject& gameObject)
+void Renderer::RenderGameObject(GameObject& GameObject)
 {
-  const auto meshComp = gameObject.GetFirstComponentByType(Component::Type::MESH);
+  const auto meshComp = GameObject.GetFirstComponentByType(Component::Type::MESH);
   if (!meshComp.has_value())
     return;
   const shared_ptr<MeshComponent> meshCompPtr = dynamic_pointer_cast<MeshComponent>(meshComp.value());
   unsigned MeshID = meshCompPtr->GetMeshID();
 
-  if (gameObject.m_bIsDirty)
+  if (GameObject.m_bIsDirty)
   {
     // Unknown Mesh ID, check for new id with file name
     if (meshCompPtr->GetMeshID() == Error::INVALID_INDEX)
@@ -402,7 +407,7 @@ void Renderer::RenderGameObject(GameObject& gameObject)
 
   int x = 9;
   // Bind the model transform matrix
-  glUniformMatrix4fv(uniforms[x++].ID, 1, false, &gameObject.GetMatrix()[0][0]);
+  glUniformMatrix4fv(uniforms[x++].ID, 1, false, &GameObject.GetMatrix()[0][0]);
 
   const Material& mat =
     meshCompPtr->GetMaterial().GetType() != Material::Type::GLOBAL ?
@@ -482,8 +487,8 @@ void Renderer::LoadContexts() noexcept
   LightArrayPrint.BlockName = "LightArray";
   LightArrayPrint.DataSize = sizeof(Light::Data) * 16;
 
-  const unsigned lightingBlockPrintId = m_UniformBlockManager.RegisterNewBlockPrint(LightArrayPrint);
-  unsigned lightingBlockId = m_UniformBlockManager.CreateNewBlock(lightingBlockPrintId, program, &ImGui::LIGHTING_DATA_ARRAY[0]);
+  m_LightingBlockPrintId = m_UniformBlockManager.RegisterNewBlockPrint(LightArrayPrint);
+  m_LightingBlockID = m_UniformBlockManager.CreateNewBlock(m_LightingBlockPrintId, program, &ImGui::LIGHTING_DATA_ARRAY[0]);
 }
 
 //void Renderer::LoadDiffuseContext() noexcept
@@ -596,8 +601,8 @@ void Renderer::LoadContexts() noexcept
 void Renderer::LoadBlinnPhongContext() noexcept
 {
   // Load Phong lighting context
-  const unsigned vId = m_ShaderManager.GetVertexShaderID(Shader::Vertex::BLINNPHONG);
-  const unsigned fId = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::BLINNPHONG);
+  const unsigned vId = m_ShaderManager.GetVertexShaderID(Shader::Vertex::BLINN_PHONG);
+  const unsigned fId = m_ShaderManager.GetFragmentShaderID(Shader::Fragment::BLINN_PHONG);
   m_hBlinnPhong = m_ContextManager.CreateNewContext("Blinn Phong", vId, fId);
 
   m_ContextManager.SetContext(m_hBlinnPhong);
@@ -714,7 +719,7 @@ void Renderer::LoadSkyboxContext() noexcept
   const ContextManager::VertexAttribute vaPosition("position", 4, GL_FLOAT, GL_FALSE, sizeof(vec3), 0u);
   m_ContextManager.AddNewVertexAttribute(m_hSkyboxContext, vaPosition);
 
-  SkyboxMeshID = m_MeshManager.LoadMesh("cube2.obj");
+  m_SkyboxMeshId = m_MeshManager.LoadMesh("cube2.obj");
 
   Log::Trace("Skybox Context loaded.");
 }

@@ -2,19 +2,17 @@
 // File:    Renderer.h
 // Author:  Ryan Buehler
 // Created: 10/03/21
-// Desc:    Handles all Renderering of the Phoenix Engine
+// Desc:    Handles all Rendering of the Phoenix Engine
 //------------------------------------------------------------------------------
 #pragma once
 #include "RenderStats.h"
 #include "ContextManager.h"
 #include "ShaderManager.h"
 #include "UniformBlockManager.h"
-#include "DebugRenderer.h"
 #include "GameObject.h"
 #include "Camera.h"
 #include "MeshManager.h"
 #include "LightingSystem.h"
-#include "Texture.h"
 #include "Cubemap.h"        //TODO: Include this?
 #include "EnvironmentMap.h" //TODO: Include this?
 
@@ -35,9 +33,9 @@ public:
   /// <summary>
   /// Renderer Constructor
   /// </summary>
-  /// <param name="depthBufferEnabled">Should the depth buffer be enabled?</param>
-  /// <param name="backFaceCullEnabled">Should the back faces be culled?</param>
-  Renderer(bool depthBufferEnabled = true, bool backFaceCullEnabled = false) noexcept;
+  /// <param name="DepthBufferEnabled">Should the depth buffer be enabled?</param>
+  /// <param name="BackFaceCullEnabled">Should the back faces be culled?</param>
+  explicit Renderer(bool DepthBufferEnabled = true, bool BackFaceCullEnabled = false) noexcept;
   ~Renderer();
 
   Renderer(const Renderer&) = delete;
@@ -60,19 +58,19 @@ public:
   /// Render a draw call with the given objects from the scene
   /// </summary>
   /// TODO: Is there any way to make this constant?
-  /// <param name="gameObjects">A vector reference of game objects</param>
+  /// <param name="GameObjects">A vector reference of game objects</param>
   /// TODO: Is there any way to make this constant?
-  /// <param name="activeCamera">A reference to the active camera</param>
-  void RenderScene(vector<GameObject>& gameObjects, Camera& activeCamera);
+  /// <param name="ActiveCamera">A reference to the active camera</param>
+  void RenderScene(vector<GameObject>& GameObjects, Camera& ActiveCamera);
 
-  void RenderFirstPass(vector<GameObject>& gameObjects);
+  void RenderFirstPass(vector<GameObject>& GameObjects);
 
-  void RenderSecondPass(vector<GameObject>& gameObjects, Camera& activeCamera);
+  void RenderSecondPass(vector<GameObject>& GameObjects, Camera& ActiveCamera);
 
   /// <summary>
   /// Renders the skybox
   /// </summary>
-  void RenderSkybox(Camera& activeCamera);
+  void RenderSkybox(Camera& ActiveCamera);
 
   /// <summary>
   /// Enables the Depth Buffer
@@ -121,8 +119,8 @@ private:
   /// <summary>
   /// Helper function to render a single game object
   /// </summary>
-  /// <param name="gameObject"></param>
-  void RenderGameObject(GameObject& gameObject);
+  /// <param name="GameObject"></param>
+  void RenderGameObject(GameObject& GameObject);
 
 #pragma region ImGui
 
@@ -213,11 +211,12 @@ private:
   //GLint m_hBlinnPhongRefract;      // The ID of the "BlinnPhongRefract" context
 
   //TODO: Below for testing only
-  unsigned LightingBlockPrintID;
-  unsigned LightingBlockID;
-  unsigned SkyboxMeshID;
+  unsigned m_LightingBlockPrintId;
+  unsigned m_LightingBlockID;
+  unsigned m_SkyboxMeshId{};
 
   EnvironmentMap envMap;
+  const bool m_DepthBufferEnabled;
 
   //Texture diffTex;
   //Texture specTex;

@@ -8,7 +8,7 @@
 #include "Paths.h"
 #include "ShaderManager.h"
 
-#define GL_SHADER_ERROR -1
+#define GL_SHADER_ERROR (-1)
 
 ShaderManager::ShaderManager() noexcept :
   m_VertexShaders(),
@@ -22,38 +22,46 @@ ShaderManager::~ShaderManager()
   UnloadShaders();
 }
 
-unsigned ShaderManager::GetVertexShaderID(Shader::Vertex shader) const noexcept
+unsigned ShaderManager::GetVertexShaderID(Shader::Vertex Shader) const noexcept
 {
-  return m_VertexShaders[static_cast<unsigned>(shader)];
+  return m_VertexShaders[static_cast<unsigned>(Shader)];
 }
 
-unsigned ShaderManager::GetFragmentShaderID(Shader::Fragment shader) const noexcept
+unsigned ShaderManager::GetFragmentShaderID(Shader::Fragment Shader) const noexcept
 {
-  return m_FragmentShaders[static_cast<unsigned>(shader)];
+  return m_FragmentShaders[static_cast<unsigned>(Shader)];
 }
 
-bool ShaderManager::RelinkShader(GLuint& programID, GLint vertexShaderID, GLint fragmentShaderID, const char* vertexFile, const char* fragmentFile) noexcept
+bool ShaderManager::RelinkShader(GLuint& ProgramID, const GLint VertexShaderID, const GLint FragmentShaderID,
+  const char* VertexFile, const char* FragmentFile) const noexcept
 {
-  glDeleteProgram(programID);
+  glDeleteProgram(ProgramID);
 
   //TODO: hard coded for testing purposes only
-  LoadShader(vertexShaderID, vertexFile);
-  LoadShader(fragmentShaderID, fragmentFile);
+  if(!LoadShader(VertexShaderID, VertexFile))
+  {
+    return false;
+  }
 
-  programID = glCreateProgram();
+  if(!LoadShader(FragmentShaderID, FragmentFile))
+  {
+    return false;
+  }
 
-  glAttachShader(programID, vertexShaderID);
-  glAttachShader(programID, fragmentShaderID);
+  ProgramID = glCreateProgram();
 
-  glLinkProgram(programID);
+  glAttachShader(ProgramID, VertexShaderID);
+  glAttachShader(ProgramID, FragmentShaderID);
+
+  glLinkProgram(ProgramID);
 
   GLint result;
-  glGetProgramiv(programID, GL_LINK_STATUS, &result);
+  glGetProgramiv(ProgramID, GL_LINK_STATUS, &result);
   if (!result)
   {
     Log::Error("Error linking OpenGL program.");
     string error;
-    Graphics::RetrieveProgramLog(programID, error);
+    Graphics::retrieve_program_log(ProgramID, error);
     Log::Error(error);
     return false;
   }
@@ -61,14 +69,14 @@ bool ShaderManager::RelinkShader(GLuint& programID, GLint vertexShaderID, GLint 
   return true;
 }
 
-GLint ShaderManager::CreateShader(GLenum shaderType) noexcept
+GLint ShaderManager::CreateShader(const GLenum ShaderType) noexcept
 {
-  return glCreateShader(shaderType);
+  return glCreateShader(ShaderType);
 }
 
-bool ShaderManager::LoadShader(GLint shaderID, const string& fileName) noexcept
+bool ShaderManager::LoadShader(const GLint ShaderID, const string& FileName) const noexcept
 {
-  string path = Paths::SHADER_PATH + fileName;
+  const string path = Paths::SHADER_PATH + FileName;
   // load fragment shader
   ifstream file;
   file.open(path.c_str(), std::ios::in);
@@ -77,21 +85,21 @@ bool ShaderManager::LoadShader(GLint shaderID, const string& fileName) noexcept
     Log::Error(string("Could not open shader file: ") + path);
     return false;
   }
-  string fstring((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+  const string fileString((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
   file.close();
 
   // compile the shader
-  const char* const& fs = fstring.c_str();
-  glShaderSource(shaderID, 1, &fs, 0);
-  glCompileShader(shaderID);
+  const char* const& fs = fileString.c_str();
+  glShaderSource(ShaderID, 1, &fs, nullptr);
+  glCompileShader(ShaderID);
 
   GLint result;
-  glGetShaderiv(shaderID, GL_COMPILE_STATUS, &result);
+  glGetShaderiv(ShaderID, GL_COMPILE_STATUS, &result);
   if (!result)
   {
-    Log::Error(string("Error compiling shader : ") + fileName);
+    Log::Error(string("Error compiling shader : ") + FileName);
     string error;
-    Graphics::RetrieveShaderLog(shaderID, error);
+    Graphics::retrieve_shader_log(ShaderID, error);
     Log::Error(error);
     return false;
   }
@@ -99,12 +107,12 @@ bool ShaderManager::LoadShader(GLint shaderID, const string& fileName) noexcept
   return true;
 }
 
-GLint ShaderManager::CreateAndLoadShader(const string& fileName, GLenum shaderType)
+GLint ShaderManager::CreateAndLoadShader(const string& FileName, const GLenum ShaderType) const
 {
-  GLint id = CreateShader(shaderType);
-  if (!LoadShader(id, fileName))
+  const GLint id = CreateShader(ShaderType);
+  if (!LoadShader(id, FileName))
   {
-    Log::Error("Failed to Create and Load shader: " + fileName);
+    Log::Error("Failed to Create and Load shader: " + FileName);
     return GL_SHADER_ERROR;
   }
   return id;
@@ -141,9 +149,9 @@ void ShaderManager::LoadShaders() noexcept
   //m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::PHONGSHADE)] =
   //  CreateAndLoadShader("PhongShading.frag", GL_FRAGMENT_SHADER);
 
-  m_VertexShaders[static_cast<unsigned>(Shader::Vertex::BLINNPHONG)] =
+  m_VertexShaders[static_cast<unsigned>(Shader::Vertex::BLINN_PHONG)] =
     CreateAndLoadShader("BlinnPhong.vert", GL_VERTEX_SHADER);
-  m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::BLINNPHONG)] =
+  m_FragmentShaders[static_cast<unsigned>(Shader::Fragment::BLINN_PHONG)] =
     CreateAndLoadShader("BlinnPhong.frag", GL_FRAGMENT_SHADER);
 
   //m_VertexShaders[static_cast<unsigned>(Shader::Vertex::BLINNPHONGREFRACT)] =
@@ -164,13 +172,13 @@ void ShaderManager::LoadShaders() noexcept
 
 void ShaderManager::UnloadShaders() noexcept
 {
-  for (GLint id : m_VertexShaders)
+  for (const GLint id : m_VertexShaders)
   {
     glDeleteShader(id);
   }
   m_VertexShaders.fill(-1);
 
-  for (GLint id : m_FragmentShaders)
+  for (const GLint id : m_FragmentShaders)
   {
     glDeleteShader(id);
   }

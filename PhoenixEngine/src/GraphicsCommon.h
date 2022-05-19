@@ -16,25 +16,25 @@ namespace Graphics
 		STREAM
 	};
 
-	static void RetrieveShaderLog(GLint shaderID, string& log) noexcept
+	static void retrieve_shader_log(const GLint ShaderId, string& Log) noexcept
 	{
 		int logLength;
-		glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &logLength);
-		char* shaderLog = new char[logLength];
-		glGetShaderInfoLog(shaderID, logLength, &logLength, shaderLog);
-		log.clear();
-		log = shaderLog;
+		glGetShaderiv(ShaderId, GL_INFO_LOG_LENGTH, &logLength);
+    const auto shaderLog = new char[logLength];
+		glGetShaderInfoLog(ShaderId, logLength, &logLength, shaderLog);
+		Log.clear();
+		Log = shaderLog;
 		delete[] shaderLog;
 	}
 
-	static void RetrieveProgramLog(GLint programID, string& log) noexcept
+	static void retrieve_program_log(const GLuint ProgramId, string& Log) noexcept
 	{
 		int logLength;
-		glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &logLength);
-		char* programLog = new char[logLength];
-		glGetProgramInfoLog(programID, logLength, &logLength, programLog);
-		log.clear();
-		log = programLog;
+		glGetProgramiv(ProgramId, GL_INFO_LOG_LENGTH, &logLength);
+    const auto programLog = new char[logLength];
+		glGetProgramInfoLog(ProgramId, logLength, &logLength, programLog);
+		Log.clear();
+		Log = programLog;
 		delete[] programLog;
 	}
 }
@@ -56,7 +56,7 @@ namespace Shader
 		//REFLECTION,
 		//PHONGLIGHT,
 		//PHONGSHADE,
-		BLINNPHONG,
+		BLINN_PHONG,
 		//BLINNPHONGREFRACT,
 		//PHONGTEXTURE,
 		DEBUG,
@@ -71,7 +71,7 @@ namespace Shader
 		//REFLECTION,
 		//PHONGLIGHT,
 		//PHONGSHADE,
-		BLINNPHONG,
+		BLINN_PHONG,
 		//BLINNPHONGREFRACT,
 		//PHONGTEXTURE,
 		DEBUG,
@@ -108,10 +108,12 @@ namespace Error
 	{
 		constexpr GLuint INVALID_HANDLE = numeric_limits<GLuint>::max();
 	}
+
 	namespace Context
 	{
-		constexpr unsigned INVALID_CONTEXT = numeric_limits<unsigned>::max();
+		constexpr unsigned INVALID_CONTEXT = numeric_limits<GLint>::max();
 	}
+
 	namespace OpenGL
 	{
 		constexpr unsigned PROGRAM_ERROR = numeric_limits<unsigned>::max();

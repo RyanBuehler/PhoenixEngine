@@ -54,7 +54,7 @@ public:
   /// </summary>
   /// <param name="light"></param>
   /// <returns></returns>
-  bool RegisterLight(Light* lightPtr) noexcept;
+  bool RegisterLight(Light* LightPtr) noexcept;
 
   /// <summary>
   /// Deregisters a light by pointer

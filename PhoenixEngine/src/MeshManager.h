@@ -14,26 +14,26 @@ class MeshManager
 private:
   struct MeshData
   {
-    MeshData(const string& fileName = "Unknown",
-             const GLuint PositionBufferId = Error::INVALID_INDEX,
-      const GLuint NormalBufferId = Error::INVALID_INDEX,
-      const GLuint TriangleBufferId = Error::INVALID_INDEX,
-      const GLuint TexcoordBufferId = Error::INVALID_INDEX,
-      const GLuint VertexArrayId = Error::INVALID_INDEX) :
-      FileName(fileName),
-      PositionBufferId(PositionBufferId),
-      TriangleBufferId(TriangleBufferId),
-      NormalBufferId(NormalBufferId),
-      TexcoordBufferId(TexcoordBufferId),
-      VertexArrayId(VertexArrayId)
+    MeshData(const string& FileName = "Unknown",
+             const GLuint PositionBufferID = Error::INVALID_INDEX,
+      const GLuint NormalBufferID = Error::INVALID_INDEX,
+      const GLuint TriangleBufferID = Error::INVALID_INDEX,
+      const GLuint TexcoordBufferID = Error::INVALID_INDEX,
+      const GLuint VertexArrayID = Error::INVALID_INDEX) :
+      FileName(FileName),
+      PositionBufferID(PositionBufferID),
+      TriangleBufferID(TriangleBufferID),
+      NormalBufferID(NormalBufferID),
+      TexcoordBufferID(TexcoordBufferID),
+      VertexArrayID(VertexArrayID)
     {}
 
     string FileName;
-    GLuint PositionBufferId;
-    GLuint TriangleBufferId;
-    GLuint NormalBufferId;
-    GLuint TexcoordBufferId;
-    GLuint VertexArrayId;
+    GLuint PositionBufferID;
+    GLuint TriangleBufferID;
+    GLuint NormalBufferID;
+    GLuint TexcoordBufferID;
+    GLuint VertexArrayID;
   };
 
 public:
@@ -52,13 +52,13 @@ public:
 
   void UnloadMeshes() noexcept;
 
-  void RenderMesh(unsigned Id) const noexcept;
+  void RenderMesh(unsigned ID) const noexcept;
 
-  void RenderSurfaceNormals(unsigned Id, float Length) const noexcept;
+  void RenderSurfaceNormals(unsigned ID, float Length) const noexcept;
 
-  void RenderVertexNormals(unsigned Id, float Length) const noexcept;
+  void RenderVertexNormals(unsigned ID, float Length) const noexcept;
 
-  const Mesh& GetMeshByID(unsigned Id) const noexcept;
+  [[nodiscard]] const Mesh& GetMeshByID(unsigned ID) const noexcept;
 
 private:
   vector<Mesh> m_MeshArray;

@@ -4,9 +4,10 @@
 // Created: 09/30/21
 // Desc:    Interface to the ImGUI system
 //------------------------------------------------------------------------------
+// ReSharper disable CppCStyleCast
 #include "pch.h"
 #pragma warning( push, 0 )
-#include "ImGuiManager.h"
+#include "ImGUIManager.h"
 
 #include <utility>
 #include "imgui/imgui.h"
@@ -303,10 +304,10 @@ void ImGuiManager::graphicsUpdateStats() const noexcept
   ImGui::Text("Frame: [%05d] Time: %lf", ImGui::GetFrameCount(), ImGui::GetTime());
 
   IMGUISPACE;
-  
+
   ImGui::TextColored(IMGREEN, "FPS: "); ImGui::SameLine();
   ImGui::Text("[%.2f]", ImGui::GRAPHICS_FPS);
-  
+
   IMGUISPACE;
 
   ImGui::TextColored(IMGREEN, "Shader: "); ImGui::SameLine();
@@ -765,8 +766,8 @@ void ImGuiManager::graphicsUpdateTexture() noexcept
       {
         ImGui::SameLine();
       }
-      ImGui::Image(reinterpret_cast<void*>(static_cast<intptr_t>(ImGui::GRAPHICS_DISPLAY_TEXTURE[i])),
-                   ImVec2(128, 128));
+      ImGui::Image(reinterpret_cast<void*>(static_cast<intptr_t>(ImGui::GRAPHICS_DISPLAY_TEXTURE[i])),  // NOLINT(performance-no-int-to-ptr)
+        ImVec2(128, 128));
     }
   }
 }

@@ -23,12 +23,12 @@ unsigned UniformBlockManager::RegisterNewBlockPrint(const UniformBlockPrint& Blo
     }
   }
 
-  unsigned index = static_cast<unsigned>(m_UniformBlockPrints.size());
+  const auto index = static_cast<unsigned>(m_UniformBlockPrints.size());
   m_UniformBlockPrints.emplace_back(BlockPrint);
   return index;
 }
 
-unsigned UniformBlockManager::CreateNewBlock(unsigned BlockPrintID, GLuint ProgramID, void* DataPtr)
+unsigned UniformBlockManager::CreateNewBlock(const unsigned BlockPrintID, const GLuint ProgramID, void* DataPtr)
 {
   if (DataPtr == nullptr)
   {
@@ -73,10 +73,10 @@ unsigned UniformBlockManager::CreateNewBlock(unsigned BlockPrintID, GLuint Progr
   return index;
 }
 
-void UniformBlockManager::SendData(unsigned BlockID) const noexcept
+void UniformBlockManager::SendData(const unsigned BlockID) const noexcept
 {
   glBindBuffer(GL_UNIFORM_BUFFER, m_UniformBlocks[BlockID].UBO_BufferID);
-  size_t size = m_UniformBlockPrints[m_UniformBlocks[BlockID].PrintID].DataSize;
+  const size_t size = m_UniformBlockPrints[m_UniformBlocks[BlockID].PrintID].DataSize;
   glBufferData(GL_UNIFORM_BUFFER, size, m_UniformBlocks[BlockID].DataPtr, GL_DYNAMIC_DRAW);
   glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
