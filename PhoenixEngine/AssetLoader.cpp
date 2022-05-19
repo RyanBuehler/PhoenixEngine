@@ -9,8 +9,6 @@ void AssetLoader::LoadFBX(const string& File) noexcept
 {
   Assimp::Importer importer;
 
-  struct stat buffer{};
-
   const aiScene* scene = importer.ReadFile(File.c_str(),
     aiProcess_Triangulate &
     aiProcess_GenNormals);

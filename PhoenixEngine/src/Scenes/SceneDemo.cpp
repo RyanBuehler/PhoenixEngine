@@ -26,7 +26,7 @@ SceneDemo::SceneDemo() noexcept :
   m_MainCamera.SetName("Demo Scene Camera");
   Log::Trace("'Demo' Scene Created.");
   ImGui::Manager->SetOnDemoObjectHandler([this] { OnDemoObjectChangeEvent(); });
-  AssetLoader::LoadFBX(("res/models/susanne.fbx"));
+  AssetLoader::LoadFBX(("res/models/suzanne.fbx"));
 
 }
 
