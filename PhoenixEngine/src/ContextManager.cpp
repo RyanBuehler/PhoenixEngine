@@ -1,3 +1,9 @@
+//------------------------------------------------------------------------------
+// File:    ContextManager.cpp
+// Author:  Ryan Buehler
+// Created: September 27, 2021
+// Desc:    Manages the Contexts of the Rendering Engine
+//------------------------------------------------------------------------------
 #include "pch.h"
 #include "ContextManager.h"
 
@@ -8,7 +14,7 @@ ContextManager::ContextManager() noexcept :
 
 ContextManager::~ContextManager()
 {
-  for (const Context context : m_Contexts)
+  for (const Context& context : m_Contexts)
   {
     glDeleteProgram(context.ProgramID);
   }
@@ -16,7 +22,7 @@ ContextManager::~ContextManager()
 
 unsigned ContextManager::CreateNewContext(const string& Name, const GLint VertexShaderID, const GLint FragmentShaderID)
 {
-  auto i = static_cast<unsigned>(m_Contexts.size());
+  const auto i = static_cast<unsigned>(m_Contexts.size());
 
   GLint programID = glCreateProgram();
 
@@ -29,10 +35,10 @@ unsigned ContextManager::CreateNewContext(const string& Name, const GLint Vertex
   glGetProgramiv(programID, GL_LINK_STATUS, &result);
   if (!result)
   {
-    Log::Error("Error linking OpenGL program.");
+    Log::error("Error linking OpenGL program.");
     string error;
     Graphics::retrieve_program_log(programID, error);
-    Log::Error(error);
+    Log::error(error);
     return Error::OpenGL::PROGRAM_ERROR;
   }
 
@@ -102,15 +108,15 @@ void ContextManager::AddNewUniformAttribute(const unsigned ContextID, const stri
   const GLint id = glGetUniformLocation(m_Contexts[ContextID].ProgramID, Name.c_str());
   const UniformAttribute attribute = { Name, id };
   m_Contexts[ContextID].UniformAttributes.push_back(attribute);
-  Log::Trace("New Uniform Attribute \"" + Name + "\" added to Context: " + m_Contexts[ContextID].Name);
+  Log::trace("New Uniform Attribute \"" + Name + "\" added to Context: " + m_Contexts[ContextID].Name);
   glUseProgram(0u);
 }
 
-void ContextManager::AddNewVertexAttribute(const unsigned ContextIndex, const VertexAttribute& Attribute)
+void ContextManager::AddNewVertexAttribute(const unsigned ContextID, const VertexAttribute& Attribute)
 {
-  assert(ContextIndex < m_Contexts.size());
+  assert(ContextID < m_Contexts.size());
   VertexAttribute va = Attribute;
-  va.ID = glGetAttribLocation(m_Contexts[ContextIndex].ProgramID, va.Name.c_str());
-  m_Contexts[ContextIndex].VertexAttributes.push_back(va);
-  Log::Trace("New Vertex Attribute \"" + va.Name + "\" added to Context: " + m_Contexts[ContextIndex].Name);
+  va.ID = glGetAttribLocation(m_Contexts[ContextID].ProgramID, va.Name.c_str());
+  m_Contexts[ContextID].VertexAttributes.push_back(va);
+  Log::trace("New Vertex Attribute \"" + va.Name + "\" added to Context: " + m_Contexts[ContextID].Name);
 }

@@ -267,11 +267,11 @@ void ImGuiManager::ShowMainMenu_File() const noexcept
 {
   if (ImGui::MenuItem("Demo Scene", ""))
   {
-    m_dOnSceneChange(SceneManager::Scene::SceneDemo);
+    m_dOnSceneChange(SceneManager::Scene::DEMO);
   }
   if (ImGui::MenuItem("Single Object", ""))
   {
-    m_dOnSceneChange(SceneManager::Scene::SceneSingleObject);
+    m_dOnSceneChange(SceneManager::Scene::SINGLE_OBJECT);
   }
   if (ImGui::MenuItem("Close", "Close the Engine"))
   {
@@ -538,13 +538,13 @@ void ImGuiManager::graphicsUpdateObjects() const noexcept
   if (ImGui::Button("Scenario 1", { 140, 40 }))
   {
     ImGui::SCENE_SCENARIO = 1;
-    m_dOnSceneChange(SceneManager::Scene::SceneDemo);
+    m_dOnSceneChange(SceneManager::Scene::DEMO);
   }
   ImGui::SameLine();
   if (ImGui::Button("Scenario 2", { 140, 40 }))
   {
     ImGui::SCENE_SCENARIO = 2;
-    m_dOnSceneChange(SceneManager::Scene::SceneDemo);
+    m_dOnSceneChange(SceneManager::Scene::DEMO);
   }
   //ImGui::SameLine();
   //if (ImGui::Button("Scenario 3", { 140, 40 }))

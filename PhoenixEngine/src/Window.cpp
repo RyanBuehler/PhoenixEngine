@@ -10,13 +10,10 @@
 #endif // _IMGUI
 #pragma endregion
 
-Window::Window(const WindowProperties& properties) :
+Window::Window(WindowProperties Properties) :
   m_WindowPtr(),
-  m_WindowProperties(properties),
-  m_SceneManagerPtr(),
-  m_RendererPtr(),
+  m_WindowProperties(std::move(Properties)),
   m_LastFrameTime(std::chrono::steady_clock::now()),
-  m_Clock(),
   m_bWindowShouldClose(false)
 {
 #pragma region GLFW
@@ -28,7 +25,7 @@ Window::Window(const WindowProperties& properties) :
   // Initialize the library
   if (!glfwInit())
   {
-    Log::Error("Couldn't initialize OpenGL Window!");
+    Log::error("Couldn't initialize OpenGL Window!");
     return;
   }
 
@@ -36,7 +33,7 @@ Window::Window(const WindowProperties& properties) :
     m_WindowProperties.Width,
     m_WindowProperties.Height,
     m_WindowProperties.Title.c_str(),
-    NULL, NULL);
+    nullptr, nullptr);
 
   glfwMakeContextCurrent(m_WindowPtr);
 
@@ -46,7 +43,7 @@ Window::Window(const WindowProperties& properties) :
   if (!m_WindowPtr)
   {
     glfwTerminate();
-    Log::Error("OpenGL Window could not be created!");
+    Log::error("OpenGL Window could not be created!");
     return;
   }
 
@@ -55,21 +52,21 @@ Window::Window(const WindowProperties& properties) :
 
 #pragma endregion
 
-  Log::Trace("Window created.");
+  Log::trace("Window created.");
 
 #pragma region GLEW
 
   // Verify GLEW initialized
   if (glewInit() != GLEW_OK)
   {
-    Log::Error("Couldn't initialize GLEW!");
+    Log::error("Couldn't initialize GLEW!");
     return;
-  };
+  }
 
   // Print the version to the logger
   stringstream ss("Initialized OpenGL version: ", SSIO);
   ss << glGetString(GL_VERSION);
-  Log::Trace(ss.str());
+  Log::trace(ss.str());
 
 #pragma endregion
 
@@ -82,12 +79,12 @@ Window::Window(const WindowProperties& properties) :
 
   // Set up ImGui Close Window Event
   ImGui::MANAGER = make_unique<ImGuiManager>(m_WindowPtr);
-  std::function<void()> cbClose = [=]() { OnImGuiCloseWindow(); };
+  const std::function cbClose = [this] { OnImGuiCloseWindow(); };
   ImGui::MANAGER->SetOnCloseHandler(cbClose);
 
   // Set up ImGui Change Scene Event
-  std::function<void(SceneManager::Scene scene)> cbSceneChange =
-    [=](SceneManager::Scene scene) { OnImGuiChangeScene(scene); };
+  const std::function cbSceneChange =
+    [this](const SceneManager::Scene Scene) { OnImGuiChangeScene(Scene); };
   ImGui::MANAGER->SetOnSceneChangeHandler(cbSceneChange);
 
 #endif // _IMGUI
@@ -108,10 +105,9 @@ unsigned Window::GetHeight() const noexcept
 void Window::OnUpdate() noexcept
 {
   // Calculate delta time
-  float delta = static_cast<float>(
+  const auto delta = 
     std::chrono::duration_cast<std::chrono::microseconds>(
-      std::chrono::steady_clock::now() - m_LastFrameTime).count() / 1000000.f
-    );
+      std::chrono::steady_clock::now() - m_LastFrameTime).count() / 1000000.f;
   m_LastFrameTime = std::chrono::steady_clock::now();
 
   // Change scenes
@@ -125,7 +121,7 @@ void Window::OnUpdate() noexcept
   glfwPollEvents();
 
   // Check Window related input
-  OnPollInput(delta);
+  OnPollInput();
 
   // Check input per scene
   m_SceneManagerPtr->OnPollInput(m_WindowPtr, delta);
@@ -158,12 +154,11 @@ void Window::OnUpdate() noexcept
 
 #pragma endregion
 
-
   // Swap the back/front buffers
   glfwSwapBuffers(m_WindowPtr);
 }
 
-void Window::OnClose() noexcept
+void Window::OnClose() const noexcept
 {
 #pragma region ImGUI
 
@@ -180,16 +175,16 @@ void Window::OnClose() noexcept
   glfwTerminate();
 }
 
-void Window::OnPollInput(float dt) noexcept
+void Window::OnPollInput() noexcept
 {
   if (glfwGetKey(m_WindowPtr, GLFW_KEY_ESCAPE) == GLFW_PRESS)
   {
-    Log::Trace("Esc key pressed. Shutting down.");
+    Log::trace("Esc key pressed. Shutting down.");
     m_bWindowShouldClose = true;
   }
 }
 
-bool Window::WindowShouldClose() noexcept
+bool Window::WindowShouldClose() const noexcept
 {
   // Check if the window should be closed
   return m_bWindowShouldClose || glfwWindowShouldClose(m_WindowPtr);
@@ -204,9 +199,9 @@ void Window::OnImGuiCloseWindow() noexcept
   m_bWindowShouldClose = true;
 }
 
-void Window::OnImGuiChangeScene(SceneManager::Scene scene)
+void Window::OnImGuiChangeScene(const SceneManager::Scene Scene) const
 {
-  m_SceneManagerPtr->SetNewScene(scene);
+  m_SceneManagerPtr->SetNewScene(Scene);
 }
 
 #endif // _IMGUI

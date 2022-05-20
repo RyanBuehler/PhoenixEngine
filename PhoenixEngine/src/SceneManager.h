@@ -17,13 +17,13 @@ public:
   /// </summary>
   enum class Scene
   {
-    None,
-    SceneDemo, // Spheres orbiting a centerpiece
-    SceneSingleObject, // Single object for testing
-    SceneCount
+    NONE,
+    DEMO,           // Spheres orbiting a centerpiece
+    SINGLE_OBJECT,  // Single object for testing
+    COUNT
   };
 private:
-  static constexpr Scene DEFAULTSCENE = Scene::SceneDemo;
+  static constexpr Scene DEFAULT_SCENE = Scene::DEMO;
 
 public:
   /// <summary>
@@ -46,8 +46,8 @@ public:
   /// <summary>
   /// Sets the next Scene, instigating a transition
   /// </summary>
-  /// <param name="nextScene"></param>
-  void SetNewScene(Scene nextScene) noexcept;
+  /// <param name="NextScene"></param>
+  void SetNewScene(Scene NextScene) noexcept;
 
   /// <summary>
   /// Sets the Scene to Reload on next cycle
@@ -59,35 +59,33 @@ public:
   /// Shuts the SceneManager down
   /// </summary>
   /// <returns></returns>
-  void Shutdown() noexcept;
+  void Shutdown() const noexcept;
 
   /// <summary>
   /// Called every game loop cycle
   /// </summary>
-  void OnUpdate(float dt) noexcept;
+  void OnUpdate(float DeltaTime) const noexcept;
 
   /// <summary>
   /// Called after polling for input
   /// </summary>
-  void OnPollInput(GLFWwindow* windowPtr, float dt) noexcept;
+  void OnPollInput(GLFWwindow* WindowPtr, float DeltaTime) const noexcept;
 
   /// <summary>
   /// Retrieves a vector of the current scene's game objects
   /// </summary>
   /// <returns>A vector reference of the current scene's game objects</returns>
-  vector<GameObject>& GetCurrentSceneGameObjects() noexcept;
-  Camera& GetCurrentSceneActiveCamera() noexcept;
+  [[nodiscard]] vector<GameObject>& GetCurrentSceneGameObjects() const noexcept;
+  [[nodiscard]] Camera& GetCurrentSceneActiveCamera() const noexcept;
 
 private:
   bool m_ReloadEnabled;                  // Reloading scene next iteration
   unique_ptr<IScene> m_CurrentScenePtr;  // Pointer to the current scene
-  Scene m_CurrentScene;                  // The current scene
   Scene m_NextScene;                     // The scene to transition to
 
   /// <summary>
   /// Private helper to transition the Scene
   /// </summary>
-  /// <param name="scene">The Scene to transition to</param>
   void transitionScene() noexcept;
 
   /// <summary>

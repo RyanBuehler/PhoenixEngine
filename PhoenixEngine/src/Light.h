@@ -11,9 +11,9 @@
 class Light
 {
 public:
-  const static int POINT_LIGHT = 0;
-  const static int DIRECTION_LIGHT = 1;
-  const static int SPOT_LIGHT = 2;
+  constexpr static int POINT_LIGHT = 0;
+  constexpr static int DIRECTION_LIGHT = 1;
+  constexpr static int SPOT_LIGHT = 2;
 
   struct Data
   {
@@ -26,7 +26,7 @@ public:
       Type(POINT_LIGHT),
       InnerFalloff(35.f),
       OuterFalloff(37.f),
-      IsActive(false)
+      bIsActive(false)
     {}
 
     vec4 Position;          // The light's position in world space
@@ -37,7 +37,7 @@ public:
     int Type;               // The type of light (point, spot, directional)
     float InnerFalloff;     // The degrees at which spot lights fall off
     float OuterFalloff;     // The degrees at which spot lights fall off
-    bool IsActive;          // Is the light currently active?
+    bool bIsActive;          // Is the light currently active?
   };
 public:
   /// <summary>

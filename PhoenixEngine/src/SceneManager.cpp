@@ -11,9 +11,7 @@
 
 SceneManager::SceneManager() noexcept :
   m_ReloadEnabled(false),
-  m_CurrentScenePtr(),
-  m_CurrentScene(Scene::None),
-  m_NextScene(DEFAULTSCENE)
+  m_NextScene(DEFAULT_SCENE)
 {
 }
 
@@ -29,7 +27,7 @@ bool SceneManager::SceneIsTransitioning() noexcept
     return true;
   }
 
-  if (m_NextScene != Scene::None)
+  if (m_NextScene != Scene::NONE)
   {
     // Transition to the next scene
     transitionScene();
@@ -39,15 +37,15 @@ bool SceneManager::SceneIsTransitioning() noexcept
   return false;
 }
 
-void SceneManager::SetNewScene(Scene nextScene) noexcept
+void SceneManager::SetNewScene(const Scene NextScene) noexcept
 {
-  assert(nextScene < Scene::SceneCount);
-  if (m_NextScene == nextScene)
+  assert(NextScene < Scene::COUNT);
+  if (m_NextScene == NextScene)
   {
     ReloadScene();
     return;
   }
-  m_NextScene = nextScene;
+  m_NextScene = NextScene;
 }
 
 void SceneManager::ReloadScene() noexcept
@@ -55,32 +53,32 @@ void SceneManager::ReloadScene() noexcept
   m_ReloadEnabled = true;
 }
 
-void SceneManager::Shutdown() noexcept
+void SceneManager::Shutdown() const noexcept
 {
   assert(m_CurrentScenePtr);
   m_CurrentScenePtr->OnShutdown();
   m_CurrentScenePtr->OnUnload();
 }
 
-void SceneManager::OnUpdate(float dt) noexcept
+void SceneManager::OnUpdate(const float DeltaTime) const noexcept
 {
   assert(m_CurrentScenePtr);
-  m_CurrentScenePtr->OnUpdate(dt);
+  m_CurrentScenePtr->OnUpdate(DeltaTime);
 }
 
-void SceneManager::OnPollInput(GLFWwindow* windowPtr, float dt) noexcept
+void SceneManager::OnPollInput(GLFWwindow* WindowPtr, const float DeltaTime) const noexcept
 {
   assert(m_CurrentScenePtr);
-  m_CurrentScenePtr->OnPollInput(windowPtr, dt);
+  m_CurrentScenePtr->OnPollInput(WindowPtr, DeltaTime);
 }
 
-vector<GameObject>& SceneManager::GetCurrentSceneGameObjects() noexcept
+vector<GameObject>& SceneManager::GetCurrentSceneGameObjects() const noexcept
 {
   assert(m_CurrentScenePtr);
   return m_CurrentScenePtr->GetGameObjectArray();
 }
 
-Camera& SceneManager::GetCurrentSceneActiveCamera() noexcept
+Camera& SceneManager::GetCurrentSceneActiveCamera() const noexcept
 {
   assert(m_CurrentScenePtr);
   return m_CurrentScenePtr->GetCurrentCamera();
@@ -88,7 +86,7 @@ Camera& SceneManager::GetCurrentSceneActiveCamera() noexcept
 
 void SceneManager::transitionScene() noexcept
 {
-  if (m_CurrentScenePtr.get() != nullptr)
+  if (m_CurrentScenePtr != nullptr)
   {
     m_CurrentScenePtr->OnShutdown();
     m_CurrentScenePtr->OnUnload();
@@ -96,18 +94,15 @@ void SceneManager::transitionScene() noexcept
 
   switch (m_NextScene)
   {
-  case SceneManager::Scene::None:
-  case SceneManager::Scene::SceneDemo:
-    m_CurrentScenePtr.release();
+  case Scene::NONE:
+  case Scene::DEMO:
     m_CurrentScenePtr = make_unique<SceneDemo>();
     break;
-  case SceneManager::Scene::SceneSingleObject:
-    m_CurrentScenePtr.release();
+  case Scene::SINGLE_OBJECT:
     m_CurrentScenePtr = make_unique<SceneSingleObject>();
     break;
-  case SceneManager::Scene::SceneCount:
-  default:
-    Log::Error("Invalid Scene Transition");
+  case Scene::COUNT:
+    Log::error("Invalid Scene Transition");
     return;
   }
 
@@ -116,7 +111,7 @@ void SceneManager::transitionScene() noexcept
   m_CurrentScenePtr->OnInit();
 
   // Reset the transition Scene
-  m_NextScene = Scene::None;
+  m_NextScene = Scene::NONE;
 }
 
 void SceneManager::reloadScene() noexcept

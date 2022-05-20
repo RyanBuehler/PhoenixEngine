@@ -24,7 +24,7 @@ SceneDemo::SceneDemo() noexcept :
   m_Time(0.f)
 {
   m_MainCamera.SetName("Demo Scene Camera");
-  Log::Trace("'Demo' Scene Created.");
+  Log::trace("'Demo' Scene Created.");
   ImGui::MANAGER->SetOnDemoObjectHandler([this] { OnDemoObjectChangeEvent(); });
   AssetLoader::LoadFBX(("res/models/suzanne.fbx"));
 
@@ -32,7 +32,7 @@ SceneDemo::SceneDemo() noexcept :
 
 void SceneDemo::OnLoad() noexcept
 {
-  Log::Trace("Demo Scene Loaded.");
+  Log::trace("Demo Scene Loaded.");
 }
 
 void SceneDemo::OnInit() noexcept
@@ -50,7 +50,7 @@ void SceneDemo::OnInit() noexcept
     Scenario1();
     break;
   }
-  Log::Trace("Demo Scene Initialized.");
+  Log::trace("Demo Scene Initialized.");
 }
 
 void SceneDemo::OnUpdate(const float Dt) noexcept
@@ -62,12 +62,12 @@ void SceneDemo::OnUpdate(const float Dt) noexcept
     if (i + 1 <= ImGui::LIGHTING_ACTIVE_LIGHTS)
     {
       m_GameObjectArray[i].SetIsActive(true);
-      ImGui::LIGHTING_DATA_ARRAY[i].IsActive = true;
+      ImGui::LIGHTING_DATA_ARRAY[i].bIsActive = true;
     }
     else
     {
       m_GameObjectArray[i].SetIsActive(false);
-      ImGui::LIGHTING_DATA_ARRAY[i].IsActive = false;
+      ImGui::LIGHTING_DATA_ARRAY[i].bIsActive = false;
     }
     if (ImGui::SCENE_ORBIT_OBJECTS)
     {
@@ -81,12 +81,12 @@ void SceneDemo::OnUpdate(const float Dt) noexcept
 void SceneDemo::OnShutdown() noexcept
 {
   m_GameObjectArray.clear();
-  Log::Trace("Demo Scene Shutdown.");
+  Log::trace("Demo Scene Shutdown.");
 }
 
 void SceneDemo::OnUnload() noexcept
 {
-  Log::Trace("Demo Scene Unloaded.");
+  Log::trace("Demo Scene Unloaded.");
 }
 
 void SceneDemo::OnPollInput(GLFWwindow* window, float dt) noexcept

@@ -9,7 +9,7 @@
 
 UniformBlockManager::UniformBlockManager() noexcept
 {
-  Log::Trace("Uniform Block Manager initialized");
+  Log::trace("Uniform Block Manager initialized");
 }
 
 unsigned UniformBlockManager::RegisterNewBlockPrint(const UniformBlockPrint& BlockPrint) noexcept
@@ -18,7 +18,7 @@ unsigned UniformBlockManager::RegisterNewBlockPrint(const UniformBlockPrint& Blo
   {
     if (print.BlockName == BlockPrint.BlockName)
     {
-      Log::Error("[UniformBlockManager.cpp] - This block name already exists");
+      Log::error("[UniformBlockManager.cpp] - This block name already exists");
       return Error::INVALID_INDEX;
     }
   }
@@ -32,13 +32,13 @@ unsigned UniformBlockManager::CreateNewBlock(const unsigned BlockPrintID, const 
 {
   if (DataPtr == nullptr)
   {
-    Log::Error("[UniformBlockManager.cpp] - Invalid data pointer");
+    Log::error("[UniformBlockManager.cpp] - Invalid data pointer");
     return Error::INVALID_INDEX;
   }
 
   if (ProgramID == Error::INVALID_INDEX)
   {
-    Log::Error("[UniformBlockManager.cpp] - Invalid Program ID");
+    Log::error("[UniformBlockManager.cpp] - Invalid Program ID");
     return Error::INVALID_INDEX;
   }
 
@@ -59,7 +59,7 @@ unsigned UniformBlockManager::CreateNewBlock(const unsigned BlockPrintID, const 
   glGetActiveUniformBlockiv(ProgramID, uboIndex, GL_UNIFORM_BLOCK_DATA_SIZE, &uboSize);
   if (uboSize != m_UniformBlockPrints[BlockPrintID].DataSize)
   {
-    Log::Error("[UniformBlockManager.cpp] - Invalid block size");
+    Log::error("[UniformBlockManager.cpp] - Invalid block size");
     return Error::INVALID_INDEX;
   }
 

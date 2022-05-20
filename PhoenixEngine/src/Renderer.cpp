@@ -42,12 +42,12 @@ Renderer::Renderer(const bool DepthBufferEnabled, const bool BackFaceCullEnabled
 
   LoadContexts();
 
-  Log::Trace("Renderer initialized.");
+  Log::trace("Renderer initialized.");
 }
 
 Renderer::~Renderer()
 {
-  Log::Trace("Renderer destroyed.");
+  Log::trace("Renderer destroyed.");
 }
 
 void Renderer::OnBeginFrame() const noexcept
@@ -118,7 +118,7 @@ void Renderer::OnEndFrame() noexcept
 
     for (int i = 0; i < 6; ++i)
     {
-      ImGui::GRAPHICS_DISPLAY_TEXTURE[i] = envMap.GetTextureHandle(i);
+      ImGui::GRAPHICS_DISPLAY_TEXTURE[i] = m_EnvMap.GetTextureHandle(i);
     }
   }
 
@@ -207,12 +207,12 @@ void Renderer::RenderScene(vector<GameObject>& GameObjects, Camera& ActiveCamera
 
 void Renderer::RenderFirstPass(vector<GameObject>& GameObjects)
 {
-  Camera& activeCamera = envMap.GetCamera();
+  Camera& activeCamera = m_EnvMap.GetCamera();
   glViewport(0, 0, 1024, 1024);
 
   for (int i = 0; i < 6; ++i)
   {
-    envMap.Bind(i);
+    m_EnvMap.Bind(i);
     switch (i)
     {
     case 0:
@@ -396,7 +396,7 @@ void Renderer::RenderGameObject(GameObject& GameObject)
       meshCompPtr->SetMeshID(m_MeshManager.LoadMesh(meshFile, true, true, ImGui::GRAPHICS_SELECTED_PROJECTION));
       if (meshCompPtr->GetMeshID() == Error::INVALID_INDEX)
       {
-        Log::Error("Could not load mesh: " + meshFile);
+        Log::error("Could not load mesh: " + meshFile);
         return;
       }
       MeshID = meshCompPtr->GetMeshID();
@@ -635,7 +635,7 @@ void Renderer::LoadBlinnPhongContext() noexcept
   m_ContextManager.AddNewVertexAttribute(m_hBlinnPhong, vaNormal);
   m_ContextManager.AddNewVertexAttribute(m_hBlinnPhong, vaTexCoords);
 
-  Log::Trace("Blinn-Phong Shading Context loaded.");
+  Log::trace("Blinn-Phong Shading Context loaded.");
 }
 
 //void Renderer::LoadPhongTextureContext() noexcept
@@ -701,7 +701,7 @@ void Renderer::LoadDebugContext() noexcept
   m_ContextManager.AddNewVertexAttribute(m_hDebugContext, vaPosition);
   m_ContextManager.AddNewVertexAttribute(m_hDebugContext, vaColor);
 
-  Log::Trace("DEBUG Context loaded.");
+  Log::trace("DEBUG Context loaded.");
 }
 
 void Renderer::LoadSkyboxContext() noexcept
@@ -721,7 +721,7 @@ void Renderer::LoadSkyboxContext() noexcept
 
   m_SkyboxMeshId = m_MeshManager.LoadMesh("cube2.obj");
 
-  Log::Trace("Skybox Context loaded.");
+  Log::trace("Skybox Context loaded.");
 }
 
 //void Renderer::LoadReflectionContext() noexcept
@@ -818,7 +818,7 @@ void Renderer::EnableDepthBuffer() const noexcept
 {
   if (DepthBufferIsEnabled())
   {
-    Log::Warn("Redundant Depth Buffer request to enable. Already enabled.");
+    Log::warn("Redundant Depth Buffer request to enable. Already enabled.");
     return;
   }
 
@@ -829,7 +829,7 @@ void Renderer::DisableDepthBuffer() const noexcept
 {
   if (!DepthBufferIsEnabled())
   {
-    Log::Warn("Redundant Depth Buffer request to disable. Already disabled.");
+    Log::warn("Redundant Depth Buffer request to disable. Already disabled.");
     return;
   }
 
@@ -845,7 +845,7 @@ void Renderer::EnableBackFaceCull() const noexcept
 {
   if (BackFaceCullIsEnabled())
   {
-    Log::Warn("Redundant Depth Buffer request to enable. Already enabled.");
+    Log::warn("Redundant Depth Buffer request to enable. Already enabled.");
     return;
   }
 
@@ -856,7 +856,7 @@ void Renderer::DisableBackFaceCull() const noexcept
 {
   if (!BackFaceCullIsEnabled())
   {
-    Log::Warn("Redundant Depth Buffer request to disable. Already disabled.");
+    Log::warn("Redundant Depth Buffer request to disable. Already disabled.");
     return;
   }
 

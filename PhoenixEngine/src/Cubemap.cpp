@@ -21,7 +21,7 @@ Cubemap::Cubemap(const char* filenames[6], const string& CubemapName) noexcept :
     PNGReader reader;
     if (!reader.LoadPNG(filenames[i]))
     {
-      Log::Error("[Cubemap.cpp] Error loading image \"" + string(filenames[i]) + "\"");
+      Log::error("[Cubemap.cpp] Error loading image \"" + string(filenames[i]) + "\"");
       return;
     }
     PNGReader::ImageData image = reader.GetImageData();
@@ -36,7 +36,7 @@ Cubemap::Cubemap(const char* filenames[6], const string& CubemapName) noexcept :
       format = GL_RGBA;
       break;
     default:
-      Log::Error("[Cubemap.cpp] Unknown channel number in loaded texture.");
+      Log::error("[Cubemap.cpp] Unknown channel number in loaded texture.");
       return;
     }
 
@@ -52,7 +52,7 @@ Cubemap::Cubemap(const char* filenames[6], const string& CubemapName) noexcept :
 
   glBindTexture(GL_TEXTURE_CUBE_MAP, 0u);
 
-  Log::Trace("Cubemap '" + m_CubemapName + "' loaded.");
+  Log::trace("Cubemap '" + m_CubemapName + "' loaded.");
 }
 
 GLuint Cubemap::GetID()

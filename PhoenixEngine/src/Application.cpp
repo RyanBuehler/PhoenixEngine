@@ -7,7 +7,7 @@ Application::Application() noexcept :
   m_WindowPtr(make_unique<Window>())
 {}
 
-void Application::Run()
+void Application::Run() const
 {
   while (!m_WindowPtr->WindowShouldClose())
   {
@@ -15,5 +15,12 @@ void Application::Run()
   }
 
   m_WindowPtr->OnClose();
-  Log::Trace("Application terminated.");
+  Log::trace("Application terminated.");
+}
+
+int main()
+{
+  const auto app = new Application();
+  app->Run();
+  delete app;
 }

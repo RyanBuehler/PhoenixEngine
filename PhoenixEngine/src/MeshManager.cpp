@@ -46,7 +46,7 @@ unsigned MeshManager::LoadMesh(
       return i;
     }
   }
-  ScaleToUnitSize ? Log::Trace("Loading mesh: " + FileName) : Log::Trace("Loading [Unit] mesh: " + FileName);
+  ScaleToUnitSize ? Log::trace("Loading mesh: " + FileName) : Log::trace("Loading [Unit] mesh: " + FileName);
 
   unsigned index = numeric_limits<unsigned>::max();
   if (FileName == "sphere")
@@ -60,7 +60,7 @@ unsigned MeshManager::LoadMesh(
     index = LoadMeshFromOBJ(FileName);
     if (index == Error::INVALID_INDEX)
     {
-      Log::Error("Could not load from OBJ file: " + FileName);
+      Log::error("Could not load from OBJ file: " + FileName);
       return Error::INVALID_INDEX;
     }
   }
@@ -117,7 +117,7 @@ unsigned MeshManager::LoadMesh(
 
   glBindVertexArray(0u);
 
-  Log::Trace("Mesh: " + FileName + " loaded.");
+  Log::trace("Mesh: " + FileName + " loaded.");
 
   return index;
 }
@@ -133,7 +133,7 @@ void MeshManager::UnloadMeshes() noexcept
     //glDeleteBuffers(1, &m_MeshDataArray[i].TexcoordBufferID);
     glDeleteBuffers(1, &i.TriangleBufferID);
 
-    Log::Trace("Mesh '" + i.FileName + "' destroyed.");
+    Log::trace("Mesh '" + i.FileName + "' destroyed.");
   }
   m_MeshArray.clear();
   m_MeshDataArray.clear();
@@ -143,14 +143,14 @@ void MeshManager::RenderMesh(const unsigned ID) const noexcept
 {
   if (ID == Error::INVALID_INDEX)
   {
-    Log::Error("[RenderMesh] Mesh not loaded!");
+    Log::error("[RenderMesh] Mesh not loaded!");
     return;
   }
 
   glBindVertexArray(m_MeshDataArray[ID].VertexArrayID);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_MeshDataArray[ID].TriangleBufferID);
 
-  glDrawElements(GL_TRIANGLES, 3u * m_MeshArray[ID].GetTriangleCount(), GL_UNSIGNED_INT, nullptr);
+  glDrawElements(GL_TRIANGLES, 3 * static_cast<int>(m_MeshArray[ID].GetTriangleCount()), GL_UNSIGNED_INT, nullptr);
   glBindVertexArray(0u);
 }
 
@@ -158,7 +158,7 @@ void MeshManager::RenderSurfaceNormals(const unsigned ID, const float Length) co
 {
   if (ID == Error::INVALID_INDEX)
   {
-    Log::Error("[RenderSurfaceNormals] Mesh not loaded!");
+    Log::error("[RenderSurfaceNormals] Mesh not loaded!");
     return;
   }
 
@@ -176,7 +176,7 @@ void MeshManager::RenderVertexNormals(const unsigned ID, const float Length) con
 {
   if (ID == Error::INVALID_INDEX)
   {
-    Log::Error("[RenderVertexNormals] Mesh not loaded!");
+    Log::error("[RenderVertexNormals] Mesh not loaded!");
     return;
   }
 
@@ -197,7 +197,7 @@ unsigned MeshManager::LoadMeshFromOBJ(const string& FileName) noexcept
   m_MeshDataArray.emplace_back();
   m_MeshDataArray[i].FileName = FileName;
 
-  auto result = m_ObjReader.ReadOBJFile(FileName, &m_MeshArray[i], OBJReader::ReadMethod::LINE_BY_LINE, false);
+  m_ObjReader.ReadOBJFile(FileName, &m_MeshArray[i], OBJReader::ReadMethod::LINE_BY_LINE, false);
   return i;
 }
 
@@ -206,7 +206,7 @@ const Mesh& MeshManager::GetMeshByID(unsigned ID) const noexcept
   return m_MeshArray[ID];
 }
 
-unsigned MeshManager::LoadSphere(const float Radius, const int NumDivisions) noexcept
+unsigned MeshManager::LoadSphere(const float Radius, const unsigned NumDivisions) noexcept
 {
   const auto index = static_cast<unsigned>(m_MeshArray.size());
   m_MeshArray.emplace_back();
@@ -221,8 +221,8 @@ unsigned MeshManager::LoadSphere(const float Radius, const int NumDivisions) noe
   // Reference for legibility
   Mesh& mesh = m_MeshArray[index];
 
-  mesh.m_PositionArray.resize(static_cast<size_t>(stacks * (slices - 1) + 2));
-  mesh.m_VertexNormalArray.resize(static_cast<size_t>(stacks * (slices - 1) + 2));
+  mesh.m_PositionArray.resize(stacks * (slices - 1u) + 2u);
+  mesh.m_VertexNormalArray.resize(stacks * (slices - 1u) + 2u);
 
   for (unsigned i = 1; i < slices; ++i)
   {

@@ -18,60 +18,47 @@ Material::Material() noexcept :
   setByType(m_Type);
 }
 
-Material::Material(Type type) noexcept :
+Material::Material(const Type MaterialType) noexcept :
   m_Emissive(0.f),
   m_AmbientFactor(0.f),
   m_DiffuseFactor(0.f),
   m_SpecularFactor(0.f),
   m_SpecularExp(0.f),
-  m_Type(type)
+  m_Type(MaterialType)
 {
-  setByType(type);
+  setByType(MaterialType);
 }
 
-Material::Material(const Material& material)
-{
-  *this = material;
-}
+Material::Material(const Material& Other) = default;
+Material& Material::operator=(const Material& Other) = default;
 
-Material& Material::operator=(const Material& material)
+void Material::SetEmissive(const vec3& Value) noexcept
 {
-  m_Emissive = material.m_Emissive;
-  m_AmbientFactor = material.m_AmbientFactor;
-  m_DiffuseFactor = material.m_DiffuseFactor;
-  m_SpecularFactor = material.m_SpecularFactor;
-  m_SpecularExp = material.m_SpecularExp;
-  m_Type = material.m_Type;
-  return *this;
-}
-
-void Material::SetEmissive(const vec3& value) noexcept
-{
-  m_Emissive = clamp(value, 0.f, 1.f);
+  m_Emissive = clamp(Value, 0.f, 1.f);
   m_Type = Type::CUSTOM;
 }
 
-void Material::SetAmbient(float value) noexcept
+void Material::SetAmbient(const float Value) noexcept
 {
-  m_AmbientFactor = clamp(value, 0.f, 1.f);
+  m_AmbientFactor = clamp(Value, 0.f, 1.f);
   m_Type = Type::CUSTOM;
 }
 
-void Material::SetDiffuse(float value) noexcept
+void Material::SetDiffuse(const float Value) noexcept
 {
-  m_DiffuseFactor = clamp(value, 0.f, 1.f);
+  m_DiffuseFactor = clamp(Value, 0.f, 1.f);
   m_Type = Type::CUSTOM;
 }
 
-void Material::SetSpecular(float value) noexcept
+void Material::SetSpecular(const float Value) noexcept
 {
-  m_SpecularFactor = clamp(value, 0.f, 1.f);
+  m_SpecularFactor = clamp(Value, 0.f, 1.f);
   m_Type = Type::CUSTOM;
 }
 
-void Material::SetSpecularExp(float value) noexcept
+void Material::SetSpecularExp(const float Value) noexcept
 {
-  m_SpecularExp = clamp(value, 0.f, SPEC_EXP_MAX);
+  m_SpecularExp = clamp(Value, 0.f, SPEC_EXP_MAX);
   m_Type = Type::CUSTOM;
 }
 
@@ -105,13 +92,10 @@ Material::Type Material::GetType() const noexcept
   return m_Type;
 }
 
-void Material::setByType(Type type) noexcept
+void Material::setByType(const Type Type) noexcept
 {
-  switch (type)
+  switch (Type)
   {
-  //case Material::Type::REFLECTREFRACT:
-  //case Material::Type::REFRACTIVE:
-  //  break;
   case Material::Type::BASIC:
     m_Emissive = { 0.f, 0.f, 0.f };
     m_AmbientFactor = 0.3f;
@@ -143,7 +127,6 @@ void Material::setByType(Type type) noexcept
     m_Type = Type::TEXTURE;
     break;
   case Material::Type::COUNT:
-  default:
     break;
   }
 }

@@ -15,7 +15,7 @@ Texture::Texture(const string& name) noexcept :
   m_Height(-1),
   m_Channels(-1)
 {
-  Log::Trace("Texture Created: " + name);
+  Log::trace("Texture Created: " + name);
 }
 
 bool Texture::LoadTextureFromFile(const string& filename) noexcept
@@ -24,7 +24,7 @@ bool Texture::LoadTextureFromFile(const string& filename) noexcept
 
   if (!reader.LoadPNG(filename))
   {
-    Log::Error("[Texture.cpp] Couldn't load texture: " + filename);
+    Log::error("[Texture.cpp] Couldn't load texture: " + filename);
     return false;
   }
 

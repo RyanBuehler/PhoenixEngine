@@ -19,10 +19,10 @@ namespace Log
   public:
     enum class LogLevel
     {
-      None = 0,
-      Error,
-      Warning,
-      Trace
+      NONE = 0,
+      ERR,
+      WARN,
+      TRACE
     };
 
     static Logger& Instance()
@@ -38,54 +38,53 @@ namespace Log
     Logger(Logger&&) = delete;
     Logger& operator=(Logger&&) = delete;
 
-    void SetLevel(LogLevel level)
+    void SetLevel(const LogLevel Level) const
     {
-      switch (level)
+      switch (Level)
       {
-      case LogLevel::Error:
+      case LogLevel::ERR:
         m_SpdLogger->set_level(spdlog::level::err);
         break;
-      case LogLevel::Warning:
+      case LogLevel::WARN:
         m_SpdLogger->set_level(spdlog::level::warn);
         break;
-      case LogLevel::Trace:
+      case LogLevel::TRACE:
         m_SpdLogger->set_level(spdlog::level::trace);
         break;
-      case LogLevel::None:
-      default:
+      case LogLevel::NONE:
         m_SpdLogger->set_level(spdlog::level::off);
         break;
       }
     }
 
-    inline void Trace(const char* message) const noexcept
+    void Trace(const char* Message) const noexcept
     {
-      m_SpdLogger->trace(message);
+      m_SpdLogger->trace(Message);
     }
 
-    inline void Trace(std::string message) const noexcept
+    void Trace(const std::string& Message) const noexcept
     {
-      m_SpdLogger->trace(message);
+      m_SpdLogger->trace(Message);
     }
 
-    inline void Warn(const char* message) const noexcept
+    void Warn(const char* Message) const noexcept
     {
-      m_SpdLogger->warn(message);
+      m_SpdLogger->warn(Message);
     }
 
-    inline void Warn(std::string message) const noexcept
+    void Warn(const std::string& Message) const noexcept
     {
-      m_SpdLogger->warn(message);
+      m_SpdLogger->warn(Message);
     }
 
-    inline void Error(const char* message) const noexcept
+    void Error(const char* Message) const noexcept
     {
-      m_SpdLogger->error(message);
+      m_SpdLogger->error(Message);
     }
 
-    inline void Error(std::string message) const noexcept
+    void Error(const std::string& Message) const noexcept
     {
-      m_SpdLogger->error(message);
+      m_SpdLogger->error(Message);
     }
 
   private:
@@ -93,40 +92,40 @@ namespace Log
       m_SpdLogger(spdlog::stdout_color_mt("Phoenix"))
     {
       spdlog::set_pattern("%^[%l] (%T): %v%$");
-      SetLevel(LogLevel::Trace);
+      SetLevel(LogLevel::TRACE);
       Trace("Start logging");
     }
 
     std::shared_ptr<spdlog::logger> m_SpdLogger;
   };
 
-  inline void Trace(const char* message) noexcept
+  inline void trace(const char* Message) noexcept
   {
-    Logger::Instance().Trace(message);
+    Logger::Instance().Trace(Message);
   }
 
-  inline void Trace(std::string message) noexcept
+  inline void trace(const std::string& Message) noexcept
   {
-    Logger::Instance().Trace(message);
+    Logger::Instance().Trace(Message);
   }
 
-  inline void Warn(const char* message) noexcept
+  inline void warn(const char* Message) noexcept
   {
-    Logger::Instance().Warn(message);
+    Logger::Instance().Warn(Message);
   }
 
-  inline void Warn(std::string message) noexcept
+  inline void warn(const std::string& Message) noexcept
   {
-    Logger::Instance().Warn(message);
+    Logger::Instance().Warn(Message);
   }
 
-  inline void Error(const char* message) noexcept
+  inline void error(const char* Message) noexcept
   {
-    Logger::Instance().Error(message);
+    Logger::Instance().Error(Message);
   }
 
-  inline void Error(std::string message) noexcept
+  inline void error(const std::string& Message) noexcept
   {
-    Logger::Instance().Error(message);
+    Logger::Instance().Error(Message);
   }
 }

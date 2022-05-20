@@ -13,16 +13,9 @@ public:
   Application(Application&&) = delete;
   Application& operator=(Application&&) = delete;
   
-  void Run();
+  void Run() const;
 
 private:
   // Dynamic allocated block
   unique_ptr<Window> m_WindowPtr;
 };
-
-int main()
-{
-  Application* app = new Application();
-  app->Run();
-  delete app;
-}

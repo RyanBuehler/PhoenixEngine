@@ -16,7 +16,6 @@ public:
     size_t DataSize = 0u;
   };
 
-public:
   UniformBlockManager() noexcept;
   ~UniformBlockManager() = default;
   UniformBlockManager(const UniformBlockManager&) = delete;
@@ -39,7 +38,6 @@ private:
     void* DataPtr;
   };
 
-private:
   vector<UniformBlockPrint> m_UniformBlockPrints;
   vector<UniformBlock> m_UniformBlocks;
 };

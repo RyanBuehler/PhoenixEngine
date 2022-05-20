@@ -151,25 +151,26 @@ class Camera
   /// Gets the camera's position in world space
   /// </summary>
   /// <returns>[Const Ref] The camera's position</returns>
-  const vec3& GetPosition() const noexcept;
+  [[nodiscard]] const vec3& GetPosition() const noexcept;
 
   /// <summary>
   /// Gets the camera's forward vector
   /// </summary>
   /// <returns>[Const Ref] The camera's forward vector</returns>
-  const vec3& GetForwardVector() const noexcept;
+  [[nodiscard]] const vec3& GetForwardVector() const noexcept;
 
   /// <summary>
   /// Gets the camera's up vector
   /// </summary>
   /// <returns>[Const Ref] The camera's up vector</returns>
-  const vec3& GetUpVector() const noexcept;
+  [[nodiscard]] const vec3& GetUpVector() const noexcept;
 
   /// <summary>
-  /// Makes the Camera look at a target position
+  /// 
   /// </summary>
-  /// <param name="position">Vec3 World Position</param>
-  void LookAt(const vec3& forward, const vec3& up);
+  /// <param name="Forward">Vec3 Forward Vector</param>
+  /// <param name="Up">Vec3 Forward Vector</param>
+  void LookAt(const vec3& Forward, const vec3& Up);
 
   /// <summary>
   /// Sets the Camera's name
@@ -181,13 +182,13 @@ class Camera
   /// Gets the Camera's current name
   /// </summary>
   /// <returns>The Camera's current name</returns>
-  const string& GetName() const noexcept;
+  [[nodiscard]] const string& GetName() const noexcept;
 
   /// <summary>
   /// Gets the viewport object
   /// </summary>
   /// <returns>The viewport object</returns>
-  const Viewport& GetViewport() const noexcept;
+  [[nodiscard]] const Viewport& GetViewport() const noexcept;
 
   void SetViewport(const Camera::Viewport& other) noexcept;
 
@@ -221,9 +222,8 @@ class Camera
   mat4 m_ViewMatrix;
   mat4 m_VPMatrix;
 
-  bool m_IsEnabled;
-  bool m_PerspectiveIsDirty;
-  bool m_ViewIsDirty;
+  bool m_bPerspectiveIsDirty;
+  bool m_bViewIsDirty;
 
   // Camera Target
   const Transform* m_Target;

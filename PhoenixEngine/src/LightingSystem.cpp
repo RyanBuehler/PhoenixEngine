@@ -8,32 +8,30 @@
 #include "LightingSystem.h"
 
 LightingSystem::LightingSystem() noexcept :
-  m_RegisteredLights(),
-  m_LightingIsDirty(true),
-  m_ActiveLightLimit(MAX_DYNAMIC_LIGHTS)
+  m_RegisteredLights()
 {
-  Log::Trace("Lighting System initialized");
+  Log::trace("Lighting System initialized");
 }
 
 LightingSystem::~LightingSystem()
 {
-  Log::Trace("Lighting system destructed");
+  Log::trace("Lighting system destructed");
 }
 
 bool LightingSystem::RegisterLight(Light* LightPtr) noexcept
 {
   if (getFreeLightCount() < 1)
   {
-    Log::Warn("Attempting to register light, but maximum already reached");
+    Log::warn("Attempting to register light, but maximum already reached");
     return false;
   }
 
   // Check for light redundancies
-  for (Light* ptr : m_RegisteredLights)
+  for (const Light* lightPtr : m_RegisteredLights)
   {
-    if (ptr == LightPtr)
+    if (lightPtr == LightPtr)
     {
-      Log::Warn("Attempting to register an already registered light");
+      Log::warn("Attempting to register an already registered light");
       return false;
     }
   }
@@ -51,21 +49,21 @@ bool LightingSystem::RegisterLight(Light* LightPtr) noexcept
   // Since the count was checked earlier, one light should exist
   if (index == Error::INVALID_INDEX)
   {
-    Log::Error("No free light slot exists, when one should");
+    Log::error("No free light slot exists, when one should");
     return false;
   }
 
   m_RegisteredLights[index] = LightPtr;
-  Log::Trace("Light registered in slot: " + index);
+  Log::trace("Light registered in slot: " + std::to_string(index));
   return true;
 }
 
-bool LightingSystem::DerigesterLight(Light* lightPtr) noexcept
+bool LightingSystem::DeRegisterLight(const Light* LightPtr) const noexcept
 {
   unsigned index = Error::INVALID_INDEX;
   for (unsigned i = 0; i < MAX_DYNAMIC_LIGHTS; ++i)
   {
-    if (m_RegisteredLights[i] == lightPtr)
+    if (m_RegisteredLights[i] == LightPtr)
     {
       index = i;
     }
@@ -73,25 +71,17 @@ bool LightingSystem::DerigesterLight(Light* lightPtr) noexcept
 
   if (index == Error::INVALID_INDEX)
   {
-    Log::Warn("Attempting to deregister light. Light not found");
+    Log::warn("Attempting to de-register light. Light not found");
     return false;
   }
 
-  Log::Trace("Light deregistered from slot: " + index);
+  Log::trace("Light de-registered from slot: " + std::to_string(index));
   return true;
 }
 
 bool LightingSystem::FreeLightSlotExists() const noexcept
 {
-  for (Light* ptr : m_RegisteredLights)
-  {
-    if (ptr == nullptr)
-    {
-      return true;
-    }
-  }
-
-  return false;
+  return std::ranges::any_of(m_RegisteredLights, [](const Light* LightPtr) { return LightPtr == nullptr; });
 }
 
 const LightingSystem::GlobalLightingData& LightingSystem::GetGlobalLightingData() const noexcept
@@ -104,27 +94,27 @@ void LightingSystem::SetGlobalAmbientIntensity(const vec3& globalAmbientIntensit
   m_GlobalLightingData.AmbientIntensity = globalAmbientIntensity;
 }
 
-void LightingSystem::SetGlobalFogIntensity(const vec3& globalFogIntensity) noexcept
+void LightingSystem::SetGlobalFogIntensity(const vec3& GlobalFogIntensity) noexcept
 {
-  m_GlobalLightingData.FogIntensity = globalFogIntensity;
+  m_GlobalLightingData.FogIntensity = GlobalFogIntensity;
 }
 
-void LightingSystem::SetFogNearDistance(float fogNear) noexcept
+void LightingSystem::SetFogNearDistance(float FogNear) noexcept
 {
-  m_GlobalLightingData.FogNear = fogNear;
+  m_GlobalLightingData.FogNear = FogNear;
 }
 
-void LightingSystem::SetFogFarDistance(float fogFar) noexcept
+void LightingSystem::SetFogFarDistance(float FogFar) noexcept
 {
-  m_GlobalLightingData.FogFar = fogFar;
+  m_GlobalLightingData.FogFar = FogFar;
 }
 
 
-void LightingSystem::SetLightAttenuation(float constant, float linear, float quadratic) noexcept
+void LightingSystem::SetLightAttenuation(float Constant, float Linear, float Quadratic) noexcept
 {
-  m_GlobalLightingData.AttConstant = constant;
-  m_GlobalLightingData.AttLinear = linear;
-  m_GlobalLightingData.AttQuadratic = quadratic;
+  m_GlobalLightingData.AttConstant = Constant;
+  m_GlobalLightingData.AttLinear = Linear;
+  m_GlobalLightingData.AttQuadratic = Quadratic;
 }
 
 const vec3& LightingSystem::GetGlobalAmbientIntensity() const noexcept
@@ -170,9 +160,9 @@ unsigned LightingSystem::getFreeLightCount() const noexcept
 unsigned LightingSystem::getActiveLightCount() const noexcept
 {
   unsigned count = 0;
-  for (Light* ptr : m_RegisteredLights)
+  for (const Light* lightPtr : m_RegisteredLights)
   {
-    if (ptr == nullptr)
+    if (lightPtr == nullptr)
     {
       ++count;
     }

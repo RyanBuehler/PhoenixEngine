@@ -38,7 +38,7 @@ EnvironmentMap::EnvironmentMap() noexcept :
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
     {
-      Log::Error("[EnvironmentMap] Framebuffer incomplete!");
+      Log::error("[EnvironmentMap] Framebuffer incomplete!");
       return;
     }
 

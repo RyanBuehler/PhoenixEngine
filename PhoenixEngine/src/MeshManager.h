@@ -14,13 +14,13 @@ class MeshManager
 private:
   struct MeshData
   {
-    MeshData(const string& FileName = "Unknown",
+    MeshData(string FileName = "Unknown",
              const GLuint PositionBufferID = Error::INVALID_INDEX,
-      const GLuint NormalBufferID = Error::INVALID_INDEX,
-      const GLuint TriangleBufferID = Error::INVALID_INDEX,
-      const GLuint TexcoordBufferID = Error::INVALID_INDEX,
-      const GLuint VertexArrayID = Error::INVALID_INDEX) :
-      FileName(FileName),
+             const GLuint NormalBufferID = Error::INVALID_INDEX,
+             const GLuint TriangleBufferID = Error::INVALID_INDEX,
+             const GLuint TexcoordBufferID = Error::INVALID_INDEX,
+             const GLuint VertexArrayID = Error::INVALID_INDEX) :
+      FileName(std::move(FileName)),
       PositionBufferID(PositionBufferID),
       TriangleBufferID(TriangleBufferID),
       NormalBufferID(NormalBufferID),
@@ -66,5 +66,5 @@ private:
   OBJReader m_ObjReader;
 
   unsigned LoadMeshFromOBJ(const string& FileName) noexcept;
-  unsigned LoadSphere(float Radius = 1.f, int NumDivisions = 16) noexcept;
+  unsigned LoadSphere(float Radius = 1.f, unsigned NumDivisions = 16u) noexcept;
 };

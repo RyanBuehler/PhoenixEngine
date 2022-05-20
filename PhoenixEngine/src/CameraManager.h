@@ -18,11 +18,11 @@ public:
   CameraManager(CameraManager&&) = delete;
   CameraManager& operator=(CameraManager&&) = delete;
 
-  Camera& CreateCamera(const string& name) noexcept;
-  void DeleteCameraByName(const string& name) noexcept;
+  Camera& CreateCamera(const string& Name) noexcept;
+  void DeleteCameraByName(const string& Name) noexcept;
 
-  void SetActiveCamera(Camera& activeCamera) noexcept;
-  Camera& GetActiveCamera() noexcept;
+  void SetActiveCamera(Camera& ActiveCamera) noexcept;
+  Camera& GetActiveCamera() const noexcept;
   Camera& GetDefaultCamera() noexcept;
 
 private:

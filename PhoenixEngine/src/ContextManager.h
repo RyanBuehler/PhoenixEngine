@@ -1,3 +1,9 @@
+//------------------------------------------------------------------------------
+// File:    ContextManager.h
+// Author:  Ryan Buehler
+// Created: September 27, 2021
+// Desc:    Manages the Contexts of the Rendering Engine
+//------------------------------------------------------------------------------
 #pragma once
 #include "GraphicsCommon.h"
 
@@ -27,7 +33,7 @@ public:
       bIsNormalized(IsNormalized),
       Stride(Stride),
       Offset(Offset)
-    {};
+    {}
 
     string Name;
     GLuint ID;
@@ -41,8 +47,7 @@ public:
 private:
   struct Context
   {
-    explicit Context(string Name,
-                     const GLuint ProgramID = Error::INVALID_INDEX
+    explicit Context(string Name, const GLuint ProgramID = Error::INVALID_INDEX
     ) :
       Name(std::move(Name)),
       ProgramID(ProgramID)
@@ -50,8 +55,8 @@ private:
 
     string Name;
     GLuint ProgramID;
-    vector<ContextManager::UniformAttribute> UniformAttributes;
-    vector<ContextManager::VertexAttribute> VertexAttributes;
+    vector<UniformAttribute> UniformAttributes;
+    vector<VertexAttribute> VertexAttributes;
   };
 
 public:
@@ -72,9 +77,7 @@ public:
   [[nodiscard]] const vector<VertexAttribute>& GetCurrentVertexAttributes() const noexcept;
 
   void AddNewUniformAttribute(unsigned ContextID, const string& Name);
-  void AddNewVertexAttribute(unsigned ContextIndex, const VertexAttribute& Attribute);
-
-  /*bool ReloadContext(GLuint programID, GLint vertexShaderID, GLint fragmentShaderID) noexcept;*/
+  void AddNewVertexAttribute(unsigned ContextID, const VertexAttribute& Attribute);
 
 private:
   vector<Context> m_Contexts;

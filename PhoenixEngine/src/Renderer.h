@@ -215,7 +215,7 @@ private:
   unsigned m_LightingBlockID;
   unsigned m_SkyboxMeshId{};
 
-  EnvironmentMap envMap;
+  EnvironmentMap m_EnvMap;
   const bool m_DepthBufferEnabled;
 
   //Texture diffTex;

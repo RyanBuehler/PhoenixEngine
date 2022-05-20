@@ -9,7 +9,6 @@
 #include "Camera.h"
 #include <glm/ext/matrix_transform.hpp>   // glm::translate, glm::rotate, glm::scale
 #include <glm/ext/matrix_clip_space.hpp>  // glm::perspective
-#include <glm/ext/scalar_constants.hpp>   // glm::pi
 #include "Transform.h"
 
 Camera::Camera(const string& name, const Viewport& viewport) noexcept :
@@ -23,25 +22,24 @@ Camera::Camera(const string& name, const Viewport& viewport) noexcept :
   m_PersMatrix(1.f),
   m_ViewMatrix(1.f),
   m_VPMatrix(1.f),
-  m_IsEnabled(false),
-  m_PerspectiveIsDirty(true),
-  m_ViewIsDirty(true),
+  m_bPerspectiveIsDirty(true),
+  m_bViewIsDirty(true),
   m_Target(nullptr),
   m_Name(name),
   m_Viewport(viewport)
 {
-  Log::Trace("Camera '" + m_Name + "' created.");
+  Log::trace("Camera '" + m_Name + "' created.");
 }
 
 Camera::~Camera()
 {
-  Log::Trace(string("Camera '") + m_Name + "' destroyed.");
+  Log::trace(string("Camera '") + m_Name + "' destroyed.");
 }
 
 const mat4& Camera::GetPersMatrix() noexcept
 {
   // Only update the matrix if dirty
-  if (m_PerspectiveIsDirty)
+  if (m_bPerspectiveIsDirty)
   {
     m_PersMatrix =
       glm::perspective(
@@ -49,7 +47,7 @@ const mat4& Camera::GetPersMatrix() noexcept
         m_ViewData.Aspect,
         m_ViewData.NearCull,
         m_ViewData.FarCull);
-    m_PerspectiveIsDirty = false;
+    m_bPerspectiveIsDirty = false;
   }
   return m_PersMatrix;
 }
@@ -62,19 +60,19 @@ const mat4& Camera::GetViewMatrix() noexcept
     m_Forward = glm::normalize(m_Target->GetPosition() - m_Position);
     m_ViewMatrix = glm::lookAt(m_Position, m_Position + m_Forward, m_Up);
   }
-  else if (m_ViewIsDirty)
+  else if (m_bViewIsDirty)
   {
     //TODO: Set up Pitch,Roll,Yaw
     //updateOrientation();
     m_ViewMatrix = glm::lookAt(m_Position, m_Position + m_Forward, m_Up);
-    m_ViewIsDirty = false;
+    m_bViewIsDirty = false;
   }
   return m_ViewMatrix;
 }
 
 const glm::mat4& Camera::GetVPMatrix() noexcept
 {
-  if (m_PerspectiveIsDirty || m_ViewIsDirty)
+  if (m_bPerspectiveIsDirty || m_bViewIsDirty)
   {
     m_VPMatrix = GetPersMatrix() * GetViewMatrix();
   }
@@ -85,25 +83,25 @@ const glm::mat4& Camera::GetVPMatrix() noexcept
 void Camera::SetTarget(const Transform* target) noexcept
 {
   m_Target = target;
-  m_ViewIsDirty = true;
+  m_bViewIsDirty = true;
 }
 
 void Camera::ClearTarget() noexcept
 {
   m_Target = nullptr;
-  m_ViewIsDirty = true;
+  m_bViewIsDirty = true;
 }
 
 void Camera::SetPosition(vec3 position)
 {
   m_Position = position;
-  m_ViewIsDirty = true;
+  m_bViewIsDirty = true;
 }
 
 void Camera::MoveForward(float distance) noexcept
 {
   m_Position += distance * m_Forward;
-  m_ViewIsDirty = true;
+  m_bViewIsDirty = true;
 }
 
 void Camera::MoveBackward(float distance) noexcept
@@ -114,7 +112,7 @@ void Camera::MoveBackward(float distance) noexcept
 void Camera::MoveRight(float distance) noexcept
 {
   m_Position += distance * glm::cross(m_Forward, m_Up);
-  m_ViewIsDirty = true;
+  m_bViewIsDirty = true;
 }
 
 void Camera::MoveLeft(float distance) noexcept
@@ -125,7 +123,7 @@ void Camera::MoveLeft(float distance) noexcept
 void Camera::MoveUp(float distance) noexcept
 {
   m_Position += distance * m_Up;
-  m_ViewIsDirty = true;
+  m_bViewIsDirty = true;
 }
 
 void Camera::MoveDown(float distance) noexcept
@@ -136,19 +134,19 @@ void Camera::MoveDown(float distance) noexcept
 void Camera::SetYaw(float degrees)
 {
   m_Yaw = degrees;
-  m_ViewIsDirty = true;
+  m_bViewIsDirty = true;
 }
 
 void Camera::SetPitch(float degrees)
 {
   m_Pitch = degrees;
-  m_ViewIsDirty = true;
+  m_bViewIsDirty = true;
 }
 
 void Camera::SetRoll(float degrees)
 {
   m_Roll = degrees;
-  m_ViewIsDirty = true;
+  m_bViewIsDirty = true;
 }
 
 void Camera::SetViewData(const ViewData& viewData)
@@ -171,17 +169,17 @@ const vec3& Camera::GetUpVector() const noexcept
   return m_Up;
 }
 
-void Camera::LookAt(const vec3& forward, const vec3& up)
+void Camera::LookAt(const vec3& Forward, const vec3& Up)
 {
-  if (glm::dot(forward, up) != 0)
+  if (glm::dot(Forward, Up) != 0.f)
   {
-    Log::Warn("[Camera.cpp] Invalid vectors given to LookAt.");
+    Log::warn("[Camera.cpp] Invalid vectors given to LookAt.");
     return;
   }
 
-  m_Forward = forward;
-  m_Up = up;
-  m_ViewIsDirty = true;
+  m_Forward = Forward;
+  m_Up = Up;
+  m_bViewIsDirty = true;
 }
 
 void Camera::SetName(const string& name) noexcept

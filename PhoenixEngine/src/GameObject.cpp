@@ -60,7 +60,7 @@ void GameObject::SetMaterial(const Material& material) noexcept
   auto meshcomp = GetFirstComponentByType(Component::Type::MESH);
   if (!meshcomp.has_value())
   {
-    Log::Warn("[GameObject.cpp] Tried to set material with no Mesh Component.");
+    Log::warn("[GameObject.cpp] Tried to set material with no Mesh Component.");
     return;
   }
 
@@ -76,7 +76,7 @@ shared_ptr<Component> GameObject::AddComponent(Component::Type type) noexcept
       return m_Components[ID(CType::MESH)].emplace_back(make_shared<MeshComponent>(*this));
     case CType::COUNT:
     default:
-      Log::Error("[GameObject.cpp] Attempting to add component of invalid type.");
+      Log::error("[GameObject.cpp] Attempting to add component of invalid type.");
       break;
   }
   return nullptr;
@@ -90,7 +90,7 @@ shared_ptr<Component> GameObject::AddComponent(Component& component) noexcept
       return m_Components[ID(CType::MESH)].emplace_back(make_shared<MeshComponent>(*this));
     case CType::COUNT:
     default:
-      Log::Error("[GameObject.cpp] Attempting to add component of invalid type.");
+      Log::error("[GameObject.cpp] Attempting to add component of invalid type.");
       break;
   }
   return nullptr;

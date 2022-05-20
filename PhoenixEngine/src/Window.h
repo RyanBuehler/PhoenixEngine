@@ -1,43 +1,43 @@
 #pragma once
-
-struct GLFWwindow;
 #include "SceneManager.h"
 #include "Renderer.h"
+
+struct GLFWwindow;
 
 class Window
 {
   struct WindowProperties
   {
-    WindowProperties(const string& title = "Phoenix Engine - Ryan Buehler",
-      unsigned width = 1920u,
-      unsigned height = 1080u) :
-      Title(title),
-      Width(width),
-      Height(height) {}
+    explicit WindowProperties(string Title = "Phoenix Engine - Ryan Buehler",
+                              const int Width = 1920u,
+                              const int Height = 1080u) :
+      Title(std::move(Title)),
+      Width(Width),
+      Height(Height) {}
 
     string Title;
-    unsigned Width;
-    unsigned Height;
+    int Width;
+    int Height;
   };
 
 public:
   /// <summary>
   /// Window Constructor
   /// </summary>
-  /// <param name="properties">The properties of the Window to create</param>
-  Window(const WindowProperties& properties = WindowProperties());
+  /// <param name="Properties">The properties of the Window to create</param>
+  explicit Window(WindowProperties Properties = WindowProperties());
 
   /// <summary>
   /// Get the width of the Window
   /// </summary>
   /// <returns>The width of the Window</returns>
-  inline unsigned GetWidth() const noexcept;
+  [[nodiscard]] inline unsigned GetWidth() const noexcept;
 
   /// <summary>
   /// Get the height of the Window
   /// </summary>
   /// <returns>The height of the Window</returns>
-  inline unsigned GetHeight() const noexcept;
+  [[nodiscard]] inline unsigned GetHeight() const noexcept;
 
   /// <summary>
   /// Called every game loop cycle
@@ -47,13 +47,13 @@ public:
   /// <summary>
   /// Called when the Window is shut down
   /// </summary>
-  void OnClose() noexcept;
+  void OnClose() const noexcept;
 
   /// <summary>
   /// Interface to GLFW to see if Window was closed
   /// </summary>
   /// <returns>Window should close. T/F</returns>
-  bool WindowShouldClose() noexcept;
+  [[nodiscard]] bool WindowShouldClose() const noexcept;
 
 
 private:
@@ -64,20 +64,19 @@ private:
   unique_ptr<Renderer> m_RendererPtr;
 
   std::chrono::steady_clock::time_point m_LastFrameTime;
-  std::chrono::steady_clock m_Clock;
 
   bool m_bWindowShouldClose;
 
   /// <summary>
   /// Window related Input Queries
   /// </summary>
-  void OnPollInput(float dt) noexcept;
+  void OnPollInput() noexcept;
 
 #pragma region ImGUI
 
 #ifdef _IMGUI
   void OnImGuiCloseWindow() noexcept;
-  void OnImGuiChangeScene(SceneManager::Scene scene);
+  void OnImGuiChangeScene(SceneManager::Scene Scene) const;
 
 #endif // _IMGUI
 

@@ -9,47 +9,45 @@
 #include "CameraManager.h"
 
 CameraManager::CameraManager() noexcept :
-  m_DefaultCamera(),
-  m_Cameras(),
   m_ActiveCamera(&m_DefaultCamera)
 {
   SetActiveCamera(m_DefaultCamera);
-  Log::Trace("CameraManager and Default Camera created for Scene.");
+  Log::trace("CameraManager and Default Camera created for Scene.");
 }
 
 CameraManager::~CameraManager()
 {
   m_ActiveCamera = nullptr;
-  Log::Trace("CameraManager destroyed.");
+  Log::trace("CameraManager destroyed.");
 }
 
-Camera& CameraManager::CreateCamera(const string& name) noexcept
+Camera& CameraManager::CreateCamera(const string& Name) noexcept
 {
-  m_Cameras.push_front(make_unique<Camera>(name));
+  m_Cameras.push_front(make_unique<Camera>(Name));
   return *m_Cameras.front();
 }
 
-void CameraManager::DeleteCameraByName(const string& name) noexcept
+void CameraManager::DeleteCameraByName(const string& Name) noexcept
 {
   for (const auto& camera : m_Cameras)
   {
-    if (camera->GetName() == name)
+    if (camera->GetName() == Name)
     {
       m_Cameras.remove(camera);
-      Log::Trace("Deleted camera by name: " + name + ".");
+      Log::trace("Deleted camera by name: " + Name + ".");
       return;
     }
   }
 
-  Log::Error("Tried to delete camera by name: " + name + ", but such a camera doesn't exist.");
+  Log::error("Tried to delete camera by name: " + Name + ", but such a camera doesn't exist.");
 }
 
-void CameraManager::SetActiveCamera(Camera& activeCamera) noexcept
+void CameraManager::SetActiveCamera(Camera& ActiveCamera) noexcept
 {
-  m_ActiveCamera = &activeCamera;
+  m_ActiveCamera = &ActiveCamera;
 }
 
-Camera& CameraManager::GetActiveCamera() noexcept
+Camera& CameraManager::GetActiveCamera() const noexcept
 {
   return *m_ActiveCamera;
 }

@@ -18,20 +18,20 @@ SceneSingleObject::SceneSingleObject() noexcept :
   m_Time(0.f)
 {
   m_MainCamera.SetName("Scene Single Object Camera");
-  Log::Trace("Scene Single Object Created.");
+  Log::trace("Scene Single Object Created.");
   ImGui::MANAGER->SetOnDemoObjectHandler(std::bind(&SceneSingleObject::OnDemoObjectChangeEvent, this));
 }
 
 void SceneSingleObject::OnLoad() noexcept
 {
-  Log::Trace("Scene Single Object Loaded.");
+  Log::trace("Scene Single Object Loaded.");
 }
 
 void SceneSingleObject::OnInit() noexcept
 {
   m_Time = 0;
 
-  Log::Trace("Scene Single Object Initialized.");
+  Log::trace("Scene Single Object Initialized.");
   m_GameObjectArray.emplace_back();
 
   m_MainCamera.SetPosition({ 1.f, 1.f, 10.f });
@@ -50,12 +50,12 @@ void SceneSingleObject::OnUpdate(float dt) noexcept
 void SceneSingleObject::OnShutdown() noexcept
 {
   m_GameObjectArray.clear();
-  Log::Trace("Scene Single Object Shutdown.");
+  Log::trace("Scene Single Object Shutdown.");
 }
 
 void SceneSingleObject::OnUnload() noexcept
 {
-  Log::Trace("Scene Single Object Unloaded.");
+  Log::trace("Scene Single Object Unloaded.");
 }
 
 void SceneSingleObject::OnPollInput(GLFWwindow* window, float dt) noexcept
