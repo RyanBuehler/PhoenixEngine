@@ -1,10 +1,15 @@
+//------------------------------------------------------------------------------
+// File:    Transform.h
+// Author:  Ryan Buehler
+// Created: Friday, May 20, 2022
+// Desc:    Handles the Euclidean 3D Transform
+//------------------------------------------------------------------------------
 #pragma once
 #include "GraphicsCommon.h"
 
 class Transform
 {
 public:
-
   Transform() noexcept;
   ~Transform() = default;
   Transform(const Transform&);
@@ -12,22 +17,22 @@ public:
   Transform(Transform&&) = delete;
   Transform& operator=(Transform&&) = delete;
 
-  void Translate(const vec3& translation);
-  void RotateX(float degrees);
-  void RotateY(float degrees);
-  void RotateZ(float degrees);
+  void Translate(const vec3& Translation);
+  void RotateX(float Degrees);
+  void RotateY(float Degrees);
+  void RotateZ(float Degrees);
 
-  void RotateAround(float degrees, vec3 axis);
+  void RotateAround(float Degrees, vec3 Axis);
 
-  void ScaleBy(float factor);
+  void ScaleBy(float Factor);
 
-  void SetPosition(const vec3& pos) noexcept;
-  void SetRotation(const vec3& rot) noexcept;
-  void SetScale(const vec3& sca) noexcept;
+  void SetPosition(const vec3& Position) noexcept;
+  void SetRotation(const vec3& Rotation) noexcept;
+  void SetScale(const vec3& Scale) noexcept;
 
-  const vec3& GetPosition() const noexcept;
-  const vec3& GetRotation() const noexcept;
-  const vec3& GetScale() const noexcept;
+  [[nodiscard]] const vec3& GetPosition() const noexcept;
+  [[nodiscard]] const vec3& GetRotation() const noexcept;
+  [[nodiscard]] const vec3& GetScale() const noexcept;
 
   const mat4& GetMatrix() noexcept;
 

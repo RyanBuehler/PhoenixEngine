@@ -6,9 +6,6 @@
 //------------------------------------------------------------------------------
 #pragma once
 #include "GraphicsCommon.h"
-#include "ShaderManager.h"
-#include "Camera.h"
-#include "Colors.h"
 
 class DebugRenderer
 {
@@ -26,8 +23,8 @@ public:
   /// <returns>The DebugRenderer</returns>
   static DebugRenderer& I()
   {
-    static DebugRenderer m_Instance = DebugRenderer();
-    return m_Instance;
+    static auto instance = DebugRenderer();
+    return instance;
   }
 
   ~DebugRenderer();
@@ -37,20 +34,20 @@ public:
   DebugRenderer& operator=(DebugRenderer&&) = delete;
 
   void RenderLines() noexcept;
-  void RenderPermanentLines() noexcept;
+  void RenderPermanentLines() const noexcept;
 
-  void AddLine(const vec3& point1, const vec3& point2) noexcept;
-  void AddLine(const vec3& point1, const vec4& color1, const vec3& point2, const vec4& color2) noexcept;
-  void AddPermanentLine(const vec3& point1, const vec3& point2) noexcept;
-  void AddPermanentLine(const vec3& point1, const vec4& color1, const vec3& point2, const vec4& color2) noexcept;
+  void AddLine(const vec3& Point1, const vec3& Point2) noexcept;
+  void AddLine(const vec3& Point1, const vec4& Color1, const vec3& Point2, const vec4& Color2) noexcept;
+  void AddPermanentLine(const vec3& Point1, const vec3& Point2) noexcept;
+  void AddPermanentLine(const vec3& Point1, const vec4& Color1, const vec3& Point2, const vec4& Color2) noexcept;
 
-  void SetLineWidth(float width) noexcept;
-  void SetDefaultLineColor(const vec4& rgba) noexcept;
+  static void SetLineWidth(float Width) noexcept;
+  void SetDefaultLineColor(const vec4& Rgba) noexcept;
 
 private:
   DebugRenderer() noexcept;
 
-  void RenderLine(const vec3& point1, const vec4& color1, const vec3& point2, const vec4& color2);
+  void RenderLine(const vec3& Point1, const vec4& Color1, const vec3& Point2, const vec4& Color2) const;
 
   vector<vec3> m_LineArray;
   vector<vec3> m_PermanentLineArray;
@@ -61,6 +58,4 @@ private:
 
   GLuint m_hVertexArray;
   GLuint m_hVertexBufferObject;
-
-  GLuint m_hPositionAttribute;
 };

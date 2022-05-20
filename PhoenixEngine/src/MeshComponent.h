@@ -8,26 +8,25 @@
 #include "Component.h"
 #include "Material.h"
 
-class MeshComponent : public Component
+class MeshComponent final : public Component
 {
   public:
-
-  MeshComponent(GameObject& parent) noexcept;
-  ~MeshComponent() = default;
+  MeshComponent() noexcept;
+  ~MeshComponent() override = default;
   MeshComponent(const MeshComponent&) = delete;
   MeshComponent& operator=(const MeshComponent&) = delete;
   MeshComponent(MeshComponent&&) = delete;
   MeshComponent& operator=(MeshComponent&&) = delete;
 
-  virtual Component::Type GetType() const noexcept { return Component::Type::MESH; }
+  [[nodiscard]] Type GetType() const noexcept override { return Type::MESH; }
 
-  void SetMeshFileName(const string& fileName) noexcept;
-  inline const string& GetMeshFileName() const noexcept { return m_MeshFileName; }
+  void SetMeshFileName(const string& FileName) noexcept;
+  [[nodiscard]] const string& GetMeshFileName() const noexcept { return m_MeshFileName; }
 
-  inline void SetMaterial(const Material& material) noexcept { m_Material = material; }
-  inline const Material& GetMaterial() noexcept { return m_Material; }
-  inline unsigned GetMeshID() const noexcept { return m_MeshID; }
-  inline void SetMeshID(unsigned MeshID) noexcept { m_MeshID = MeshID; }
+  void SetMaterial(const Material& Material) noexcept { m_Material = Material; }
+  const Material& GetMaterial() noexcept { return m_Material; }
+  [[nodiscard]] unsigned GetMeshID() const noexcept { return m_MeshID; }
+  void SetMeshID(const unsigned MeshID) noexcept { m_MeshID = MeshID; }
 
   private:
   unsigned m_MeshID;

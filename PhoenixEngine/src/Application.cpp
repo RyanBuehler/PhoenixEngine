@@ -1,3 +1,9 @@
+//------------------------------------------------------------------------------
+// File:    Application.cpp
+// Author:  Ryan Buehler
+// Created: Friday, May 20, 2022
+// Desc:    The entry point of the Phoenix Engine application
+//------------------------------------------------------------------------------
 #include "pch.h"
 #include "Application.h"
 #include "Logger.h"

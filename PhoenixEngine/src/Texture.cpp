@@ -8,23 +8,23 @@
 #include "Texture.h"
 #include "PNGReader.h"
 
-Texture::Texture(const string& name) noexcept :
-  m_Name(name),
+Texture::Texture(const string& Name) noexcept :
+  m_Name(Name),
   m_TextureID(numeric_limits<unsigned>::max()),
   m_Width(-1),
   m_Height(-1),
   m_Channels(-1)
 {
-  Log::trace("Texture Created: " + name);
+  Log::trace("Texture Created: " + Name);
 }
 
-bool Texture::LoadTextureFromFile(const string& filename) noexcept
+bool Texture::LoadTextureFromFile(const string& FileName) noexcept
 {
   PNGReader reader;
 
-  if (!reader.LoadPNG(filename))
+  if (!reader.LoadPNG(FileName))
   {
-    Log::error("[Texture.cpp] Couldn't load texture: " + filename);
+    Log::error("[Texture.cpp] Couldn't load texture: " + FileName);
     return false;
   }
 

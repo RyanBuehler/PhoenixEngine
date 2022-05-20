@@ -32,8 +32,7 @@ Renderer::Renderer(const bool DepthBufferEnabled, const bool BackFaceCullEnabled
   m_hBlinnPhong(Error::INVALID_INDEX),
   m_hDebugContext(Error::Context::INVALID_CONTEXT),
   m_LightingBlockPrintId(Error::INVALID_INDEX),
-  m_LightingBlockID(Error::INVALID_INDEX),
-  m_DepthBufferEnabled(DepthBufferEnabled)
+  m_LightingBlockID(Error::INVALID_INDEX)
 {
   DepthBufferEnabled ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
   BackFaceCullEnabled ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);

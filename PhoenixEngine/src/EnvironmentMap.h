@@ -18,10 +18,10 @@ public:
   EnvironmentMap(EnvironmentMap&&) = delete;
   EnvironmentMap& operator=(EnvironmentMap&&) = delete;
 
-  GLuint GetFBOHandle(int i) const noexcept;
-  GLuint GetTextureHandle(GLuint index) const noexcept;
+  [[nodiscard]] GLuint GetFBOHandle(int i) const noexcept;
+  [[nodiscard]] GLuint GetTextureHandle(GLuint ID) const noexcept;
   Camera& GetCamera() noexcept;
-  void Bind(int i) noexcept;
+  void Bind(int Index) noexcept;
   void EnableTextures() noexcept;
 
 private:

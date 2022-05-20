@@ -10,14 +10,14 @@
 class Cubemap
 {
 public:
-  Cubemap(const char* filenames[6], const string& CubemapName = "Unnamed Cubemap") noexcept;
+  Cubemap(const char* FileNames[6], string CubemapName = "Unnamed Cubemap") noexcept;
   ~Cubemap() = default;
   Cubemap(const Cubemap&) = delete;
   Cubemap& operator=(const Cubemap&) = delete;
   Cubemap(Cubemap&&) = delete;
   Cubemap& operator=(Cubemap&&) = delete;
 
-  GLuint GetID();
+  [[nodiscard]] GLuint GetID() const;
   const string& GetName();
 
   // Front  = +Z 

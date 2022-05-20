@@ -1,3 +1,9 @@
+//------------------------------------------------------------------------------
+// File:    Transform.cpp
+// Author:  Ryan Buehler
+// Created: Friday, May 20, 2022
+// Desc:    Handles the Euclidean 3D Transform
+//------------------------------------------------------------------------------
 #include "pch.h"
 #include "Transform.h"
 #include <glm/ext/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale
@@ -11,79 +17,80 @@ Transform::Transform() noexcept :
   m_bIsDirty(true)
 {}
 
-Transform::Transform(const Transform& other) :
-  m_Position(other.m_Position),
-  m_Rotation(other.m_Rotation),
-  m_Scale(other.m_Scale),
-  m_Matrix(other.m_Matrix),
+Transform::Transform(const Transform& Other) :
+  m_Position(Other.m_Position),
+  m_Rotation(Other.m_Rotation),
+  m_Scale(Other.m_Scale),
+  m_Matrix(Other.m_Matrix),
   m_bIsDirty(true)
 {
-  *this = other;
+  *this = Other;
+
 }
 
-Transform& Transform::operator=(const Transform& other)
+Transform& Transform::operator=(const Transform& Other)
 {
-  m_Position = other.m_Position;
-  m_Rotation = other.m_Rotation;
-  m_Scale = other.m_Scale;
-  m_Matrix = other.m_Matrix;
+  m_Position = Other.m_Position;
+  m_Rotation = Other.m_Rotation;
+  m_Scale = Other.m_Scale;
+  m_Matrix = Other.m_Matrix;
   m_bIsDirty = true;
   return *this;
 }
 
-void Transform::Translate(const vec3& translation)
+void Transform::Translate(const vec3& Translation)
 {
-  m_Position += translation;
+  m_Position += Translation;
   m_bIsDirty = true;
 }
 
-void Transform::RotateX(float degrees)
+void Transform::RotateX(const float Degrees)
 {
-  m_Rotation.x += degrees;
+  m_Rotation.x += Degrees;
   m_bIsDirty = true;
 }
 
-void Transform::RotateY(float degrees)
+void Transform::RotateY(const float Degrees)
 {
-  m_Rotation.y += degrees;
+  m_Rotation.y += Degrees;
   m_bIsDirty = true;
 }
 
-void Transform::RotateZ(float degrees)
+void Transform::RotateZ(const float Degrees)
 {
-  m_Rotation.z += degrees;
+  m_Rotation.z += Degrees;
   m_bIsDirty = true;
 }
 
-void Transform::RotateAround(float degrees, vec3 axis)
+void Transform::RotateAround(const float Degrees, const vec3 Axis)
 {
-  m_Position = glm::rotate(m_Position, glm::radians(degrees), axis);
+  m_Position = glm::rotate(m_Position, glm::radians(Degrees), Axis);
 }
 
-void Transform::ScaleBy(float factor)
+void Transform::ScaleBy(const float Factor)
 {
-  m_Scale *= factor;
+  m_Scale *= Factor;
   m_bIsDirty = true;
 }
 
-void Transform::SetPosition(const vec3& pos) noexcept
+void Transform::SetPosition(const vec3& Position) noexcept
 {
-  if (pos == m_Position) return;
-  m_Position = pos;
+  if (Position == m_Position) return;
+  m_Position = Position;
   m_bIsDirty = true;
 }
 
-void Transform::SetRotation(const vec3& rot) noexcept
+void Transform::SetRotation(const vec3& Rotation) noexcept
 {
-  if (rot == m_Rotation) return;
-  m_Rotation = rot;
+  if (Rotation == m_Rotation) return;
+  m_Rotation = Rotation;
   m_bIsDirty = true;
 }
 
-void Transform::SetScale(const vec3& sca) noexcept
+void Transform::SetScale(const vec3& Scale) noexcept
 {
-  if (sca == m_Scale) return;
-  m_Scale = sca;
+  if (Scale == m_Scale) return;
+  m_Scale = Scale;
   m_bIsDirty = true;
 }
 

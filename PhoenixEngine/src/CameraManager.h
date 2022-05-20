@@ -22,7 +22,7 @@ public:
   void DeleteCameraByName(const string& Name) noexcept;
 
   void SetActiveCamera(Camera& ActiveCamera) noexcept;
-  Camera& GetActiveCamera() const noexcept;
+  [[nodiscard]] Camera& GetActiveCamera() const noexcept;
   Camera& GetDefaultCamera() noexcept;
 
 private:

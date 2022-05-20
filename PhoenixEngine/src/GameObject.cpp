@@ -3,36 +3,34 @@
 #include "MeshComponent.h"
 
 using Utility::ID;
-using CType = Component::Type;
 
 GameObject::GameObject() noexcept :
-  m_Transform(),
   m_bIsActive(true),
   m_bIsDirty(true)
 {}
 
-GameObject::GameObject(const GameObject& other) noexcept :
-  m_Transform(other.m_Transform),
-  m_bIsActive(other.m_bIsActive),
+GameObject::GameObject(const GameObject& Other) noexcept :
+  m_Transform(Other.m_Transform),
+  m_bIsActive(Other.m_bIsActive),
   m_bIsDirty(true),
-  m_Components(other.m_Components)
+  m_Components(Other.m_Components)
 {
 }
 
-GameObject& GameObject::operator=(const GameObject& other) noexcept
+GameObject& GameObject::operator=(const GameObject& Other) noexcept
 {
-  m_Transform = other.m_Transform;
-  m_bIsActive = other.m_bIsActive;
+  m_Transform = Other.m_Transform;
+  m_bIsActive = Other.m_bIsActive;
   m_bIsDirty = true;
-  m_Components = other.m_Components;
+  m_Components = Other.m_Components;
   return *this;
 }
 
-GameObject::GameObject(GameObject&& other) noexcept :
-  m_Transform(other.m_Transform),
-  m_bIsActive(other.m_bIsActive),
-  m_bIsDirty(other.m_bIsDirty),
-  m_Components(std::move(other.m_Components))
+GameObject::GameObject(GameObject&& Other) noexcept :
+  m_Transform(Other.m_Transform),
+  m_bIsActive(Other.m_bIsActive),
+  m_bIsDirty(Other.m_bIsDirty),
+  m_Components(std::move(Other.m_Components))
 {
 }
 
@@ -45,9 +43,9 @@ GameObject& GameObject::operator=(GameObject&& other) noexcept
   return *this;
 }
 
-void GameObject::SetTransform(const Transform& transform)
+void GameObject::SetTransform(const Transform& Transform)
 {
-  m_Transform = transform;
+  m_Transform = Transform;
 }
 
 const Transform& GameObject::GetTransform() const noexcept
@@ -55,50 +53,48 @@ const Transform& GameObject::GetTransform() const noexcept
   return m_Transform;
 }
 
-void GameObject::SetMaterial(const Material& material) noexcept
+void GameObject::SetMaterial(const Material& Mat) noexcept
 {
-  auto meshcomp = GetFirstComponentByType(Component::Type::MESH);
-  if (!meshcomp.has_value())
+  const auto meshComp = GetFirstComponentByType(Component::Type::MESH);
+  if (!meshComp.has_value())
   {
     Log::warn("[GameObject.cpp] Tried to set material with no Mesh Component.");
     return;
   }
 
-  auto ptr = dynamic_pointer_cast<MeshComponent>(meshcomp.value());
-  ptr->SetMaterial(material);
+  const auto ptr = dynamic_pointer_cast<MeshComponent>(meshComp.value());
+  ptr->SetMaterial(Mat);
 }
 
-shared_ptr<Component> GameObject::AddComponent(Component::Type type) noexcept
+shared_ptr<Component> GameObject::AddComponent(const Component::Type ComponentType) noexcept
 {
-  switch (type)
+  switch (ComponentType)
   {
-    case CType::MESH:
-      return m_Components[ID(CType::MESH)].emplace_back(make_shared<MeshComponent>(*this));
-    case CType::COUNT:
-    default:
+    case Component::Type::MESH:
+      return m_Components[ID(Component::Type::MESH)].emplace_back(make_shared<MeshComponent>());
+    case Component::Type::COUNT:
       Log::error("[GameObject.cpp] Attempting to add component of invalid type.");
       break;
   }
   return nullptr;
 }
 
-shared_ptr<Component> GameObject::AddComponent(Component& component) noexcept
+shared_ptr<Component> GameObject::AddComponent(const Component& Component) noexcept
 {
-  switch (component.GetType())
+  switch (Component.GetType())
   {
-    case CType::MESH:
-      return m_Components[ID(CType::MESH)].emplace_back(make_shared<MeshComponent>(*this));
-    case CType::COUNT:
-    default:
+    case Component::Type::MESH:
+      return m_Components[ID(Component::Type::MESH)].emplace_back(make_shared<MeshComponent>());
+    case Component::Type::COUNT:
       Log::error("[GameObject.cpp] Attempting to add component of invalid type.");
       break;
   }
   return nullptr;
 }
 
-optional<shared_ptr<Component>> GameObject::GetFirstComponentByType(Component::Type type) noexcept
+optional<shared_ptr<Component>> GameObject::GetFirstComponentByType(const Component::Type ComponentType) noexcept
 {
-  size_t i = ID(type);
+  const size_t i = ID(ComponentType);
   if (m_Components[i].empty())
   {
     return {};
@@ -106,12 +102,12 @@ optional<shared_ptr<Component>> GameObject::GetFirstComponentByType(Component::T
   return m_Components[i].at(0);
 }
 
-optional<shared_ptr<Component>> GameObject::GetLastComponentByType(Component::Type type) noexcept
+optional<shared_ptr<Component>> GameObject::GetLastComponentByType(Component::Type ComponentType) noexcept
 {
   return {};
 }
 
-optional<shared_ptr<Component>> GameObject::GetAnyComponentByType(Component::Type type) noexcept
+optional<shared_ptr<Component>> GameObject::GetAnyComponentByType(const Component::Type ComponentType) noexcept
 {
-  return GetFirstComponentByType(type);
+  return GetFirstComponentByType(ComponentType);
 }

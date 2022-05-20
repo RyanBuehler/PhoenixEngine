@@ -35,7 +35,7 @@ public:
   /// </summary>
   /// <param name="DepthBufferEnabled">Should the depth buffer be enabled?</param>
   /// <param name="BackFaceCullEnabled">Should the back faces be culled?</param>
-  explicit Renderer(bool DepthBufferEnabled = true, bool BackFaceCullEnabled = false) noexcept;
+  Renderer(bool DepthBufferEnabled = true, bool BackFaceCullEnabled = false) noexcept;
   ~Renderer();
 
   Renderer(const Renderer&) = delete;
@@ -51,7 +51,6 @@ public:
   /// <summary>
   /// Called once at the end of the frame
   /// </summary>
-  /// <returns></returns>
   void OnEndFrame() noexcept;
 
   /// <summary>
@@ -143,32 +142,12 @@ private:
   /// </summary>
   /// <returns></returns>
   void LoadContexts() noexcept;
-
-  /// <summary>
-  /// Loads the "Diffuse only" rendering context
-  /// </summary>
-  void LoadDiffuseContext() noexcept;
-
-  /// <summary>
-  /// Loads the "Phong Lighting" rendering context
-  /// </summary>
-  void LoadPhongLightingContext() noexcept;
-
-  /// <summary>
-  /// Loads the "Phong Shading" rendering context
-  /// </summary>
-  void LoadPhongShadingContext() noexcept;
-
+  
   /// <summary>
   /// Loads the "Blinn Phong" rendering context
   /// </summary>
   void LoadBlinnPhongContext() noexcept;
-
-  /// <summary>
-  /// Loads the "Phong Texture" rendering context
-  /// </summary>
-  void LoadPhongTextureContext() noexcept;
-
+  
   /// <summary>
   /// Loads the "Debug" rendering context
   /// </summary>
@@ -178,17 +157,7 @@ private:
   /// Loads the "Skybox" rendering context
   /// </summary>
   void LoadSkyboxContext() noexcept;
-
-  /// <summary>
-  /// Loads the "Reflection" rendering context
-  /// </summary>
-  void LoadReflectionContext() noexcept;
-
-  /// <summary>
-  /// Loads the "Blinn Phong" rendering context
-  /// </summary>
-  void LoadBlinnPhongRefractContext() noexcept;
-
+  
   RenderStats m_RenderStats;
 
   ShaderManager m_ShaderManager;              // Handles shader related functionality
@@ -216,7 +185,6 @@ private:
   unsigned m_SkyboxMeshId{};
 
   EnvironmentMap m_EnvMap;
-  const bool m_DepthBufferEnabled;
 
   //Texture diffTex;
   //Texture specTex;

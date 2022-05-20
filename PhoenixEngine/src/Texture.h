@@ -16,22 +16,21 @@ public:
     COUNT
   };
 
-  static const unsigned TEXTURE_ERROR = numeric_limits<unsigned>::max();
+  static constexpr unsigned TEXTURE_ERROR = numeric_limits<unsigned>::max();
 
-public:
-  Texture(const string& name) noexcept;
+  Texture(const string& Name) noexcept;
   ~Texture() = default;
   Texture(const Texture&) = delete;
   Texture& operator=(const Texture&) = delete;
   Texture(Texture&&) = delete;
   Texture& operator=(Texture&&) = delete;
 
-  bool LoadTextureFromFile(const string& filename) noexcept;
+  bool LoadTextureFromFile(const string& FileName) noexcept;
 
-  GLuint GetTextureID() const noexcept;
+  [[nodiscard]] GLuint GetTextureID() const noexcept;
 
-  int GetWidth() const noexcept;
-  int GetHeight() const noexcept;
+  [[nodiscard]] int GetWidth() const noexcept;
+  [[nodiscard]] int GetHeight() const noexcept;
 
 private:
   string m_Name;

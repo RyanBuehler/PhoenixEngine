@@ -11,7 +11,7 @@
 RenderStats::RenderStats() noexcept :
   m_FrameHistory({ 0.0f }),
   m_FrameIterator(m_FrameHistory.begin()),
-  m_IsActive(true),
+  m_bIsActive(true),
   m_FrameCount(0u)
 {}
 
@@ -36,5 +36,5 @@ float RenderStats::GetFPS() const
     sum += *it;
   }
 
-  return 1000.f / (sum / HISTSIZE);
+  return 1000.f / (sum / HISTORY_SIZE);
 }

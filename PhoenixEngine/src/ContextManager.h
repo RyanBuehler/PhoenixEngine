@@ -47,7 +47,7 @@ public:
 private:
   struct Context
   {
-    explicit Context(string Name, const GLuint ProgramID = Error::INVALID_INDEX
+    Context(string Name, const GLuint ProgramID = Error::INVALID_INDEX
     ) :
       Name(std::move(Name)),
       ProgramID(ProgramID)

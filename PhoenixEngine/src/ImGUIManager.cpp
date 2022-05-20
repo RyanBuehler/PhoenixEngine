@@ -19,6 +19,7 @@
 #pragma warning( pop )
 #include "GLFW/glfw3.h"
 #include "DebugRenderer.h"
+#include "Colors.h"
 
 #define IMGUISPACE ImGui::Spacing(); ImGui::Spacing(); ImGui::Spacing()
 
@@ -27,10 +28,10 @@
 // For quicker iteration
 namespace
 {
-  static const ImVec4 IMGREEN(0.f, 1.f, 0.f, 1.f);
-  static const ImVec4 IMCYAN(0.f, 1.f, 0.5f, 1.f);
+  const ImVec4 IMGREEN(0.f, 1.f, 0.f, 1.f);
+  const ImVec4 IMCYAN(0.f, 1.f, 0.5f, 1.f);
 
-  static const ImGui::DemoObject DEMOOBJECTS[static_cast<size_t>(ImGui::DemoObject::COUNT)] =
+  const ImGui::DemoObject DEMOOBJECTS[static_cast<size_t>(ImGui::DemoObject::COUNT)] =
   {
     ImGui::DemoObject::Bunny,
     ImGui::DemoObject::BunnyHighPoly,
@@ -43,7 +44,7 @@ namespace
     ImGui::DemoObject::StarWars
   };
 
-  static const char* DEMOOBJECTNAMES[static_cast<size_t>(ImGui::DemoObject::COUNT)] =
+  const char* DEMOOBJECTNAMES[static_cast<size_t>(ImGui::DemoObject::COUNT)] =
   {
     "Bunny",
     "BunnyHighPoly",
@@ -56,7 +57,7 @@ namespace
     "StarWars"
   };
 
-  static const char* DEMOOBJECTFILENAMES[static_cast<size_t>(ImGui::DemoObject::COUNT)] =
+  const char* DEMOOBJECTFILENAMES[static_cast<size_t>(ImGui::DemoObject::COUNT)] =
   {
     "bunny.obj",
     "bunny_high_poly.obj",
@@ -69,7 +70,7 @@ namespace
     "starwars1.obj"
   };
 
-  static const char* SHADERNAMES[1] =
+  const char* SHADERNAMES[1] =
   {
     //"Phong Lighting",
     //"Phong Shading",

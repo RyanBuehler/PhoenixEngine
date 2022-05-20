@@ -7,13 +7,13 @@
 #include "pch.h"
 #include "MeshComponent.h"
 
-MeshComponent::MeshComponent(GameObject& parent) noexcept :
-  Component(parent)
+MeshComponent::MeshComponent() noexcept :
+  m_MeshID(Error::INVALID_INDEX)
 {
 }
 
-void MeshComponent::SetMeshFileName(const string& fileName) noexcept
+void MeshComponent::SetMeshFileName(const string& FileName) noexcept
 {
-  m_MeshFileName = fileName;
+  m_MeshFileName = FileName;
   m_MeshID = Error::INVALID_INDEX;
 }

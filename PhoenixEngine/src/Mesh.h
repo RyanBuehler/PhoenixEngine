@@ -27,7 +27,7 @@
     /// </summary>
     struct Edge
     {
-      explicit Edge(
+      Edge(
         const unsigned Index1 = Error::INVALID_INDEX,
         const unsigned Index2 = Error::INVALID_INDEX
       ) : Index1(Index1), Index2(Index2) {}
@@ -40,7 +40,7 @@
     /// </summary>
     struct Triangle
     {
-      explicit Triangle(
+      Triangle(
         const unsigned Index1 = Error::INVALID_INDEX,
         const unsigned Index2 = Error::INVALID_INDEX,
         const unsigned Index3 = Error::INVALID_INDEX
@@ -61,7 +61,7 @@
     /// </summary>
     /// <param name="Origin">The object "origin" or pivot point</param>
     /// <param name="bIsStatic">[T/F] The mesh is static, not dynamic</param>
-    explicit Mesh(const vec3& Origin = vec3(0.f, 0.f, 0.f), bool bIsStatic = true) noexcept;
+    Mesh(const vec3& Origin = vec3(0.f, 0.f, 0.f), bool bIsStatic = true) noexcept;
 
     ~Mesh() = default;
     Mesh(const Mesh&) = default;

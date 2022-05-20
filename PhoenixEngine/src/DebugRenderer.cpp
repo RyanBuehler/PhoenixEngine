@@ -9,11 +9,9 @@
 #include "Colors.h"
 
 DebugRenderer::DebugRenderer() noexcept :
-  m_LineArray(),
   m_DefaultLineColor(Colors::PURPLE),
   m_hVertexArray(Error::INVALID_INDEX),
-  m_hVertexBufferObject(Error::INVALID_INDEX),
-  m_hPositionAttribute(Error::INVALID_INDEX)
+  m_hVertexBufferObject(Error::INVALID_INDEX)
 {
   glGenVertexArrays(1, &m_hVertexArray);
   glBindVertexArray(m_hVertexArray);
@@ -31,9 +29,9 @@ DebugRenderer::~DebugRenderer()
   glDeleteVertexArrays(1, &m_hVertexArray);
 }
 
-void DebugRenderer::RenderLine(const vec3& point1, const vec4& color1, const vec3& point2, const vec4& color2)
+void DebugRenderer::RenderLine(const vec3& Point1, const vec4& Color1, const vec3& Point2, const vec4& Color2) const
 {
-  VertexBufferObject line[2] = { {vec4(point1, 1.f), color1 }, {vec4(point2, 1.f), color2} };
+  const VertexBufferObject line[2] = { {vec4(Point1, 1.f), Color1 }, {vec4(Point2, 1.f), Color2} };
 
   glBindBuffer(GL_ARRAY_BUFFER, m_hVertexBufferObject);
   glBufferData(GL_ARRAY_BUFFER, sizeof(line), &line, GL_STATIC_DRAW);
@@ -45,8 +43,8 @@ void DebugRenderer::RenderLines() noexcept
 {
   //TODO: Move these into the context manager
   glBindVertexArray(m_hVertexArray);
-  glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBufferObject), 0);
-  glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBufferObject), (GLvoid*)sizeof(vec4));
+  glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBufferObject), nullptr);
+  glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBufferObject), reinterpret_cast<GLvoid*>(sizeof(vec4)));
   glEnableVertexAttribArray(0);
   glEnableVertexAttribArray(1);
 
@@ -61,12 +59,12 @@ void DebugRenderer::RenderLines() noexcept
   glBindVertexArray(0);
 }
 
-void DebugRenderer::RenderPermanentLines() noexcept
+void DebugRenderer::RenderPermanentLines() const noexcept
 {
   //TODO: Move these into the context manager
   glBindVertexArray(m_hVertexArray);
-  glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBufferObject), 0);
-  glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBufferObject), (GLvoid*)sizeof(vec4));
+  glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBufferObject), nullptr);
+  glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBufferObject), reinterpret_cast<GLvoid*>(sizeof(vec4)));
   glEnableVertexAttribArray(0);
   glEnableVertexAttribArray(1);
 
@@ -77,38 +75,38 @@ void DebugRenderer::RenderPermanentLines() noexcept
   }
 }
 
-void DebugRenderer::AddLine(const vec3& point1, const vec3& point2) noexcept
+void DebugRenderer::AddLine(const vec3& Point1, const vec3& Point2) noexcept
 {
-  AddLine(point1, m_DefaultLineColor, point2, m_DefaultLineColor);
+  AddLine(Point1, m_DefaultLineColor, Point2, m_DefaultLineColor);
 }
 
-void DebugRenderer::AddLine(const vec3& point1, const vec4& color1, const vec3& point2, const vec4& color2) noexcept
+void DebugRenderer::AddLine(const vec3& Point1, const vec4& Color1, const vec3& Point2, const vec4& Color2) noexcept
 {
-  m_LineArray.push_back(point1);
-  m_LineArray.push_back(point2);
-  m_ColorArray.push_back(color1);
-  m_ColorArray.push_back(color2);
+  m_LineArray.push_back(Point1);
+  m_LineArray.push_back(Point2);
+  m_ColorArray.push_back(Color1);
+  m_ColorArray.push_back(Color2);
 }
 
-void DebugRenderer::AddPermanentLine(const vec3& point1, const vec3& point2) noexcept
+void DebugRenderer::AddPermanentLine(const vec3& Point1, const vec3& Point2) noexcept
 {
-  AddPermanentLine(point1, m_DefaultLineColor, point2, m_DefaultLineColor);
+  AddPermanentLine(Point1, m_DefaultLineColor, Point2, m_DefaultLineColor);
 }
 
-void DebugRenderer::AddPermanentLine(const vec3& point1, const vec4& color1, const vec3& point2, const vec4& color2) noexcept
+void DebugRenderer::AddPermanentLine(const vec3& Point1, const vec4& Color1, const vec3& Point2, const vec4& Color2) noexcept
 {
-  m_PermanentLineArray.push_back(point1);
-  m_PermanentLineArray.push_back(point2);
-  m_PermanentColorArray.push_back(color1);
-  m_PermanentColorArray.push_back(color2);
+  m_PermanentLineArray.push_back(Point1);
+  m_PermanentLineArray.push_back(Point2);
+  m_PermanentColorArray.push_back(Color1);
+  m_PermanentColorArray.push_back(Color2);
 }
 
-void DebugRenderer::SetLineWidth(float width) noexcept
+void DebugRenderer::SetLineWidth(const float Width) noexcept
 {
-  glLineWidth(width);
+  glLineWidth(Width);
 }
 
-void DebugRenderer::SetDefaultLineColor(const vec4& rgba) noexcept
+void DebugRenderer::SetDefaultLineColor(const vec4& Rgba) noexcept
 {
-  m_DefaultLineColor = rgba;
+  m_DefaultLineColor = Rgba;
 }

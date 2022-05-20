@@ -4065,7 +4065,7 @@ static void ShowDemoWindowTables()
         ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
         if (ImGui::BeginTable("table_padding_2", 3, flags2))
         {
-            static char text_bufs[3 * 5][16]; // Mini text storage for 3x5 cells
+            static char text_bufs[3 * 5][16]{}; // Mini text storage for 3x5 cells
             static bool init = true;
             if (!show_widget_frame_bg)
                 ImGui::PushStyleColor(ImGuiCol_FrameBg, 0);
@@ -7566,6 +7566,7 @@ void ShowExampleAppDockSpace(bool* p_open)
             if (ImGui::MenuItem("Flag: PassthruCentralNode",    "", (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode) != 0, opt_fullscreen)) { dockspace_flags ^= ImGuiDockNodeFlags_PassthruCentralNode; }
             ImGui::Separator();
 
+            assert(p_open);
             if (ImGui::MenuItem("Close", NULL, false, p_open != NULL))
                 *p_open = false;
             ImGui::EndMenu();

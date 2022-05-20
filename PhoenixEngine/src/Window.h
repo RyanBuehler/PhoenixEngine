@@ -8,7 +8,7 @@ class Window
 {
   struct WindowProperties
   {
-    explicit WindowProperties(string Title = "Phoenix Engine - Ryan Buehler",
+    WindowProperties(string Title = "Phoenix Engine - Ryan Buehler",
                               const int Width = 1920u,
                               const int Height = 1080u) :
       Title(std::move(Title)),
@@ -25,7 +25,7 @@ public:
   /// Window Constructor
   /// </summary>
   /// <param name="Properties">The properties of the Window to create</param>
-  explicit Window(WindowProperties Properties = WindowProperties());
+  Window(WindowProperties Properties = WindowProperties());
 
   /// <summary>
   /// Get the width of the Window

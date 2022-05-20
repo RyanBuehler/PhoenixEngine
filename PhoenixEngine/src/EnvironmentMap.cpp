@@ -64,9 +64,9 @@ GLuint EnvironmentMap::GetFBOHandle(int i) const noexcept
   return m_hFBO[i];
 }
 
-GLuint EnvironmentMap::GetTextureHandle(GLuint index) const noexcept
+GLuint EnvironmentMap::GetTextureHandle(GLuint ID) const noexcept
 {
-  return m_hTexture[index];
+  return m_hTexture[ID];
 }
 
 Camera& EnvironmentMap::GetCamera() noexcept
@@ -74,9 +74,9 @@ Camera& EnvironmentMap::GetCamera() noexcept
   return m_Camera;
 }
 
-void EnvironmentMap::Bind(int i) noexcept
+void EnvironmentMap::Bind(int Index) noexcept
 {
-  glBindFramebuffer(GL_FRAMEBUFFER, m_hFBO[i]);
+  glBindFramebuffer(GL_FRAMEBUFFER, m_hFBO[Index]);
   glClearColor(1.0f, 0.f, 0.f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glEnable(GL_DEPTH_TEST);

@@ -5,7 +5,6 @@
 // Desc:    Handles all Textures for the Rendering pipeline
 //------------------------------------------------------------------------------
 #pragma once
-#include "GraphicsCommon.h"
 
 class TextureManager
 {
@@ -16,6 +15,4 @@ public:
   TextureManager& operator=(const TextureManager&) = delete;
   TextureManager(TextureManager&&) = delete;
   TextureManager& operator=(TextureManager&&) = delete;
-
-private:
 };

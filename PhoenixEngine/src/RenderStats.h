@@ -16,22 +16,22 @@ class RenderStats
   RenderStats(RenderStats&&) = delete;
   RenderStats& operator=(RenderStats&&) = delete;
 
-  inline bool IsActive() const noexcept { return m_IsActive; }
-  inline void SetIsActive(bool value) noexcept { m_IsActive = value; }
+  [[nodiscard]] bool IsActive() const noexcept { return m_bIsActive; }
+  void SetIsActive(const bool Value) noexcept { m_bIsActive = Value; }
 
   void OnEndFrame();
-  float GetFPS() const;
-  inline size_t GetFrameCount() const noexcept { return m_FrameCount; }
+  [[nodiscard]] float GetFPS() const;
+  [[nodiscard]] size_t GetFrameCount() const noexcept { return m_FrameCount; }
 
   private:
-  static constexpr size_t HISTSIZE = 256u;
-  array<float, HISTSIZE> m_FrameHistory;
-  array<float, HISTSIZE>::iterator m_FrameIterator;
+  static constexpr size_t HISTORY_SIZE = 256u;
+  array<float, HISTORY_SIZE> m_FrameHistory;
+  array<float, HISTORY_SIZE>::iterator m_FrameIterator;
 
   std::chrono::steady_clock m_Clock;
   std::chrono::time_point<std::chrono::steady_clock> m_LastFrameTime;
 
-  bool m_IsActive;
+  bool m_bIsActive;
 
   unsigned m_FrameCount;
 };

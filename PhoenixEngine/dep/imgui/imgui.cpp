@@ -1699,7 +1699,7 @@ int ImTextCharFromUtf8(unsigned int* out_char, const char* in_text, const char* 
 
     // Copy at most 'len' bytes, stop copying at 0 or past in_text_end. Branch predictor does a good job here,
     // so it is fast even with excessive branching.
-    unsigned char s[4];
+    unsigned char s[4]{};
     s[0] = in_text + 0 < in_text_end ? in_text[0] : 0;
     s[1] = in_text + 1 < in_text_end ? in_text[1] : 0;
     s[2] = in_text + 2 < in_text_end ? in_text[2] : 0;
@@ -4810,7 +4810,7 @@ void ImGui::Render()
     }
 
     // Add ImDrawList to render
-    ImGuiWindow* windows_to_render_top_most[2];
+    ImGuiWindow* windows_to_render_top_most[2]{nullptr,nullptr};
     windows_to_render_top_most[0] = (g.NavWindowingTarget && !(g.NavWindowingTarget->Flags & ImGuiWindowFlags_NoBringToFrontOnFocus)) ? g.NavWindowingTarget->RootWindowDockTree : NULL;
     windows_to_render_top_most[1] = (g.NavWindowingTarget ? g.NavWindowingListWindow : NULL);
     for (int n = 0; n != g.Windows.Size; n++)
@@ -12181,6 +12181,8 @@ static void ImGui::WindowSelectViewport(ImGuiWindow* window)
         }
     }
 
+    if(!window->Viewport)
+        return;
     // Update flags
     window->ViewportOwned = (window == window->Viewport->Window);
     window->ViewportId = window->Viewport->ID;
@@ -13255,6 +13257,7 @@ void ImGui::DockContextProcessDock(ImGuiContext* ctx, ImGuiDockRequest* req)
     else
     {
         // When docking a floating single window node we want to reevaluate auto-hiding of the tab bar
+        assert(node);
         node->WantHiddenTabBarUpdate = true;
     }
 
@@ -13481,6 +13484,7 @@ static void ImGui::DockNodeAddWindow(ImGuiDockNode* node, ImGuiWindow* window, b
         if (node->TabBar == NULL)
         {
             DockNodeAddTabBar(node);
+            assert(node && node->TabBar);
             node->TabBar->SelectedTabId = node->TabBar->NextSelectedTabId = node->SelectedTabId;
 
             // Add existing windows
@@ -13654,6 +13658,7 @@ struct ImGuiDockNodeTreeInfo
 
 static void DockNodeFindInfo(ImGuiDockNode* node, ImGuiDockNodeTreeInfo* info)
 {
+    assert(node);
     if (node->Windows.Size > 0)
     {
         if (info->FirstNodeWithWindows == NULL)
@@ -14213,7 +14218,8 @@ static void ImGui::DockNodeUpdateTabBar(ImGuiDockNode* node, ImGuiWindow* host_w
 
     const bool node_was_active = (node->LastFrameActive + 1 == g.FrameCount);
     const bool closed_all = node->WantCloseAll && node_was_active;
-    const ImGuiID closed_one = node->WantCloseTabId && node_was_active;
+    //const ImGuiID closed_one = node->WantCloseTabId && node_was_active;
+    const ImGuiID closed_one = node->WantCloseTabId & node_was_active;
     node->WantCloseAll = false;
     node->WantCloseTabId = 0;
 
@@ -14322,9 +14328,9 @@ static void ImGui::DockNodeUpdateTabBar(ImGuiDockNode* node, ImGuiWindow* host_w
         for (int tab_n = tabs_unsorted_start; tab_n < tab_bar->Tabs.Size; tab_n++)
             IMGUI_DEBUG_LOG_DOCKING(" - Tab '%s' Order %d\n", tab_bar->Tabs[tab_n].Window->Name, tab_bar->Tabs[tab_n].Window->DockOrder);
         if (tab_bar->Tabs.Size > tabs_unsorted_start + 1)
-            ImQsort(tab_bar->Tabs.Data + tabs_unsorted_start, tab_bar->Tabs.Size - tabs_unsorted_start, sizeof(ImGuiTabItem), TabItemComparerByDockOrder);
+            ImQsort(tab_bar->Tabs.Data + tabs_unsorted_start, tab_bar->Tabs.Size - static_cast<size_t>(tabs_unsorted_start), sizeof(ImGuiTabItem), TabItemComparerByDockOrder);
     }
-
+    
     // Apply NavWindow focus back to the tab bar
     if (g.NavWindow && g.NavWindow->RootWindow->DockNode == node)
         tab_bar->SelectedTabId = g.NavWindow->RootWindow->ID;
@@ -14745,7 +14751,7 @@ static void ImGui::DockNodePreviewDockRender(ImGuiWindow* host_window, ImGuiDock
 
     // In case the two windows involved are on different viewports, we will draw the overlay on each of them.
     int overlay_draw_lists_count = 0;
-    ImDrawList* overlay_draw_lists[2];
+    ImDrawList* overlay_draw_lists[2]{nullptr,nullptr};
     overlay_draw_lists[overlay_draw_lists_count++] = GetForegroundDrawList(host_window->Viewport);
     if (host_window->Viewport != root_payload->Viewport && !is_transparent_payload)
         overlay_draw_lists[overlay_draw_lists_count++] = GetForegroundDrawList(root_payload->Viewport);
@@ -14934,6 +14940,7 @@ void ImGui::DockNodeTreeMerge(ImGuiContext* ctx, ImGuiDockNode* parent_node, ImG
     }
     DockNodeApplyPosSizeToWindows(parent_node);
     parent_node->AuthorityForPos = parent_node->AuthorityForSize = parent_node->AuthorityForViewport = ImGuiDataAuthority_Auto;
+    assert(merge_lead_child);
     parent_node->VisibleWindow = merge_lead_child->VisibleWindow;
     parent_node->SizeRef = backup_last_explicit_size;
 
@@ -15096,7 +15103,7 @@ void ImGui::DockNodeTreeUpdateSplitter(ImGuiDockNode* node)
             // Find resizing limits by gathering list of nodes that are touching the splitter line.
             ImVector<ImGuiDockNode*> touching_nodes[2];
             float min_size = g.Style.WindowMinSize[axis];
-            float resize_limits[2];
+            float resize_limits[2]{};
             resize_limits[0] = node->ChildNodes[0]->Pos[axis] + min_size;
             resize_limits[1] = node->ChildNodes[1]->Pos[axis] + node->ChildNodes[1]->Size[axis] - min_size;
 
@@ -15923,6 +15930,7 @@ void ImGui::BeginDocked(ImGuiWindow* window, bool* p_open)
 
     // Undock if our dockspace node disappeared
     // Note how we are testing for LastFrameAlive and NOT LastFrameActive. A DockSpace node can be maintained alive while being inactive with ImGuiDockNodeFlags_KeepAliveOnly.
+    assert(node);
     if (node->LastFrameAlive < g.FrameCount)
     {
         // If the window has been orphaned, transition the docknode to an implicit node processed in DockContextNewFrameUpdateDocking()
@@ -15993,6 +16001,7 @@ void ImGui::BeginDocked(ImGuiWindow* window, bool* p_open)
     if ((node->WantCloseAll || node->WantCloseTabId == window->ID) && p_open != NULL)
         *p_open = false;
 
+    assert(window->DockNode);
     // Update ChildId to allow returning from Child to Parent with Escape
     ImGuiWindow* parent_window = window->DockNode->HostWindow;
     window->ChildId = parent_window->GetID(window->Name);
@@ -17364,7 +17373,7 @@ void ImGui::DebugNodeStorage(ImGuiStorage* storage, const char* label)
 void ImGui::DebugNodeTabBar(ImGuiTabBar* tab_bar, const char* label)
 {
     // Standalone tab bars (not associated to docking/windows functionality) currently hold no discernible strings.
-    char buf[256];
+    char buf[256]{};
     char* p = buf;
     const char* buf_end = buf + IM_ARRAYSIZE(buf);
     const bool is_active = (tab_bar->PrevFrameVisible >= GetFrameCount() - 2);

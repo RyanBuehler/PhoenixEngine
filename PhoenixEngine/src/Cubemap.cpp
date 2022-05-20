@@ -8,9 +8,9 @@
 #include "Cubemap.h"
 #include "PNGReader.h"
 
-Cubemap::Cubemap(const char* filenames[6], const string& CubemapName) noexcept :
+Cubemap::Cubemap(const char* FileNames[6], string CubemapName) noexcept :
   m_hCubemap(Error::INVALID_INDEX),
-  m_CubemapName(CubemapName)
+  m_CubemapName(std::move(CubemapName))
 {
   glGenTextures(1, &m_hCubemap);
   glBindTexture(GL_TEXTURE_CUBE_MAP, m_hCubemap);
@@ -19,12 +19,12 @@ Cubemap::Cubemap(const char* filenames[6], const string& CubemapName) noexcept :
   for (unsigned i = 0; i < 6; ++i)
   {
     PNGReader reader;
-    if (!reader.LoadPNG(filenames[i]))
+    if (!reader.LoadPNG(FileNames[i]))
     {
-      Log::error("[Cubemap.cpp] Error loading image \"" + string(filenames[i]) + "\"");
+      Log::error("[Cubemap.cpp] Error loading image \"" + string(FileNames[i]) + "\"");
       return;
     }
-    PNGReader::ImageData image = reader.GetImageData();
+    const PNGReader::ImageData image = reader.GetImageData();
 
     GLenum format;
     switch (image.Channels)
@@ -40,7 +40,7 @@ Cubemap::Cubemap(const char* filenames[6], const string& CubemapName) noexcept :
       return;
     }
 
-    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, format, image.Width,
+    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, static_cast<GLint>(format), image.Width,
       image.Height, 0, format, GL_UNSIGNED_BYTE, image.Data);
   }
 
@@ -55,7 +55,7 @@ Cubemap::Cubemap(const char* filenames[6], const string& CubemapName) noexcept :
   Log::trace("Cubemap '" + m_CubemapName + "' loaded.");
 }
 
-GLuint Cubemap::GetID()
+GLuint Cubemap::GetID() const
 {
   return m_hCubemap;
 }
