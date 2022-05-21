@@ -25,12 +25,12 @@ namespace ImGui
   extern int GRAPHICS_SELECTED_SHADER;
   extern UV::Generation GRAPHICS_SELECTED_PROJECTION;
   extern GLuint GRAPHICS_DISPLAY_TEXTURE[6];
-  extern float GraphicsRefractSlider;
-  extern float GraphicsRedIOR;
-  extern float GraphicsGreenIOR;
-  extern float GraphicsBlueIOR;
-  extern bool GraphicsRefractEnabled;
-  extern bool GraphicsReflectEnabled;
+  extern float GRAPHICS_REFRACT_SLIDER;
+  extern float GRAPHICS_RED_IOR;
+  extern float GRAPHICS_GREEN_IOR;
+  extern float GRAPHICS_BLUE_IOR;
+  extern bool GRAPHICS_REFRACT_ENABLED;
+  extern bool GRAPHICS_REFLECT_ENABLED;
 
   extern int SCENE_SCENARIO;
   extern bool SCENE_DRAW_ORBIT;
@@ -44,15 +44,16 @@ namespace ImGui
 
   enum class DemoObject
   {
-    Bunny,
-    BunnyHighPoly,
+    BUNNY,
+    BUNNY_HIGH_POLY,
     //Cube,
-    Cube2,
-    Cup,
-    Lucy,
-    Quad,
-    Sphere,
-    StarWars,
+    CUBE2,
+    CUP,
+    LUCY,
+    QUAD,
+    SPHERE,
+    STAR_WARS,
+    SUZANNE,
     COUNT
   };
 

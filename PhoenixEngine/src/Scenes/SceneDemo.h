@@ -1,4 +1,4 @@
-// ------------------------------------------------------------------------------
+ // ------------------------------------------------------------------------------
 // File:    SceneDemo.h
 // Author:  Ryan Buehler
 // Created: 09/27/21
@@ -21,7 +21,7 @@ public:
 
   void OnLoad() noexcept override;
   void OnInit() noexcept override;
-  void OnUpdate(float Dt) noexcept override;
+  void OnUpdate(float DeltaTime) noexcept override;
   void OnShutdown() noexcept override;
   void OnUnload() noexcept override;
 
@@ -30,7 +30,7 @@ public:
 
   Camera& GetCurrentCamera() noexcept override;
 
-  void ChangeScenario(int Which) noexcept;
+  static void ChangeScenario(int Which) noexcept;
 
 private:
   void Scenario1() noexcept;

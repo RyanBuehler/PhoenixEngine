@@ -12,7 +12,6 @@
 #include "ImGUIManager.h"
 #include "Colors.h"
 #include "MeshComponent.h"
-#include "AssetLoader.h"
 
 #define AMBIENT_FACTOR 0.05f
 #define DIFFUSE_FACTOR 0.9f
@@ -26,10 +25,7 @@ SceneDemo::SceneDemo() noexcept :
   m_MainCamera.SetName("Demo Scene Camera");
   Log::trace("'Demo' Scene Created.");
   ImGui::MANAGER->SetOnDemoObjectHandler([this] { OnDemoObjectChangeEvent(); });
-  AssetLoader::LoadFBX(("res/models/suzanne.fbx"));
-
 }
-
 
 void SceneDemo::OnLoad() noexcept
 {
@@ -54,9 +50,9 @@ void SceneDemo::OnInit() noexcept
   Log::trace("Demo Scene Initialized.");
 }
 
-void SceneDemo::OnUpdate(const float Dt) noexcept
+void SceneDemo::OnUpdate(const float DeltaTime) noexcept
 {
-  m_Time += Dt;
+  m_Time += DeltaTime;
 
   for (int i = 0; i < 16; ++i)
   {
@@ -72,7 +68,7 @@ void SceneDemo::OnUpdate(const float Dt) noexcept
     }
     if (ImGui::SCENE_ORBIT_OBJECTS)
     {
-      m_GameObjectArray[i].RotateAround(5.f * Dt, vec3(0.f, 1.f, 0.f));
+      m_GameObjectArray[i].RotateAround(5.f * DeltaTime, vec3(0.f, 1.f, 0.f));
     }
     ImGui::LIGHTING_DATA_ARRAY[i].Position = vec4(m_GameObjectArray[i].GetPosition(), 1.f);
     ImGui::LIGHTING_DATA_ARRAY[i].Direction = vec4(vec3(0.f, -0.3f, 0.f) - m_GameObjectArray[i].GetPosition(), 1.f);
@@ -90,40 +86,40 @@ void SceneDemo::OnUnload() noexcept
   Log::trace("Demo Scene Unloaded.");
 }
 
-void SceneDemo::OnPollInput(GLFWwindow* window, float DeltaTime) noexcept
+void SceneDemo::OnPollInput(GLFWwindow* WindowPtr, const float DeltaTime) noexcept
 {
-  static float move_speed = 10.f;
-  if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+  static float moveSpeed = 10.f;
+  if (glfwGetKey(WindowPtr, GLFW_KEY_W) == GLFW_PRESS)
   {
-    m_MainCamera.MoveForward(move_speed * DeltaTime);
+    m_MainCamera.MoveForward(moveSpeed * DeltaTime);
   }
-  if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+  if (glfwGetKey(WindowPtr, GLFW_KEY_A) == GLFW_PRESS)
   {
-    m_MainCamera.MoveLeft(move_speed * DeltaTime);
+    m_MainCamera.MoveLeft(moveSpeed * DeltaTime);
   }
-  if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+  if (glfwGetKey(WindowPtr, GLFW_KEY_S) == GLFW_PRESS)
   {
-    m_MainCamera.MoveBackward(move_speed * DeltaTime);
+    m_MainCamera.MoveBackward(moveSpeed * DeltaTime);
   }
-  if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+  if (glfwGetKey(WindowPtr, GLFW_KEY_D) == GLFW_PRESS)
   {
-    m_MainCamera.MoveRight(move_speed * DeltaTime);
+    m_MainCamera.MoveRight(moveSpeed * DeltaTime);
   }
-  if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+  if (glfwGetKey(WindowPtr, GLFW_KEY_Q) == GLFW_PRESS)
   {
-    m_MainCamera.MoveUp(move_speed * DeltaTime);
+    m_MainCamera.MoveUp(moveSpeed * DeltaTime);
   }
-  if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+  if (glfwGetKey(WindowPtr, GLFW_KEY_E) == GLFW_PRESS)
   {
-    m_MainCamera.MoveDown(move_speed * DeltaTime);
+    m_MainCamera.MoveDown(moveSpeed * DeltaTime);
   }
 }
 
 void SceneDemo::OnDemoObjectChangeEvent()
 {
-  auto MC = m_GameObjectArray[17].GetFirstComponentByType(Component::Type::MESH);
-  auto MCP = dynamic_pointer_cast<MeshComponent>(MC.value());
-  MCP->SetMeshFileName(ImGui::DEMO_OBJECT_FILE);
+  const auto mc = m_GameObjectArray[17].GetFirstComponentByType(Component::Type::MESH);
+  const auto mcp = dynamic_pointer_cast<MeshComponent>(mc.value());
+  mcp->SetMeshFileName(ImGui::DEMO_OBJECT_FILE);
 }
 
 Camera& SceneDemo::GetCurrentCamera() noexcept

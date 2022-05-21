@@ -61,6 +61,16 @@ void Mesh::AddVertexNormal(float X, float Y, float Z) noexcept
   m_MeshIsDirty = true;
 }
 
+void Mesh::AddTexcoord(const vec2& Texcoord) noexcept
+{
+  m_TexcoordArray.push_back(Texcoord);
+}
+
+void Mesh::AddTexcoord(const float U, const float V)
+{
+  m_TexcoordArray.emplace_back(vec2(U, V));
+}
+
 void Mesh::AddTriangle(unsigned Index1, unsigned Index2, unsigned Index3) noexcept
 {
   m_TriangleArray.emplace_back(Index1, Index2, Index3);
@@ -130,21 +140,7 @@ float Mesh::CalculateWidestPoint() const noexcept
   return std::max(std::max(size.x, size.y), size.z);
 }
 
-// Local helper function for use in merging triangle normals to flat surface
-//namespace
-//{
-//  // Compare normals by epsilon
-//  struct NormalCloseEnough
-//  {
-//    bool operator() (const vec3& lhs, const vec3& rhs) const
-//    {
-//      float dotP = dot(lhs, rhs);
-//      return glm::epsilonNotEqual(dotP, 1.0f, FLT_EPSILON);
-//    }
-//  };
-//}
-
-void Mesh::CalculateNormals(bool bShouldFlipNormals) noexcept
+void Mesh::CalculateNormals(const bool bShouldFlipNormals) noexcept
 {
   // Vertices and indices must be populated
   if (m_PositionArray.empty() || m_TriangleArray.empty())
@@ -155,8 +151,11 @@ void Mesh::CalculateNormals(bool bShouldFlipNormals) noexcept
 
   // First get the surface normals
   calculateSurfaceNormals(bShouldFlipNormals);
+
   // Using surface normals, average them out per vertex
   calculateVertexNormals();
+
+  m_NormalsAreCalculated = true;
 }
 
 void Mesh::ScaleToUnitSize() noexcept
@@ -179,7 +178,7 @@ void Mesh::ScaleToUnitSize() noexcept
 
 vec3 Mesh::FindCentroid() const noexcept
 {
-  const BoundingBox bounds = CalculateBoundingBox();
+  const BoundingBox bounds{ CalculateBoundingBox() };
 
   // Average the center of 
   const vec3 center(
@@ -210,9 +209,9 @@ void Mesh::ResetOriginToCentroid() noexcept
   m_MeshIsDirty = true;
 }
 
-void Mesh::GenerateTexcoords(UV::Generation generation) noexcept
+void Mesh::GenerateTexcoords(const UV::Generation Generation) noexcept
 {
-  switch (generation)
+  switch (Generation)
   {
   case UV::Generation::SPHERICAL:
     calculateSphereUVs();
@@ -238,7 +237,7 @@ void Mesh::AssembleVertexData() noexcept
   m_MeshIsDirty = true;
 }
 
-void Mesh::calculateSurfaceNormals(bool bShouldFlipNormals) noexcept
+void Mesh::calculateSurfaceNormals(const bool bShouldFlipNormals) noexcept
 {
   m_SurfaceNormalArray.clear();
   m_SurfaceNormalPositionArray.clear();

@@ -123,6 +123,10 @@
     /// <param name="Z">Z value of the new vertex normal</param>
     void AddVertexNormal(float X, float Y, float Z) noexcept;
 
+    void AddTexcoord(const vec2& Texcoord) noexcept;
+
+    void AddTexcoord(float U, float V);
+
     /// <summary>
     /// Manually adds a single triangle (via vertex indices) to the mesh
     /// </summary>
@@ -235,9 +239,9 @@
     /// <summary>
     /// Generates UV coordinates based on mathematical projections
     /// </summary>
-    /// <param name="generation">The UV generation technique</param>
+    /// <param name="Generation">The UV generation technique</param>
     /// <returns></returns>
-    void GenerateTexcoords(UV::Generation generation) noexcept;
+    void GenerateTexcoords(UV::Generation Generation) noexcept;
 
     /// <summary>
     /// Assembles all mesh data into VertexData to be sent to the GPU
@@ -277,6 +281,7 @@
     /// </summary>
     void calculateCubeMapUVs() const noexcept;
 
+    friend class AssetLoader;
     friend class MeshManager; // Allows the Mesh Manager class exclusive access
 
     vec3 m_Origin;        // The mesh's origin point (pivot point)

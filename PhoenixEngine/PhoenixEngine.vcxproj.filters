@@ -418,6 +418,8 @@
     <None Include="res\shaders\BlinnPhongRefract.vert">
       <Filter>Source Files\Graphics\Shaders\GLSL</Filter>
     </None>
-    <None Include="dep\assimp\assimp-vc143-mt.dll" />
+    <None Include="dep\assimp\assimp-vc143-mt.dll">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

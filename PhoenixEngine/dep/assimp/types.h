@@ -362,7 +362,7 @@ struct aiString {
             return;
         }
 
-        memcpy(&data[length], app, len + 1);
+        memcpy(&data[length], app, static_cast<size_t>(len) + 1);
         length += len;
     }
 

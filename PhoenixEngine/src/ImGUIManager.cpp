@@ -33,15 +33,15 @@ namespace
 
   const ImGui::DemoObject DEMOOBJECTS[static_cast<size_t>(ImGui::DemoObject::COUNT)] =
   {
-    ImGui::DemoObject::Bunny,
-    ImGui::DemoObject::BunnyHighPoly,
+    ImGui::DemoObject::BUNNY,
+    ImGui::DemoObject::BUNNY_HIGH_POLY,
     //ImGui::DemoObject::Cube,
-    ImGui::DemoObject::Cube2,
-    ImGui::DemoObject::Cup,
-    ImGui::DemoObject::Lucy,
-    ImGui::DemoObject::Quad,
-    ImGui::DemoObject::Sphere,
-    ImGui::DemoObject::StarWars
+    ImGui::DemoObject::CUBE2,
+    ImGui::DemoObject::CUP,
+    ImGui::DemoObject::LUCY,
+    ImGui::DemoObject::QUAD,
+    ImGui::DemoObject::SPHERE,
+    ImGui::DemoObject::STAR_WARS
   };
 
   const char* DEMOOBJECTNAMES[static_cast<size_t>(ImGui::DemoObject::COUNT)] =
@@ -54,7 +54,8 @@ namespace
     "Lucy",
     "Quad",
     "Sphere",
-    "StarWars"
+    "StarWars",
+    "Suzanne"
   };
 
   const char* DEMOOBJECTFILENAMES[static_cast<size_t>(ImGui::DemoObject::COUNT)] =
@@ -67,7 +68,8 @@ namespace
     "lucy_princeton.obj",
     "quad.obj",
     "sphere.obj",
-    "starwars1.obj"
+    "starwars1.obj",
+    "suzanne.fbx"
   };
 
   const char* SHADERNAMES[1] =
@@ -120,8 +122,8 @@ namespace ImGui
   int LIGHTING_ACTIVE_LIGHTS = 8;
   Material LIGHTING_GLOBAL_MATERIAL;
 
-  DemoObject DEMO_OBJECT_MAIN = DemoObject::Lucy;
-  const char* DEMO_OBJECT_FILE = DEMOOBJECTFILENAMES[static_cast<size_t>(DemoObject::Lucy)];
+  DemoObject DEMO_OBJECT_MAIN = DemoObject::LUCY;
+  const char* DEMO_OBJECT_FILE = DEMOOBJECTFILENAMES[static_cast<size_t>(DemoObject::LUCY)];
 }
 
 ImGuiManager::ImGuiManager(GLFWwindow* Window) noexcept :

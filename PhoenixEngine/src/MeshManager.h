@@ -7,11 +7,10 @@
 #pragma once
 #include "Mesh.h"
 #include "GLEW/glew.h"
-#include "OBJReader.h"
+//#include "OBJReader.h"
 
 class MeshManager
 {
-private:
   struct MeshData
   {
     MeshData(string FileName = "Unknown",
@@ -37,7 +36,7 @@ private:
   };
 
 public:
-  MeshManager() noexcept;
+  MeshManager() noexcept = default;
   ~MeshManager();
   MeshManager(const MeshManager&) = delete;
   MeshManager& operator=(const MeshManager&) = delete;
@@ -63,8 +62,8 @@ public:
 private:
   vector<Mesh> m_MeshArray;
   vector<MeshData> m_MeshDataArray;
-  OBJReader m_ObjReader;
+  //OBJReader m_ObjReader;
 
-  unsigned LoadMeshFromOBJ(const string& FileName) noexcept;
+  unsigned LoadMeshFromFile(const string& FileName) noexcept;
   unsigned LoadSphere(float Radius = 1.f, unsigned NumDivisions = 16u) noexcept;
 };

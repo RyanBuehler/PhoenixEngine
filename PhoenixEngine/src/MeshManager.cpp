@@ -9,6 +9,7 @@
 #include "Transform.h"
 #include "glm/ext/scalar_constants.inl"
 #include "DebugRenderer.h"
+#include "AssetLoader.h"
 
 #pragma region ImGui
 
@@ -19,13 +20,6 @@
 #endif
 
 #pragma endregion
-
-MeshManager::MeshManager() noexcept
-{
-  //TODO: This can probably be circumvented
-  // Probably remove this after AssImp
-  m_ObjReader.initData();
-}
 
 MeshManager::~MeshManager()
 {
@@ -46,6 +40,7 @@ unsigned MeshManager::LoadMesh(
       return i;
     }
   }
+
   ScaleToUnitSize ? Log::trace("Loading mesh: " + FileName) : Log::trace("Loading [Unit] mesh: " + FileName);
 
   unsigned index = numeric_limits<unsigned>::max();
@@ -57,7 +52,7 @@ unsigned MeshManager::LoadMesh(
   else
   {
     // Hasn't been loaded. Load from OBJ
-    index = LoadMeshFromOBJ(FileName);
+    index = LoadMeshFromFile(FileName);
     if (index == Error::INVALID_INDEX)
     {
       Log::error("Could not load from OBJ file: " + FileName);
@@ -85,7 +80,10 @@ unsigned MeshManager::LoadMesh(
     mesh.CalculateNormals();
 
   // Generate the UVs
-  mesh.GenerateTexcoords(UvGeneration);
+  if (mesh.GetTexcoordCount() == 0)
+  {
+    mesh.GenerateTexcoords(UvGeneration);
+  }
 
   // Assemble the Vertex Data for the GPU
   mesh.AssembleVertexData();
@@ -190,18 +188,19 @@ void MeshManager::RenderVertexNormals(const unsigned ID, const float Length) con
   DebugRenderer::I().RenderLines();
 }
 
-unsigned MeshManager::LoadMeshFromOBJ(const string& FileName) noexcept
+unsigned MeshManager::LoadMeshFromFile(const string& FileName) noexcept
 {
   const auto i = static_cast<unsigned>(m_MeshArray.size());
   m_MeshArray.emplace_back();
   m_MeshDataArray.emplace_back();
   m_MeshDataArray[i].FileName = FileName;
 
-  m_ObjReader.ReadOBJFile(FileName, &m_MeshArray[i], OBJReader::ReadMethod::LINE_BY_LINE, false);
+  AssetLoader::LoadModel(FileName, m_MeshArray[i]);
+  //m_ObjReader.ReadOBJFile(FileName, &m_MeshArray[i], OBJReader::ReadMethod::LINE_BY_LINE, false);
   return i;
 }
 
-const Mesh& MeshManager::GetMeshByID(unsigned ID) const noexcept
+const Mesh& MeshManager::GetMeshByID(const unsigned ID) const noexcept
 {
   return m_MeshArray[ID];
 }
