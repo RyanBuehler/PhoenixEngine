@@ -14,14 +14,16 @@ void AssetLoader::LoadModel(const string& FileName, Mesh& NewMesh) noexcept
 {
   Assimp::Importer importer;
   const aiScene* scene = importer.ReadFile(Paths::MODEL_PATH + FileName,
+    aiProcess_JoinIdenticalVertices &
     aiProcess_Triangulate &
     aiProcess_GenNormals &
-    aiProcess_GenUVCoords);
+    aiProcess_GenUVCoords &
+    aiProcess_PreTransformVertices);
 
   unsigned numMeshes = scene->mNumMeshes;
   const auto mesh = scene->mMeshes[0];
   NewMesh.m_NormalsAreCalculated = mesh->HasNormals();
-  const bool bHasTexcoords = mesh->mTextureCoords[0];
+  const bool bHasTexCoords = mesh->mTextureCoords[0];
 
   for (unsigned i = 0u; i < mesh->mNumVertices; ++i)
   {
@@ -32,7 +34,7 @@ void AssetLoader::LoadModel(const string& FileName, Mesh& NewMesh) noexcept
       NewMesh.AddVertexNormal(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
     }
 
-    if (bHasTexcoords) // does the mesh contain texture coordinates?
+    if (bHasTexCoords) // does the mesh contain texture coordinates?
     {
       NewMesh.AddTexcoord(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
     }

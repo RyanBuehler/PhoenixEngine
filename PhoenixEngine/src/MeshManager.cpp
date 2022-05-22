@@ -82,7 +82,7 @@ unsigned MeshManager::LoadMesh(
   // Generate the UVs
   if (mesh.GetTexcoordCount() == 0)
   {
-    mesh.GenerateTexcoords(UvGeneration);
+    mesh.GenerateTexCoords(UvGeneration);
   }
 
   // Assemble the Vertex Data for the GPU

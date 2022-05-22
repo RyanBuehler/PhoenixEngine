@@ -55,7 +55,7 @@ namespace
     "Quad",
     "Sphere",
     "StarWars",
-    "Suzanne"
+    "Backpack"
   };
 
   const char* DEMOOBJECTFILENAMES[static_cast<size_t>(ImGui::DemoObject::COUNT)] =
@@ -69,7 +69,7 @@ namespace
     "quad.obj",
     "sphere.obj",
     "starwars1.obj",
-    "suzanne.fbx"
+    "backpack.fbx"
   };
 
   const char* SHADERNAMES[1] =

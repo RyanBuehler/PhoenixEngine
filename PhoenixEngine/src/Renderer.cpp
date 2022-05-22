@@ -547,10 +547,10 @@ void Renderer::LoadContexts() noexcept
 //
 //  ContextManager::VertexAttribute vaPosition("position", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), 0);
 //  ContextManager::VertexAttribute vaNormal("normal", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), sizeof(vec3));
-//  ContextManager::VertexAttribute vaTexcoords("texcoord", 2, GL_FLOAT, GL_FALSE, sizeof(vec2), sizeof(vec3) * 2);
+//  ContextManager::VertexAttribute vaTexCoords("texcoord", 2, GL_FLOAT, GL_FALSE, sizeof(vec2), sizeof(vec3) * 2);
 //  m_ContextManager.AddNewVertexAttribute(m_hPhongLighting, vaPosition);
 //  m_ContextManager.AddNewVertexAttribute(m_hPhongLighting, vaNormal);
-//  m_ContextManager.AddNewVertexAttribute(m_hPhongLighting, vaTexcoords);
+//  m_ContextManager.AddNewVertexAttribute(m_hPhongLighting, vaTexCoords);
 //
 //  Log::Trace("Phong Lighting Context loaded.");
 //}
@@ -589,10 +589,10 @@ void Renderer::LoadContexts() noexcept
 //
 //  ContextManager::VertexAttribute vaPosition("position", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), 0);
 //  ContextManager::VertexAttribute vaNormal("normal", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), sizeof(vec3));
-//  ContextManager::VertexAttribute vaTexcoords("texcoord", 2, GL_FLOAT, GL_FALSE, sizeof(vec2), sizeof(vec3) * 2);
+//  ContextManager::VertexAttribute vaTexCoords("texcoord", 2, GL_FLOAT, GL_FALSE, sizeof(vec2), sizeof(vec3) * 2);
 //  m_ContextManager.AddNewVertexAttribute(m_hPhongShading, vaPosition);
 //  m_ContextManager.AddNewVertexAttribute(m_hPhongShading, vaNormal);
-//  m_ContextManager.AddNewVertexAttribute(m_hPhongShading, vaTexcoords);
+//  m_ContextManager.AddNewVertexAttribute(m_hPhongShading, vaTexCoords);
 //
 //  Log::Trace("Phong Shading Context loaded.");
 //}
@@ -671,13 +671,13 @@ void Renderer::LoadBlinnPhongContext() noexcept
 //
 //  //ContextManager::VertexAttribute vaPosition("position", 3, GL_FLOAT, GL_FALSE, sizeof(vec3), 0u);
 //  //ContextManager::VertexAttribute vaNormal("normal", 3, GL_FLOAT, GL_FALSE, sizeof(vec3), sizeof(vec3));
-//  //ContextManager::VertexAttribute vaTexcoords("texcoord", 2, GL_FLOAT, GL_FALSE, sizeof(vec2), 2 * sizeof(vec3));
+//  //ContextManager::VertexAttribute vaTexCoords("texcoord", 2, GL_FLOAT, GL_FALSE, sizeof(vec2), 2 * sizeof(vec3));
 //  ContextManager::VertexAttribute vaPosition("position", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), 0);
 //  ContextManager::VertexAttribute vaNormal("normal", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), sizeof(vec3));
-//  ContextManager::VertexAttribute vaTexcoords("texcoord", 2, GL_FLOAT, GL_FALSE, sizeof(vec2), sizeof(vec3) * 2);
+//  ContextManager::VertexAttribute vaTexCoords("texcoord", 2, GL_FLOAT, GL_FALSE, sizeof(vec2), sizeof(vec3) * 2);
 //  m_ContextManager.AddNewVertexAttribute(m_hPhongTexture, vaPosition);
 //  m_ContextManager.AddNewVertexAttribute(m_hPhongTexture, vaNormal);
-//  m_ContextManager.AddNewVertexAttribute(m_hPhongTexture, vaTexcoords);
+//  m_ContextManager.AddNewVertexAttribute(m_hPhongTexture, vaTexCoords);
 //
 //  Log::Trace("Phong Texture Context loaded.");
 //}
@@ -805,10 +805,10 @@ void Renderer::LoadSkyboxContext() noexcept
 //
 //  ContextManager::VertexAttribute vaPosition("position", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), 0);
 //  ContextManager::VertexAttribute vaNormal("normal", 3, GL_FLOAT, GL_FALSE, sizeof(Mesh::VertexData), sizeof(vec3));
-//  ContextManager::VertexAttribute vaTexcoords("texcoord", 2, GL_FLOAT, GL_FALSE, sizeof(vec2), sizeof(vec3) * 2);
+//  ContextManager::VertexAttribute vaTexCoords("texcoord", 2, GL_FLOAT, GL_FALSE, sizeof(vec2), sizeof(vec3) * 2);
 //  m_ContextManager.AddNewVertexAttribute(m_hBlinnPhongRefract, vaPosition);
 //  m_ContextManager.AddNewVertexAttribute(m_hBlinnPhongRefract, vaNormal);
-//  m_ContextManager.AddNewVertexAttribute(m_hBlinnPhongRefract, vaTexcoords);
+//  m_ContextManager.AddNewVertexAttribute(m_hBlinnPhongRefract, vaTexCoords);
 //
 //  Log::Trace("Blinn Phong Refraction Context loaded.");
 //}

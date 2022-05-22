@@ -241,7 +241,7 @@
     /// </summary>
     /// <param name="Generation">The UV generation technique</param>
     /// <returns></returns>
-    void GenerateTexcoords(UV::Generation Generation) noexcept;
+    void GenerateTexCoords(UV::Generation Generation) noexcept;
 
     /// <summary>
     /// Assembles all mesh data into VertexData to be sent to the GPU

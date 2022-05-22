@@ -209,7 +209,7 @@ void Mesh::ResetOriginToCentroid() noexcept
   m_MeshIsDirty = true;
 }
 
-void Mesh::GenerateTexcoords(const UV::Generation Generation) noexcept
+void Mesh::GenerateTexCoords(const UV::Generation Generation) noexcept
 {
   switch (Generation)
   {
