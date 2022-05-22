@@ -10,19 +10,19 @@
 LightingSystem::LightingSystem() noexcept :
   m_RegisteredLights()
 {
-  Log::trace("Lighting System initialized");
+  Log::Trace("Lighting System initialized");
 }
 
 LightingSystem::~LightingSystem()
 {
-  Log::trace("Lighting system destructed");
+  Log::Trace("Lighting system destructed");
 }
 
 bool LightingSystem::RegisterLight(Light* LightPtr) noexcept
 {
   if (getFreeLightCount() < 1)
   {
-    Log::warn("Attempting to register light, but maximum already reached");
+    Log::Warn("Attempting to register light, but maximum already reached");
     return false;
   }
 
@@ -31,7 +31,7 @@ bool LightingSystem::RegisterLight(Light* LightPtr) noexcept
   {
     if (lightPtr == LightPtr)
     {
-      Log::warn("Attempting to register an already registered light");
+      Log::Warn("Attempting to register an already registered light");
       return false;
     }
   }
@@ -49,12 +49,12 @@ bool LightingSystem::RegisterLight(Light* LightPtr) noexcept
   // Since the count was checked earlier, one light should exist
   if (index == Error::INVALID_INDEX)
   {
-    Log::error("No free light slot exists, when one should");
+    Log::Error("No free light slot exists, when one should");
     return false;
   }
 
   m_RegisteredLights[index] = LightPtr;
-  Log::trace("Light registered in slot: " + std::to_string(index));
+  Log::Trace("Light registered in slot: " + std::to_string(index));
   return true;
 }
 
@@ -71,11 +71,11 @@ bool LightingSystem::DeRegisterLight(const Light* LightPtr) const noexcept
 
   if (index == Error::INVALID_INDEX)
   {
-    Log::warn("Attempting to de-register light. Light not found");
+    Log::Warn("Attempting to de-register light. Light not found");
     return false;
   }
 
-  Log::trace("Light de-registered from slot: " + std::to_string(index));
+  Log::Trace("Light de-registered from slot: " + std::to_string(index));
   return true;
 }
 

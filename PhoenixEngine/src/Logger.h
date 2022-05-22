@@ -99,32 +99,32 @@ namespace Log
     std::shared_ptr<spdlog::logger> m_SpdLogger;
   };
 
-  inline void trace(const char* Message) noexcept
+  inline void Trace(const char* Message) noexcept
   {
     Logger::Instance().Trace(Message);
   }
 
-  inline void trace(const std::string& Message) noexcept
+  inline void Trace(const std::string& Message) noexcept
   {
     Logger::Instance().Trace(Message);
   }
 
-  inline void warn(const char* Message) noexcept
+  inline void Warn(const char* Message) noexcept
   {
     Logger::Instance().Warn(Message);
   }
 
-  inline void warn(const std::string& Message) noexcept
+  inline void Warn(const std::string& Message) noexcept
   {
     Logger::Instance().Warn(Message);
   }
 
-  inline void error(const char* Message) noexcept
+  inline void Error(const char* Message) noexcept
   {
     Logger::Instance().Error(Message);
   }
 
-  inline void error(const std::string& Message) noexcept
+  inline void Error(const std::string& Message) noexcept
   {
     Logger::Instance().Error(Message);
   }

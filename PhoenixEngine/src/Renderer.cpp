@@ -41,12 +41,12 @@ Renderer::Renderer(const bool DepthBufferEnabled, const bool BackFaceCullEnabled
 
   LoadContexts();
 
-  Log::trace("Renderer initialized.");
+  Log::Trace("Renderer initialized.");
 }
 
 Renderer::~Renderer()
 {
-  Log::trace("Renderer destroyed.");
+  Log::Trace("Renderer destroyed.");
 }
 
 void Renderer::OnBeginFrame() const noexcept
@@ -395,7 +395,7 @@ void Renderer::RenderGameObject(GameObject& GameObject)
       meshCompPtr->SetMeshID(m_MeshManager.LoadMesh(meshFile, true, true, ImGui::GRAPHICS_SELECTED_PROJECTION));
       if (meshCompPtr->GetMeshID() == Error::INVALID_INDEX)
       {
-        Log::error("Could not load mesh: " + meshFile);
+        Log::Error("Could not load mesh: " + meshFile);
         return;
       }
       MeshID = meshCompPtr->GetMeshID();
@@ -634,7 +634,7 @@ void Renderer::LoadBlinnPhongContext() noexcept
   m_ContextManager.AddNewVertexAttribute(m_hBlinnPhong, vaNormal);
   m_ContextManager.AddNewVertexAttribute(m_hBlinnPhong, vaTexCoords);
 
-  Log::trace("Blinn-Phong Shading Context loaded.");
+  Log::Trace("Blinn-Phong Shading Context loaded.");
 }
 
 //void Renderer::LoadPhongTextureContext() noexcept
@@ -700,7 +700,7 @@ void Renderer::LoadDebugContext() noexcept
   m_ContextManager.AddNewVertexAttribute(m_hDebugContext, vaPosition);
   m_ContextManager.AddNewVertexAttribute(m_hDebugContext, vaColor);
 
-  Log::trace("DEBUG Context loaded.");
+  Log::Trace("DEBUG Context loaded.");
 }
 
 void Renderer::LoadSkyboxContext() noexcept
@@ -720,7 +720,7 @@ void Renderer::LoadSkyboxContext() noexcept
 
   m_SkyboxMeshId = m_MeshManager.LoadMesh("cube2.obj");
 
-  Log::trace("Skybox Context loaded.");
+  Log::Trace("Skybox Context loaded.");
 }
 
 //void Renderer::LoadReflectionContext() noexcept
@@ -817,7 +817,7 @@ void Renderer::EnableDepthBuffer() const noexcept
 {
   if (DepthBufferIsEnabled())
   {
-    Log::warn("Redundant Depth Buffer request to enable. Already enabled.");
+    Log::Warn("Redundant Depth Buffer request to enable. Already enabled.");
     return;
   }
 
@@ -828,7 +828,7 @@ void Renderer::DisableDepthBuffer() const noexcept
 {
   if (!DepthBufferIsEnabled())
   {
-    Log::warn("Redundant Depth Buffer request to disable. Already disabled.");
+    Log::Warn("Redundant Depth Buffer request to disable. Already disabled.");
     return;
   }
 
@@ -844,7 +844,7 @@ void Renderer::EnableBackFaceCull() const noexcept
 {
   if (BackFaceCullIsEnabled())
   {
-    Log::warn("Redundant Depth Buffer request to enable. Already enabled.");
+    Log::Warn("Redundant Depth Buffer request to enable. Already enabled.");
     return;
   }
 
@@ -855,7 +855,7 @@ void Renderer::DisableBackFaceCull() const noexcept
 {
   if (!BackFaceCullIsEnabled())
   {
-    Log::warn("Redundant Depth Buffer request to disable. Already disabled.");
+    Log::Warn("Redundant Depth Buffer request to disable. Already disabled.");
     return;
   }
 

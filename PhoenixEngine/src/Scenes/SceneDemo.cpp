@@ -23,13 +23,13 @@ SceneDemo::SceneDemo() noexcept :
   m_Time(0.f)
 {
   m_MainCamera.SetName("Demo Scene Camera");
-  Log::trace("'Demo' Scene Created.");
+  Log::Trace("'Demo' Scene Created.");
   ImGui::MANAGER->SetOnDemoObjectHandler([this] { OnDemoObjectChangeEvent(); });
 }
 
 void SceneDemo::OnLoad() noexcept
 {
-  Log::trace("Demo Scene Loaded.");
+  Log::Trace("Demo Scene Loaded.");
 }
 
 void SceneDemo::OnInit() noexcept
@@ -47,7 +47,7 @@ void SceneDemo::OnInit() noexcept
     Scenario1();
     break;
   }
-  Log::trace("Demo Scene Initialized.");
+  Log::Trace("Demo Scene Initialized.");
 }
 
 void SceneDemo::OnUpdate(const float DeltaTime) noexcept
@@ -78,12 +78,12 @@ void SceneDemo::OnUpdate(const float DeltaTime) noexcept
 void SceneDemo::OnShutdown() noexcept
 {
   m_GameObjectArray.clear();
-  Log::trace("Demo Scene Shutdown.");
+  Log::Trace("Demo Scene Shutdown.");
 }
 
 void SceneDemo::OnUnload() noexcept
 {
-  Log::trace("Demo Scene Unloaded.");
+  Log::Trace("Demo Scene Unloaded.");
 }
 
 void SceneDemo::OnPollInput(GLFWwindow* WindowPtr, const float DeltaTime) noexcept

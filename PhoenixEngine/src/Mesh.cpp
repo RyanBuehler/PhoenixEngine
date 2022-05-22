@@ -145,7 +145,7 @@ void Mesh::CalculateNormals(const bool bShouldFlipNormals) noexcept
   // Vertices and indices must be populated
   if (m_PositionArray.empty() || m_TriangleArray.empty())
   {
-    Log::error("Mesh::CalculateNormals - Can't calculate from empty mesh.");
+    Log::Error("Mesh::CalculateNormals - Can't calculate from empty mesh.");
     return;
   }
 
@@ -407,5 +407,5 @@ void Mesh::calculateCylinderUVs() noexcept
 
 void Mesh::calculateCubeMapUVs() const noexcept
 {
-  Log::error("Mesh::calculateCubeMapUVs not implemented.");
+  Log::Error("Mesh::calculateCubeMapUVs not implemented.");
 }

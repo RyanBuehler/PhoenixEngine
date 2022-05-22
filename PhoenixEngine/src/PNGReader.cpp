@@ -26,7 +26,7 @@ bool PNGReader::LoadPNG(const string& filename) noexcept
   m_Image.Data = stbi_load(filename.c_str(), &m_Image.Width, &m_Image.Height, &m_Image.Channels, 0);
   if(!m_Image.Data)
   {
-    Log::error("Could not load texture from file: " + filename);
+    Log::Error("Could not load texture from file: " + filename);
     return false;
   }
 

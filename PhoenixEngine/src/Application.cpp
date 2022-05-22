@@ -21,7 +21,7 @@ void Application::Run() const
   }
 
   m_WindowPtr->OnClose();
-  Log::trace("Application terminated.");
+  Log::Trace("Application terminated.");
 }
 
 int main()

@@ -20,7 +20,6 @@ void AssetLoader::LoadModel(const string& FileName, Mesh& NewMesh) noexcept
     aiProcess_GenUVCoords &
     aiProcess_PreTransformVertices);
 
-  unsigned numMeshes = scene->mNumMeshes;
   const auto mesh = scene->mMeshes[0];
   NewMesh.m_NormalsAreCalculated = mesh->HasNormals();
   const bool bHasTexCoords = mesh->mTextureCoords[0];
@@ -39,14 +38,18 @@ void AssetLoader::LoadModel(const string& FileName, Mesh& NewMesh) noexcept
       NewMesh.AddTexcoord(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
     }
     else
+    {
       NewMesh.AddTexcoord(0.0f, 0.0f);
+    }
   }
 
   for (unsigned int i = 0; i < mesh->mNumFaces; i++)
   {
     const aiFace face = mesh->mFaces[i];
     for (unsigned int j = 0; j < face.mNumIndices; j += 3)
+    {
       NewMesh.AddTriangle(face.mIndices[j], face.mIndices[j + 1], face.mIndices[j + 2]);
+    }
   }
 
   if (!NewMesh.m_NormalsAreCalculated)

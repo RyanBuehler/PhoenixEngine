@@ -7,12 +7,11 @@
 //------------------------------------------------------------------------------
 #include "pch.h"
 #include "Camera.h"
-#include <glm/ext/matrix_transform.hpp>   // glm::translate, glm::rotate, glm::scale
 #include <glm/ext/matrix_clip_space.hpp>  // glm::perspective
+#include <glm/ext/matrix_transform.hpp>   // glm::translate, glm::rotate, glm::scale
 #include "Transform.h"
 
-Camera::Camera(const string& name, const Viewport& viewport) noexcept :
-  m_ViewData(),
+Camera::Camera(string Name, const Viewport& Viewport) noexcept :
   m_Position({ 0.f, 0.f, 30.f }),
   m_Forward({ 0.f, 0.f, -1.f }),
   m_Up({ 0.f, 1.f, 0.f }),
@@ -25,15 +24,15 @@ Camera::Camera(const string& name, const Viewport& viewport) noexcept :
   m_bPerspectiveIsDirty(true),
   m_bViewIsDirty(true),
   m_Target(nullptr),
-  m_Name(name),
-  m_Viewport(viewport)
+  m_Name(std::move(Name)),
+  m_Viewport(Viewport)
 {
-  Log::trace("Camera '" + m_Name + "' created.");
+  Log::Trace("Camera '" + m_Name + "' created.");
 }
 
 Camera::~Camera()
 {
-  Log::trace(string("Camera '") + m_Name + "' destroyed.");
+  Log::Trace(string("Camera '") + m_Name + "' destroyed.");
 }
 
 const mat4& Camera::GetPersMatrix() noexcept
@@ -80,9 +79,9 @@ const glm::mat4& Camera::GetVPMatrix() noexcept
   return m_VPMatrix;
 }
 
-void Camera::SetTarget(const Transform* target) noexcept
+void Camera::SetTarget(const Transform* Target) noexcept
 {
-  m_Target = target;
+  m_Target = Target;
   m_bViewIsDirty = true;
 }
 
@@ -92,66 +91,66 @@ void Camera::ClearTarget() noexcept
   m_bViewIsDirty = true;
 }
 
-void Camera::SetPosition(vec3 position)
+void Camera::SetPosition(const vec3 Position)
 {
-  m_Position = position;
+  m_Position = Position;
   m_bViewIsDirty = true;
 }
 
-void Camera::MoveForward(float distance) noexcept
+void Camera::MoveForward(const float Distance) noexcept
 {
-  m_Position += distance * m_Forward;
+  m_Position += Distance * m_Forward;
   m_bViewIsDirty = true;
 }
 
-void Camera::MoveBackward(float distance) noexcept
+void Camera::MoveBackward(const float Distance) noexcept
 {
-  MoveForward(-distance);
+  MoveForward(-Distance);
 }
 
-void Camera::MoveRight(float distance) noexcept
+void Camera::MoveRight(const float Distance) noexcept
 {
-  m_Position += distance * glm::cross(m_Forward, m_Up);
+  m_Position += Distance * glm::cross(m_Forward, m_Up);
   m_bViewIsDirty = true;
 }
 
-void Camera::MoveLeft(float distance) noexcept
+void Camera::MoveLeft(const float Distance) noexcept
 {
-  MoveRight(-distance);
+  MoveRight(-Distance);
 }
 
-void Camera::MoveUp(float distance) noexcept
+void Camera::MoveUp(const float Distance) noexcept
 {
-  m_Position += distance * m_Up;
+  m_Position += Distance * m_Up;
   m_bViewIsDirty = true;
 }
 
-void Camera::MoveDown(float distance) noexcept
+void Camera::MoveDown(const float Distance) noexcept
 {
-  MoveUp(-distance);
+  MoveUp(-Distance);
 }
 
-void Camera::SetYaw(float degrees)
+void Camera::SetYaw(const float Degrees)
 {
-  m_Yaw = degrees;
+  m_Yaw = Degrees;
   m_bViewIsDirty = true;
 }
 
-void Camera::SetPitch(float degrees)
+void Camera::SetPitch(const float Degrees)
 {
-  m_Pitch = degrees;
+  m_Pitch = Degrees;
   m_bViewIsDirty = true;
 }
 
-void Camera::SetRoll(float degrees)
+void Camera::SetRoll(const float Degrees)
 {
-  m_Roll = degrees;
+  m_Roll = Degrees;
   m_bViewIsDirty = true;
 }
 
-void Camera::SetViewData(const ViewData& viewData)
+void Camera::SetViewData(const ViewData& ViewData)
 {
-  m_ViewData = viewData;
+  m_ViewData = ViewData;
 }
 
 const vec3& Camera::GetPosition() const noexcept
@@ -173,7 +172,7 @@ void Camera::LookAt(const vec3& Forward, const vec3& Up)
 {
   if (glm::dot(Forward, Up) != 0.f)
   {
-    Log::warn("[Camera.cpp] Invalid vectors given to LookAt.");
+    Log::Warn("[Camera.cpp] Invalid vectors given to LookAt.");
     return;
   }
 
@@ -182,9 +181,9 @@ void Camera::LookAt(const vec3& Forward, const vec3& Up)
   m_bViewIsDirty = true;
 }
 
-void Camera::SetName(const string& name) noexcept
+void Camera::SetName(const string& Name) noexcept
 {
-  m_Name = name;
+  m_Name = Name;
 }
 
 const string& Camera::GetName() const noexcept
@@ -197,12 +196,12 @@ const Camera::Viewport& Camera::GetViewport() const noexcept
   return m_Viewport;
 }
 
-void Camera::SetViewport(const Camera::Viewport& other) noexcept
+void Camera::SetViewport(const Camera::Viewport& Other) noexcept
 {
-  m_Viewport = other;
+  m_Viewport = Other;
 }
 
-void Camera::SetViewport(GLint X, GLint Y, GLint W, GLint H)
+void Camera::SetViewport(const GLint X, const GLint Y, const GLint W, const GLint H)
 {
   m_Viewport.X = X;
   m_Viewport.Y = Y;

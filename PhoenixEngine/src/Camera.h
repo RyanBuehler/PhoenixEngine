@@ -7,20 +7,20 @@
 #pragma once
 #include "GraphicsCommon.h"
 
-// Forward Declarations
+// Forward declarations
 class Transform;
 
 class Camera
 {
-  public:
+public:
   struct Viewport
   {
     Viewport(
-      GLint x = 0,
-      GLint y = 0,
-      GLint w = 1920,
-      GLint h = 1080
-    ) : X(x), Y(y), W(w), H(h) {}
+      const GLint X = 0,
+      const GLint Y = 0,
+      const GLint W = 1920,
+      const GLint H = 1080
+    ) : X(X), Y(Y), W(W), H(H) {}
 
     GLint X;
     GLint Y;
@@ -31,22 +31,31 @@ class Camera
   struct ViewData
   {
     ViewData(
-      float fov = 45.f,
-      float aspect = 16.f / 9.f,
-      float nearCull = 0.1f,
-      float farCull = 1000.f
+      const float Fov = 45.f,
+      const float Aspect = 16.f / 9.f,
+      const float NearCull = 0.1f,
+      const float FarCull = 1000.f
     ) :
-      FOV(fov), Aspect(aspect), NearCull(nearCull), FarCull(farCull) {}
+      FOV(Fov), Aspect(Aspect), NearCull(NearCull), FarCull(FarCull) {}
 
     float FOV;
     float Aspect;
     float NearCull;
     float FarCull;
   };
-  public:
 
-  Camera(const string& name = "Unnamed Camera", const Viewport& viewport = Viewport()) noexcept;
+  /// <summary>
+  /// Camera Constructor
+  /// </summary>
+  /// <param name="Name">Name of the camera</param>
+  /// <param name="Viewport">Viewport settings</param>
+  Camera(string Name = "Unnamed Camera", const Viewport& Viewport = {0,0,1920,1080}) noexcept;
+
+  /// <summary>
+  /// The Camera destructor
+  /// </summary>
   ~Camera();
+
   Camera(const Camera&) = delete;
   Camera& operator=(const Camera&) = delete;
   Camera(Camera&&) = delete;
@@ -73,8 +82,8 @@ class Camera
   /// <summary>
   /// Sets the "LookAt" target for the camera
   /// </summary>
-  /// <param name="target">The transform ptr of the target to watch.</param>
-  void SetTarget(const Transform* target) noexcept;
+  /// <param name="Target">The transform ptr of the target to watch.</param>
+  void SetTarget(const Transform* Target) noexcept;
 
   /// <summary>
   /// Clears the "LookAt" target
@@ -84,68 +93,68 @@ class Camera
   /// <summary>
   /// Sets the Camera's position
   /// </summary>
-  /// <param name="position">Vec3 World Position</param>
-  void SetPosition(vec3 position);
+  /// <param name="Position">Vec3 World Position</param>
+  void SetPosition(vec3 Position);
 
   /// <summary>
   /// Moves the camera forward
   /// </summary>
-  /// <param name="distance">The world distance to move the camera forward</param>
-  void MoveForward(float distance) noexcept;
+  /// <param name="Distance">The world distance to move the camera forward</param>
+  void MoveForward(float Distance) noexcept;
 
   /// <summary>
   /// Moves the camera backward
   /// </summary>
-  /// <param name="distance">The world distance to move the camera backward</param>
-  void MoveBackward(float distance) noexcept;
+  /// <param name="Distance">The world distance to move the camera backward</param>
+  void MoveBackward(float Distance) noexcept;
 
   /// <summary>
   /// Moves the camera directly to the camera's right
   /// </summary>
-  /// <param name="distance">The world distance to move the camera right</param>
-  void MoveRight(float distance) noexcept;
+  /// <param name="Distance">The world distance to move the camera right</param>
+  void MoveRight(float Distance) noexcept;
 
   /// <summary>
   /// Moves the camera directly to the camera's left
   /// </summary>
-  /// <param name="distance">The world distance to move the camera left</param>
-  void MoveLeft(float distance) noexcept;
+  /// <param name="Distance">The world distance to move the camera left</param>
+  void MoveLeft(float Distance) noexcept;
 
   /// <summary>
   /// Moves the camera up
   /// </summary>
-  /// <param name="distance">The world distance to move the camera up</param>
-  void MoveUp(float distance) noexcept;
+  /// <param name="Distance">The world distance to move the camera up</param>
+  void MoveUp(float Distance) noexcept;
 
   /// <summary>
   /// Moves the camera down
   /// </summary>
-  /// <param name="distance">The world distance to move the camera down</param>
-  void MoveDown(float distance) noexcept;
+  /// <param name="Distance">The world distance to move the camera down</param>
+  void MoveDown(float Distance) noexcept;
 
   /// <summary>
   /// Sets the camera's yaw
   /// </summary>
-  /// <param name="degrees">Yaw in degrees</param>
-  void SetYaw(float degrees);
+  /// <param name="Degrees">Yaw in degrees</param>
+  void SetYaw(float Degrees);
 
   /// <summary>
   /// Sets the camera's pitch
   /// </summary>
-  /// <param name="degrees">Pitch in degrees</param>
-  void SetPitch(float degrees);
+  /// <param name="Degrees">Pitch in degrees</param>
+  void SetPitch(float Degrees);
 
   /// <summary>
   /// Sets the camera's roll
   /// </summary>
-  /// <param name="degrees">Roll in degrees</param>
-  void SetRoll(float degrees);
+  /// <param name="Degrees">Roll in degrees</param>
+  void SetRoll(float Degrees);
 
   /// <summary>
   /// Sets the viewing data for the camera
   /// </summary>
-  /// <param name="viewData">FOV, Aspect Ratio, Culling Distance</param>
-  void SetViewData(const ViewData& viewData);
+  /// <param name="ViewData">FOV, Aspect Ratio, Culling Distance</param>
+  void SetViewData(const ViewData& ViewData);
 
   /// <summary>
   /// Gets the camera's position in world space
@@ -166,22 +175,22 @@ class Camera
   [[nodiscard]] const vec3& GetUpVector() const noexcept;
 
   /// <summary>
-  /// 
+  /// Set the camera's forward and up vector's directly
   /// </summary>
-  /// <param name="Forward">Vec3 Forward Vector</param>
-  /// <param name="Up">Vec3 Forward Vector</param>
+  /// <param name="Forward">Vec3 forward vector</param>
+  /// <param name="Up">Vec3 forward vector</param>
   void LookAt(const vec3& Forward, const vec3& Up);
 
   /// <summary>
-  /// Sets the Camera's name
+  /// Sets the camera's name
   /// </summary>
-  /// <param name="name">The new name for the Camera</param>
-  void SetName(const string& name) noexcept;
+  /// <param name="Name">The new name for the Camera</param>
+  void SetName(const string& Name) noexcept;
 
   /// <summary>
-  /// Gets the Camera's current name
+  /// Gets the camera's current name
   /// </summary>
-  /// <returns>The Camera's current name</returns>
+  /// <returns>The camera's current name</returns>
   [[nodiscard]] const string& GetName() const noexcept;
 
   /// <summary>
@@ -190,7 +199,7 @@ class Camera
   /// <returns>The viewport object</returns>
   [[nodiscard]] const Viewport& GetViewport() const noexcept;
 
-  void SetViewport(const Camera::Viewport& other) noexcept;
+  void SetViewport(const Viewport& Other) noexcept;
 
   /// <summary>
   /// Set the viewport data directly
@@ -201,7 +210,7 @@ class Camera
   /// <param name="H">The height of the viewport</param>
   void SetViewport(GLint X, GLint Y, GLint W, GLint H);
 
-  private:
+private:
   void updateOrientation() noexcept;
 
   // Camera Viewing Data
@@ -219,6 +228,7 @@ class Camera
 
   // Matrices
   mat4 m_PersMatrix;
+  
   mat4 m_ViewMatrix;
   mat4 m_VPMatrix;
 

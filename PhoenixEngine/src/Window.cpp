@@ -20,12 +20,14 @@ Window::Window(WindowProperties Properties) :
 
   // Close the window if it is already open
   if (m_WindowPtr)
+  {
     glfwTerminate();
+  }
 
   // Initialize the library
   if (!glfwInit())
   {
-    Log::error("Couldn't initialize OpenGL Window!");
+    Log::Error("Couldn't initialize OpenGL Window!");
     return;
   }
 
@@ -43,7 +45,7 @@ Window::Window(WindowProperties Properties) :
   if (!m_WindowPtr)
   {
     glfwTerminate();
-    Log::error("OpenGL Window could not be created!");
+    Log::Error("OpenGL Window could not be created!");
     return;
   }
 
@@ -52,21 +54,21 @@ Window::Window(WindowProperties Properties) :
 
 #pragma endregion
 
-  Log::trace("Window created.");
+  Log::Trace("Window created.");
 
 #pragma region GLEW
 
   // Verify GLEW initialized
   if (glewInit() != GLEW_OK)
   {
-    Log::error("Couldn't initialize GLEW!");
+    Log::Error("Couldn't initialize GLEW!");
     return;
   }
 
   // Print the version to the logger
   stringstream ss("Initialized OpenGL version: ", SSIO);
   ss << glGetString(GL_VERSION);
-  Log::trace(ss.str());
+  Log::Trace(ss.str());
 
 #pragma endregion
 
@@ -179,7 +181,7 @@ void Window::OnPollInput() noexcept
 {
   if (glfwGetKey(m_WindowPtr, GLFW_KEY_ESCAPE) == GLFW_PRESS)
   {
-    Log::trace("Esc key pressed. Shutting down.");
+    Log::Trace("Esc key pressed. Shutting down.");
     m_bWindowShouldClose = true;
   }
 }

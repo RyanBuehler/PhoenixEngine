@@ -59,10 +59,10 @@ bool ShaderManager::RelinkShader(GLuint& ProgramID, const GLint VertexShaderID, 
   glGetProgramiv(ProgramID, GL_LINK_STATUS, &result);
   if (!result)
   {
-    Log::error("Error linking OpenGL program.");
+    Log::Error("Error linking OpenGL program.");
     string error;
     Graphics::retrieve_program_log(ProgramID, error);
-    Log::error(error);
+    Log::Error(error);
     return false;
   }
 
@@ -82,7 +82,7 @@ bool ShaderManager::LoadShader(const GLint ShaderID, const string& FileName) con
   file.open(path.c_str(), std::ios::in);
   if (!file.is_open())
   {
-    Log::error(string("Could not open shader file: ") + path);
+    Log::Error(string("Could not open shader file: ") + path);
     return false;
   }
   const string fileString((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
@@ -97,10 +97,10 @@ bool ShaderManager::LoadShader(const GLint ShaderID, const string& FileName) con
   glGetShaderiv(ShaderID, GL_COMPILE_STATUS, &result);
   if (!result)
   {
-    Log::error(string("Error compiling shader : ") + FileName);
+    Log::Error(string("Error compiling shader : ") + FileName);
     string error;
     Graphics::retrieve_shader_log(ShaderID, error);
-    Log::error(error);
+    Log::Error(error);
     return false;
   }
 
@@ -112,7 +112,7 @@ GLint ShaderManager::CreateAndLoadShader(const string& FileName, const GLenum Sh
   const GLint id = CreateShader(ShaderType);
   if (!LoadShader(id, FileName))
   {
-    Log::error("Failed to Create and Load shader: " + FileName);
+    Log::Error("Failed to Create and Load shader: " + FileName);
     return GL_SHADER_ERROR;
   }
   return id;

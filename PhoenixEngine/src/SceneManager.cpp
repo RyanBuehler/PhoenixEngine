@@ -102,7 +102,7 @@ void SceneManager::transitionScene() noexcept
     m_CurrentScenePtr = make_unique<SceneSingleObject>();
     break;
   case Scene::COUNT:
-    Log::error("Invalid Scene Transition");
+    Log::Error("Invalid Scene Transition");
     return;
   }
 

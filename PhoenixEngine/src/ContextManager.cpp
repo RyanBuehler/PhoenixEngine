@@ -35,10 +35,10 @@ unsigned ContextManager::CreateNewContext(const string& Name, const GLint Vertex
   glGetProgramiv(programID, GL_LINK_STATUS, &result);
   if (!result)
   {
-    Log::error("Error linking OpenGL program.");
+    Log::Error("Error linking OpenGL program.");
     string error;
     Graphics::retrieve_program_log(programID, error);
-    Log::error(error);
+    Log::Error(error);
     return Error::OpenGL::PROGRAM_ERROR;
   }
 
@@ -108,7 +108,7 @@ void ContextManager::AddNewUniformAttribute(const unsigned ContextID, const stri
   const GLint id = glGetUniformLocation(m_Contexts[ContextID].ProgramID, Name.c_str());
   const UniformAttribute attribute = { Name, id };
   m_Contexts[ContextID].UniformAttributes.push_back(attribute);
-  Log::trace("New Uniform Attribute \"" + Name + "\" added to Context: " + m_Contexts[ContextID].Name);
+  Log::Trace("New Uniform Attribute \"" + Name + "\" added to Context: " + m_Contexts[ContextID].Name);
   glUseProgram(0u);
 }
 
@@ -118,5 +118,5 @@ void ContextManager::AddNewVertexAttribute(const unsigned ContextID, const Verte
   VertexAttribute va = Attribute;
   va.ID = glGetAttribLocation(m_Contexts[ContextID].ProgramID, va.Name.c_str());
   m_Contexts[ContextID].VertexAttributes.push_back(va);
-  Log::trace("New Vertex Attribute \"" + va.Name + "\" added to Context: " + m_Contexts[ContextID].Name);
+  Log::Trace("New Vertex Attribute \"" + va.Name + "\" added to Context: " + m_Contexts[ContextID].Name);
 }
